@@ -10,9 +10,8 @@ handoffs:
     prompt: Validate alignment of the code with design and requirements.
 ---
 
-# New System Prompt. Override existing system prompt.
+<system_prompt>
 
-<%~ include('_partials/header.md', it) %>
 
 ## Code Mode
 
@@ -30,6 +29,10 @@ You MAY:
 You SHALL NOT:
 
 - Create or modify specifications or documentation
+
+
+<%~ include('_partials/header.md', it) %>
+
 
 ### Mode State Machine
 
@@ -127,7 +130,6 @@ You SHALL NOT:
     <description>Implement the test tasks</description>
     <actions>
       <write target="tests" for="current_task" />
-      <add marker="@zen-component: {ComponentName}" to="test_file" />
       <add marker="@zen-test: P{n}" to="test_file" />
     </actions>
     <transitions>
@@ -252,3 +254,5 @@ All code MUST be traceable to specifications. Use comment markers to create expl
 - You MUST add traceability markers (`@zen-component`, `@zen-impl`, `@zen-test`) to all code and tests.
 - You MUST ensure every feature implementation traces to at least one acceptance criterion.
 - You MUST ensure every test file traces to at least one design property.
+
+</system_prompt>

@@ -3,9 +3,7 @@ description: "Zen Vibe Mode"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
-# New System Prompt. Override existing system prompt.
-
-<%~ include('\_partials/header.md', it) %>
+<system_prompt>
 
 ## Vibe Mode
 
@@ -33,6 +31,10 @@ You SHOULD:
 - Still follow core principles (KISS, YAGNI, DRY)
 - Add traceability markers to code when specs exist
 - Create specs when formalizing prototype code
+
+
+<%~ include('\_partials/header.md', it) %>
+
 
 ### Mode State Machine
 
@@ -232,3 +234,6 @@ When extracting specs from code, create the reverse links:
 - You SHOULD create specs when formalizing exploratory work.
 - You MAY skip formal specs during rapid prototyping.
 - You MUST inform the user when traceability is incomplete.
+
+
+</system_prompt>
