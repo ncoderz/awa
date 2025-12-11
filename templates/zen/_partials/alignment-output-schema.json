@@ -142,127 +142,29 @@
   },
   "$traceabilityRules": {
     "_comment": "How to identify explicit traces between artifacts",
-    "explicitTraces": [
-      "IMPLEMENTS: AC-x.y in design components → links design to requirements",
-      "VALIDATES: REQ-x, AC-x.y in correctness properties → links properties to requirements",
-      "Traceability matrix entries in design → summarizes design coverage",
-      "@zen-component: X in code → links code to design component",
-      "@zen-impl: AC-x.y in code → links code to requirements",
-      "@zen-test: P{n} in test code → links tests to design properties"
-    ],
-    "namingConventions": [
-      "REQ-{name}.md ↔ DESIGN-{name}.md (matching feature name)",
-      "DESIGN-{name}.md ↔ src/{name}/** (directory matches)",
-      "AC-{n}.{m} in requirements ↔ IMPLEMENTS: AC-{n}.{m} in design ↔ @zen-impl: AC-{n}.{m} in code"
-    ],
-    "traceChain": [
-      "Requirement ({PREFIX}-{n})",
-      "  → Acceptance Criterion (AC-{n}.{m})",
-      "    → Design Component (via IMPLEMENTS)",
-      "      → Code Module (via @zen-component + @zen-impl)",
-      "    → Correctness Property (P{n} via VALIDATES)",
-      "      → Test Function (via @zen-test)"
-    ],
+    "explicitTraces": ["IMPLEMENTS: AC-x.y in design components → links design to requirements", "VALIDATES: REQ-x, AC-x.y in correctness properties → links properties to requirements", "Traceability matrix entries in design → summarizes design coverage", "@zen-component: X in code → links code to design component", "@zen-impl: AC-x.y in code → links code to requirements", "@zen-test: P{n} in test code → links tests to design properties"],
+    "namingConventions": ["REQ-{name}.md ↔ DESIGN-{name}.md (matching feature name)", "DESIGN-{name}.md ↔ src/{name}/** (directory matches)", "AC-{n}.{m} in requirements ↔ IMPLEMENTS: AC-{n}.{m} in design ↔ @zen-impl: AC-{n}.{m} in code"],
+    "traceChain": ["Requirement ({PREFIX}-{n})", "  → Acceptance Criterion (AC-{n}.{m})", "    → Design Component (via IMPLEMENTS)", "      → Code Module (via @zen-component + @zen-impl)", "    → Correctness Property (P{n} via VALIDATES)", "      → Test Function (via @zen-test)"],
     "codeValidation": {
-      "rules": [
-        "@zen-impl MUST NOT appear on test functions",
-        "@zen-test MUST NOT appear on non-test functions",
-        "@zen-component MUST appear at file level only",
-        "Component name MUST match a component in DESIGN-*.md",
-        "AC IDs MUST exist in REQ-*.md",
-        "Property IDs MUST exist in DESIGN-*.md"
-      ],
-      "coverageChecks": [
-        "Every AC in design IMPLEMENTS → MUST have @zen-impl in code",
-        "Every component in design → MUST have @zen-component in code",
-        "Every property in design → MUST have @zen-test in tests",
-        "Every @zen-impl → MUST trace back to design IMPLEMENTS",
-        "Every @zen-component → MUST match design component"
-      ]
+      "rules": ["@zen-impl MUST NOT appear on test functions", "@zen-test MUST NOT appear on non-test functions", "@zen-component MUST appear at file level only", "Component name MUST match a component in DESIGN-*.md", "AC IDs MUST exist in REQ-*.md", "Property IDs MUST exist in DESIGN-*.md"],
+      "coverageChecks": ["Every AC in design IMPLEMENTS → MUST have @zen-impl in code", "Every component in design → MUST have @zen-component in code", "Every property in design → MUST have @zen-test in tests", "Every @zen-impl → MUST trace back to design IMPLEMENTS", "Every @zen-component → MUST match design component"]
     }
   },
   "$severityInference": {
     "_comment": "Rules for determining severity from source artifacts",
-    "fromRFC2119": [
-      "SHALL, SHALL NOT, MUST, MUST NOT → CRITICAL",
-      "SHOULD, SHOULD NOT, RECOMMENDED → MAJOR",
-      "MAY, OPTIONAL → MINOR"
-    ],
-    "fromEARSPattern": [
-      "WHEN {trigger} THEN system SHALL → CRITICAL (event-driven obligation)",
-      "WHILE {state} system SHALL → CRITICAL (state-driven obligation)",
-      "IF {condition} THEN system SHALL → CRITICAL (conditional obligation)",
-      "System SHALL {behavior} → CRITICAL (ubiquitous obligation)"
-    ],
-    "fromCriterionType": [
-      "[ubiquitous] with SHALL/MUST → CRITICAL (always applies)",
-      "[event] with SHALL/MUST → CRITICAL (must respond to trigger)",
-      "[state] with SHALL/MUST → CRITICAL (must maintain during state)",
-      "[conditional] with SHALL/MUST → CRITICAL (must apply when condition met)",
-      "[optional] with MAY → MINOR (feature flag dependent)"
-    ],
-    "fromContext": [
-      "Security, data integrity, core functionality → CRITICAL",
-      "User experience, performance targets → MAJOR",
-      "Convenience, optional features → MINOR",
-      "Superset additions, suggestions → INFO"
-    ]
+    "fromRFC2119": ["SHALL, SHALL NOT, MUST, MUST NOT → CRITICAL", "SHOULD, SHOULD NOT, RECOMMENDED → MAJOR", "MAY, OPTIONAL → MINOR"],
+    "fromEARSPattern": ["WHEN {trigger} THEN system SHALL → CRITICAL (event-driven obligation)", "WHILE {state} system SHALL → CRITICAL (state-driven obligation)", "IF {condition} THEN system SHALL → CRITICAL (conditional obligation)", "System SHALL {behavior} → CRITICAL (ubiquitous obligation)"],
+    "fromCriterionType": ["[ubiquitous] with SHALL/MUST → CRITICAL (always applies)", "[event] with SHALL/MUST → CRITICAL (must respond to trigger)", "[state] with SHALL/MUST → CRITICAL (must maintain during state)", "[conditional] with SHALL/MUST → CRITICAL (must apply when condition met)", "[optional] with MAY → MINOR (feature flag dependent)"],
+    "fromContext": ["Security, data integrity, core functionality → CRITICAL", "User experience, performance targets → MAJOR", "Convenience, optional features → MINOR", "Superset additions, suggestions → INFO"]
   },
   "$rendering": {
-    "_comment": "Rendering specification for alignment reports. Uses markdown for readability: ### for finding headers, > blockquotes for quoted text, **bold** for labels, table for summary. Keep formatting minimal and scannable.",
-    "documentStructure": [
-      "# ALIGNMENT REPORT",
-      "{source} ↔ {target}",
-      "",
-      "---",
-      "",
-      "### {n}. {SEVERITY} [{CONFIDENCE}] {TYPE}",
-      "...",
-      "",
-      "---",
-      "",
-      "## Summary",
-      "..."
-    ],
-    "findingTemplate": [
-      "### {n}. {SEVERITY} [{CONFIDENCE}] {TYPE}",
-      "",
-      "**Source:** {sourceRef.location}",
-      "> {sourceRef.text}",
-      "",
-      "**Target:** {targetRef.location}",
-      "> {targetRef.text}",
-      "",
-      "{details}",
-      "",
-      "**Resolution:** {resolution}",
-      "",
-      "*Traced via: {traceability}*"
-    ],
-    "summaryTemplate": [
-      "## Summary",
-      "",
-      "| Severity | Count |",
-      "|----------|-------|",
-      "| CRITICAL | {count} |",
-      "| MAJOR | {count} |",
-      "| MINOR | {count} |",
-      "| INFO | {count} |",
-      "",
-      "**STATUS: {PASSED ✅ | FAILED ❌}**"
-    ],
-    "statusRules": [
-      "FAILED if any CRITICAL findings",
-      "FAILED if any MAJOR findings",
-      "PASSED otherwise"
-    ],
-    "omissionRules": [
-      "Omit source blockquote if sourceRef.text absent",
-      "Omit **Target:** line if targetRef absent, show '**Target:** (not found)'",
-      "Omit target blockquote if targetRef.text absent",
-      "Omit *Traced via* line if traceability starts with 'explicit-'",
-      "Omit **Resolution:** line if resolution absent"
-    ],
+    "_comment": "Rendering specification for alignment reports. Uses markdown for readability: ### for finding headers, > blockquotes for quoted text, **bold** for labels, table for summary. Keep formatting minimal and scannable. When alignment passes (no findings), use successTemplate instead of full report.",
+    "documentStructure": ["# ALIGNMENT REPORT", "{source} ↔ {target}", "", "---", "", "### {n}. {SEVERITY} [{CONFIDENCE}] {TYPE}", "...", "", "---", "", "## Summary", "..."],
+    "findingTemplate": ["### {n}. {SEVERITY} [{CONFIDENCE}] {TYPE}", "", "**Source:** {sourceRef.location}", "> {sourceRef.text}", "", "**Target:** {targetRef.location}", "> {targetRef.text}", "", "{details}", "", "**Resolution:** {resolution}", "", "*Traced via: {traceability}*"],
+    "summaryTemplate": ["## Summary", "", "| Severity | Count |", "|----------|-------|", "| CRITICAL | {count} |", "| MAJOR | {count} |", "| MINOR | {count} |", "| INFO | {count} |", "", "**STATUS: {PASSED ✅ | FAILED ❌}**"],
+    "successTemplate": ["# ALIGNMENT REPORT", "{source} ↔ {target}", "", "All checks passed. No alignment issues found.", "", "**STATUS: PASSED ✅**"],
+    "statusRules": ["FAILED if any CRITICAL findings", "FAILED if any MAJOR findings", "PASSED otherwise"],
+    "omissionRules": ["Omit source blockquote if sourceRef.text absent", "Omit **Target:** line if targetRef absent, show '**Target:** (not found)'", "Omit target blockquote if targetRef.text absent", "Omit *Traced via* line if traceability starts with 'explicit-'", "Omit **Resolution:** line if resolution absent"],
     "example": {
       "input": {
         "source": "DESIGN-workspace.md",

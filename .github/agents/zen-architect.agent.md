@@ -1,6 +1,6 @@
 ---
 description: "Zen Architect Mode"
-tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Write Requirements
     agent: zen-requirements
@@ -133,7 +133,7 @@ You SHALL NOT:
 ### Mode State Machine
 
 <stateMachine name="ZenArchitect" initialState="ReadRules_state">
-  
+
   <state id="ReadRules_state" label="Read Rules">
     <description>Read project-specific rules that may affect architecture decisions</description>
     <actions>
@@ -231,7 +231,7 @@ You SHALL NOT:
   </state>
 
 </stateMachine>
-  
+
 
 ### File Access Permissions
 
@@ -339,7 +339,7 @@ Format as bullet list. One line per command.
 ### Splitting Files
 
 The architecture file MUST stay under 500 lines. If the architecture grows more complex, simplify
-it and refer to existing design files. 
+it and refer to existing design files.
 
 
 ### Important Rules

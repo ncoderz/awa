@@ -58,6 +58,8 @@ Key files:
           <edit path="./templates/zen/{template}.agent.md" description="Update template file with changes" />
         </if>
       </foreach>
+      <note>NEVER modify files in ./.github/agents/ - these are target files only</note>
+      <note>Only edit files in ./templates/zen/ directory</note>
       <note>Preserve Eta template syntax (includes, conditionals, variables)</note>
       <note>If content appears in multiple generated files, it likely belongs in a partial</note>
     </actions>
@@ -110,12 +112,13 @@ Key files:
 
 ## Important Notes
 
-1. **Partial vs Template**: If the same content appears in multiple generated files, it's likely from a shared partial in `_partials/`
-2. **Preserve Syntax**: Maintain all Eta template syntax (`<%~`, `<%`, `%>`, etc.)
-3. **Template Data**: Templates receive an `it` object with data (check `_README.md` for structure)
-4. **File Permissions**: The `file-permissions-table.md` partial is parameterized and receives a `permissions` object
-5. **Exact Match**: The diff must show zero differences for success (whitespace-sensitive)
-6. **Iteration Limit**: Maximum 10 iterations to prevent infinite loops
+1. **NEVER MODIFY TARGET FILES**: You SHALL NOT modify or regenerate files in `./.github/agents/`. These are the target files that contain the desired changes. Only update template files in `./templates/zen/` to match them.
+2. **Partial vs Template**: If the same content appears in multiple generated files, it's likely from a shared partial in `_partials/`
+3. **Preserve Syntax**: Maintain all Eta template syntax (`<%~`, `<%`, `%>`, etc.)
+4. **Template Data**: Templates receive an `it` object with data (check `_README.md` for structure)
+5. **File Permissions**: The `file-permissions-table.md` partial is parameterized and receives a `permissions` object
+6. **Exact Match**: The diff must show zero differences for success (whitespace-sensitive)
+7. **Iteration Limit**: Maximum 10 iterations to prevent infinite loops
 
 ## Validation Command
 

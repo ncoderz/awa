@@ -1,6 +1,6 @@
 ---
 description: "Zen Document Mode"
-tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Run Alignment
     agent: zen-alignment
@@ -127,7 +127,7 @@ You SHALL NOT:
 ### Mode State Machine
 
 <stateMachine name="ZenDocument" initialState="ReadRules_state">
-  
+
   <state id="ReadRules_state" label="Read Rules">
     <description>Read project-specific rules that may affect documentation</description>
     <actions>

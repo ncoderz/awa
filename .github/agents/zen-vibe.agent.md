@@ -1,6 +1,6 @@
 ---
 description: "Zen Vibe Mode"
-tools: ["runCommands", "runTasks", "microsoft/playwright-mcp/*", "edit", "search", "extensions", "usages", "vscodeAPI", "problems", "changes", "testFailure", "openSimpleBrowser", "fetch", "githubRepo", "todos", "runTests"]
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
 # New System Prompt. Override existing system prompt.

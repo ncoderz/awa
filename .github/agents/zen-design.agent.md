@@ -1,6 +1,6 @@
 ---
 description: "Zen Design Mode"
-tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Create Plan
     agent: zen-plan
@@ -133,7 +133,7 @@ You SHALL NOT:
 ### Mode State Machine
 
 <stateMachine name="ZenDesign" initialState="ReadRules_state">
-  
+
   <state id="ReadRules_state" label="Read Rules">
     <description>Read project-specific rules that may affect design decisions</description>
     <actions>
@@ -271,16 +271,7 @@ You may create and update the following files only:
   "description": "RENDERING RULES: Transform data, never transcribe field names. Use CAPITALS for emphasis (not **bold** or *italics*). Use lists instead of tables. Use mermaid for diagrams (not ASCII). Components render with IMPLEMENTS line. Correctness properties render with VALIDATES line. ZERO DUPLICATION PRINCIPLE: Reference requirements by ID only. Never restate requirement content. Requirements define WHAT; design defines HOW. If information exists in REQ-*.md, reference the ID, do not copy. PROHIBITED: 'FieldName: value' label patterns, nested bullets for simple fields, **bold** syntax, *italic* syntax, tables, ASCII diagrams, restating requirement content.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "overview",
-    "architecture",
-    "componentsAndInterfaces",
-    "dataModels",
-    "correctnessProperties",
-    "errorHandling",
-    "testingStrategy",
-    "requirementsTraceability"
-  ],
+  "required": ["overview", "architecture", "componentsAndInterfaces", "dataModels", "correctnessProperties", "errorHandling", "testingStrategy", "requirementsTraceability"],
   "properties": {
     "overview": {
       "type": "string",
@@ -722,63 +713,12 @@ You may create and update the following files only:
   },
   "$rendering": {
     "_comment": "Rendering specification for raw-readable markdown. Use CAPITALS for emphasis, never **bold** or *italics*. Use lists, not tables. Use mermaid, not ASCII.",
-    "documentStructure": [
-      "> VERSION: {version} | STATUS: {status} | UPDATED: {lastModified}",
-      "## Overview",
-      "## Architecture",
-      "### High-Level Architecture",
-      "### Module Organization",
-      "### Architectural Decisions",
-      "## Components and Interfaces",
-      "## Data Models",
-      "## Correctness Properties",
-      "## Error Handling",
-      "## Testing Strategy",
-      "## Requirements Traceability",
-      "## Open Questions",
-      "## Change Log"
-    ],
-    "componentTemplate": [
-      "### {name}",
-      "",
-      "{description}",
-      "",
-      "IMPLEMENTS: {AC-ids}",
-      "",
-      "```rust",
-      "{interface}",
-      "```"
-    ],
-    "correctnessPropertyTemplate": [
-      "- P{id} [{name}]: {description}",
-      "  VALIDATES: {requirement-and-AC-ids}"
-    ],
-    "traceabilityTemplate": [
-      "## Requirements Traceability",
-      "",
-      "SOURCE: {requirementsRef}",
-      "",
-      "- {criterionId} → {componentName} (P{propertyId}) [{status}] {notes}"
-    ],
-    "omissionRules": [
-      "Omit entire section if empty/absent",
-      "Omit IMPLEMENTS line if implements array empty",
-      "Omit VALIDATES line if validates array empty",
-      "Omit [status] if status is 'implemented' (default)",
-      "Omit notes if empty",
-      "Omit Open Questions section if array empty"
-    ],
-    "prohibited": [
-      "**bold** syntax anywhere",
-      "*italic* syntax anywhere",
-      "Tables (use lists instead)",
-      "ASCII diagrams (use mermaid instead)",
-      "FieldName: value label patterns",
-      "Nested bullets for simple fields",
-      "Headers for individual properties (##### P1)",
-      "Restating requirement content - reference by ID only",
-      "Describing WHAT (requirements) instead of HOW (design)"
-    ],
+    "documentStructure": ["> VERSION: {version} | STATUS: {status} | UPDATED: {lastModified}", "## Overview", "## Architecture", "### High-Level Architecture", "### Module Organization", "### Architectural Decisions", "## Components and Interfaces", "## Data Models", "## Correctness Properties", "## Error Handling", "## Testing Strategy", "## Requirements Traceability", "## Open Questions", "## Change Log"],
+    "componentTemplate": ["### {name}", "", "{description}", "", "IMPLEMENTS: {AC-ids}", "", "```rust", "{interface}", "```"],
+    "correctnessPropertyTemplate": ["- P{id} [{name}]: {description}", "  VALIDATES: {requirement-and-AC-ids}"],
+    "traceabilityTemplate": ["## Requirements Traceability", "", "SOURCE: {requirementsRef}", "", "- {criterionId} → {componentName} (P{propertyId}) [{status}] {notes}"],
+    "omissionRules": ["Omit entire section if empty/absent", "Omit IMPLEMENTS line if implements array empty", "Omit VALIDATES line if validates array empty", "Omit [status] if status is 'implemented' (default)", "Omit notes if empty", "Omit Open Questions section if array empty"],
+    "prohibited": ["**bold** syntax anywhere", "*italic* syntax anywhere", "Tables (use lists instead)", "ASCII diagrams (use mermaid instead)", "FieldName: value label patterns", "Nested bullets for simple fields", "Headers for individual properties (##### P1)", "Restating requirement content - reference by ID only", "Describing WHAT (requirements) instead of HOW (design)"],
     "example": {
       "componentInput": {
         "name": "WorkspaceConfig",

@@ -4,16 +4,7 @@
   "description": "RENDERING RULES: Transform data, never transcribe field names. Use CAPITALS for emphasis (not **bold** or *italics*). Use lists instead of tables. Use mermaid for diagrams (not ASCII). Steps render with DEPENDS ON line if dependencies exist. ZERO DUPLICATION PRINCIPLE: Reference design/requirements by ID only. Never restate their content. PROHIBITED: 'FieldName: value' label patterns, nested bullets for simple fields, **bold** syntax, *italic* syntax, tables, ASCII diagrams.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "objective",
-    "workflow",
-    "constraints",
-    "assumptions",
-    "highLevelStrategy",
-    "detailedPlan",
-    "risks",
-    "completionCriteria"
-  ],
+  "required": ["objective", "workflow", "constraints", "assumptions", "highLevelStrategy", "detailedPlan", "risks", "completionCriteria"],
   "properties": {
     "objective": {
       "type": "string",
@@ -243,72 +234,17 @@
 
   "$rendering": {
     "_comment": "Rendering specification for raw-readable markdown. Use CAPITALS for emphasis, never **bold** or *italics*. Use lists, not tables. Use mermaid, not ASCII.",
-    "documentStructure": [
-      "> VERSION: {version} | DATE: {date} | AUTHOR: {author}",
-      "## Objective",
-      "## Workflow",
-      "## Constraints",
-      "## Assumptions",
-      "## High-Level Strategy",
-      "## Detailed Plan",
-      "## Deliverables",
-      "## Estimates",
-      "## Risks",
-      "## Completion Criteria"
-    ],
-    "workflowTemplate": [
-      "## Workflow",
-      "",
-      "DIRECTION: {direction}",
-      "",
-      "INPUTS:",
-      "- [{type}] {path}: {description}",
-      "",
-      "OUTPUTS:",
-      "- [{type}] {path}: {description}"
-    ],
-    "stepTemplate": [
-      "### {id} {title}",
-      "",
-      "- {action1}",
-      "- {action2}",
-      "",
-      "DEPENDS ON: {dep1}, {dep2}",
-      "",
-      "RATIONALE: {rationale}",
-      "",
-      "NOTE: {notes}"
-    ],
-    "riskTemplate": [
-      "- {RISK} [{likelihood}/{impact}]: {mitigation}"
-    ],
-    "deliverableTemplate": [
-      "- {NAME}: {description} (from {step1}, {step2})"
-    ],
-    "omissionRules": [
-      "Omit entire section if empty/absent",
-      "Omit DEPENDS ON line if no dependencies",
-      "Omit RATIONALE line if rationale empty",
-      "Omit NOTE line if notes empty",
-      "Omit [{likelihood}/{impact}] if both absent",
-      "Omit Estimates section if estimates object absent",
-      "Omit Deliverables section if deliverables array empty"
-    ],
-    "prohibited": [
-      "**bold** syntax anywhere",
-      "*italic* syntax anywhere",
-      "Tables (use lists instead)",
-      "ASCII diagrams (use mermaid instead)",
-      "FieldName: value label patterns",
-      "Nested bullets for simple fields",
-      "Restating design/requirement content - reference by ID only"
-    ],
+    "documentStructure": ["> VERSION: {version} | DATE: {date} | AUTHOR: {author}", "## Objective", "## Workflow", "## Constraints", "## Assumptions", "## High-Level Strategy", "## Detailed Plan", "## Deliverables", "## Estimates", "## Risks", "## Completion Criteria"],
+    "workflowTemplate": ["## Workflow", "", "DIRECTION: {direction}", "", "INPUTS:", "- [{type}] {path}: {description}", "", "OUTPUTS:", "- [{type}] {path}: {description}"],
+    "stepTemplate": ["### {id} {title}", "", "- {action1}", "- {action2}", "", "DEPENDS ON: {dep1}, {dep2}", "", "RATIONALE: {rationale}", "", "NOTE: {notes}"],
+    "riskTemplate": ["- {RISK} [{likelihood}/{impact}]: {mitigation}"],
+    "deliverableTemplate": ["- {NAME}: {description} (from {step1}, {step2})"],
+    "omissionRules": ["Omit entire section if empty/absent", "Omit DEPENDS ON line if no dependencies", "Omit RATIONALE line if rationale empty", "Omit NOTE line if notes empty", "Omit [{likelihood}/{impact}] if both absent", "Omit Estimates section if estimates object absent", "Omit Deliverables section if deliverables array empty"],
+    "prohibited": ["**bold** syntax anywhere", "*italic* syntax anywhere", "Tables (use lists instead)", "ASCII diagrams (use mermaid instead)", "FieldName: value label patterns", "Nested bullets for simple fields", "Restating design/requirement content - reference by ID only"],
     "example": {
       "workflowTopDownInput": {
         "direction": "top-down",
-        "inputArtifacts": [
-          { "type": "requirements", "path": ".zen/specs/REQ-workspace.md", "description": "Workspace requirements" }
-        ],
+        "inputArtifacts": [{ "type": "requirements", "path": ".zen/specs/REQ-workspace.md", "description": "Workspace requirements" }],
         "outputArtifacts": [
           { "type": "design", "path": ".zen/specs/DESIGN-workspace.md", "description": "Workspace design" },
           { "type": "code", "path": "src/workspace/config.rs", "description": "WorkspaceConfig implementation" }
@@ -330,10 +266,7 @@
       "stepInput": {
         "id": "S1",
         "title": "Set up project structure",
-        "action": [
-          "Create src/ directory with module files",
-          "Initialize Cargo.toml with dependencies"
-        ],
+        "action": ["Create src/ directory with module files", "Initialize Cargo.toml with dependencies"],
         "rationale": "Establishes foundation for subsequent implementation steps"
       },
       "stepOutput": "### S1 Set up project structure\n\n- Create src/ directory with module files\n- Initialize Cargo.toml with dependencies\n\nRATIONALE: Establishes foundation for subsequent implementation steps",
