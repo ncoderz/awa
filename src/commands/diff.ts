@@ -1,0 +1,92 @@
+// @zen-component: DiffCommand
+// @zen-impl: DIFF-5 AC-5.1
+// @zen-impl: DIFF-5 AC-5.2
+// @zen-impl: DIFF-5 AC-5.3
+
+import { intro, outro } from "@clack/prompts";
+import { configLoader } from "../core/config.js";
+import { diffEngine } from "../core/differ.js";
+import { templateResolver } from "../core/template-resolver.js";
+import { DiffError, type RawCliOptions } from "../types/index.js";
+import { pathExists } from "../utils/fs.js";
+import { logger } from "../utils/logger.js";
+
+export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
+  try {
+    intro("Zen CLI - Template Diff");
+
+    // Load configuration file
+    const fileConfig = await configLoader.load(cliOptions.config ?? null);
+
+    // Merge CLI and file config
+    const options = configLoader.merge(cliOptions, fileConfig);
+
+    // Validate target directory exists
+    const targetPath = cliOptions.target ?? options.output;
+    if (!(await pathExists(targetPath))) {
+      throw new DiffError(`Target directory does not exist: ${targetPath}`);
+    }
+
+    // Resolve template source
+    const template = await templateResolver.resolve(options.template, options.refresh);
+
+    // Perform diff
+    const result = await diffEngine.diff({
+      templatePath: template.localPath,
+      targetPath,
+      features: [...options.features],
+    });
+
+    // Display diff output
+    for (const file of result.files) {
+      switch (file.status) {
+        case "modified":
+          logger.info(`Modified: ${file.relativePath}`);
+          if (file.unifiedDiff) {
+            // Parse and display unified diff with colors
+            const lines = file.unifiedDiff.split("\n");
+            for (const line of lines) {
+              if (line.startsWith("+")) {
+                logger.diffLine(line, "add");
+              } else if (line.startsWith("-")) {
+                logger.diffLine(line, "remove");
+              } else if (line.startsWith("@@")) {
+                logger.diffLine(line, "context");
+              } else {
+                logger.diffLine(line, "context");
+              }
+            }
+          }
+          break;
+        case "new":
+          logger.info(`New file: ${file.relativePath}`);
+          break;
+        case "extra":
+          logger.warn(`Extra file (not in template): ${file.relativePath}`);
+          break;
+        case "binary-differs":
+          logger.warn(`Binary file differs: ${file.relativePath}`);
+          break;
+        case "identical":
+          // Skip identical files from output
+          break;
+      }
+    }
+
+    // Display summary
+    logger.diffSummary(result);
+
+    outro("Diff complete!");
+
+    // @zen-impl: DIFF-5 AC-5.1, DIFF-5 AC-5.2
+    return result.hasDifferences ? 1 : 0;
+  } catch (error) {
+    // @zen-impl: DIFF-5 AC-5.3
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else {
+      logger.error(String(error));
+    }
+    process.exit(2);
+  }
+}

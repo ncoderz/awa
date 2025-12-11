@@ -1,6 +1,6 @@
 # Zen CLI Design
 
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-11
+> VERSION: 1.4.0 | STATUS: draft | UPDATED: 2025-12-11
 
 ## Overview
 
@@ -53,13 +53,15 @@ src/
 ├── cli/
 │   └── index.ts           # CLI entry, command definitions
 ├── commands/
-│   └── generate.ts        # Generate command orchestration
+│   ├── generate.ts        # Generate command orchestration
+│   └── diff.ts            # Diff command orchestration
 ├── core/
 │   ├── config.ts          # ConfigLoader
 │   ├── template-resolver.ts # TemplateResolver
 │   ├── template.ts        # TemplateEngine
 │   ├── generator.ts       # FileGenerator
-│   └── resolver.ts        # ConflictResolver
+│   ├── resolver.ts        # ConflictResolver
+│   └── differ.ts          # DiffEngine
 ├── utils/
 │   ├── fs.ts              # File system helpers
 │   └── logger.ts          # Console output (chalk)
@@ -72,14 +74,15 @@ src/
 - PIPELINE OVER EVENT: Sequential pipeline for predictable flow and error handling. Alternatives: event-driven (complexity), middleware chain (over-engineering)
 - FAIL-FAST: Stop on first error to prevent partial/inconsistent output. Alternatives: continue-on-error (complex recovery), collect-all-errors (confusing UX)
 - SHALLOW GIT FETCH: Use degit for fast, minimal fetches without .git history. Alternatives: full clone (slow, wasteful), sparse checkout (complex)
+- BINARY DETECTION BEFORE DIFF: The `diff` library is text-only; binary files must be detected before diffing. Use `isbinaryfile` npm package (well-maintained, popular) for null-byte detection. Alternatives: manual null-byte scan (reinventing wheel), file extension heuristic (incomplete)
 
 ## Components and Interfaces
 
 ### ArgumentParser
 
-Parses CLI arguments using citty, validates inputs, and produces a raw options object for downstream processing.
+Parses CLI arguments using citty, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands.
 
-IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-2 AC-2.1, CLI-2 AC-2.3, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2
+IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-2 AC-2.1, CLI-2 AC-2.3, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6
 
 ```typescript
 interface RawCliOptions {
@@ -238,9 +241,9 @@ interface ConflictResolver {
 
 ### Logger
 
-Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display. Displays warning when no files are created or overwritten.
+Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display. Displays warning when no files are created or overwritten. For diff output, colorizes additions (green), deletions (red), and displays summary.
 
-IMPLEMENTS: CLI-6 AC-6.3, GEN-6 AC-6.4, GEN-7 AC-7.1, GEN-7 AC-7.2, GEN-7 AC-7.3, GEN-7 AC-7.4, GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6, GEN-11 AC-11.1, GEN-11 AC-11.2, GEN-11 AC-11.4, TPL-7 AC-7.3
+IMPLEMENTS: CLI-6 AC-6.3, GEN-6 AC-6.4, GEN-7 AC-7.1, GEN-7 AC-7.2, GEN-7 AC-7.3, GEN-7 AC-7.4, GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6, GEN-11 AC-11.1, GEN-11 AC-11.2, GEN-11 AC-11.4, TPL-7 AC-7.3, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5
 
 ```typescript
 interface Logger {
@@ -250,6 +253,47 @@ interface Logger {
   error(message: string): void;
   fileAction(action: FileAction): void;
   summary(result: GenerationResult): void;
+  diffLine(line: string, type: 'add' | 'remove' | 'context'): void;
+  diffSummary(result: DiffResult): void;
+}
+```
+
+### DiffEngine
+
+Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, and produces unified diff output.
+
+IMPLEMENTS: DIFF-1 AC-1.1, DIFF-1 AC-1.2, DIFF-1 AC-1.3, DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5, DIFF-3 AC-3.1, DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-4 AC-4.1, DIFF-4 AC-4.2, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5, DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3, DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+
+```typescript
+interface DiffOptions {
+  templatePath: string;
+  targetPath: string;
+  features: string[];
+}
+
+type FileDiffStatus = 'identical' | 'modified' | 'new' | 'extra' | 'binary-differs';
+
+interface FileDiff {
+  relativePath: string;
+  status: FileDiffStatus;
+  unifiedDiff?: string; // Present only for 'modified' text files
+}
+
+interface DiffResult {
+  files: FileDiff[];
+  identical: number;
+  modified: number;
+  newFiles: number;
+  extraFiles: number;
+  hasDifferences: boolean;
+}
+
+interface DiffEngine {
+  diff(options: DiffOptions): Promise<DiffResult>;
+  createTempDir(): Promise<string>;
+  cleanupTempDir(tempPath: string): Promise<void>;
+  compareFiles(generatedPath: string, targetPath: string): Promise<FileDiff>;
+  isBinaryFile(filePath: string): Promise<boolean>;
 }
 ```
 
@@ -262,6 +306,8 @@ interface Logger {
 - GENERATION_RESULT: Aggregated results of a generation run with counts by action type
 - CONFLICT_ITEM: Individual file conflict containing paths and content for comparison
 - BATCH_CONFLICT_RESOLUTION: Result of batch conflict resolution with overwrite and skip lists
+- FILE_DIFF: Represents comparison result for a single file with status and optional unified diff
+- DIFF_RESULT: Aggregated diff results with file list and summary counts
 
 ```typescript
 // ResolvedOptions - immutable after construction
@@ -303,6 +349,25 @@ interface ConflictItem {
 interface BatchConflictResolution {
   readonly overwrite: string[]; // Output paths to overwrite
   readonly skip: string[]; // Output paths to skip (includes identical content)
+}
+
+// FileDiff - comparison result for a single file
+type FileDiffStatus = 'identical' | 'modified' | 'new' | 'extra' | 'binary-differs';
+
+interface FileDiff {
+  readonly relativePath: string;
+  readonly status: FileDiffStatus;
+  readonly unifiedDiff?: string; // Present only for 'modified' text files
+}
+
+// DiffResult - aggregated diff outcome
+interface DiffResult {
+  readonly files: readonly FileDiff[];
+  readonly identical: number;
+  readonly modified: number;
+  readonly newFiles: number;
+  readonly extraFiles: number;
+  readonly hasDifferences: boolean;
 }
 ```
 
@@ -360,6 +425,18 @@ Represents a cached Git template.
 - P10 [Git Cache Reuse]: Git templates use cached version unless --refresh is specified
   VALIDATES: TPL-3 AC-3.2
 
+- P12 [Diff Read-Only]: Diff command never modifies the target directory
+  VALIDATES: DIFF-1 AC-1.3
+
+- P13 [Temp Cleanup Guaranteed]: Temp directory is always deleted, even on error
+  VALIDATES: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+
+- P14 [Exact Comparison]: File comparison is byte-for-byte exact (whitespace-sensitive)
+  VALIDATES: DIFF-2 AC-2.1
+
+- P15 [Exit Code Semantics]: Exit 0 means identical, exit 1 means differences, exit 2 means error
+  VALIDATES: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
+
 ## Error Handling
 
 ### ConfigError
@@ -384,6 +461,14 @@ File generation errors.
 
 - PERMISSION_DENIED: Cannot create directory or write file
 - DISK_FULL: Insufficient disk space
+
+### DiffError
+
+Diff operation errors.
+
+- TARGET_NOT_FOUND: Target directory does not exist
+- TARGET_NOT_READABLE: Cannot read target directory or files
+- TEMP_DIR_FAILED: Failed to create or write to temp directory
 
 ### Error Strategy
 
@@ -430,7 +515,7 @@ test.prop([fc.string().filter(s => s.startsWith('_'))])('underscore files exclud
 
 ## Requirements Traceability
 
-SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-templates.md, .zen/specs/REQ-generation.md
+SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-templates.md, .zen/specs/REQ-generation.md, .zen/specs/REQ-diff.md
 
 - CLI-1 AC-1.1 → ArgumentParser
 - CLI-1 AC-1.2 → ArgumentParser
@@ -563,6 +648,34 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - GEN-11 AC-11.2 → Logger
 - GEN-11 AC-11.3 → FileGenerator
 - GEN-11 AC-11.4 → Logger
+- DIFF-1 AC-1.1 → DiffEngine
+- DIFF-1 AC-1.2 → DiffEngine
+- DIFF-1 AC-1.3 → DiffEngine (P12)
+- DIFF-2 AC-2.1 → DiffEngine (P14)
+- DIFF-2 AC-2.2 → DiffEngine
+- DIFF-2 AC-2.3 → DiffEngine
+- DIFF-2 AC-2.4 → DiffEngine
+- DIFF-2 AC-2.5 → DiffEngine
+- DIFF-3 AC-3.1 → DiffEngine
+- DIFF-3 AC-3.2 → DiffEngine
+- DIFF-3 AC-3.3 → DiffEngine
+- DIFF-4 AC-4.1 → DiffEngine
+- DIFF-4 AC-4.2 → DiffEngine
+- DIFF-4 AC-4.3 → Logger
+- DIFF-4 AC-4.4 → Logger
+- DIFF-4 AC-4.5 → Logger
+- DIFF-5 AC-5.1 → DiffEngine (P15)
+- DIFF-5 AC-5.2 → DiffEngine (P15)
+- DIFF-5 AC-5.3 → DiffEngine (P15)
+- DIFF-6 AC-6.1 → DiffEngine (P13)
+- DIFF-6 AC-6.2 → DiffEngine (P13)
+- DIFF-6 AC-6.3 → DiffEngine (P13)
+- DIFF-7 AC-7.1 → ArgumentParser
+- DIFF-7 AC-7.2 → ArgumentParser
+- DIFF-7 AC-7.3 → ArgumentParser
+- DIFF-7 AC-7.4 → ArgumentParser
+- DIFF-7 AC-7.5 → ArgumentParser
+- DIFF-7 AC-7.6 → ArgumentParser
 
 ## Library Usage Strategy
 
@@ -584,9 +697,13 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - @clack/prompts (latest): Interactive prompts — styled, accessible
 - chalk (5.x): Terminal colors — ESM-native, no dependencies
 - fast-check (3.x): Property-based testing — generators, shrinking
+- diff (latest): Unified diff generation — cross-platform text comparison
+- isbinaryfile (latest): Binary file detection — null-byte heuristic, well-maintained
 
 ## Change Log
 
 - 1.0.0 (2025-12-11): Initial design based on requirements
 - 1.1.0 (2025-12-11): Updated ConflictResolver interface to match implementation, added missing data models
 - 1.2.0 (2025-12-11): Added GEN-9 AC-9.6 implementation to Logger for empty generation warning
+- 1.3.0 (2025-12-11): Added DiffEngine component, diff data models, correctness properties P12-P15, DiffError types, and DIFF-* traceability
+- 1.4.0 (2025-12-11): Added DIFF-4 AC-4.3, AC-4.4, AC-4.5 to Logger IMPLEMENTS; added diffLine method; added isbinaryfile library and BINARY DETECTION architectural decision

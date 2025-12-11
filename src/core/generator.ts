@@ -16,7 +16,7 @@
 // @zen-impl: TPL-9 AC-9.2
 
 import { join, relative } from "node:path";
-import { type ConflictItem, type FileAction, type GenerateOptions, GenerationError, type GenerationResult } from "../types/index.js";
+import { type ConflictItem, type FileAction, type GenerateOptions, type GenerationResult } from "../types/index.js";
 import { pathExists, readTextFile, walkDirectory, writeTextFile } from "../utils/fs.js";
 import { logger } from "../utils/logger.js";
 import { conflictResolver } from "./resolver.js";

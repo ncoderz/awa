@@ -1,5 +1,13 @@
 // @zen-component: TypeDefinitions
 
+// Custom error classes for diff operations
+export class DiffError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "DiffError";
+  }
+}
+
 // RawCliOptions - CLI argument parser output
 export interface RawCliOptions {
   output?: string;
@@ -9,6 +17,7 @@ export interface RawCliOptions {
   dryRun?: boolean;
   config?: string;
   refresh?: boolean;
+  target?: string;
 }
 
 // FileConfig - TOML configuration file structure
@@ -99,6 +108,33 @@ export interface TemplateFile {
   isPartial: boolean;
 }
 
+// DiffOptions - Diff operation parameters
+export interface DiffOptions {
+  templatePath: string;
+  targetPath: string;
+  features: string[];
+}
+
+// FileDiffStatus - File comparison status
+export type FileDiffStatus = "identical" | "modified" | "new" | "extra" | "binary-differs";
+
+// FileDiff - Comparison result for a single file
+export interface FileDiff {
+  relativePath: string;
+  status: FileDiffStatus;
+  unifiedDiff?: string; // Present only for 'modified' text files
+}
+
+// DiffResult - Aggregated diff outcome
+export interface DiffResult {
+  files: FileDiff[];
+  identical: number;
+  modified: number;
+  newFiles: number;
+  extraFiles: number;
+  hasDifferences: boolean;
+}
+
 // CachedTemplate - Cached Git template metadata
 export interface CachedTemplate {
   source: string;
@@ -119,12 +155,5 @@ export class TemplateError extends Error {
   constructor(message: string, public code: "SOURCE_NOT_FOUND" | "FETCH_FAILED" | "RENDER_ERROR", public source?: string) {
     super(message);
     this.name = "TemplateError";
-  }
-}
-
-export class GenerationError extends Error {
-  constructor(message: string, public code: "PERMISSION_DENIED" | "DISK_FULL", public filePath?: string) {
-    super(message);
-    this.name = "GenerationError";
   }
 }

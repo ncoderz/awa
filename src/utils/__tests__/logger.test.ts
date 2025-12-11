@@ -110,4 +110,104 @@ describe("Logger", () => {
       expect(consoleLogSpy).toHaveBeenCalled();
     });
   });
+
+  describe("diffLine", () => {
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.3
+    it("should log addition lines in green", () => {
+      logger.diffLine("+added line", "add");
+      expect(consoleLogSpy).toHaveBeenCalledOnce();
+      // Verify the output contains green styling (chalk green)
+      const callArg = consoleLogSpy.mock.calls[0][0];
+      expect(callArg).toContain("+added line");
+    });
+
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.3
+    it("should log removal lines in red", () => {
+      logger.diffLine("-removed line", "remove");
+      expect(consoleLogSpy).toHaveBeenCalledOnce();
+      // Verify the output contains red styling (chalk red)
+      const callArg = consoleLogSpy.mock.calls[0][0];
+      expect(callArg).toContain("-removed line");
+    });
+
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.3
+    it("should log context lines in dim style", () => {
+      logger.diffLine(" context line", "context");
+      expect(consoleLogSpy).toHaveBeenCalledOnce();
+      // Verify the output contains dim styling (chalk dim)
+      const callArg = consoleLogSpy.mock.calls[0][0];
+      expect(callArg).toContain(" context line");
+    });
+  });
+
+  describe("diffSummary", () => {
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.4
+    it("should display success message when no differences", () => {
+      const result = {
+        files: [],
+        identical: 3,
+        modified: 0,
+        newFiles: 0,
+        extraFiles: 0,
+        hasDifferences: false,
+      };
+
+      logger.diffSummary(result);
+
+      expect(consoleLogSpy).toHaveBeenCalled();
+      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(" "));
+      const output = callArgs.join(" ").toLowerCase();
+      expect(output).toContain("identical");
+      expect(output).toContain("no differences");
+    });
+
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.5
+    it("should display counts for each file status", () => {
+      const result = {
+        files: [],
+        identical: 2,
+        modified: 1,
+        newFiles: 1,
+        extraFiles: 1,
+        hasDifferences: true,
+      };
+
+      logger.diffSummary(result);
+
+      expect(consoleLogSpy).toHaveBeenCalled();
+      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(" "));
+      const output = callArgs.join(" ");
+      expect(output).toContain("2");
+      expect(output).toContain("1");
+    });
+
+    // @zen-test: P15
+    // VALIDATES: DIFF-4 AC-4.5
+    it("should display summary with all categories", () => {
+      const result = {
+        files: [],
+        identical: 5,
+        modified: 3,
+        newFiles: 2,
+        extraFiles: 1,
+        hasDifferences: true,
+      };
+
+      logger.diffSummary(result);
+
+      expect(consoleLogSpy).toHaveBeenCalled();
+      // Verify summary includes all relevant information
+      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(" "));
+      const output = callArgs.join(" ").toLowerCase();
+      expect(output).toContain("5");
+      expect(output).toContain("3");
+      expect(output).toContain("2");
+      expect(output).toContain("1");
+    });
+  });
 });

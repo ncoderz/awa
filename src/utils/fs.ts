@@ -1,6 +1,6 @@
 // @zen-component: FileSystemUtilities
 
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -76,4 +76,8 @@ export function getTemplateDir(): string {
 
   // In src: go up two levels to project root
   return join(currentDir, "..", "..", "templates");
+}
+
+export async function rmDir(dirPath: string): Promise<void> {
+  await rm(dirPath, { recursive: true, force: true });
 }

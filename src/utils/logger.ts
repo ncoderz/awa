@@ -17,7 +17,7 @@
 // @zen-impl: TPL-7 AC-7.3
 
 import chalk from "chalk";
-import type { FileAction, GenerationResult } from "../types/index.js";
+import type { DiffResult, FileAction, GenerationResult } from "../types/index.js";
 
 export class Logger {
   info(message: string): void {
@@ -80,6 +80,49 @@ export class Logger {
 
     if (result.skippedEmpty > 0) {
       console.log(chalk.dim(`  Skipped (empty): ${result.skippedEmpty}`));
+    }
+
+    console.log("");
+  }
+
+  // @zen-impl: DIFF-4 AC-4.3
+  diffLine(line: string, type: "add" | "remove" | "context"): void {
+    switch (type) {
+      case "add":
+        console.log(chalk.green(line));
+        break;
+      case "remove":
+        console.log(chalk.red(line));
+        break;
+      case "context":
+        console.log(chalk.dim(line));
+        break;
+    }
+  }
+
+  // @zen-impl: DIFF-4 AC-4.4, DIFF-4 AC-4.5
+  diffSummary(result: DiffResult): void {
+    console.log("");
+
+    if (!result.hasDifferences) {
+      // @zen-impl: DIFF-4 AC-4.4
+      console.log(chalk.green("✔ No differences found"));
+    }
+
+    // @zen-impl: DIFF-4 AC-4.5
+    console.log(chalk.bold("Summary:"));
+    console.log(chalk.dim(`  Identical: ${result.identical}`));
+
+    if (result.modified > 0) {
+      console.log(chalk.yellow(`  Modified: ${result.modified}`));
+    }
+
+    if (result.newFiles > 0) {
+      console.log(chalk.green(`  New: ${result.newFiles}`));
+    }
+
+    if (result.extraFiles > 0) {
+      console.log(chalk.red(`  Extra: ${result.extraFiles}`));
     }
 
     console.log("");

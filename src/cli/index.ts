@@ -27,6 +27,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineCommand, runMain } from "citty";
+import { diffCommand } from "../commands/diff.js";
 import { generateCommand } from "../commands/generate.js";
 import type { RawCliOptions } from "../types/index.js";
 
@@ -120,6 +121,72 @@ const generateCmd = defineCommand({
   },
 });
 
+// @zen-impl: DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6
+const diffCmd = defineCommand({
+  meta: {
+    name: "diff",
+    description: "Compare template output with existing target directory",
+  },
+  args: {
+    // @zen-impl: DIFF-7 AC-7.1
+    target: {
+      type: "string",
+      description: "Target directory to compare against (defaults to --output)",
+      alias: "t",
+    },
+    // @zen-impl: DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6
+    // Reuse shared options from generate command
+    output: {
+      type: "string",
+      description: "Output directory (used if --target not specified)",
+      alias: "o",
+    },
+    template: {
+      type: "string",
+      description: "Template source (local path or Git repository)",
+      alias: "s",
+    },
+    features: {
+      type: "string",
+      description: "Feature flags (can be specified multiple times)",
+      alias: "f",
+    },
+    config: {
+      type: "string",
+      description: "Path to configuration file",
+      alias: "c",
+    },
+    refresh: {
+      type: "boolean",
+      description: "Force refresh of cached Git templates",
+      default: false,
+    },
+  },
+  async run({ args }) {
+    // Parse features as array
+    let features: string[] = [];
+    if (args.features) {
+      if (Array.isArray(args.features)) {
+        features = args.features;
+      } else {
+        features = [args.features];
+      }
+    }
+
+    const cliOptions: RawCliOptions = {
+      target: args.target,
+      output: args.output,
+      template: args.template,
+      features,
+      config: args.config,
+      refresh: args.refresh,
+    };
+
+    const exitCode = await diffCommand(cliOptions);
+    process.exit(exitCode);
+  },
+});
+
 // @zen-impl: CLI-1 AC-1.2, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2
 const main = defineCommand({
   meta: {
@@ -129,6 +196,7 @@ const main = defineCommand({
   },
   subCommands: {
     generate: generateCmd,
+    diff: diffCmd,
   },
 });
 

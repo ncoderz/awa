@@ -1,15 +1,34 @@
 # Zen CLI Architecture
 
 ## Table of Contents
-- [Project Purpose](#project-purpose)
-- [System Overview](#system-overview)
-- [Technology Stack](#technology-stack)
-- [High-Level Architecture](#high-level-architecture)
-- [Directory Structure](#directory-structure)
-- [Component Details](#component-details)
-- [Component Interactions](#component-interactions)
-- [Architectural Rules](#architectural-rules)
-- [Developer Commands](#developer-commands)
+- [Zen CLI Architecture](#zen-cli-architecture)
+  - [Table of Contents](#table-of-contents)
+  - [Project Purpose](#project-purpose)
+  - [System Overview](#system-overview)
+  - [Technology Stack](#technology-stack)
+  - [High-Level Architecture](#high-level-architecture)
+  - [Directory Structure](#directory-structure)
+  - [Component Details](#component-details)
+    - [CLI Layer](#cli-layer)
+    - [Configuration Loader](#configuration-loader)
+    - [Template Resolver](#template-resolver)
+    - [Template Engine](#template-engine)
+    - [File Generator](#file-generator)
+    - [Conflict Resolver](#conflict-resolver)
+    - [Diff Engine](#diff-engine)
+  - [Component Interactions](#component-interactions)
+    - [Diff Command Flow](#diff-command-flow)
+  - [Architectural Rules](#architectural-rules)
+    - [Performance](#performance)
+    - [Maintainability](#maintainability)
+    - [Security](#security)
+    - [Testing](#testing)
+    - [Code Quality](#code-quality)
+    - [Template Design](#template-design)
+    - [Diff](#diff)
+    - [Configuration File](#configuration-file)
+    - [Template Sources](#template-sources)
+  - [Developer Commands](#developer-commands)
 
 ## Project Purpose
 
@@ -22,6 +41,7 @@ Zen CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - **Template Resolver**: Resolve template source (local path or Git repo)
 - **Template Engine**: Template loading, rendering with conditional logic
 - **File Generator**: Output file creation, directory management, conflict resolution
+- **Diff Engine**: Template comparison against target directory with diff reporting
 
 ## Technology Stack
 
@@ -38,6 +58,7 @@ Zen CLI is a TypeScript-based command-line tool that generates AI coding agent c
 | chalk 5.x | Terminal output coloring |
 | smol-toml | TOML parser (lightweight, spec-compliant) |
 | degit | Git repository template fetching (no full clone) |
+| diff | Cross-platform unified diff generation |
 
 ## High-Level Architecture
 
@@ -54,11 +75,13 @@ flowchart TB
         TemplateEngine["Template Engine<br/>(Eta)"]
         FileGenerator["File Generator"]
         ConflictResolver["Conflict Resolver"]
+        DiffEngine["Diff Engine<br/>(diff)"]
     end
 
     subgraph IO["I/O Layer"]
         TemplateLoader["Template Loader"]
         FileWriter["File Writer"]
+        TempDir["Temp Directory"]
     end
 
     User([User]) --> Parser
@@ -72,6 +95,10 @@ flowchart TB
     ConflictResolver --> FileWriter
     TemplateLoader --> TemplateEngine
 
+    FileGenerator --> TempDir
+    TempDir --> DiffEngine
+    DiffEngine --> User
+
     Templates[(Template Files)] --> TemplateLoader
     FileWriter --> Output[(Output Files)]
 ```
@@ -84,15 +111,18 @@ zen/
 │   ├── cli/               # CLI entry point and command definitions
 │   │   └── index.ts       # Main CLI entry
 │   ├── commands/          # Command implementations
-│   │   └── generate.ts    # Generate command
+│   │   ├── generate.ts    # Generate command
+│   │   └── diff.ts        # Diff command
 │   ├── core/              # Core business logic
 │   │   ├── config.ts      # Configuration loader
 │   │   ├── template-resolver.ts  # Template source resolver
 │   │   ├── template.ts    # Template engine wrapper
 │   │   ├── generator.ts   # File generation logic
-│   │   └── resolver.ts    # Conflict resolution
+│   │   ├── resolver.ts    # Conflict resolution
+│   │   └── differ.ts      # Diff-based comparison
 │   ├── utils/             # Utility functions
 │   │   ├── fs.ts          # File system helpers
+│   │   ├── diff.ts        # Cross-platform diff utilities
 │   │   └── logger.ts      # Console output helpers (uses chalk)
 │   └── types/             # TypeScript type definitions
 │       └── index.ts
@@ -126,11 +156,13 @@ Entry point and argument parsing.
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
+- Support `generate` and `diff` subcommands
 
 **Architectural Constraints:**
 - Uses citty for command definition
 - `--features` accepts variadic string values
 - `--config` specifies alternate config file path
+- `diff` command shares options with `generate` (except `--force`, `--dry-run`)
 
 ### Configuration Loader
 
@@ -223,6 +255,25 @@ Handles existing file conflicts.
 - Respects `--force` flag to auto-overwrite
 - Respects `--dry-run` to simulate without changes
 
+### Diff Engine
+
+Compares generated output against existing target files.
+
+**Responsibilities:**
+- Generate templates to a temporary directory
+- Compare generated files against target directory
+- Produce unified diff output for each differing file
+- Report missing files (in target but not generated, or vice versa)
+- Clean up temporary directory after diff
+
+**Architectural Constraints:**
+- Uses Node.js built-in `os.tmpdir()` for cross-platform temp directory
+- Uses `diff` npm package for cross-platform unified diff generation
+- Exact comparison (whitespace-sensitive) for all text files
+- Binary files compared byte-for-byte
+- Exit code 0 = all files match, exit code 1 = differences found
+- No modifications to target directory (read-only comparison)
+
 ## Component Interactions
 
 ```mermaid
@@ -281,6 +332,57 @@ sequenceDiagram
     CLI-->>User: Summary
 ```
 
+### Diff Command Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant CLI
+    participant ConfigLoader
+    participant TemplateResolver
+    participant Generator
+    participant DiffEngine
+    participant TempDir
+    participant FileSystem
+
+    User->>CLI: zen diff --output ./target --template ./templates
+    CLI->>CLI: Parse arguments
+    CLI->>ConfigLoader: Load .zen.toml
+    ConfigLoader-->>CLI: Merged options
+    CLI->>TemplateResolver: Resolve template source
+    TemplateResolver-->>CLI: Local template path
+
+    CLI->>TempDir: Create temp directory
+    TempDir-->>CLI: Temp path
+
+    CLI->>Generator: generate(options, templatePath, tempDir)
+    Generator-->>CLI: Generation complete
+
+    CLI->>DiffEngine: diff(tempDir, targetDir)
+
+    loop For each generated file
+        DiffEngine->>FileSystem: Read generated file
+        DiffEngine->>FileSystem: Read target file (if exists)
+        alt Target file missing
+            DiffEngine->>DiffEngine: Record as "new file"
+        else Files differ
+            DiffEngine->>DiffEngine: Compute unified diff
+            DiffEngine->>DiffEngine: Record difference
+        else Files match
+            DiffEngine->>DiffEngine: Record as matching
+        end
+    end
+
+    loop For each target file not in generated
+        DiffEngine->>DiffEngine: Record as "extra file in target"
+    end
+
+    DiffEngine-->>CLI: Diff results
+    CLI->>TempDir: Clean up temp directory
+    CLI->>User: Print diffs (if any)
+    CLI->>CLI: Exit 0 (match) or 1 (differences)
+```
+
 ## Architectural Rules
 
 ### Performance
@@ -315,6 +417,14 @@ sequenceDiagram
 - Include partial: `<%~ include('_partials/header', it) %>`
 - Partials receive same context (`it.features`) for conditional composition
 
+### Diff
+- `zen diff` generates to temp directory, compares against target
+- Uses `diff` npm package for cross-platform unified diff
+- Exact byte-for-byte comparison (whitespace-sensitive)
+- Temp directory cleaned up after diff (even on error)
+- Exit code 0 = all files identical, exit code 1 = differences found
+- Diff output uses git-style unified format with color
+
 ### Configuration File
 - Default location: `.zen.toml` in current directory
 - Override with `--config <path>`
@@ -343,13 +453,21 @@ sequenceDiagram
 
 ## Developer Commands
 
+**Note:** These commands use the local development version via `npm run`. For the installed CLI, use `npx zen` or `zen` directly.
+
 | Command | Description |
 |---------|-------------|
 | `npm install` | Install dependencies |
-| `npm run dev` | Run in development mode (tsx watch) |
-| `npm run build` | Build for production |
-| `npm test` | Run tests |
+| `npm run build` | Build for production (outputs to `dist/`) |
+| `npm run dev` | Run CLI in development mode (no arguments) |
+| `npm run start` | Run built CLI from `dist/` |
+| `npm run gen:example` | Generate example template to `outputs/example` |
+| `npm run gen:zen` | Generate Zen templates to `outputs/zen` |
+| `npm run diff:zen` | Diff Zen templates against `.github/agents` |
+| `npm test` | Run tests once |
 | `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Run Biome linter |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run lint` | Check code with Biome |
+| `npm run lint:fix` | Fix linting issues automatically |
 | `npm run format` | Format code with Biome |
 | `npm run typecheck` | TypeScript type checking |

@@ -149,8 +149,8 @@ Features: <%= it.features.join(', ') %>
       const partialsDir = join(testDir, "_partials");
       await mkdir(partialsDir);
 
-      // Create partial - Eta expects .eta extension by default
-      const partialPath = join(partialsDir, "header.eta");
+      // Create partial - no extension needed since templates use exact filenames
+      const partialPath = join(partialsDir, "header");
       await writeFile(partialPath, "# <%= it.title %>\n");
 
       // Create main template
