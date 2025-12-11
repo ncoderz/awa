@@ -76,11 +76,13 @@ AS A developer, I WANT to choose how to handle each conflict, SO THAT I have con
 
 ACCEPTANCE CRITERIA
 
-- AC-5.1 [event]: WHEN a conflict is detected AND `--force` is not provided THEN the system SHALL prompt the user
-- AC-5.2 [ubiquitous]: The conflict prompt SHALL offer at minimum "overwrite" and "skip" options
-- AC-5.3 [event]: WHEN user selects "overwrite" THEN the system SHALL write the new content
-- AC-5.4 [event]: WHEN user selects "skip" THEN the system SHALL leave the existing file unchanged
-- AC-5.5 [ubiquitous]: The prompt SHALL display the conflicting file path
+- AC-5.1 [event]: WHEN conflicts are detected AND `--force` is not provided THEN the system SHALL prompt the user once with all conflicts
+- AC-5.2 [ubiquitous]: The conflict prompt SHALL use a multi-select interface with checkboxes
+- AC-5.3 [event]: WHEN user checks a file THEN the system SHALL overwrite that file
+- AC-5.4 [event]: WHEN user unchecks a file THEN the system SHALL skip that file
+- AC-5.5 [ubiquitous]: The prompt SHALL display all conflicting file paths
+- AC-5.6 [ubiquitous]: All files SHALL be checked (selected for overwrite) by default
+- AC-5.7 [event]: WHEN existing file content matches new content THEN the system SHALL skip the file without prompting
 
 ### GEN-6: Dry Run Mode [MUST] (proposed)
 
@@ -133,6 +135,7 @@ ACCEPTANCE CRITERIA
 - AC-9.3 [ubiquitous]: The summary SHOULD include count of files skipped
 - AC-9.4 [ubiquitous]: The summary SHOULD include count of files overwritten
 - AC-9.5 [conditional]: IF conflicts were skipped by user choice THEN the summary SHOULD include count of user-skipped files
+- AC-9.6 [conditional]: IF no files were created or overwritten THEN the system SHOULD display a warning message indicating no files were written
 
 ### GEN-10: Exit Codes [MUST] (proposed)
 
@@ -182,3 +185,5 @@ ACCEPTANCE CRITERIA
 ## Change Log
 
 - 1.0.0 (2025-12-11): Initial requirements based on architecture
+- 1.1.0 (2025-12-11): Updated GEN-5 to require batch conflict resolution with content comparison
+- 1.2.0 (2025-12-11): Added GEN-9 AC-9.6 to require warning when no files are written

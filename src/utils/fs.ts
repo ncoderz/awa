@@ -1,9 +1,9 @@
 // @zen-component: FileSystemUtilities
 
-import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
-import { homedir } from 'node:os';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export async function ensureDir(dirPath: string): Promise<void> {
   await mkdir(dirPath, { recursive: true });
@@ -28,12 +28,12 @@ export async function isDirectory(path: string): Promise<boolean> {
 }
 
 export async function readTextFile(path: string): Promise<string> {
-  return readFile(path, 'utf-8');
+  return readFile(path, "utf-8");
 }
 
 export async function writeTextFile(path: string, content: string): Promise<void> {
   await ensureDir(dirname(path));
-  await writeFile(path, content, 'utf-8');
+  await writeFile(path, content, "utf-8");
 }
 
 export async function* walkDirectory(dir: string): AsyncGenerator<string> {
@@ -44,13 +44,13 @@ export async function* walkDirectory(dir: string): AsyncGenerator<string> {
 
     if (entry.isDirectory()) {
       // Skip directories starting with underscore
-      if (entry.name.startsWith('_')) {
+      if (entry.name.startsWith("_")) {
         continue;
       }
       yield* walkDirectory(fullPath);
     } else if (entry.isFile()) {
       // Skip files starting with underscore
-      if (entry.name.startsWith('_')) {
+      if (entry.name.startsWith("_")) {
         continue;
       }
       yield fullPath;
@@ -59,7 +59,7 @@ export async function* walkDirectory(dir: string): AsyncGenerator<string> {
 }
 
 export function getCacheDir(): string {
-  return join(homedir(), '.cache', 'zen', 'templates');
+  return join(homedir(), ".cache", "zen", "templates");
 }
 
 export function getTemplateDir(): string {
@@ -67,13 +67,13 @@ export function getTemplateDir(): string {
   // In development, we're in src/utils/fs.ts
   const currentFile = fileURLToPath(import.meta.url);
   const currentDir = dirname(currentFile);
-  
+
   // Check if we're in dist/ or src/
-  if (currentDir.includes('/dist')) {
+  if (currentDir.includes("/dist")) {
     // In dist: go up one level to project root
-    return join(dirname(currentDir), 'templates');
+    return join(dirname(currentDir), "templates");
   }
-  
+
   // In src: go up two levels to project root
-  return join(currentDir, '..', '..', 'templates');
+  return join(currentDir, "..", "..", "templates");
 }

@@ -8,15 +8,25 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
-    "test": "vitest",
+    "dev": "tsx src/cli/index.ts",
+    "start": "node dist/cli/index.js",
+    "gen:example": "tsx src/cli/index.ts generate --template ./templates/example --output ./outputs/example",
+    "gen:zen": "tsx src/cli/index.ts generate --template ./templates/zen --output ./outputs/zen",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --fix .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": ["cli", "template", "generator", "ai-agent", "typescript"],
+  "keywords": [
+    "cli",
+    "template",
+    "generator",
+    "ai-agent",
+    "typescript"
+  ],
   "engines": {
     "node": ">=24.0.0"
   },
@@ -35,6 +45,7 @@
     "@vitest/coverage-v8": "^2.1.8",
     "fast-check": "^3.23.1",
     "tsup": "^8.3.5",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

@@ -1,15 +1,15 @@
 // @zen-component: GenerateCommand
 
-import { intro, outro } from '@clack/prompts';
-import { configLoader } from '../core/config.js';
-import { fileGenerator } from '../core/generator.js';
-import { templateResolver } from '../core/template-resolver.js';
-import type { RawCliOptions } from '../types/index.js';
-import { logger } from '../utils/logger.js';
+import { intro, outro } from "@clack/prompts";
+import { configLoader } from "../core/config.js";
+import { fileGenerator } from "../core/generator.js";
+import { templateResolver } from "../core/template-resolver.js";
+import type { RawCliOptions } from "../types/index.js";
+import { logger } from "../utils/logger.js";
 
 export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
   try {
-    intro('Zen CLI - Template Generator');
+    intro("Zen CLI - Template Generator");
 
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
@@ -22,10 +22,10 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
 
     // Display mode indicators
     if (options.dryRun) {
-      logger.info('Running in dry-run mode (no files will be modified)');
+      logger.info("Running in dry-run mode (no files will be modified)");
     }
     if (options.force) {
-      logger.info('Force mode enabled (existing files will be overwritten)');
+      logger.info("Force mode enabled (existing files will be overwritten)");
     }
 
     // Generate files
@@ -40,7 +40,7 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
     // Display summary
     logger.summary(result);
 
-    outro('Generation complete!');
+    outro("Generation complete!");
   } catch (error) {
     // Error handling with proper exit codes
     if (error instanceof Error) {

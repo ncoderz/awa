@@ -15,17 +15,12 @@
 // @zen-impl: TPL-9 AC-9.1
 // @zen-impl: TPL-9 AC-9.2
 
-import { join, relative } from 'node:path';
-import {
-  type FileAction,
-  type GenerateOptions,
-  GenerationError,
-  type GenerationResult,
-} from '../types/index.js';
-import { pathExists, walkDirectory, writeTextFile } from '../utils/fs.js';
-import { logger } from '../utils/logger.js';
-import { conflictResolver } from './resolver.js';
-import { templateEngine } from './template.js';
+import { join, relative } from "node:path";
+import { type ConflictItem, type FileAction, type GenerateOptions, GenerationError, type GenerationResult } from "../types/index.js";
+import { pathExists, readTextFile, walkDirectory, writeTextFile } from "../utils/fs.js";
+import { logger } from "../utils/logger.js";
+import { conflictResolver } from "./resolver.js";
+import { templateEngine } from "./template.js";
 
 export class FileGenerator {
   // @zen-impl: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3
@@ -43,8 +38,19 @@ export class FileGenerator {
     let skippedEmpty = 0;
     let skippedUser = 0;
 
+    // Collect files to process
+    interface FileToProcess {
+      templateFile: string;
+      outputFile: string;
+      content: string;
+      isNew: boolean;
+    }
+
+    const filesToProcess: FileToProcess[] = [];
+    const conflicts: ConflictItem[] = [];
+
     try {
-      // Walk template directory
+      // First pass: render all templates and categorize files
       for await (const templateFile of this.walkTemplates(templatePath)) {
         // Compute output path
         const outputFile = this.computeOutputPath(templateFile, templatePath, outputPath);
@@ -56,13 +62,13 @@ export class FileGenerator {
         if (result.isEmpty && !result.isEmptyFileMarker) {
           // Skip empty files
           actions.push({
-            type: 'skip-empty',
+            type: "skip-empty",
             sourcePath: templateFile,
             outputPath: outputFile,
           });
           skippedEmpty++;
           logger.fileAction({
-            type: 'skip-empty',
+            type: "skip-empty",
             sourcePath: templateFile,
             outputPath: outputFile,
           });
@@ -70,60 +76,82 @@ export class FileGenerator {
         }
 
         // Get final content (empty string if marker)
-        const content = result.isEmptyFileMarker ? '' : result.content;
+        const content = result.isEmptyFileMarker ? "" : result.content;
 
         // Check for conflicts
         const fileExists = await pathExists(outputFile);
 
         if (fileExists) {
-          // Resolve conflict
-          const choice = await conflictResolver.resolve(outputFile, force, dryRun);
-
-          if (choice === 'skip') {
-            actions.push({
-              type: 'skip-user',
-              sourcePath: templateFile,
-              outputPath: outputFile,
-            });
-            skippedUser++;
-            logger.fileAction({
-              type: 'skip-user',
-              sourcePath: templateFile,
-              outputPath: outputFile,
-            });
-            continue;
-          }
-
-          // Overwrite
-          if (!dryRun) {
-            await writeTextFile(outputFile, content);
-          }
-          actions.push({
-            type: 'overwrite',
-            sourcePath: templateFile,
+          // Read existing content for comparison
+          const existingContent = await readTextFile(outputFile);
+          conflicts.push({
             outputPath: outputFile,
-          });
-          overwritten++;
-          logger.fileAction({
-            type: 'overwrite',
             sourcePath: templateFile,
-            outputPath: outputFile,
+            newContent: content,
+            existingContent,
           });
-        } else {
+        }
+
+        filesToProcess.push({
+          templateFile,
+          outputFile,
+          content,
+          isNew: !fileExists,
+        });
+      }
+
+      // Resolve all conflicts at once if there are any
+      let resolution: { overwrite: string[]; skip: string[] } = { overwrite: [], skip: [] };
+      if (conflicts.length > 0) {
+        resolution = await conflictResolver.resolveBatch(conflicts, force, dryRun);
+      }
+
+      // Second pass: process files based on resolution
+      for (const file of filesToProcess) {
+        if (file.isNew) {
           // Create new file
           if (!dryRun) {
-            await writeTextFile(outputFile, content);
+            await writeTextFile(file.outputFile, file.content);
           }
           actions.push({
-            type: 'create',
-            sourcePath: templateFile,
-            outputPath: outputFile,
+            type: "create",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
           });
           created++;
           logger.fileAction({
-            type: 'create',
-            sourcePath: templateFile,
-            outputPath: outputFile,
+            type: "create",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
+          });
+        } else if (resolution.overwrite.includes(file.outputFile)) {
+          // Overwrite existing file
+          if (!dryRun) {
+            await writeTextFile(file.outputFile, file.content);
+          }
+          actions.push({
+            type: "overwrite",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
+          });
+          overwritten++;
+          logger.fileAction({
+            type: "overwrite",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
+          });
+        } else if (resolution.skip.includes(file.outputFile)) {
+          // Skip file
+          actions.push({
+            type: "skip-user",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
+          });
+          skippedUser++;
+          logger.fileAction({
+            type: "skip-user",
+            sourcePath: file.templateFile,
+            outputPath: file.outputFile,
           });
         }
       }
@@ -138,13 +166,13 @@ export class FileGenerator {
       };
     } catch (error) {
       // @zen-impl: GEN-2 AC-2.3, GEN-11 AC-11.3
-      if (error instanceof Error && 'code' in error) {
+      if (error instanceof Error && "code" in error) {
         const code = (error as NodeJS.ErrnoException).code;
-        if (code === 'EACCES' || code === 'EPERM') {
-          throw new GenerationError(`Permission denied: ${error.message}`, 'PERMISSION_DENIED');
+        if (code === "EACCES" || code === "EPERM") {
+          throw new GenerationError(`Permission denied: ${error.message}`, "PERMISSION_DENIED");
         }
-        if (code === 'ENOSPC') {
-          throw new GenerationError(`Disk full: ${error.message}`, 'DISK_FULL');
+        if (code === "ENOSPC") {
+          throw new GenerationError(`Disk full: ${error.message}`, "DISK_FULL");
         }
       }
       throw error;

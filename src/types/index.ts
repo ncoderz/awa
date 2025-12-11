@@ -17,7 +17,7 @@ export interface FileConfig {
   template?: string;
   features?: string[];
   force?: boolean;
-  'dry-run'?: boolean;
+  "dry-run"?: boolean;
   refresh?: boolean;
 }
 
@@ -32,7 +32,7 @@ export interface ResolvedOptions {
 }
 
 // TemplateSourceType - Template source type detection
-export type TemplateSourceType = 'local' | 'git' | 'bundled';
+export type TemplateSourceType = "local" | "git" | "bundled";
 
 // ResolvedTemplate - Template source resolution result
 export interface ResolvedTemplate {
@@ -54,11 +54,7 @@ export interface RenderResult {
 }
 
 // FileAction - Tagged union for file operations
-export type FileAction =
-  | { type: 'create'; sourcePath: string; outputPath: string }
-  | { type: 'overwrite'; sourcePath: string; outputPath: string }
-  | { type: 'skip-user'; sourcePath: string; outputPath: string }
-  | { type: 'skip-empty'; sourcePath: string; outputPath: string };
+export type FileAction = { type: "create"; sourcePath: string; outputPath: string } | { type: "overwrite"; sourcePath: string; outputPath: string } | { type: "skip-user"; sourcePath: string; outputPath: string } | { type: "skip-empty"; sourcePath: string; outputPath: string };
 
 // GenerationResult - Aggregated generation outcome
 export interface GenerationResult {
@@ -80,7 +76,21 @@ export interface GenerateOptions {
 }
 
 // ConflictChoice - User choice for conflict resolution
-export type ConflictChoice = 'overwrite' | 'skip';
+export type ConflictChoice = "overwrite" | "skip";
+
+// ConflictItem - Individual file conflict for batch resolution
+export interface ConflictItem {
+  outputPath: string;
+  sourcePath: string;
+  newContent: string;
+  existingContent: string;
+}
+
+// BatchConflictResolution - Result of batch conflict resolution
+export interface BatchConflictResolution {
+  overwrite: string[]; // List of output paths to overwrite
+  skip: string[]; // List of output paths to skip
+}
 
 // TemplateFile - Template file metadata
 export interface TemplateFile {
@@ -99,34 +109,22 @@ export interface CachedTemplate {
 
 // Custom error types
 export class ConfigError extends Error {
-  constructor(
-    message: string,
-    public code: 'FILE_NOT_FOUND' | 'PARSE_ERROR' | 'INVALID_TYPE',
-    public filePath?: string
-  ) {
+  constructor(message: string, public code: "FILE_NOT_FOUND" | "PARSE_ERROR" | "INVALID_TYPE", public filePath?: string) {
     super(message);
-    this.name = 'ConfigError';
+    this.name = "ConfigError";
   }
 }
 
 export class TemplateError extends Error {
-  constructor(
-    message: string,
-    public code: 'SOURCE_NOT_FOUND' | 'FETCH_FAILED' | 'RENDER_ERROR',
-    public source?: string
-  ) {
+  constructor(message: string, public code: "SOURCE_NOT_FOUND" | "FETCH_FAILED" | "RENDER_ERROR", public source?: string) {
     super(message);
-    this.name = 'TemplateError';
+    this.name = "TemplateError";
   }
 }
 
 export class GenerationError extends Error {
-  constructor(
-    message: string,
-    public code: 'PERMISSION_DENIED' | 'DISK_FULL',
-    public filePath?: string
-  ) {
+  constructor(message: string, public code: "PERMISSION_DENIED" | "DISK_FULL", public filePath?: string) {
     super(message);
-    this.name = 'GenerationError';
+    this.name = "GenerationError";
   }
 }

@@ -212,23 +212,35 @@ interface FileGenerator {
 
 ### ConflictResolver
 
-Handles file conflicts by prompting user for action (overwrite/skip) unless force mode is enabled.
+Handles file conflicts by comparing existing file content with new content, skipping identical files without prompting. For actual conflicts, prompts user with multi-select interface (all files checked by default) for action (overwrite/skip) unless force mode is enabled.
 
-IMPLEMENTS: CLI-5 AC-5.2, CLI-5 AC-5.3, GEN-4 AC-4.1, GEN-4 AC-4.2, GEN-4 AC-4.3, GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.3, GEN-5 AC-5.4, GEN-5 AC-5.5, GEN-6 AC-6.3, GEN-10 AC-10.3
+IMPLEMENTS: CLI-5 AC-5.2, CLI-5 AC-5.3, GEN-4 AC-4.1, GEN-4 AC-4.2, GEN-4 AC-4.3, GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.3, GEN-5 AC-5.4, GEN-5 AC-5.5, GEN-5 AC-5.6, GEN-5 AC-5.7, GEN-6 AC-6.3, GEN-10 AC-10.3
 
 ```typescript
 type ConflictChoice = 'overwrite' | 'skip';
 
+interface ConflictItem {
+  outputPath: string;
+  sourcePath: string;
+  newContent: string;
+  existingContent: string;
+}
+
+interface BatchConflictResolution {
+  overwrite: string[]; // List of output paths to overwrite
+  skip: string[]; // List of output paths to skip
+}
+
 interface ConflictResolver {
-  resolve(filePath: string, force: boolean, dryRun: boolean): Promise<ConflictChoice>;
+  resolveBatch(conflicts: ConflictItem[], force: boolean, dryRun: boolean): Promise<BatchConflictResolution>;
 }
 ```
 
 ### Logger
 
-Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display.
+Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display. Displays warning when no files are created or overwritten.
 
-IMPLEMENTS: CLI-6 AC-6.3, GEN-6 AC-6.4, GEN-7 AC-7.1, GEN-7 AC-7.2, GEN-7 AC-7.3, GEN-7 AC-7.4, GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-11 AC-11.1, GEN-11 AC-11.2, GEN-11 AC-11.4, TPL-7 AC-7.3
+IMPLEMENTS: CLI-6 AC-6.3, GEN-6 AC-6.4, GEN-7 AC-7.1, GEN-7 AC-7.2, GEN-7 AC-7.3, GEN-7 AC-7.4, GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6, GEN-11 AC-11.1, GEN-11 AC-11.2, GEN-11 AC-11.4, TPL-7 AC-7.3
 
 ```typescript
 interface Logger {
@@ -248,6 +260,8 @@ interface Logger {
 - RESOLVED_OPTIONS: Fully resolved configuration with all defaults applied, used throughout the pipeline
 - FILE_ACTION: Represents a single file operation with its outcome, used for logging and summary
 - GENERATION_RESULT: Aggregated results of a generation run with counts by action type
+- CONFLICT_ITEM: Individual file conflict containing paths and content for comparison
+- BATCH_CONFLICT_RESOLUTION: Result of batch conflict resolution with overwrite and skip lists
 
 ```typescript
 // ResolvedOptions - immutable after construction
@@ -275,6 +289,20 @@ interface GenerationResult {
   readonly skipped: number;
   readonly skippedEmpty: number;
   readonly skippedUser: number;
+}
+
+// ConflictItem - individual file conflict for batch resolution
+interface ConflictItem {
+  readonly outputPath: string;
+  readonly sourcePath: string;
+  readonly newContent: string;
+  readonly existingContent: string;
+}
+
+// BatchConflictResolution - result of batch conflict resolution
+interface BatchConflictResolution {
+  readonly overwrite: string[]; // Output paths to overwrite
+  readonly skip: string[]; // Output paths to skip (includes identical content)
 }
 ```
 
@@ -322,6 +350,9 @@ Represents a cached Git template.
 
 - P8 [Force No Prompt]: Force mode never prompts for conflict resolution
   VALIDATES: GEN-4 AC-4.3, CLI-5 AC-5.2
+
+- P11 [Content Identity Skip]: When existing file content exactly matches new content, file is skipped without prompting
+  VALIDATES: GEN-5 AC-5.7
 
 - P9 [Local No Cache]: Local template paths are used directly without caching
   VALIDATES: TPL-1 AC-1.4
@@ -506,6 +537,8 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - GEN-5 AC-5.3 → ConflictResolver
 - GEN-5 AC-5.4 → ConflictResolver
 - GEN-5 AC-5.5 → ConflictResolver
+- GEN-5 AC-5.6 → ConflictResolver
+- GEN-5 AC-5.7 → ConflictResolver (P11)
 - GEN-6 AC-6.1 → FileGenerator (P7)
 - GEN-6 AC-6.2 → FileGenerator (P7)
 - GEN-6 AC-6.3 → ConflictResolver
@@ -522,6 +555,7 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - GEN-9 AC-9.3 → Logger
 - GEN-9 AC-9.4 → Logger
 - GEN-9 AC-9.5 → Logger
+- GEN-9 AC-9.6 → Logger
 - GEN-10 AC-10.1 → ArgumentParser
 - GEN-10 AC-10.2 → ArgumentParser
 - GEN-10 AC-10.3 → ConflictResolver
@@ -554,3 +588,5 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 ## Change Log
 
 - 1.0.0 (2025-12-11): Initial design based on requirements
+- 1.1.0 (2025-12-11): Updated ConflictResolver interface to match implementation, added missing data models
+- 1.2.0 (2025-12-11): Added GEN-9 AC-9.6 implementation to Logger for empty generation warning
