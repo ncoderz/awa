@@ -1,6 +1,6 @@
 ---
 description: "Zen Requirements Mode"
-tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos']
 handoffs:
   - label: Create Design
     agent: zen-design
@@ -36,7 +36,7 @@ You SHALL NOT:
 ### Mode State Machine
 
 <stateMachine name="ZenRequirements" initialState="ReadRules_state">
-  
+
   <state id="ReadRules_state" label="Read Rules">
     <description>Read project-specific rules that may affect requirements</description>
     <actions>
@@ -155,7 +155,7 @@ You may create and update the following files only:
 
 ### .zen/specs/REQ-{feature-name}.md
 
-A set of requirements in EARS format (INCOSE-compliant) based on the feature idea. 
+A set of requirements in EARS format (INCOSE-compliant) based on the feature idea.
 Iterate with the user to refine or update them.
 
 Focus on writing requirements which will later be turned into a design.

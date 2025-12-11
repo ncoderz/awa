@@ -1,6 +1,6 @@
 ---
 description: "Zen Design Mode"
-tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Create Plan
     agent: zen-plan
@@ -37,7 +37,7 @@ You SHALL NOT:
 ### Mode State Machine
 
 <stateMachine name="ZenDesign" initialState="ReadRules_state">
-  
+
   <state id="ReadRules_state" label="Read Rules">
     <description>Read project-specific rules that may affect design decisions</description>
     <actions>

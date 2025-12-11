@@ -1,6 +1,6 @@
 ---
 description: "Zen Code Mode"
-tools: ["runCommands", "runTasks", "microsoft/playwright-mcp/*", "edit", "search", "filesystem/create_directory", "filesystem/directory_tree", "filesystem/get_file_info", "filesystem/list_allowed_directories", "filesystem/list_directory", "filesystem/list_directory_with_sizes", "filesystem/move_file", "filesystem/search_files", "extensions", "usages", "vscodeAPI", "problems", "changes", "testFailure", "openSimpleBrowser", "fetch", "githubRepo", "todos", "runTests"]
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'filesystem/create_directory', 'filesystem/directory_tree', 'filesystem/get_file_info', 'filesystem/list_allowed_directories', 'filesystem/list_directory', 'filesystem/list_directory_with_sizes', 'filesystem/move_file', 'filesystem/search_files', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Write Documentation
     agent: zen-document

@@ -1,6 +1,6 @@
 ---
 description: "Zen Alignment Mode"
-tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
+tools: ['runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'edit', 'search', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests']
 handoffs:
   - label: Fix in Code
     agent: zen-code
@@ -345,8 +345,7 @@ Not all alignment checks yield certain results. Report confidence:
 You SHALL always report your confidence level. When UNCERTAIN, explain what additional information would resolve the ambiguity.
 
 CONFIDENCE BY TRACE TYPE:
-
-- Explicit traces (IMPLEMENTS, VALIDATES, @zen-\*) → CERTAIN
+- Explicit traces (IMPLEMENTS, VALIDATES, @zen-*) → CERTAIN
 - Naming conventions → LIKELY
 - Semantic inference → LIKELY or UNCERTAIN
 
@@ -426,9 +425,9 @@ MARKER SYNTAX:
 
 | Source                 | Target                                    | Convention             |
 | ---------------------- | ----------------------------------------- | ---------------------- |
-| REQ-{name}.md          | DESIGN-{name}.md                          | Matching {name}        |
-| DESIGN-{name}.md       | src/{name}/\*\* (or logical location)     | Directory matches      |
-| API-{name}.tsp         | src/api/{name}/\*\* (or logical location) | API name matches       |
+| REQ-{name}.md | DESIGN-{name}.md | Matching {name} |
+| DESIGN-{name}.md | src/{name}/** (or logical location) | Directory matches |
+| API-{name}.tsp | src/api/{name}/** (or logical location) | API name matches |
 | Component: {Name}      | @zen-component: {Name}                    | Component name matches |
 | IMPLEMENTS: AC-{n}.{m} | @zen-impl: AC-{n}.{m}                     | AC ID matches          |
 | VALIDATES: P{n}        | @zen-test: P{n}                           | Property ID matches    |
@@ -489,9 +488,9 @@ CODE MARKERS:
 - @zen-impl MUST NOT appear on test functions
 - @zen-test MUST NOT appear on non-test functions
 - @zen-component MUST appear at file level only
-- Component name MUST match a component in DESIGN-\*.md
-- AC IDs MUST exist in REQ-\*.md
-- Property IDs MUST exist in DESIGN-\*.md
+- Component name MUST match a component in DESIGN-*.md
+- AC IDs MUST exist in REQ-*.md
+- Property IDs MUST exist in DESIGN-*.md
 
 COVERAGE CHECKS:
 
