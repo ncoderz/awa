@@ -1,0 +1,5 @@
+[tools]
+"aqua:go-task/task" = "latest"
+node = '24'
+poetry = "latest"
+java = 'openjdk-21'
