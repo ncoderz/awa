@@ -89,12 +89,12 @@ File layout follows project conventions. Markers create the trace, not file path
 
 Requirements use these keywords with precise meaning:
 
-| Keyword            | Meaning                                       |
-| ------------------ | --------------------------------------------- |
-| SHALL/MUST         | Absolute requirement                          |
-| SHOULD             | Recommended, deviation requires justification |
-| MAY                | Optional                                      |
-| SHALL NOT/MUST NOT | Absolute prohibition                          |
+| Keyword | Meaning |
+|---------|---------|
+| SHALL/MUST | Absolute requirement |
+| SHOULD | Recommended, deviation requires justification |
+| MAY | Optional |
+| SHALL NOT/MUST NOT | Absolute prohibition |
 
 ### File Size Limit
 

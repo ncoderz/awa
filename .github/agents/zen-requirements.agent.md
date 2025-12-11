@@ -350,27 +350,27 @@ Focus on writing requirements which will later be turned into a design.
           "minItems": 1,
           "$comment": "RENDER: One-line bullets '- {id} [{type}]: {statement}'"
         },
-        "priority": { 
-          "type": "string", 
+        "priority": {
+          "type": "string",
           "enum": ["must", "should", "could", "wont"],
           "$comment": "RENDER: Uppercase badge in heading [MUST]. Omit if absent."
         },
-        "status": { 
-          "type": "string", 
+        "status": {
+          "type": "string",
           "enum": ["proposed", "approved", "implemented", "verified", "deferred", "rejected"],
           "$comment": "RENDER: Parenthetical in heading (status). Omit if absent."
         },
-        "rationale": { 
+        "rationale": {
           "type": "string",
           "$comment": "RENDER: Blockquote '> {rationale}'. Omit if absent."
         },
-        "dependencies": { 
-          "type": "array", 
+        "dependencies": {
+          "type": "array",
           "items": { "type": "string" },
           "$comment": "RENDER: 'DEPENDS ON: X, Y' after criteria. Omit if empty."
         },
-        "subrequirements": { 
-          "type": "array", 
+        "subrequirements": {
+          "type": "array",
           "items": { "$ref": "#/definitions/requirement" },
           "$comment": "RENDER: Indent one level using #### headers"
         }
@@ -383,18 +383,18 @@ Focus on writing requirements which will later be turned into a design.
       "$comment": "RENDER: '- {id} [{type}]: {statement}' optionally with '— {notes}' and/or '[untestable]'",
       "properties": {
         "id": { "type": "string", "pattern": "^AC-[0-9]+(\\.[0-9]+)*$" },
-        "type": { 
-          "type": "string", 
+        "type": {
+          "type": "string",
           "enum": ["ubiquitous", "event", "state", "conditional", "optional", "complex"],
           "$comment": "RENDER: Bracket badge after ID [{type}]"
         },
         "statement": { "type": "string" },
-        "notes": { 
+        "notes": {
           "type": "string",
           "$comment": "RENDER: Append '— {notes}' to criterion line"
         },
-        "testable": { 
-          "type": "boolean", 
+        "testable": {
+          "type": "boolean",
           "default": true,
           "$comment": "RENDER: Append '[untestable]' ONLY when false. Never show when true."
         }
@@ -407,7 +407,7 @@ Focus on writing requirements which will later be turned into a design.
       "> VERSION: {version} | STATUS: {status} | UPDATED: {lastModified}",
       "## Introduction",
       "## Glossary",
-      "## Stakeholders", 
+      "## Stakeholders",
       "## Requirements",
       "## Assumptions",
       "## Constraints",
