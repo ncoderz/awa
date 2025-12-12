@@ -261,70 +261,31 @@ YOUR task is to create and maintain requirements in EARS format for the project.
         "type": { "enum": ["ubiquitous", "event", "state", "conditional", "optional", "complex"] },
         "statement": { "type": "string" },
         "notes": { "type": "string" },
-        "testable": { "type": "boolean", "default": true }
+        "testable": { "type": "boolean", "default": true },
+        "verified": { "type": "boolean", "default": false, "description": "Set true when AC is validated as implemented and tested" }
       }
     }
   },
   "$rendering": {
     "templates": {
-      "document": [
-        "# Requirements Specification",
-        "",
-        "## Introduction",
-        "{introduction}",
-        "## Glossary",
-        "{for each term: '- {TERM}: {definition}'}",
-        "## Stakeholders",
-        "{for each: '- {ROLE}: {description}'}",
-        "## Requirements",
-        "{for each requirement: templates.requirement}",
-        "## Assumptions",
-        "{for each: '- {assumption}'}",
-        "## Constraints",
-        "{for each: '- {constraint}'}",
-        "## Out of Scope",
-        "{for each: '- {item}'}",
-        "## Change Log",
-        "{for each: '- {version} ({date}, {author}): {changes}'}",
-        "<<end of output (do not print)>>"
-      ],
-      "requirement": [
-        "### {id}: {title} [{PRIORITY}]",
-        "",
-        "AS A {role}, I WANT {want}, SO THAT {benefit}.",
-        "",
-        "> {rationale}",
-        "",
-        "ACCEPTANCE CRITERIA",
-        "",
-        "{for each criterion: templates.criterion}",
-        "",
-        "DEPENDS ON: {dependencies}"
-      ],
-      "criterion": [
-        "- [ ] {id} [{type}]: {statement} — {notes} [untestable]"
-      ]
+      "document": ["# Requirements Specification", "", "## Introduction", "{introduction}", "## Glossary", "{for each term: '- {TERM}: {definition}'}", "## Stakeholders", "{for each: '- {ROLE}: {description}'}", "## Requirements", "{for each requirement: templates.requirement}", "## Assumptions", "{for each: '- {assumption}'}", "## Constraints", "{for each: '- {constraint}'}", "## Out of Scope", "{for each: '- {item}'}", "## Change Log", "{for each: '- {version} ({date}, {author}): {changes}'}", "<<end of output (do not print)>>"],
+      "requirement": ["### {id}: {title} [{PRIORITY}]", "", "AS A {role}, I WANT {want}, SO THAT {benefit}.", "", "> {rationale}", "", "ACCEPTANCE CRITERIA", "", "{for each criterion: templates.criterion}", "", "DEPENDS ON: {dependencies}"],
+      "criterion": ["- [{verified: x, else: ' '}] {id} [{type}]: {statement} — {notes} [untestable]"]
     },
-    "omissionRules": [
-      "Omit entire section if empty/absent",
-      "Omit [{PRIORITY}] badge if priority absent",
-      "Omit rationale blockquote if rationale absent",
-      "Omit '— {notes}' if notes absent",
-      "Omit '[untestable]' if testable is true or absent",
-      "Omit 'DEPENDS ON' line if dependencies empty",
-      "Omit author in changelog if absent"
-    ],
-    "prohibited": [
-      "**bold** syntax — use CAPITALS for emphasis",
-      "FieldName: value label patterns",
-      "Nested bullets for story or criterion fields",
-      "Showing 'testable: true'",
-      "Headers for individual criteria"
-    ]
+    "omissionRules": ["Omit entire section if empty/absent", "Omit [{PRIORITY}] badge if priority absent", "Omit rationale blockquote if rationale absent", "Omit '— {notes}' if notes absent", "Omit '[untestable]' if testable is true or absent", "Omit 'DEPENDS ON' line if dependencies empty", "Omit author in changelog if absent", "Checkbox: [x] if verified true, [ ] otherwise"],
+    "prohibited": ["**bold** syntax — use CAPITALS for emphasis", "FieldName: value label patterns", "Nested bullets for story or criterion fields", "Showing 'testable: true'", "Headers for individual criteria"]
   },
   "$example": {
     "input": {
       "introduction": "Core engine requirements for game framework.",
+      "glossary": {
+        "Game Loop": "Core cycle of update-render that drives the engine",
+        "Context": "Runtime state container for engine subsystems"
+      },
+      "stakeholders": [
+        { "role": "Game Developer", "description": "Builds games using the engine API" },
+        { "role": "Engine Maintainer", "description": "Maintains and extends engine internals" }
+      ],
       "requirements": [
         {
           "id": "ENG-1",
@@ -333,14 +294,25 @@ YOUR task is to create and maintain requirements in EARS format for the project.
           "priority": "must",
           "rationale": "Foundation for all games.",
           "criteria": [
-            { "id": "AC-1.1", "type": "event", "statement": "WHEN engine initializes THEN system SHALL create context" },
-            { "id": "AC-1.2", "type": "event", "statement": "WHEN loop runs THEN system SHALL update before render", "notes": "60fps target" },
-            { "id": "AC-1.3", "type": "ubiquitous", "statement": "The system SHALL maintain 60fps minimum frame rate" }
+            { "id": "AC-1.1", "type": "event", "statement": "WHEN engine initializes THEN system SHALL create context", "verified": true },
+            { "id": "AC-1.2", "type": "event", "statement": "WHEN `--verbose` flag is provided THEN system SHALL enable debug logging", "notes": "CLI flag" },
+            { "id": "AC-1.3", "type": "ubiquitous", "statement": "The system SHALL maintain 60fps minimum frame rate" },
+            { "id": "AC-1.4", "type": "event", "statement": "WHEN multiple `--preset` options are provided THEN system SHALL collect all values" },
+            { "id": "AC-1.5", "type": "conditional", "statement": "IF config contains a `[presets]` table THEN system SHALL parse it as a dictionary" }
           ]
         }
-      ]
+      ],
+      "assumptions": ["Target platform supports OpenGL 3.3 or higher", "Config file uses TOML format with `[section]` syntax"],
+      "constraints": ["Must run on Windows, macOS, and Linux", "CLI options like `--features` and `--remove-features` follow POSIX conventions"],
+      "outOfScope": ["Mobile platform support", "Console platform support"],
+      "metadata": {
+        "changeLog": [
+          { "version": "1.0.0", "date": "2025-01-10", "author": "Jane", "changes": "Initial requirements" },
+          { "version": "1.1.0", "date": "2025-01-15", "changes": "Added `--preset` CLI option" }
+        ]
+      }
     },
-    "output": "# Requirements Specification\n\n## Introduction\n\nCore engine requirements for game framework.\n\n## Requirements\n\n### ENG-1: Core Engine Framework [MUST]\n\nAS A game developer, I WANT a game loop, SO THAT predictable execution.\n\n> Foundation for all games.\n\nACCEPTANCE CRITERIA\n\n- [ ] AC-1.1 [event]: WHEN engine initializes THEN system SHALL create context\n- [ ] AC-1.2 [event]: WHEN loop runs THEN system SHALL update before render — 60fps target\n- [ ] AC-1.3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate"
+    "output": "# Requirements Specification\n\n## Introduction\n\nCore engine requirements for game framework.\n\n## Glossary\n\n- GAME LOOP: Core cycle of update-render that drives the engine\n- CONTEXT: Runtime state container for engine subsystems\n\n## Stakeholders\n\n- GAME DEVELOPER: Builds games using the engine API\n- ENGINE MAINTAINER: Maintains and extends engine internals\n\n## Requirements\n\n### ENG-1: Core Engine Framework [MUST]\n\nAS A game developer, I WANT a game loop, SO THAT predictable execution.\n\n> Foundation for all games.\n\nACCEPTANCE CRITERIA\n\n- [x] AC-1.1 [event]: WHEN engine initializes THEN system SHALL create context\n- [ ] AC-1.2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging — CLI flag\n- [ ] AC-1.3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate\n- [ ] AC-1.4 [event]: WHEN multiple `--preset` options are provided THEN system SHALL collect all values\n- [ ] AC-1.5 [conditional]: IF config contains a `[presets]` table THEN system SHALL parse it as a dictionary\n\n## Assumptions\n\n- Target platform supports OpenGL 3.3 or higher\n- Config file uses TOML format with `[section]` syntax\n\n## Constraints\n\n- Must run on Windows, macOS, and Linux\n- CLI options like `--features` and `--remove-features` follow POSIX conventions\n\n## Out of Scope\n\n- Mobile platform support\n- Console platform support\n\n## Change Log\n\n- 1.0.0 (2025-01-10, Jane): Initial requirements\n- 1.1.0 (2025-01-15): Added `--preset` CLI option"
   }
 }
 ```

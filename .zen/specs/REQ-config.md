@@ -25,10 +25,10 @@ AS A developer, I WANT configuration loaded from a file, SO THAT I don't need to
 
 ACCEPTANCE CRITERIA
 
-- AC-1.1 [event]: WHEN the system starts THEN it SHALL attempt to load `.zen.toml` from the current directory
-- AC-1.2 [conditional]: IF `.zen.toml` does not exist THEN the system SHALL continue without error
-- AC-1.3 [conditional]: IF `--config <path>` is provided THEN the system SHALL load configuration from the specified path
-- AC-1.4 [event]: WHEN `--config <path>` points to a non-existent file THEN the system SHALL display an error and exit
+- [ ] AC-1.1 [event]: WHEN the system starts THEN it SHALL attempt to load `.zen.toml` from the current directory
+- [ ] AC-1.2 [conditional]: IF `.zen.toml` does not exist THEN the system SHALL continue without error
+- [ ] AC-1.3 [conditional]: IF `--config <path>` is provided THEN the system SHALL load configuration from the specified path
+- [ ] AC-1.4 [event]: WHEN `--config <path>` points to a non-existent file THEN the system SHALL display an error and exit
 
 ### CFG-2: TOML Format Support [MUST]
 
@@ -38,9 +38,9 @@ AS A developer, I WANT configuration in TOML format, SO THAT I can use a human-r
 
 ACCEPTANCE CRITERIA
 
-- AC-2.1 [ubiquitous]: The system SHALL parse configuration files as TOML format
-- AC-2.2 [event]: WHEN TOML parsing fails THEN the system SHALL display a descriptive error with line number
-- AC-2.3 [ubiquitous]: The system SHALL support TOML 1.0 specification
+- [ ] AC-2.1 [ubiquitous]: The system SHALL parse configuration files as TOML format
+- [ ] AC-2.2 [event]: WHEN TOML parsing fails THEN the system SHALL display a descriptive error with line number
+- [ ] AC-2.3 [ubiquitous]: The system SHALL support TOML 1.0 specification
 
 ### CFG-3: Supported Configuration Options [MUST]
 
@@ -50,12 +50,12 @@ AS A developer, I WANT all CLI options configurable in the file, SO THAT I can s
 
 ACCEPTANCE CRITERIA
 
-- AC-3.1 [ubiquitous]: The configuration file SHALL support `output` as a string path
-- AC-3.2 [ubiquitous]: The configuration file SHALL support `template` as a string source
-- AC-3.3 [ubiquitous]: The configuration file SHALL support `features` as an array of strings
-- AC-3.4 [ubiquitous]: The configuration file SHALL support `force` as a boolean
-- AC-3.5 [ubiquitous]: The configuration file SHALL support `dry-run` as a boolean
-- AC-3.6 [ubiquitous]: The configuration file SHALL support `refresh` as a boolean
+- [ ] AC-3.1 [ubiquitous]: The configuration file SHALL support `output` as a string path
+- [ ] AC-3.2 [ubiquitous]: The configuration file SHALL support `template` as a string source
+- [ ] AC-3.3 [ubiquitous]: The configuration file SHALL support `features` as an array of strings
+- [ ] AC-3.4 [ubiquitous]: The configuration file SHALL support `force` as a boolean
+- [ ] AC-3.5 [ubiquitous]: The configuration file SHALL support `dry-run` as a boolean
+- [ ] AC-3.6 [ubiquitous]: The configuration file SHALL support `refresh` as a boolean
 
 ### CFG-4: CLI Override Behavior [MUST]
 
@@ -65,10 +65,10 @@ AS A developer, I WANT CLI arguments to override config file values, SO THAT I c
 
 ACCEPTANCE CRITERIA
 
-- AC-4.1 [conditional]: IF a CLI argument is provided THEN it SHALL override the corresponding config file value
-- AC-4.2 [conditional]: IF a CLI argument is not provided THEN the config file value SHALL be used
-- AC-4.3 [conditional]: IF neither CLI argument nor config file value exists THEN the default value SHALL be used
-- AC-4.4 [ubiquitous]: The `features` array from CLI SHALL replace (not merge with) the config file array
+- [ ] AC-4.1 [conditional]: IF a CLI argument is provided THEN it SHALL override the corresponding config file value
+- [ ] AC-4.2 [conditional]: IF a CLI argument is not provided THEN the config file value SHALL be used
+- [ ] AC-4.3 [conditional]: IF neither CLI argument nor config file value exists THEN the default value SHALL be used
+- [ ] AC-4.4 [ubiquitous]: The `features` array from CLI SHALL replace (not merge with) the config file array
 
 ### CFG-5: Option Name Convention [MUST]
 
@@ -78,8 +78,8 @@ AS A developer, I WANT consistent option naming, SO THAT I can easily map betwee
 
 ACCEPTANCE CRITERIA
 
-- AC-5.1 [ubiquitous]: Configuration file options SHALL use kebab-case naming (e.g., `dry-run`)
-- AC-5.2 [ubiquitous]: CLI options SHALL use the same kebab-case names as config file options
+- [ ] AC-5.1 [ubiquitous]: Configuration file options SHALL use kebab-case naming (e.g., `dry-run`)
+- [ ] AC-5.2 [ubiquitous]: CLI options SHALL use the same kebab-case names as config file options
 
 ### CFG-6: Unknown Option Handling [SHOULD]
 
@@ -89,8 +89,8 @@ AS A developer, I WANT warnings for unknown config options, SO THAT I can catch 
 
 ACCEPTANCE CRITERIA
 
-- AC-6.1 [conditional]: IF the configuration file contains an unknown option THEN the system SHOULD display a warning
-- AC-6.2 [conditional]: IF the configuration file contains an unknown option THEN the system SHALL continue execution
+- [ ] AC-6.1 [conditional]: IF the configuration file contains an unknown option THEN the system SHOULD display a warning
+- [ ] AC-6.2 [conditional]: IF the configuration file contains an unknown option THEN the system SHALL continue execution
 
 ## Assumptions
 

@@ -25,9 +25,9 @@ AS A developer, I WANT templates generated to a temporary directory, SO THAT the
 
 ACCEPTANCE CRITERIA
 
-- AC-1.1 [event]: WHEN `zen diff` is invoked THEN the system SHALL create a temporary directory using Node.js `os.tmpdir()`
-- AC-1.2 [ubiquitous]: The system SHALL generate all templates into the temporary directory before comparison
-- AC-1.3 [ubiquitous]: The system SHALL NOT write any files to the target directory during diff operations
+- [ ] AC-1.1 [event]: WHEN `zen diff` is invoked THEN the system SHALL create a temporary directory using Node.js `os.tmpdir()`
+- [ ] AC-1.2 [ubiquitous]: The system SHALL generate all templates into the temporary directory before comparison
+- [ ] AC-1.3 [ubiquitous]: The system SHALL NOT write any files to the target directory during diff operations
 
 ### DIFF-2: File Comparison [MUST]
 
@@ -37,11 +37,11 @@ AS A developer, I WANT exact byte-for-byte comparison, SO THAT whitespace and fo
 
 ACCEPTANCE CRITERIA
 
-- AC-2.1 [ubiquitous]: The system SHALL compare files using exact byte-for-byte comparison
-- AC-2.2 [ubiquitous]: The system SHALL use the `diff` npm package for cross-platform unified diff generation
-- AC-2.3 [conditional]: IF files are identical THEN the system SHALL count them as matching
-- AC-2.4 [conditional]: IF text files differ THEN the system SHALL compute a unified diff and display it to the console
-- AC-2.5 [conditional]: IF binary files differ THEN the system SHALL display "binary files differ" without diff content
+- [ ] AC-2.1 [ubiquitous]: The system SHALL compare files using exact byte-for-byte comparison
+- [ ] AC-2.2 [ubiquitous]: The system SHALL use the `diff` npm package for cross-platform unified diff generation
+- [ ] AC-2.3 [conditional]: IF files are identical THEN the system SHALL count them as matching
+- [ ] AC-2.4 [conditional]: IF text files differ THEN the system SHALL compute a unified diff and display it to the console
+- [ ] AC-2.5 [conditional]: IF binary files differ THEN the system SHALL display "binary files differ" without diff content
 
 ### DIFF-3: Missing File Detection [MUST]
 
@@ -51,9 +51,9 @@ AS A developer, I WANT to see files that exist in one directory but not the othe
 
 ACCEPTANCE CRITERIA
 
-- AC-3.1 [conditional]: IF a generated file has no corresponding target file THEN the system SHALL report it as "new file"
-- AC-3.2 [conditional]: IF a target file has no corresponding generated file THEN the system SHALL report it as "extra file in target"
-- AC-3.3 [ubiquitous]: The system SHALL include missing file information in the diff output
+- [ ] AC-3.1 [conditional]: IF a generated file has no corresponding target file THEN the system SHALL report it as "new file"
+- [ ] AC-3.2 [conditional]: IF a target file has no corresponding generated file THEN the system SHALL report it as "extra file in target"
+- [ ] AC-3.3 [ubiquitous]: The system SHALL include missing file information in the diff output
 
 ### DIFF-4: Diff Output Format [MUST]
 
@@ -63,11 +63,11 @@ AS A developer, I WANT git-style unified diff output with color, SO THAT differe
 
 ACCEPTANCE CRITERIA
 
-- AC-4.1 [ubiquitous]: The system SHALL produce unified diff format output for each differing file
-- AC-4.2 [ubiquitous]: The diff output SHALL use git-style formatting with file headers
-- AC-4.3 [conditional]: IF the terminal supports color THEN the system SHALL colorize diff output — additions green, deletions red
-- AC-4.4 [event]: WHEN all files match THEN the system SHALL display a success message indicating no differences
-- AC-4.5 [ubiquitous]: The system SHALL display a summary line with file count and difference count — e.g., "3 files compared, 0 differences"
+- [ ] AC-4.1 [ubiquitous]: The system SHALL produce unified diff format output for each differing file
+- [ ] AC-4.2 [ubiquitous]: The diff output SHALL use git-style formatting with file headers
+- [ ] AC-4.3 [conditional]: IF the terminal supports color THEN the system SHALL colorize diff output — additions green, deletions red
+- [ ] AC-4.4 [event]: WHEN all files match THEN the system SHALL display a success message indicating no differences
+- [ ] AC-4.5 [ubiquitous]: The system SHALL display a summary line with file count and difference count — e.g., "3 files compared, 0 differences"
 
 ### DIFF-5: Exit Codes [MUST]
 
@@ -77,9 +77,9 @@ AS A CI system, I WANT predictable exit codes, SO THAT I can automate template d
 
 ACCEPTANCE CRITERIA
 
-- AC-5.1 [event]: WHEN all files match THEN the system SHALL exit with code 0
-- AC-5.2 [event]: WHEN any differences are found THEN the system SHALL exit with code 1
-- AC-5.3 [event]: WHEN an error occurs THEN the system SHALL exit with code 2
+- [ ] AC-5.1 [event]: WHEN all files match THEN the system SHALL exit with code 0
+- [ ] AC-5.2 [event]: WHEN any differences are found THEN the system SHALL exit with code 1
+- [ ] AC-5.3 [event]: WHEN an error occurs THEN the system SHALL exit with code 2
 
 ### DIFF-6: Temp Directory Cleanup [MUST]
 
@@ -89,9 +89,9 @@ AS A developer, I WANT the temp directory cleaned up automatically, SO THAT disk
 
 ACCEPTANCE CRITERIA
 
-- AC-6.1 [event]: WHEN diff completes successfully THEN the system SHALL delete the temporary directory
-- AC-6.2 [event]: WHEN diff encounters an error THEN the system SHALL still delete the temporary directory
-- AC-6.3 [ubiquitous]: The system SHALL use try/finally or equivalent to ensure cleanup occurs
+- [ ] AC-6.1 [event]: WHEN diff completes successfully THEN the system SHALL delete the temporary directory
+- [ ] AC-6.2 [event]: WHEN diff encounters an error THEN the system SHALL still delete the temporary directory
+- [ ] AC-6.3 [ubiquitous]: The system SHALL use try/finally or equivalent to ensure cleanup occurs
 
 ### DIFF-7: CLI Options [MUST]
 
@@ -101,12 +101,12 @@ AS A developer, I WANT `diff` to share options with `generate`, SO THAT I can us
 
 ACCEPTANCE CRITERIA
 
-- AC-7.1 [ubiquitous]: The system SHALL accept `--output <path>` to specify the target directory for comparison
-- AC-7.2 [ubiquitous]: The system SHALL accept `--template <source>` to specify the template source
-- AC-7.3 [ubiquitous]: The system SHALL accept `--features <flag>...` as a variadic option
-- AC-7.4 [ubiquitous]: The system SHALL accept `--config <path>` to specify an alternate configuration file
-- AC-7.5 [ubiquitous]: The system SHALL accept `--refresh` flag to force re-fetch of cached templates
-- AC-7.6 [ubiquitous]: The system SHALL NOT accept `--force` or `--dry-run` flags — they are not applicable to diff
+- [ ] AC-7.1 [ubiquitous]: The system SHALL accept `--output <path>` to specify the target directory for comparison
+- [ ] AC-7.2 [ubiquitous]: The system SHALL accept `--template <source>` to specify the template source
+- [ ] AC-7.3 [ubiquitous]: The system SHALL accept `--features <flag>...` as a variadic option
+- [ ] AC-7.4 [ubiquitous]: The system SHALL accept `--config <path>` to specify an alternate configuration file
+- [ ] AC-7.5 [ubiquitous]: The system SHALL accept `--refresh` flag to force re-fetch of cached templates
+- [ ] AC-7.6 [ubiquitous]: The system SHALL NOT accept `--force` or `--dry-run` flags — they are not applicable to diff
 
 DEPENDS ON: CLI-2, CLI-3, CLI-4, CLI-7, CLI-8
 
