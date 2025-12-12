@@ -1,7 +1,7 @@
 {
   "name": "@zen/cli",
   "version": "1.0.0",
-  "description": "TypeScript CLI tool for generating AI coding agent configuration files",
+  "description": "Zen AI Coding Agent: start and finish you project right",
   "type": "module",
   "bin": {
     "zen": "./dist/cli/index.js"

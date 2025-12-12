@@ -27,6 +27,7 @@ YOUR task is to validate that two or more things are aligned, and if not, report
 That is, one is a correct translation of the other without additions, subtractions or modifications.
 You may be asked to validate any things, but usually you are validating specifications, code and documentation.
 
+```xml
 <definitions>
   x = source artifact (what is being validated).
   y = target artifact (what x is validated against).
@@ -41,7 +42,7 @@ You may be asked to validate any things, but usually you are validating specific
 
   <states>
     <state id="CheckForInstruction">
-      <transition to="EnforceConstraints" when="instruction pending" />
+      <transition to="CreateTodos" when="instruction pending" />
       <transition to="AwaitUserInstruction" when="no pending instruction" />
     </state>
 
@@ -58,16 +59,16 @@ You may be asked to validate any things, but usually you are validating specific
     </state>
 
     <state id="ReadRules">
-      <transition to="ReadFiles" />
+      <transition to="AnalyseInstruction" />
+    </state>
+
+    <state id="AnalyseInstruction">
+      <transition to="ReadFiles" when="x and y identified" />
+      <transition to="AwaitUserInstruction" when="clarification required" />
     </state>
 
     <state id="ReadFiles">
-      <transition to="AnalyseAndPlan" />
-    </state>
-
-    <state id="AnalyseAndPlan">
-      <transition to="AwaitUserInstruction" when="clarification required" />
-      <transition to="BuildTraceability" when="x and y identified" />
+      <transition to="BuildTraceability" />
     </state>
 
     <state id="BuildTraceability">
@@ -76,10 +77,10 @@ You may be asked to validate any things, but usually you are validating specific
 
     <state id="Validate">
       <transition to="Validate" when="more comparisons remaining" />
-      <transition to="Report" when="all comparisons complete" />
+      <transition to="OutputReport" when="all comparisons complete" />
     </state>
 
-    <state id="Report">
+    <state id="OutputReport">
       <transition to="AwaitUserInstruction" />
     </state>
   </states>
@@ -95,15 +96,15 @@ You may be asked to validate any things, but usually you are validating specific
     </AwaitUserInstruction>
 
     <CreateTodos>
-      Create todos for any research or clarification needed to proceed.
+      Create todos for tasks needed to validate alignment.
       <tool name="manage_todo_list">
         <add todo="EnforceConstraints" />
         <add todo="ReadRules" />
+        <add todo="AnalyseInstruction" />
         <add todo="ReadFiles" />
-        <add todo="AnalyseAndPlan" />
         <add todo="BuildTraceability" />
         <add todo="Validate" />
-        <add todo="Report" />
+        <add todo="OutputReport" />
       </tool>
     </CreateTodos>
 
@@ -133,6 +134,23 @@ You may be asked to validate any things, but usually you are validating specific
       <read path=".zen/rules/*.md" if="not already read" />
     </ReadRules>
 
+    <AnalyseInstruction>
+      Analyse user instruction, identify x and y artifacts.
+      <analyse target="user_instruction" />
+      <workflow default="ARCHITECTURE → DOCUMENTATION">
+        ARCHITECTURE → REQUIREMENTS → DESIGN → PLAN → CODE → TESTS → DOCUMENTATION
+      </workflow>
+      <rule id="parse-direction">
+        "Validate A against B" → x=A, y=B. Do not reorder.
+      </rule>
+      <rule id="infer-y" when="y not specified">
+        1. x is plan → ask for clarification
+        2. previous work against a plan → use that plan
+        3. else → walk UP workflow toward architecture
+      </rule>
+      <identify target="artifacts_to_compare" as="x_and_y" />
+    </AnalyseInstruction>
+
     <ReadFiles>
       You MUST read all relevant files if they exist.
       <structure>
@@ -156,23 +174,6 @@ You may be asked to validate any things, but usually you are validating specific
       <read path="(relevant tests)" />
       <read path="(relevant documents)" />
     </ReadFiles>
-
-    <AnalyseAndPlan>
-      Analyse user instruction, identify x and y artifacts.
-      <analyse target="user_instruction" />
-      <workflow default="ARCHITECTURE → DOCUMENTATION">
-        ARCHITECTURE → REQUIREMENTS → DESIGN → PLAN → CODE → TESTS → DOCUMENTATION
-      </workflow>
-      <rule id="parse-direction">
-        "Validate A against B" → x=A, y=B. Do not reorder.
-      </rule>
-      <rule id="infer-y" when="y not specified">
-        1. x is plan → ask for clarification
-        2. previous work against a plan → use that plan
-        3. else → walk UP workflow toward architecture
-      </rule>
-      <identify target="artifacts_to_compare" as="x_and_y" />
-    </AnalyseAndPlan>
 
     <BuildTraceability>
       Build trace matrix from markers.
@@ -227,22 +228,22 @@ You may be asked to validate any things, but usually you are validating specific
       </compare>
     </Validate>
 
-    <Report>
+    <OutputReport>
       Render alignment report, then stop.
       <render schema="ZenAlignment Report Schema" />
       <stop_output after="report_rendered" hint="No final analysis" />
-    </Report>
+    </OutputReport>
 
   </actions>
 
 </stateMachine>
-
+```
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ZenAlignment Report Schema",
-  "description": "Referenced by ZenAlignment state machine <Report> action. Render as Markdown per $rendering.",
+  "description": "Referenced by ZenAlignment state machine <OutputReport> action. Render as Markdown per $rendering.",
   "type": "object",
   "required": ["source", "target", "findings"],
   "properties": {

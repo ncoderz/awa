@@ -1,6 +1,4 @@
-# Diff Command Requirements
-
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-11
+# Requirements Specification
 
 ## Introduction
 
@@ -8,9 +6,9 @@ This document defines requirements for the Zen CLI `diff` command, which compare
 
 ## Glossary
 
-- **Target Directory**: The existing directory containing files to compare against generated output
-- **Unified Diff**: A standardized diff format showing context lines around changes, commonly used by Git
-- **Temp Directory**: An OS-provided temporary directory for intermediate file generation
+- TARGET DIRECTORY: The existing directory containing files to compare against generated output
+- UNIFIED DIFF: A standardized diff format showing context lines around changes, commonly used by Git
+- TEMP DIRECTORY: An OS-provided temporary directory for intermediate file generation
 
 ## Stakeholders
 
@@ -19,7 +17,7 @@ This document defines requirements for the Zen CLI `diff` command, which compare
 
 ## Requirements
 
-### DIFF-1: Temp Directory Generation [MUST] (proposed)
+### DIFF-1: Temp Directory Generation [MUST]
 
 AS A developer, I WANT templates generated to a temporary directory, SO THAT the target directory is never modified during comparison.
 
@@ -31,7 +29,7 @@ ACCEPTANCE CRITERIA
 - AC-1.2 [ubiquitous]: The system SHALL generate all templates into the temporary directory before comparison
 - AC-1.3 [ubiquitous]: The system SHALL NOT write any files to the target directory during diff operations
 
-### DIFF-2: File Comparison [MUST] (proposed)
+### DIFF-2: File Comparison [MUST]
 
 AS A developer, I WANT exact byte-for-byte comparison, SO THAT whitespace and formatting differences are detected.
 
@@ -45,7 +43,7 @@ ACCEPTANCE CRITERIA
 - AC-2.4 [conditional]: IF text files differ THEN the system SHALL compute a unified diff and display it to the console
 - AC-2.5 [conditional]: IF binary files differ THEN the system SHALL display "binary files differ" without diff content
 
-### DIFF-3: Missing File Detection [MUST] (proposed)
+### DIFF-3: Missing File Detection [MUST]
 
 AS A developer, I WANT to see files that exist in one directory but not the other, SO THAT I can identify new or removed templates.
 
@@ -57,7 +55,7 @@ ACCEPTANCE CRITERIA
 - AC-3.2 [conditional]: IF a target file has no corresponding generated file THEN the system SHALL report it as "extra file in target"
 - AC-3.3 [ubiquitous]: The system SHALL include missing file information in the diff output
 
-### DIFF-4: Diff Output Format [MUST] (proposed)
+### DIFF-4: Diff Output Format [MUST]
 
 AS A developer, I WANT git-style unified diff output with color, SO THAT differences are easy to read and understand.
 
@@ -71,7 +69,7 @@ ACCEPTANCE CRITERIA
 - AC-4.4 [event]: WHEN all files match THEN the system SHALL display a success message indicating no differences
 - AC-4.5 [ubiquitous]: The system SHALL display a summary line with file count and difference count — e.g., "3 files compared, 0 differences"
 
-### DIFF-5: Exit Codes [MUST] (proposed)
+### DIFF-5: Exit Codes [MUST]
 
 AS A CI system, I WANT predictable exit codes, SO THAT I can automate template drift detection in pipelines.
 
@@ -83,7 +81,7 @@ ACCEPTANCE CRITERIA
 - AC-5.2 [event]: WHEN any differences are found THEN the system SHALL exit with code 1
 - AC-5.3 [event]: WHEN an error occurs THEN the system SHALL exit with code 2
 
-### DIFF-6: Temp Directory Cleanup [MUST] (proposed)
+### DIFF-6: Temp Directory Cleanup [MUST]
 
 AS A developer, I WANT the temp directory cleaned up automatically, SO THAT disk space is not consumed by orphaned files.
 
@@ -95,7 +93,7 @@ ACCEPTANCE CRITERIA
 - AC-6.2 [event]: WHEN diff encounters an error THEN the system SHALL still delete the temporary directory
 - AC-6.3 [ubiquitous]: The system SHALL use try/finally or equivalent to ensure cleanup occurs
 
-### DIFF-7: CLI Options [MUST] (proposed)
+### DIFF-7: CLI Options [MUST]
 
 AS A developer, I WANT `diff` to share options with `generate`, SO THAT I can use the same configuration for both commands.
 

@@ -1,6 +1,4 @@
-# Configuration Requirements
-
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-11
+# Requirements Specification
 
 ## Introduction
 
@@ -8,9 +6,9 @@ This document defines requirements for the Zen CLI configuration system, includi
 
 ## Glossary
 
-- **Configuration File**: A `.zen.toml` file containing persistent CLI options
-- **Override**: CLI arguments taking precedence over configuration file values
-- **Kebab-case**: Naming convention using hyphens (e.g., `dry-run`)
+- CONFIGURATION FILE: A `.zen.toml` file containing persistent CLI options
+- OVERRIDE: CLI arguments taking precedence over configuration file values
+- KEBAB-CASE: Naming convention using hyphens (e.g., `dry-run`)
 
 ## Stakeholders
 
@@ -19,7 +17,7 @@ This document defines requirements for the Zen CLI configuration system, includi
 
 ## Requirements
 
-### CFG-1: Configuration File Loading [MUST] (proposed)
+### CFG-1: Configuration File Loading [MUST]
 
 AS A developer, I WANT configuration loaded from a file, SO THAT I don't need to specify options every time.
 
@@ -32,7 +30,7 @@ ACCEPTANCE CRITERIA
 - AC-1.3 [conditional]: IF `--config <path>` is provided THEN the system SHALL load configuration from the specified path
 - AC-1.4 [event]: WHEN `--config <path>` points to a non-existent file THEN the system SHALL display an error and exit
 
-### CFG-2: TOML Format Support [MUST] (proposed)
+### CFG-2: TOML Format Support [MUST]
 
 AS A developer, I WANT configuration in TOML format, SO THAT I can use a human-readable, standard format.
 
@@ -44,7 +42,7 @@ ACCEPTANCE CRITERIA
 - AC-2.2 [event]: WHEN TOML parsing fails THEN the system SHALL display a descriptive error with line number
 - AC-2.3 [ubiquitous]: The system SHALL support TOML 1.0 specification
 
-### CFG-3: Supported Configuration Options [MUST] (proposed)
+### CFG-3: Supported Configuration Options [MUST]
 
 AS A developer, I WANT all CLI options configurable in the file, SO THAT I can set any option persistently.
 
@@ -59,7 +57,7 @@ ACCEPTANCE CRITERIA
 - AC-3.5 [ubiquitous]: The configuration file SHALL support `dry-run` as a boolean
 - AC-3.6 [ubiquitous]: The configuration file SHALL support `refresh` as a boolean
 
-### CFG-4: CLI Override Behavior [MUST] (proposed)
+### CFG-4: CLI Override Behavior [MUST]
 
 AS A developer, I WANT CLI arguments to override config file values, SO THAT I can make one-off changes without editing the file.
 
@@ -72,7 +70,7 @@ ACCEPTANCE CRITERIA
 - AC-4.3 [conditional]: IF neither CLI argument nor config file value exists THEN the default value SHALL be used
 - AC-4.4 [ubiquitous]: The `features` array from CLI SHALL replace (not merge with) the config file array
 
-### CFG-5: Option Name Convention [MUST] (proposed)
+### CFG-5: Option Name Convention [MUST]
 
 AS A developer, I WANT consistent option naming, SO THAT I can easily map between CLI and config file.
 
@@ -83,7 +81,7 @@ ACCEPTANCE CRITERIA
 - AC-5.1 [ubiquitous]: Configuration file options SHALL use kebab-case naming (e.g., `dry-run`)
 - AC-5.2 [ubiquitous]: CLI options SHALL use the same kebab-case names as config file options
 
-### CFG-6: Unknown Option Handling [SHOULD] (proposed)
+### CFG-6: Unknown Option Handling [SHOULD]
 
 AS A developer, I WANT warnings for unknown config options, SO THAT I can catch typos in my configuration.
 

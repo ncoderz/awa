@@ -1,6 +1,4 @@
-# Generation Requirements
-
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-11
+# Requirements Specification
 
 ## Introduction
 
@@ -8,10 +6,10 @@ This document defines requirements for the Zen CLI file generation system, inclu
 
 ## Glossary
 
-- **Generation**: The process of rendering templates and writing output files
-- **Conflict**: A situation where an output file already exists
-- **Dry Run**: Simulation mode that reports actions without making changes
-- **Directory Mirroring**: Recreating template directory structure in output
+- GENERATION: The process of rendering templates and writing output files
+- CONFLICT: A situation where an output file already exists
+- DRY RUN: Simulation mode that reports actions without making changes
+- DIRECTORY MIRRORING: Recreating template directory structure in output
 
 ## Stakeholders
 
@@ -20,7 +18,7 @@ This document defines requirements for the Zen CLI file generation system, inclu
 
 ## Requirements
 
-### GEN-1: Directory Structure Mirroring [MUST] (proposed)
+### GEN-1: Directory Structure Mirroring [MUST]
 
 AS A developer, I WANT output structure to match template structure, SO THAT file organization is predictable.
 
@@ -32,7 +30,7 @@ ACCEPTANCE CRITERIA
 - AC-1.2 [event]: WHEN a template is at `templates/.github/agents/foo.md` THEN the output SHALL be at `<output>/.github/agents/foo.md`
 - AC-1.3 [ubiquitous]: The system SHALL preserve directory nesting depth from templates
 
-### GEN-2: Automatic Directory Creation [MUST] (proposed)
+### GEN-2: Automatic Directory Creation [MUST]
 
 AS A developer, I WANT missing directories created automatically, SO THAT I don't need to create them manually.
 
@@ -44,7 +42,7 @@ ACCEPTANCE CRITERIA
 - AC-2.2 [event]: WHEN creating directories THEN the system SHALL create all intermediate directories as needed
 - AC-2.3 [event]: WHEN directory creation fails due to permissions THEN the system SHALL display an error and exit
 
-### GEN-3: File Writing [MUST] (proposed)
+### GEN-3: File Writing [MUST]
 
 AS A developer, I WANT rendered templates written to files, SO THAT I have the generated output.
 
@@ -56,7 +54,7 @@ ACCEPTANCE CRITERIA
 - AC-3.2 [ubiquitous]: The system SHALL write files with UTF-8 encoding
 - AC-3.3 [ubiquitous]: The system SHALL preserve the template filename as the output filename
 
-### GEN-4: Conflict Detection [MUST] (proposed)
+### GEN-4: Conflict Detection [MUST]
 
 AS A developer, I WANT to know when files would be overwritten, SO THAT I don't accidentally lose changes.
 
@@ -68,7 +66,7 @@ ACCEPTANCE CRITERIA
 - AC-4.2 [conditional]: IF `--force` is not provided THEN the system SHALL handle the conflict via interactive prompt
 - AC-4.3 [conditional]: IF `--force` is provided THEN the system SHALL overwrite without prompting
 
-### GEN-5: Interactive Conflict Resolution [MUST] (proposed)
+### GEN-5: Interactive Conflict Resolution [MUST]
 
 AS A developer, I WANT to choose how to handle each conflict, SO THAT I have control over overwrites.
 
@@ -84,7 +82,7 @@ ACCEPTANCE CRITERIA
 - AC-5.6 [ubiquitous]: All files SHALL be checked (selected for overwrite) by default
 - AC-5.7 [event]: WHEN existing file content matches new content THEN the system SHALL skip the file without prompting
 
-### GEN-6: Dry Run Mode [MUST] (proposed)
+### GEN-6: Dry Run Mode [MUST]
 
 AS A developer, I WANT to preview generation without changes, SO THAT I can verify the outcome before committing.
 
@@ -97,7 +95,7 @@ ACCEPTANCE CRITERIA
 - AC-6.3 [conditional]: IF `--dry-run` is provided THEN the system SHALL NOT prompt for conflict resolution
 - AC-6.4 [conditional]: IF `--dry-run` is provided THEN the system SHALL display what actions would be taken
 
-### GEN-7: Dry Run Output [MUST] (proposed)
+### GEN-7: Dry Run Output [MUST]
 
 AS A developer, I WANT clear dry-run output, SO THAT I understand what would happen.
 
@@ -110,7 +108,7 @@ ACCEPTANCE CRITERIA
 - AC-7.3 [conditional]: IF `--dry-run` is provided THEN the system SHALL list files that would conflict
 - AC-7.4 [conditional]: IF `--dry-run` is provided THEN the system SHALL indicate the action that would be taken for each file
 
-### GEN-8: Underscore Prefix Exclusion [MUST] (proposed)
+### GEN-8: Underscore Prefix Exclusion [MUST]
 
 AS A developer, I WANT files starting with underscore excluded, SO THAT helper files don't appear in output.
 
@@ -122,7 +120,7 @@ ACCEPTANCE CRITERIA
 - AC-8.2 [ubiquitous]: The system SHALL NOT output directories whose names start with `_`
 - AC-8.3 [ubiquitous]: The system SHALL NOT traverse into directories whose names start with `_`
 
-### GEN-9: Generation Summary [SHOULD] (proposed)
+### GEN-9: Generation Summary [SHOULD]
 
 AS A developer, I WANT a summary after generation, SO THAT I know what was done.
 
@@ -137,7 +135,7 @@ ACCEPTANCE CRITERIA
 - AC-9.5 [conditional]: IF conflicts were skipped by user choice THEN the summary SHOULD include count of user-skipped files
 - AC-9.6 [conditional]: IF no files were created or overwritten THEN the system SHOULD display a warning message indicating no files were written
 
-### GEN-10: Exit Codes [MUST] (proposed)
+### GEN-10: Exit Codes [MUST]
 
 AS A CI system, I WANT meaningful exit codes, SO THAT I can detect success or failure.
 
@@ -149,7 +147,7 @@ ACCEPTANCE CRITERIA
 - AC-10.2 [event]: WHEN generation fails due to error THEN the system SHALL exit with a non-zero code
 - AC-10.3 [event]: WHEN user cancels during prompt THEN the system SHALL exit with a non-zero code
 
-### GEN-11: Error Handling [MUST] (proposed)
+### GEN-11: Error Handling [MUST]
 
 AS A developer, I WANT clear error messages, SO THAT I can diagnose and fix problems.
 

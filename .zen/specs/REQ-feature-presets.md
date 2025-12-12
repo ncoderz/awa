@@ -1,6 +1,4 @@
-# Feature Presets Requirements
-
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-12
+# Requirements Specification
 
 ## Introduction
 
@@ -19,7 +17,7 @@ This document defines requirements for feature presets and feature removal funct
 
 ## Requirements
 
-### FP-1: Preset Definition in Config [MUST] (proposed)
+### FP-1: Preset Definition in Config [MUST]
 
 AS A developer, I WANT to define named feature presets in my config file, SO THAT I can reuse common feature combinations.
 
@@ -32,7 +30,7 @@ ACCEPTANCE CRITERIA
 - AC-1.3 [event]: WHEN a preset value is not an array of strings THEN the system SHALL display a type error and exit
 - AC-1.4 [conditional]: IF the `[presets]` table is absent THEN the system SHALL continue without error
 
-### FP-2: Preset CLI Option [MUST] (proposed)
+### FP-2: Preset CLI Option [MUST]
 
 AS A developer, I WANT to activate presets from the command line, SO THAT I can select feature bundles at runtime.
 
@@ -45,7 +43,7 @@ ACCEPTANCE CRITERIA
 - AC-2.3 [event]: WHEN a preset name does not exist in config THEN the system SHALL display an error and exit
 - AC-2.4 [conditional]: IF `--preset` is not provided THEN the system SHALL use an empty preset list as default
 
-### FP-3: Preset Config Option [MUST] (proposed)
+### FP-3: Preset Config Option [MUST]
 
 AS A developer, I WANT to specify default presets in my config file, SO THAT I don't need to pass `--preset` every time.
 
@@ -57,7 +55,7 @@ ACCEPTANCE CRITERIA
 - AC-3.2 [conditional]: IF CLI `--preset` is provided THEN it SHALL replace the config `preset` value
 - AC-3.3 [conditional]: IF neither CLI nor config specifies presets THEN the system SHALL use an empty array
 
-### FP-4: Remove Features CLI Option [MUST] (proposed)
+### FP-4: Remove Features CLI Option [MUST]
 
 AS A developer, I WANT to remove specific features from the final set, SO THAT I can exclude unwanted features without modifying presets.
 
@@ -71,7 +69,7 @@ ACCEPTANCE CRITERIA
 - AC-4.4 [conditional]: IF a removed feature does not exist in the feature set THEN the system SHALL silently ignore it
 - AC-4.5 [conditional]: IF `--remove-features` is not provided THEN the system SHALL use an empty removal list
 
-### FP-5: Remove Features Config Option [MUST] (proposed)
+### FP-5: Remove Features Config Option [MUST]
 
 AS A developer, I WANT to specify removed features in my config file, SO THAT I can persistently exclude features.
 
@@ -83,7 +81,7 @@ ACCEPTANCE CRITERIA
 - AC-5.2 [conditional]: IF CLI `--remove-features` is provided THEN it SHALL replace the config `remove-features` value
 - AC-5.3 [conditional]: IF neither CLI nor config specifies removals THEN the system SHALL use an empty array
 
-### FP-6: Feature Resolution Order [MUST] (proposed)
+### FP-6: Feature Resolution Order [MUST]
 
 AS A developer, I WANT a predictable feature resolution order, SO THAT I can reason about the final feature set.
 
@@ -97,7 +95,7 @@ ACCEPTANCE CRITERIA
 - AC-6.4 [ubiquitous]: The system SHALL compute the final features by removing all `remove-features` from the combined set
 - AC-6.5 [ubiquitous]: The system SHALL deduplicate the final feature set
 
-### FP-7: Preset Feature Union [MUST] (proposed)
+### FP-7: Preset Feature Union [MUST]
 
 AS A developer, I WANT multiple presets to be merged, SO THAT I can combine preset bundles.
 

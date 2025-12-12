@@ -1,6 +1,4 @@
-# Template Requirements
-
-> VERSION: 1.0.0 | STATUS: draft | UPDATED: 2025-12-11
+# Requirements Specification
 
 ## Introduction
 
@@ -8,11 +6,11 @@ This document defines requirements for the Zen CLI template system, including te
 
 ## Glossary
 
-- **Template Source**: A local directory path or Git repository containing template files
-- **Partial**: A reusable template fragment stored in `_partials/` directory
-- **Feature Flag**: A string identifier passed to templates for conditional rendering
-- **Git Shorthand**: Abbreviated Git repository reference (e.g., `owner/repo`)
-- **Ref**: A Git branch, tag, or commit hash specifier
+- TEMPLATE SOURCE: A local directory path or Git repository containing template files
+- PARTIAL: A reusable template fragment stored in `_partials/` directory
+- FEATURE FLAG: A string identifier passed to templates for conditional rendering
+- GIT SHORTHAND: Abbreviated Git repository reference (e.g., `owner/repo`)
+- REF: A Git branch, tag, or commit hash specifier
 
 ## Stakeholders
 
@@ -21,7 +19,7 @@ This document defines requirements for the Zen CLI template system, including te
 
 ## Requirements
 
-### TPL-1: Local Template Source [MUST] (proposed)
+### TPL-1: Local Template Source [MUST]
 
 AS A developer, I WANT to use local template directories, SO THAT I can develop and test templates locally.
 
@@ -34,7 +32,7 @@ ACCEPTANCE CRITERIA
 - AC-1.3 [event]: WHEN the local template path does not exist THEN the system SHALL display an error and exit
 - AC-1.4 [ubiquitous]: The system SHALL NOT cache local template sources
 
-### TPL-2: Git Repository Template Source [MUST] (proposed)
+### TPL-2: Git Repository Template Source [MUST]
 
 AS A developer, I WANT to use templates from Git repositories, SO THAT I can share templates across projects.
 
@@ -49,7 +47,7 @@ ACCEPTANCE CRITERIA
 - AC-2.5 [ubiquitous]: The system SHALL support subdirectory paths `owner/repo/path/to/templates`
 - AC-2.6 [ubiquitous]: The system SHALL support ref specifiers `owner/repo#branch`, `owner/repo#tag`, `owner/repo#commit`
 
-### TPL-3: Template Caching [MUST] (proposed)
+### TPL-3: Template Caching [MUST]
 
 AS A developer, I WANT Git templates cached locally, SO THAT repeated runs don't require network access.
 
@@ -62,7 +60,7 @@ ACCEPTANCE CRITERIA
 - AC-3.3 [conditional]: IF `--refresh` is provided THEN the system SHALL re-fetch the Git template
 - AC-3.4 [event]: WHEN fetching a Git template THEN the system SHALL perform a shallow fetch without `.git` directory
 
-### TPL-4: Template Rendering [MUST] (proposed)
+### TPL-4: Template Rendering [MUST]
 
 AS A template author, I WANT Eta template syntax, SO THAT I can create dynamic templates.
 
@@ -75,7 +73,7 @@ ACCEPTANCE CRITERIA
 - AC-4.3 [ubiquitous]: The system SHALL support control flow tags `<% code %>`
 - AC-4.4 [ubiquitous]: The system SHALL support raw output tags `<%~ expression %>`
 
-### TPL-5: Feature Flag Context [MUST] (proposed)
+### TPL-5: Feature Flag Context [MUST]
 
 AS A template author, I WANT access to feature flags in templates, SO THAT I can conditionally include content.
 
@@ -87,7 +85,7 @@ ACCEPTANCE CRITERIA
 - AC-5.2 [ubiquitous]: The `it.features` array SHALL contain all feature flag strings passed via CLI or config
 - AC-5.3 [state]: WHEN no features are provided THEN `it.features` SHALL be an empty array
 
-### TPL-6: Conditional Template Logic [MUST] (proposed)
+### TPL-6: Conditional Template Logic [MUST]
 
 AS A template author, I WANT to check for feature flags, SO THAT I can include content conditionally.
 
@@ -98,7 +96,7 @@ ACCEPTANCE CRITERIA
 - AC-6.1 [ubiquitous]: Templates SHALL support checking features via `it.features.includes('feature-name')`
 - AC-6.2 [event]: WHEN a feature check evaluates to false THEN the conditional content SHALL be excluded from output
 
-### TPL-7: Empty Output Handling [MUST] (proposed)
+### TPL-7: Empty Output Handling [MUST]
 
 AS A template author, I WANT empty output to skip file creation, SO THAT optional files aren't created unnecessarily.
 
@@ -110,7 +108,7 @@ ACCEPTANCE CRITERIA
 - AC-7.2 [conditional]: IF rendered template contains only `<!-- ZEN:EMPTY_FILE -->` marker THEN the system SHALL create an empty file
 - AC-7.3 [event]: WHEN empty output causes file skip THEN the system SHALL log that the file was skipped
 
-### TPL-8: Partial Templates [MUST] (proposed)
+### TPL-8: Partial Templates [MUST]
 
 AS A template author, I WANT reusable partial templates, SO THAT I can share content across multiple templates.
 
@@ -123,7 +121,7 @@ ACCEPTANCE CRITERIA
 - AC-8.3 [ubiquitous]: Partials SHALL receive the same context object as the including template
 - AC-8.4 [ubiquitous]: Partials SHALL support the same Eta syntax as regular templates
 
-### TPL-9: Partial Exclusion from Output [MUST] (proposed)
+### TPL-9: Partial Exclusion from Output [MUST]
 
 AS A developer, I WANT partials excluded from generated output, SO THAT only final files are created.
 
@@ -134,7 +132,7 @@ ACCEPTANCE CRITERIA
 - AC-9.1 [ubiquitous]: The system SHALL NOT output files from the `_partials/` directory
 - AC-9.2 [ubiquitous]: The system SHALL NOT output any file or directory whose name starts with `_`
 
-### TPL-10: Default Templates [SHOULD] (proposed)
+### TPL-10: Default Templates [SHOULD]
 
 AS A developer, I WANT bundled default templates, SO THAT I can generate standard agent files immediately.
 
@@ -146,7 +144,7 @@ ACCEPTANCE CRITERIA
 - AC-10.2 [ubiquitous]: Default templates SHALL generate `.github/agents/*.agent.md` files
 - AC-10.3 [ubiquitous]: Default templates SHALL support common feature flags for agent configuration
 
-### TPL-11: Template Compilation Caching [SHOULD] (proposed)
+### TPL-11: Template Compilation Caching [SHOULD]
 
 AS A developer, I WANT templates compiled once per session, SO THAT generation is fast.
 
