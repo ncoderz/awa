@@ -128,105 +128,100 @@ Any artifact exceeding 500 lines MUST be split logically into multiple files.
 
 ### Mode State Machine
 
-<stateMachine name="ZenArchitect" initialState="ReadRules_state">
+```xml
+<stateMachine name="ZenArchitect" initial="CheckForInstruction">
 
-  <state id="ReadRules_state" label="Read Rules">
-    <description>Read project-specific rules that may affect architecture decisions</description>
-    <actions>
-      <read path=".zen/rules/*.md" description="Project-specific rules" />
-    </actions>
-    <transitions>
-      <transition target="AwaitUserInstruction_state" condition="No pending instruction" />
-      <transition target="ReadFiles_state" condition="Instruction pending" />
-    </transitions>
-  </state>
+  <states>
+    <state id="CheckForInstruction">
+      <transition to="ReadRules" when="instruction pending" />
+      <transition to="AwaitUserInstruction" when="no pending instruction" />
+    </state>
 
-  <state id="AwaitUserInstruction_state" label="Await User Instruction">
-    <description>Wait for an instruction</description>
-    <actions>
+    <state id="AwaitUserInstruction">
+      <transition to="ReadRules" when="user instruction received" />
+    </state>
+
+    <state id="ReadRules">
+      <transition to="ReadFiles" />
+    </state>
+
+    <state id="ReadFiles">
+      <transition to="AnalyseAndPlan" />
+    </state>
+
+    <state id="AnalyseAndPlan">
+      <transition to="WriteArchitecture" />
+    </state>
+
+    <state id="WriteArchitecture">
+      <transition to="ValidateArchitecture" when="architecture written" />
+    </state>
+
+    <state id="ValidateArchitecture">
+      <transition to="OutputSummary" when="✅ user approves architecture" />
+      <transition to="AnalyseAndPlan" when="user requests changes" />
+    </state>
+
+    <state id="OutputSummary">
+      <transition to="WriteArchitecture" when="more tasks remaining" />
+      <transition to="AwaitUserInstruction" when="all tasks complete" />
+    </state>
+  </states>
+
+  <actions>
+    <CheckForInstruction>
+      Check if user has provided an instruction.
+    </CheckForInstruction>
+
+    <AwaitUserInstruction>
+      Wait for an instruction.
       <wait for="user_instruction" />
-    </actions>
-    <transitions>
-      <transition target="ReadFiles_state" condition="User instruction received" />
-    </transitions>
-  </state>
+    </AwaitUserInstruction>
 
-  <state id="ReadFiles_state" label="Read Files">
-    <description>You MUST read all relevant files if they exist</description>
-    <actions>
-      <read path=".zen/specs/ARCHITECTURE.md" description="Architecture" />
-      <read path=".zen/specs/REQ-{feature-name}.md" description="Relevant Requirements" />
-      <read path=".zen/specs/DESIGN-{feature-name}.md" description="Relevant Design" />
-      <read path=".zen/specs/API-{api-name}.tsp" description="Relevant APIs" />
-      <read path="(relevant code)" description="Existing code structure" optional="true" />
-      <read path="(relevant tests)" description="Existing test structure" optional="true" />
-      <read path="(relevant docs)" description="Existing documentation" optional="true" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseAndPlan_state" />
-    </transitions>
-  </state>
+    <ReadRules>
+      Read project-specific rules that may affect architecture decisions.
+      <read path=".zen/rules/*.md" />
+    </ReadRules>
 
-  <state id="AnalyseAndPlan_state" label="Analyse and Plan">
-    <description>Analyse user request, consider solution, clarify open points with user</description>
-    <actions>
+    <ReadFiles>
+      You MUST read all relevant files if they exist.
+      <read path=".zen/specs/ARCHITECTURE.md" />
+      <read path=".zen/specs/REQ-{feature-name}.md" />
+      <read path=".zen/specs/DESIGN-{feature-name}.md" />
+      <read path=".zen/specs/API-{api-name}.tsp" />
+      <read path="(relevant code)" optional="true" />
+      <read path="(relevant tests)" optional="true" />
+      <read path="(relevant docs)" optional="true" />
+    </ReadFiles>
+
+    <AnalyseAndPlan>
+      Analyse user request, consider solution, clarify open points with user.
       <analyse target="user_request" />
       <identify target="architectural_changes" />
       <clarify target="open_points" with="user" />
-    </actions>
-    <transitions>
-      <transition target="CreateTasks_state" />
-    </transitions>
-  </state>
+    </AnalyseAndPlan>
 
-  <state id="CreateTasks_state" label="Create Tasks">
-    <description>Use your task tool to create tasks to implement the plan</description>
-    <actions>
-      <create target="tasks" using="todos_tool or task_tool" />
-    </actions>
-    <transitions>
-      <transition target="WriteArchitecture_state" />
-    </transitions>
-  </state>
-
-  <state id="WriteArchitecture_state" label="Write Architecture">
-    <description>Implement the architecture tasks</description>
-    <actions>
-      <update target="task" status="in-progress" />
+    <WriteArchitecture>
+      Implement the architecture tasks.
       <write target="architecture" for="current_task" />
-    </actions>
-    <transitions>
-      <transition target="ValidateArchitecture_state" condition="Architecture written" />
-    </transitions>
-  </state>
+    </WriteArchitecture>
 
-  <state id="ValidateArchitecture_state" label="Validate Architecture">
-    <description>Present architecture to user and await approval before proceeding</description>
-    <actions>
+    <ValidateArchitecture>
+      Present architecture to user and await approval before proceeding.
       <present target="architecture" to="user" />
       <wait for="user_approval" />
-    </actions>
-    <transitions>
-      <transition target="OutputSummary_state" condition="✅ User approves architecture" />
-      <transition target="AnalyseAndPlan_state" condition="User requests changes" />
-    </transitions>
-  </state>
+    </ValidateArchitecture>
 
-  <state id="OutputSummary_state" label="Output Summary">
-    <description>Provide a concise summary of the completed work to the user</description>
-    <actions>
-      <update target="task" status="complete" />
+    <OutputSummary>
+      Provide a concise summary of the completed work to the user.
       <summarise target="changes_made" />
       <list target="files_modified" />
       <suggest target="proceed_to_design_mode" />
-    </actions>
-    <transitions>
-      <transition target="WriteArchitecture_state" condition="More tasks remaining" />
-      <transition target="AwaitUserInstruction_state" condition="All tasks complete" />
-    </transitions>
-  </state>
+    </OutputSummary>
+  </actions>
 
 </stateMachine>
+```
 
 
 ### File Access Permissions

@@ -129,123 +129,125 @@ Any artifact exceeding 500 lines MUST be split logically into multiple files.
 
 ### Mode State Machine
 
-<stateMachine name="Zen" initialState="ReadRules_state">
+```xml
+<stateMachine name="Zen" initial="CheckForInstruction">
 
-  <state id="ReadRules_state" label="Read Rules">
-    <description>Read project-specific rules</description>
-    <actions>
-      <read path=".zen/rules/*.md" description="Project-specific rules" />
-    </actions>
-    <transitions>
-      <transition target="AwaitUserInstruction_state" condition="No pending instruction" />
-      <transition target="AnalyseRequest_state" condition="Instruction pending" />
-    </transitions>
-  </state>
+  <states>
+    <state id="CheckForInstruction">
+      <transition to="ReadRules" when="instruction pending" />
+      <transition to="AwaitUserInstruction" when="no pending instruction" />
+    </state>
 
-  <state id="AwaitUserInstruction_state" label="Await User Instruction">
-    <description>Wait for an instruction</description>
-    <actions>
+    <state id="AwaitUserInstruction">
+      <transition to="ReadRules" when="user instruction received" />
+    </state>
+
+    <state id="ReadRules">
+      <transition to="AnalyseRequest" />
+    </state>
+
+    <state id="AnalyseRequest">
+      <transition to="ReadFiles" />
+    </state>
+
+    <state id="ReadFiles">
+      <transition to="PlanWork" />
+    </state>
+
+    <state id="PlanWork">
+      <transition to="ExecuteWork" when="plan approved or simple work" />
+      <transition to="AnalyseRequest" when="user requests changes" />
+    </state>
+
+    <state id="ExecuteWork">
+      <transition to="ValidateWork" />
+    </state>
+
+    <state id="ValidateWork">
+      <transition to="ExecuteWork" when="fixable errors AND iterations &lt; 10" />
+      <transition to="EscalateToUser" when="errors AND iterations >= 10" />
+      <transition to="OutputSummary" when="no errors or tests pass" />
+    </state>
+
+    <state id="EscalateToUser">
+      <transition to="AnalyseRequest" when="user provides guidance" />
+      <transition to="OutputSummary" when="user accepts current state" />
+    </state>
+
+    <state id="OutputSummary">
+      <transition to="ExecuteWork" when="more tasks remaining" />
+      <transition to="AwaitUserInstruction" when="all tasks complete" />
+    </state>
+  </states>
+
+  <actions>
+    <CheckForInstruction>
+      Check if user has provided an instruction.
+    </CheckForInstruction>
+
+    <AwaitUserInstruction>
+      Wait for an instruction.
       <wait for="user_instruction" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseRequest_state" condition="User instruction received" />
-    </transitions>
-  </state>
+    </AwaitUserInstruction>
 
-  <state id="AnalyseRequest_state" label="Analyse Request">
-    <description>Determine workflow direction and scope</description>
-    <actions>
+    <ReadRules>
+      Read project-specific rules.
+      <read path=".zen/rules/*.md" />
+    </ReadRules>
+
+    <AnalyseRequest>
+      Determine workflow direction and scope.
       <analyse target="user_request" />
       <determine target="workflow_direction" options="forward|reverse|exploratory" />
       <identify target="relevant_files" />
-    </actions>
-    <transitions>
-      <transition target="ReadFiles_state" />
-    </transitions>
-  </state>
+    </AnalyseRequest>
 
-  <state id="ReadFiles_state" label="Read Files">
-    <description>Read relevant files based on workflow direction</description>
-    <actions>
-      <read path=".zen/specs/ARCHITECTURE.md" description="Architecture" optional="true" />
-      <read path=".zen/specs/REQ-{feature-name}.md" description="Requirements" optional="true" />
-      <read path=".zen/specs/DESIGN-{feature-name}.md" description="Design" optional="true" />
-      <read path=".zen/specs/API-{api-name}.tsp" description="APIs" optional="true" />
-      <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" description="Plans" optional="true" />
-      <read path="(relevant code)" description="Code Files" optional="true" />
-      <read path="(relevant tests)" description="Test Files" optional="true" />
-      <read path="(relevant documentation)" description="Documentation" optional="true" />
-    </actions>
-    <transitions>
-      <transition target="PlanWork_state" />
-    </transitions>
-  </state>
+    <ReadFiles>
+      Read relevant files based on workflow direction.
+      <read path=".zen/specs/ARCHITECTURE.md" optional="true" />
+      <read path=".zen/specs/REQ-{feature-name}.md" optional="true" />
+      <read path=".zen/specs/DESIGN-{feature-name}.md" optional="true" />
+      <read path=".zen/specs/API-{api-name}.tsp" optional="true" />
+      <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" optional="true" />
+      <read path="(relevant code)" optional="true" />
+      <read path="(relevant tests)" optional="true" />
+      <read path="(relevant documentation)" optional="true" />
+    </ReadFiles>
 
-  <state id="PlanWork_state" label="Plan Work">
-    <description>Create tasks based on workflow direction</description>
-    <actions>
-      <create target="tasks" using="todos_tool" />
+    <PlanWork>
+      Create plan based on workflow direction.
       <present target="plan" to="user" if="complex_work" />
       <wait for="user_approval" if="complex_work" />
-    </actions>
-    <transitions>
-      <transition target="ExecuteWork_state" condition="Plan approved or simple work" />
-      <transition target="AnalyseRequest_state" condition="User requests changes" />
-    </transitions>
-  </state>
+    </PlanWork>
 
-  <state id="ExecuteWork_state" label="Execute Work">
-    <description>Execute the current task - any artifact type</description>
-    <actions>
-      <update target="task" status="in-progress" />
+    <ExecuteWork>
+      Execute the current task - any artifact type.
       <write target="artifact" for="current_task" />
       <add marker="traceability" if="code_and_specs_exist" />
-    </actions>
-    <transitions>
-      <transition target="ValidateWork_state" />
-    </transitions>
-  </state>
+    </ExecuteWork>
 
-  <state id="ValidateWork_state" label="Validate Work">
-    <description>Run tests if applicable, check for errors</description>
-    <actions>
+    <ValidateWork>
+      Run tests if applicable, check for errors.
       <run target="tests" if="tests_exist" />
       <check target="errors" />
-    </actions>
-    <transitions>
-      <transition target="ExecuteWork_state" condition="Fixable errors AND iterations < 10" />
-      <transition target="EscalateToUser_state" condition="Errors AND iterations >= 10" />
-      <transition target="OutputSummary_state" condition="No errors or tests pass" />
-    </transitions>
-  </state>
+    </ValidateWork>
 
-  <state id="EscalateToUser_state" label="Escalate to User">
-    <description>Multiple fix attempts failed</description>
-    <actions>
+    <EscalateToUser>
+      Multiple fix attempts failed. Present findings and request guidance.
       <present target="findings" to="user" />
       <wait for="user_guidance" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseRequest_state" condition="User provides guidance" />
-      <transition target="OutputSummary_state" condition="User accepts current state" />
-    </transitions>
-  </state>
+    </EscalateToUser>
 
-  <state id="OutputSummary_state" label="Output Summary">
-    <description>Summarise completed work</description>
-    <actions>
-      <update target="task" status="complete" />
+    <OutputSummary>
+      Summarise completed work.
       <summarise target="changes_made" />
       <list target="files_modified" />
       <report target="traceability_status" />
-    </actions>
-    <transitions>
-      <transition target="ExecuteWork_state" condition="More tasks remaining" />
-      <transition target="AwaitUserInstruction_state" condition="All tasks complete" />
-    </transitions>
-  </state>
+    </OutputSummary>
+  </actions>
 
 </stateMachine>
+```
 
 ### File Access Permissions
 

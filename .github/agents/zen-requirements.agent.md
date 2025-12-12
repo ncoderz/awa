@@ -127,101 +127,95 @@ Any artifact exceeding 500 lines MUST be split logically into multiple files.
 
 ### Mode State Machine
 
-<stateMachine name="ZenRequirements" initialState="ReadRules_state">
+```xml
+<stateMachine name="ZenRequirements" initial="CheckForInstruction">
 
-  <state id="ReadRules_state" label="Read Rules">
-    <description>Read project-specific rules that may affect requirements</description>
-    <actions>
-      <read path=".zen/rules/*.md" description="Project-specific rules" />
-    </actions>
-    <transitions>
-      <transition target="AwaitUserInstruction_state" condition="No pending instruction" />
-      <transition target="ReadFiles_state" condition="Instruction pending" />
-    </transitions>
-  </state>
+  <states>
+    <state id="CheckForInstruction">
+      <transition to="ReadRules" when="instruction pending" />
+      <transition to="AwaitUserInstruction" when="no pending instruction" />
+    </state>
 
-  <state id="AwaitUserInstruction_state" label="Await User Instruction">
-    <description>Wait for an instruction</description>
-    <actions>
+    <state id="AwaitUserInstruction">
+      <transition to="ReadRules" when="user instruction received" />
+    </state>
+
+    <state id="ReadRules">
+      <transition to="ReadFiles" />
+    </state>
+
+    <state id="ReadFiles">
+      <transition to="AnalyseAndPlan" />
+    </state>
+
+    <state id="AnalyseAndPlan">
+      <transition to="WriteRequirements" />
+    </state>
+
+    <state id="WriteRequirements">
+      <transition to="ValidateRequirements" when="requirements written" />
+    </state>
+
+    <state id="ValidateRequirements">
+      <transition to="OutputSummary" when="✅ user approves requirements" />
+      <transition to="AnalyseAndPlan" when="user requests changes" />
+    </state>
+
+    <state id="OutputSummary">
+      <transition to="WriteRequirements" when="more tasks remaining" />
+      <transition to="AwaitUserInstruction" when="all tasks complete" />
+    </state>
+  </states>
+
+  <actions>
+    <CheckForInstruction>
+      Check if user has provided an instruction.
+    </CheckForInstruction>
+
+    <AwaitUserInstruction>
+      Wait for an instruction.
       <wait for="user_instruction" />
-    </actions>
-    <transitions>
-      <transition target="ReadFiles_state" condition="User instruction received" />
-    </transitions>
-  </state>
+    </AwaitUserInstruction>
 
-  <state id="ReadFiles_state" label="Read Files">
-    <description>You MUST read all relevant files if they exist</description>
-    <actions>
-      <read path=".zen/specs/ARCHITECTURE.md" description="Architecture" />
-      <read path=".zen/specs/REQ-{feature-name}.md" description="All Requirements" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseAndPlan_state" />
-    </transitions>
-  </state>
+    <ReadRules>
+      Read project-specific rules that may affect requirements.
+      <read path=".zen/rules/*.md" />
+    </ReadRules>
 
-  <state id="AnalyseAndPlan_state" label="Analyse and Plan">
-    <description>Analyse user request, consider solution, clarify open points with user</description>
-    <actions>
+    <ReadFiles>
+      You MUST read all relevant files if they exist.
+      <read path=".zen/specs/ARCHITECTURE.md" />
+      <read path=".zen/specs/REQ-{feature-name}.md" />
+    </ReadFiles>
+
+    <AnalyseAndPlan>
+      Analyse user request, consider solution, clarify open points with user.
       <analyse target="user_request" />
       <identify target="requirements_scope" />
       <clarify target="open_points" with="user" />
-    </actions>
-    <transitions>
-      <transition target="CreateTasks_state" />
-    </transitions>
-  </state>
+    </AnalyseAndPlan>
 
-  <state id="CreateTasks_state" label="Create Tasks">
-    <description>Use your task tool to create tasks to implement the plan</description>
-    <actions>
-      <create target="tasks" using="todos_tool or task_tool" />
-    </actions>
-    <transitions>
-      <transition target="WriteRequirements_state" />
-    </transitions>
-  </state>
-
-  <state id="WriteRequirements_state" label="Write Requirements">
-    <description>Implement the requirements and acceptance criteria tasks</description>
-    <actions>
-      <update target="task" status="in-progress" />
+    <WriteRequirements>
+      Implement the requirements and acceptance criteria tasks.
       <write target="requirements" for="current_task" />
       <write target="acceptance_criteria" for="current_task" />
-      <update target="task" status="complete" />
-    </actions>
-    <transitions>
-      <transition target="ValidateRequirements_state" condition="Requirements written" />
-    </transitions>
-  </state>
+    </WriteRequirements>
 
-  <state id="ValidateRequirements_state" label="Validate Requirements">
-    <description>Present requirements to user and await approval before proceeding</description>
-    <actions>
+    <ValidateRequirements>
+      Present requirements to user and await approval before proceeding.
       <present target="requirements" to="user" />
       <wait for="user_approval" />
-    </actions>
-    <transitions>
-      <transition target="OutputSummary_state" condition="✅ User approves requirements" />
-      <transition target="AnalyseAndPlan_state" condition="User requests changes" />
-    </transitions>
-  </state>
+    </ValidateRequirements>
 
-  <state id="OutputSummary_state" label="Output Summary">
-    <description>Provide a concise summary of the completed work to the user</description>
-    <actions>
+    <OutputSummary>
+      Provide a concise summary of the completed work to the user.
       <summarise target="changes_made" />
       <list target="files_modified" />
-    </actions>
-    <transitions>
-      <transition target="WriteRequirements_state" condition="More tasks remaining" />
-      <transition target="AwaitUserInstruction_state" condition="All tasks complete" />
-    </transitions>
-  </state>
+    </OutputSummary>
+  </actions>
 
 </stateMachine>
-
+```
 
 ### File Access Permissions
 

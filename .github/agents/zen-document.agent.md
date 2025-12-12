@@ -122,105 +122,100 @@ Any artifact exceeding 500 lines MUST be split logically into multiple files.
 
 ### Mode State Machine
 
-<stateMachine name="ZenDocument" initialState="ReadRules_state">
+```xml
+<stateMachine name="ZenDocument" initial="CheckForInstruction">
 
-  <state id="ReadRules_state" label="Read Rules">
-    <description>Read project-specific rules that may affect documentation</description>
-    <actions>
-      <read path=".zen/rules/*.md" description="Project-specific rules" />
-    </actions>
-    <transitions>
-      <transition target="AwaitUserInstruction_state" condition="No pending instruction" />
-      <transition target="ReadFiles_state" condition="Instruction pending" />
-    </transitions>
-  </state>
+  <states>
+    <state id="CheckForInstruction">
+      <transition to="ReadRules" when="instruction pending" />
+      <transition to="AwaitUserInstruction" when="no pending instruction" />
+    </state>
 
-  <state id="AwaitUserInstruction_state" label="Await User Instruction">
-    <description>Wait for an instruction</description>
-    <actions>
+    <state id="AwaitUserInstruction">
+      <transition to="ReadRules" when="user instruction received" />
+    </state>
+
+    <state id="ReadRules">
+      <transition to="ReadFiles" />
+    </state>
+
+    <state id="ReadFiles">
+      <transition to="AnalyseAndPlan" />
+    </state>
+
+    <state id="AnalyseAndPlan">
+      <transition to="WriteDocumentation" />
+    </state>
+
+    <state id="WriteDocumentation">
+      <transition to="ValidateDocumentation" when="documentation written" />
+    </state>
+
+    <state id="ValidateDocumentation">
+      <transition to="OutputSummary" when="✅ user approves documentation" />
+      <transition to="AnalyseAndPlan" when="user requests changes" />
+    </state>
+
+    <state id="OutputSummary">
+      <transition to="WriteDocumentation" when="more tasks remaining" />
+      <transition to="AwaitUserInstruction" when="all tasks complete" />
+    </state>
+  </states>
+
+  <actions>
+    <CheckForInstruction>
+      Check if user has provided an instruction.
+    </CheckForInstruction>
+
+    <AwaitUserInstruction>
+      Wait for an instruction.
       <wait for="user_instruction" />
-    </actions>
-    <transitions>
-      <transition target="ReadFiles_state" condition="User instruction received" />
-    </transitions>
-  </state>
+    </AwaitUserInstruction>
 
-  <state id="ReadFiles_state" label="Read Files">
-    <description>You MUST read all relevant files if they exist</description>
-    <actions>
-      <read path=".zen/specs/ARCHITECTURE.md" description="Architecture" />
-      <read path=".zen/specs/REQ-{feature-name}.md" description="Relevant Requirements" />
-      <read path=".zen/specs/DESIGN-{feature-name}.md" description="Relevant Design" />
-      <read path=".zen/specs/API-{api-name}.tsp" description="Relevant APIs" />
-      <read path="(relevant code)" description="Code Files" optional="true" />
-      <read path="(relevant tests)" description="Test Files" optional="true" />
-      <read path="README.md" description="Existing README" />
-      <read path="doc/*" description="Existing Documentation" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseAndPlan_state" />
-    </transitions>
-  </state>
+    <ReadRules>
+      Read project-specific rules that may affect documentation.
+      <read path=".zen/rules/*.md" />
+    </ReadRules>
 
-  <state id="AnalyseAndPlan_state" label="Analyse and Plan">
-    <description>Analyse user request, consider solution, clarify open points with user</description>
-    <actions>
+    <ReadFiles>
+      You MUST read all relevant files if they exist.
+      <read path=".zen/specs/ARCHITECTURE.md" />
+      <read path=".zen/specs/REQ-{feature-name}.md" />
+      <read path=".zen/specs/DESIGN-{feature-name}.md" />
+      <read path=".zen/specs/API-{api-name}.tsp" />
+      <read path="(relevant code)" optional="true" />
+      <read path="(relevant tests)" optional="true" />
+      <read path="README.md" />
+      <read path="doc/*" />
+    </ReadFiles>
+
+    <AnalyseAndPlan>
+      Analyse user request, consider solution, clarify open points with user.
       <analyse target="user_request" />
       <identify target="documentation_scope" />
       <clarify target="open_points" with="user" />
-    </actions>
-    <transitions>
-      <transition target="CreateTasks_state" />
-    </transitions>
-  </state>
+    </AnalyseAndPlan>
 
-  <state id="CreateTasks_state" label="Create Tasks">
-    <description>Use your task tool to create tasks to implement the plan</description>
-    <actions>
-      <create target="tasks" using="todos_tool or task_tool" />
-    </actions>
-    <transitions>
-      <transition target="WriteDocumentation_state" />
-    </transitions>
-  </state>
-
-  <state id="WriteDocumentation_state" label="Write Documentation">
-    <description>Implement the documentation tasks</description>
-    <actions>
-      <update target="task" status="in-progress" />
+    <WriteDocumentation>
+      Implement the documentation tasks.
       <write target="documentation" for="current_task" />
-      <update target="task" status="complete" />
-    </actions>
-    <transitions>
-      <transition target="ValidateDocumentation_state" condition="Documentation written" />
-    </transitions>
-  </state>
+    </WriteDocumentation>
 
-  <state id="ValidateDocumentation_state" label="Validate Documentation">
-    <description>Present documentation to user and await approval before proceeding</description>
-    <actions>
+    <ValidateDocumentation>
+      Present documentation to user and await approval before proceeding.
       <present target="documentation" to="user" />
       <wait for="user_approval" />
-    </actions>
-    <transitions>
-      <transition target="OutputSummary_state" condition="✅ User approves documentation" />
-      <transition target="AnalyseAndPlan_state" condition="User requests changes" />
-    </transitions>
-  </state>
+    </ValidateDocumentation>
 
-  <state id="OutputSummary_state" label="Output Summary">
-    <description>Provide a concise summary of the completed work to the user</description>
-    <actions>
+    <OutputSummary>
+      Provide a concise summary of the completed work to the user.
       <summarise target="changes_made" />
       <list target="files_modified" />
-    </actions>
-    <transitions>
-      <transition target="WriteDocumentation_state" condition="More tasks remaining" />
-      <transition target="AwaitUserInstruction_state" condition="All tasks complete" />
-    </transitions>
-  </state>
+    </OutputSummary>
+  </actions>
 
 </stateMachine>
+```
 
 
 ### File Access Permissions

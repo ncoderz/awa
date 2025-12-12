@@ -127,150 +127,142 @@ Any artifact exceeding 500 lines MUST be split logically into multiple files.
 
 ### Mode State Machine
 
-<stateMachine name="ZenCode" initialState="ReadRules_state">
+```xml
+<stateMachine name="ZenCode" initial="CheckForInstruction">
 
-  <state id="ReadRules_state" label="Read Rules">
-    <description>Read project-specific rules that may affect implementation</description>
-    <actions>
-      <read path=".zen/rules/*.md" description="Project-specific rules" />
-    </actions>
-    <transitions>
-      <transition target="AwaitUserInstruction_state" condition="No pending instruction" />
-      <transition target="ReadFiles_state" condition="Instruction pending" />
-    </transitions>
-  </state>
+  <states>
+    <state id="CheckForInstruction">
+      <transition to="ReadRules" when="instruction pending" />
+      <transition to="AwaitUserInstruction" when="no pending instruction" />
+    </state>
 
-  <state id="AwaitUserInstruction_state" label="Await User Instruction">
-    <description>Wait for an instruction</description>
-    <actions>
+    <state id="AwaitUserInstruction">
+      <transition to="ReadRules" when="user instruction received" />
+    </state>
+
+    <state id="ReadRules">
+      <transition to="ReadFiles" />
+    </state>
+
+    <state id="ReadFiles">
+      <transition to="AnalyseAndPlan" />
+    </state>
+
+    <state id="AnalyseAndPlan">
+      <transition to="ValidatePlan" />
+    </state>
+
+    <state id="ValidatePlan">
+      <transition to="WriteCode" when="user approves plan" />
+      <transition to="AnalyseAndPlan" when="user requests changes" />
+    </state>
+
+    <state id="WriteCode">
+      <transition to="WriteTests" when="code complete and tests required" />
+      <transition to="OutputSummary" when="code complete and no tests required" />
+      <transition to="AnalyseAndPlan" when="blocker encountered" />
+    </state>
+
+    <state id="WriteTests">
+      <transition to="RunTests" />
+    </state>
+
+    <state id="RunTests">
+      <transition to="WriteCode" when="code bug AND iterations &lt; 10" />
+      <transition to="WriteTests" when="test bug AND iterations &lt; 10" />
+      <transition to="EscalateToUser" when="failures AND iterations >= 10" />
+      <transition to="OutputSummary" when="✅ tests pass" />
+    </state>
+
+    <state id="EscalateToUser">
+      <transition to="AnalyseAndPlan" when="user provides guidance" />
+      <transition to="OutputSummary" when="user accepts current state" />
+    </state>
+
+    <state id="OutputSummary">
+      <transition to="WriteCode" when="more tasks remaining" />
+      <transition to="AwaitUserInstruction" when="all tasks complete" />
+    </state>
+  </states>
+
+  <actions>
+    <CheckForInstruction>
+      Check if user has provided an instruction.
+    </CheckForInstruction>
+
+    <AwaitUserInstruction>
+      Wait for an instruction.
       <wait for="user_instruction" />
-    </actions>
-    <transitions>
-      <transition target="ReadFiles_state" condition="User instruction received" />
-    </transitions>
-  </state>
+    </AwaitUserInstruction>
 
-  <state id="ReadFiles_state" label="Read Files">
-    <description>You MUST read all relevant files if they exist</description>
-    <actions>
-      <read path=".zen/specs/ARCHITECTURE.md" description="Architecture" />
-      <read path=".zen/specs/REQ-{feature-name}.md" description="Relevant Requirements" />
-      <read path=".zen/specs/DESIGN-{feature-name}.md" description="Relevant Design" />
-      <read path=".zen/specs/API-{api-name}.tsp" description="Relevant APIs" />
-      <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" description="Plan (if referenced in instruction)" optional="true" />
-      <read path="(relevant code)" description="Code Files" />
-      <read path="(relevant tests)" description="Test Files" />
-      <read path="(relevant documentation)" description="Documentation Files" optional="true" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseAndPlan_state" />
-    </transitions>
-  </state>
+    <ReadRules>
+      Read project-specific rules that may affect implementation.
+      <read path=".zen/rules/*.md" />
+    </ReadRules>
 
-  <state id="AnalyseAndPlan_state" label="Analyse and Plan">
-    <description>Analyse user request, consider solution, clarify open points with user</description>
-    <actions>
+    <ReadFiles>
+      You MUST read all relevant files if they exist.
+      <read path=".zen/specs/ARCHITECTURE.md" />
+      <read path=".zen/specs/REQ-{feature-name}.md" />
+      <read path=".zen/specs/DESIGN-{feature-name}.md" />
+      <read path=".zen/specs/API-{api-name}.tsp" />
+      <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" optional="true" />
+      <read path="(relevant code)" />
+      <read path="(relevant tests)" />
+      <read path="(relevant documentation)" optional="true" />
+    </ReadFiles>
+
+    <AnalyseAndPlan>
+      Analyse user request, consider solution, clarify open points with user.
       <reset counter="iterations" />
       <analyse target="user_request" against="specifications" />
       <identify target="scope_of_changes" />
       <clarify target="open_points" with="user" />
-    </actions>
-    <transitions>
-      <transition target="CreateTasks_state" />
-    </transitions>
-  </state>
+    </AnalyseAndPlan>
 
-  <state id="CreateTasks_state" label="Create Tasks">
-    <description>Use your task tool to create tasks to implement the plan</description>
-    <actions>
-      <create target="tasks" using="todos_tool or task_tool" />
-    </actions>
-    <transitions>
-      <transition target="ValidatePlan_state" />
-    </transitions>
-  </state>
-
-  <state id="ValidatePlan_state" label="Validate Plan">
-    <description>Present the plan to the user and await approval before proceeding</description>
-    <actions>
+    <ValidatePlan>
+      Present the plan to the user and await approval before proceeding.
       <present target="plan" to="user" />
       <wait for="user_approval" />
-    </actions>
-    <transitions>
-      <transition target="WriteCode_state" condition="User approves plan" />
-      <transition target="AnalyseAndPlan_state" condition="User requests changes" />
-    </transitions>
-  </state>
+    </ValidatePlan>
 
-  <state id="WriteCode_state" label="Write Code">
-    <description>Implement the code tasks. A blocker is an issue that cannot be resolved without user guidance (e.g., missing specifications, conflicting requirements, unclear design decisions).</description>
-    <actions>
-      <update target="task" status="in-progress" />
+    <WriteCode>
+      Implement the code tasks. A blocker is an issue that cannot be resolved without user guidance (e.g., missing specifications, conflicting requirements, unclear design decisions).
       <write target="code" for="current_task" />
       <add marker="@zen-component: {ComponentName}" to="implementation_file" />
       <add marker="@zen-impl: AC-{n}.{m}" to="implementation_file" />
-    </actions>
-    <transitions>
-      <transition target="WriteTests_state" condition="Code complete and tests required" />
-      <transition target="OutputSummary_state" condition="Code complete and no tests required (e.g., config-only changes)" />
-      <transition target="AnalyseAndPlan_state" condition="Blocker encountered" />
-    </transitions>
-  </state>
+    </WriteCode>
 
-  <state id="WriteTests_state" label="Write Tests">
-    <description>Implement the test tasks</description>
-    <actions>
+    <WriteTests>
+      Implement the test tasks.
       <write target="tests" for="current_task" />
       <add marker="@zen-test: P{n}" to="test_file" />
-    </actions>
-    <transitions>
-      <transition target="RunTests_state" />
-    </transitions>
-  </state>
+    </WriteTests>
 
-  <state id="RunTests_state" label="Run Tests">
-    <description>Run tests and diagnose failures. Track iteration count.</description>
-    <actions>
+    <RunTests>
+      Run tests and diagnose failures. Track iteration count.
       <run target="tests" />
       <analyse target="failures" if="tests_failed" />
       <increment counter="iterations" if="tests_failed" />
-    </actions>
-    <transitions>
-      <transition target="WriteCode_state" condition="Code bug AND iterations &lt; 10" />
-      <transition target="WriteTests_state" condition="Test bug AND iterations &lt; 10" />
-      <transition target="EscalateToUser_state" condition="Failures AND iterations >= 10" />
-      <transition target="OutputSummary_state" condition="✅ tests pass" />
-    </transitions>
-  </state>
+    </RunTests>
 
-  <state id="EscalateToUser_state" label="Escalate to User">
-    <description>Multiple fix attempts failed. Present findings and request guidance.</description>
-    <actions>
+    <EscalateToUser>
+      Multiple fix attempts failed. Present findings and request guidance.
       <present target="findings" to="user" />
       <wait for="user_guidance" />
-    </actions>
-    <transitions>
-      <transition target="AnalyseAndPlan_state" condition="User provides guidance" />
-      <transition target="OutputSummary_state" condition="User accepts current state" />
-    </transitions>
-  </state>
+    </EscalateToUser>
 
-  <state id="OutputSummary_state" label="Output Summary">
-    <description>Provide a concise summary of the completed work to the user</description>
-    <actions>
-      <update target="task" status="complete" />
+    <OutputSummary>
+      Provide a concise summary of the completed work to the user.
       <summarise target="changes_made" />
       <list target="files_modified" />
       <report target="test_results" />
       <report target="traceability_markers_added" />
-    </actions>
-    <transitions>
-      <transition target="WriteCode_state" condition="More tasks remaining" />
-      <transition target="AwaitUserInstruction_state" condition="All tasks complete" />
-    </transitions>
-  </state>
+    </OutputSummary>
+  </actions>
 
 </stateMachine>
+```
 
 ### File Access Permissions
 

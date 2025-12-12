@@ -1,6 +1,6 @@
 # Zen CLI Design
 
-> VERSION: 1.4.0 | STATUS: draft | UPDATED: 2025-12-11
+> VERSION: 1.5.0 | STATUS: draft | UPDATED: 2025-12-12
 
 ## Overview
 
@@ -57,6 +57,7 @@ src/
 │   └── diff.ts            # Diff command orchestration
 ├── core/
 │   ├── config.ts          # ConfigLoader
+│   ├── feature-resolver.ts # FeatureResolver
 │   ├── template-resolver.ts # TemplateResolver
 │   ├── template.ts        # TemplateEngine
 │   ├── generator.ts       # FileGenerator
@@ -82,13 +83,15 @@ src/
 
 Parses CLI arguments using citty, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands.
 
-IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-2 AC-2.1, CLI-2 AC-2.3, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6
+IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-2 AC-2.1, CLI-2 AC-2.3, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6, FP-2 AC-2.1, FP-2 AC-2.2, FP-2 AC-2.4, FP-4 AC-4.1, FP-4 AC-4.2, FP-4 AC-4.3, FP-4 AC-4.5
 
 ```typescript
 interface RawCliOptions {
   output?: string;
   template?: string;
   features?: string[];
+  preset?: string[];
+  removeFeatures?: string[];
   force?: boolean;
   dryRun?: boolean;
   config?: string;
@@ -102,32 +105,62 @@ interface ArgumentParser {
 
 ### ConfigLoader
 
-Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied.
+Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied. Parses the `[presets]` table for named feature bundles.
 
-IMPLEMENTS: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4, CFG-2 AC-2.1, CFG-2 AC-2.2, CFG-2 AC-2.3, CFG-3 AC-3.1, CFG-3 AC-3.2, CFG-3 AC-3.3, CFG-3 AC-3.4, CFG-3 AC-3.5, CFG-3 AC-3.6, CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4, CFG-5 AC-5.1, CFG-6 AC-6.1, CFG-6 AC-6.2, CLI-2 AC-2.2, CLI-4 AC-4.3, CLI-7 AC-7.2
+IMPLEMENTS: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4, CFG-2 AC-2.1, CFG-2 AC-2.2, CFG-2 AC-2.3, CFG-3 AC-3.1, CFG-3 AC-3.2, CFG-3 AC-3.3, CFG-3 AC-3.4, CFG-3 AC-3.5, CFG-3 AC-3.6, CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4, CFG-5 AC-5.1, CFG-6 AC-6.1, CFG-6 AC-6.2, CLI-2 AC-2.2, CLI-4 AC-4.3, CLI-7 AC-7.2, FP-1 AC-1.1, FP-1 AC-1.2, FP-1 AC-1.3, FP-1 AC-1.4, FP-3 AC-3.1, FP-3 AC-3.2, FP-3 AC-3.3, FP-5 AC-5.1, FP-5 AC-5.2, FP-5 AC-5.3
 
 ```typescript
+interface PresetDefinitions {
+  [presetName: string]: string[];
+}
+
 interface FileConfig {
   output?: string;
   template?: string;
   features?: string[];
+  preset?: string[];
+  'remove-features'?: string[];
   force?: boolean;
   'dry-run'?: boolean;
   refresh?: boolean;
+  presets?: PresetDefinitions;
 }
 
 interface ResolvedOptions {
   output: string;
   template: string | null;
   features: string[];
+  preset: string[];
+  removeFeatures: string[];
   force: boolean;
   dryRun: boolean;
   refresh: boolean;
+  presets: PresetDefinitions;
 }
 
 interface ConfigLoader {
   load(configPath: string | null): Promise<FileConfig | null>;
   merge(cli: RawCliOptions, file: FileConfig | null): ResolvedOptions;
+}
+```
+
+### FeatureResolver
+
+Computes the final feature set from base features, activated presets, and removals. Validates that referenced preset names exist in the presets table.
+
+IMPLEMENTS: FP-2 AC-2.3, FP-6 AC-6.1, FP-6 AC-6.2, FP-6 AC-6.3, FP-6 AC-6.4, FP-6 AC-6.5, FP-7 AC-7.1, FP-7 AC-7.2, FP-4 AC-4.4
+
+```typescript
+interface FeatureResolutionInput {
+  baseFeatures: string[];
+  presetNames: string[];
+  removeFeatures: string[];
+  presetDefinitions: PresetDefinitions;
+}
+
+interface FeatureResolver {
+  resolve(input: FeatureResolutionInput): string[];
+  validatePresets(presetNames: string[], definitions: PresetDefinitions): void;
 }
 ```
 
@@ -437,6 +470,21 @@ Represents a cached Git template.
 - P15 [Exit Code Semantics]: Exit 0 means identical, exit 1 means differences, exit 2 means error
   VALIDATES: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
 
+- P16 [Preset Validation]: Referencing a non-existent preset name results in an error
+  VALIDATES: FP-2 AC-2.3
+
+- P17 [Feature Resolution Order]: Final features = (baseFeatures ∪ presetFeatures) \ removeFeatures
+  VALIDATES: FP-6 AC-6.1, FP-6 AC-6.2, FP-6 AC-6.3, FP-6 AC-6.4
+
+- P18 [Feature Deduplication]: Final feature set contains no duplicates
+  VALIDATES: FP-6 AC-6.5, FP-7 AC-7.2
+
+- P19 [Preset Union]: Multiple presets are merged via set union
+  VALIDATES: FP-7 AC-7.1
+
+- P20 [Silent Removal]: Removing a non-existent feature does not cause an error
+  VALIDATES: FP-4 AC-4.4
+
 ## Error Handling
 
 ### ConfigError
@@ -446,6 +494,8 @@ Configuration loading and parsing errors.
 - FILE_NOT_FOUND: Specified config file does not exist (when --config provided)
 - PARSE_ERROR: TOML syntax error with line number
 - INVALID_TYPE: Config value has wrong type
+- INVALID_PRESET: Preset value is not an array of strings
+- UNKNOWN_PRESET: Referenced preset name does not exist in presets table
 
 ### TemplateError
 
@@ -515,7 +565,7 @@ test.prop([fc.string().filter(s => s.startsWith('_'))])('underscore files exclud
 
 ## Requirements Traceability
 
-SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-templates.md, .zen/specs/REQ-generation.md, .zen/specs/REQ-diff.md
+SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-templates.md, .zen/specs/REQ-generation.md, .zen/specs/REQ-diff.md, .zen/specs/REQ-feature-presets.md
 
 - CLI-1 AC-1.1 → ArgumentParser
 - CLI-1 AC-1.2 → ArgumentParser
@@ -676,6 +726,32 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - DIFF-7 AC-7.4 → ArgumentParser
 - DIFF-7 AC-7.5 → ArgumentParser
 - DIFF-7 AC-7.6 → ArgumentParser
+- FP-1 AC-1.1 → ConfigLoader
+- FP-1 AC-1.2 → ConfigLoader
+- FP-1 AC-1.3 → ConfigLoader
+- FP-1 AC-1.4 → ConfigLoader
+- FP-2 AC-2.1 → ArgumentParser
+- FP-2 AC-2.2 → ArgumentParser
+- FP-2 AC-2.3 → FeatureResolver (P16)
+- FP-2 AC-2.4 → ArgumentParser
+- FP-3 AC-3.1 → ConfigLoader
+- FP-3 AC-3.2 → ConfigLoader
+- FP-3 AC-3.3 → ConfigLoader
+- FP-4 AC-4.1 → ArgumentParser
+- FP-4 AC-4.2 → ArgumentParser
+- FP-4 AC-4.3 → ArgumentParser
+- FP-4 AC-4.4 → FeatureResolver (P20)
+- FP-4 AC-4.5 → ArgumentParser
+- FP-5 AC-5.1 → ConfigLoader
+- FP-5 AC-5.2 → ConfigLoader
+- FP-5 AC-5.3 → ConfigLoader
+- FP-6 AC-6.1 → FeatureResolver (P17)
+- FP-6 AC-6.2 → FeatureResolver (P17)
+- FP-6 AC-6.3 → FeatureResolver (P17)
+- FP-6 AC-6.4 → FeatureResolver (P17)
+- FP-6 AC-6.5 → FeatureResolver (P18)
+- FP-7 AC-7.1 → FeatureResolver (P19)
+- FP-7 AC-7.2 → FeatureResolver (P18)
 
 ## Library Usage Strategy
 
@@ -707,3 +783,4 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - 1.2.0 (2025-12-11): Added GEN-9 AC-9.6 implementation to Logger for empty generation warning
 - 1.3.0 (2025-12-11): Added DiffEngine component, diff data models, correctness properties P12-P15, DiffError types, and DIFF-* traceability
 - 1.4.0 (2025-12-11): Added DIFF-4 AC-4.3, AC-4.4, AC-4.5 to Logger IMPLEMENTS; added diffLine method; added isbinaryfile library and BINARY DETECTION architectural decision
+- 1.5.0 (2025-12-12): Added FeatureResolver component, preset/remove-features support in ConfigLoader and ArgumentParser, correctness properties P16-P20, and FP-* traceability
