@@ -1,6 +1,6 @@
 # Zen CLI Design
 
-> VERSION: 1.5.0 | STATUS: draft | UPDATED: 2025-12-12
+> VERSION: 1.7.0 | STATUS: draft | UPDATED: 2025-12-15
 
 ## Overview
 
@@ -81,13 +81,13 @@ src/
 
 ### ArgumentParser
 
-Parses CLI arguments using citty, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands.
+Parses CLI arguments using commander, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands with positional arguments displayed in help output.
 
-IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-2 AC-2.1, CLI-2 AC-2.3, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6, FP-2 AC-2.1, FP-2 AC-2.2, FP-2 AC-2.4, FP-4 AC-4.1, FP-4 AC-4.2, FP-4 AC-4.3, FP-4 AC-4.5
+IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-1 AC-1.4, CLI-1 AC-1.5, CLI-2 AC-2.1, CLI-2 AC-2.2, CLI-2 AC-2.5, CLI-2 AC-2.6, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6, DIFF-7 AC-7.7, DIFF-7 AC-7.8, DIFF-7 AC-7.9, DIFF-7 AC-7.10, FP-2 AC-2.1, FP-2 AC-2.2, FP-2 AC-2.4, FP-4 AC-4.1, FP-4 AC-4.2, FP-4 AC-4.3, FP-4 AC-4.5
 
 ```typescript
 interface RawCliOptions {
-  output?: string;
+  output?: string;  // Optional positional argument (required if not in config)
   template?: string;
   features?: string[];
   preset?: string[];
@@ -107,7 +107,7 @@ interface ArgumentParser {
 
 Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied. Parses the `[presets]` table for named feature bundles.
 
-IMPLEMENTS: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4, CFG-2 AC-2.1, CFG-2 AC-2.2, CFG-2 AC-2.3, CFG-3 AC-3.1, CFG-3 AC-3.2, CFG-3 AC-3.3, CFG-3 AC-3.4, CFG-3 AC-3.5, CFG-3 AC-3.6, CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4, CFG-5 AC-5.1, CFG-6 AC-6.1, CFG-6 AC-6.2, CLI-2 AC-2.2, CLI-4 AC-4.3, CLI-7 AC-7.2, FP-1 AC-1.1, FP-1 AC-1.2, FP-1 AC-1.3, FP-1 AC-1.4, FP-3 AC-3.1, FP-3 AC-3.2, FP-3 AC-3.3, FP-5 AC-5.1, FP-5 AC-5.2, FP-5 AC-5.3
+IMPLEMENTS: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4, CFG-2 AC-2.1, CFG-2 AC-2.2, CFG-2 AC-2.3, CFG-3 AC-3.1, CFG-3 AC-3.2, CFG-3 AC-3.3, CFG-3 AC-3.4, CFG-3 AC-3.5, CFG-3 AC-3.6, CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4, CFG-5 AC-5.1, CFG-6 AC-6.1, CFG-6 AC-6.2, CLI-2 AC-2.3, CLI-2 AC-2.4, CLI-4 AC-4.3, CLI-7 AC-7.2, FP-1 AC-1.1, FP-1 AC-1.2, FP-1 AC-1.3, FP-1 AC-1.4, FP-3 AC-3.1, FP-3 AC-3.2, FP-3 AC-3.3, FP-5 AC-5.1, FP-5 AC-5.2, FP-5 AC-5.3
 
 ```typescript
 interface PresetDefinitions {
@@ -115,7 +115,7 @@ interface PresetDefinitions {
 }
 
 interface FileConfig {
-  output?: string;
+  output?: string;  // Optional in config file; CLI positional arg takes precedence
   template?: string;
   features?: string[];
   preset?: string[];
@@ -211,9 +211,9 @@ interface TemplateEngine {
 
 ### FileGenerator
 
-Orchestrates the generation process: walks template directory, invokes template engine, manages output structure, and coordinates conflict resolution.
+Orchestrates the generation process: walks template directory, invokes template engine, manages output structure, and coordinates conflict resolution. When `dryRun` is true, it computes and reports actions without creating directories or writing files.
 
-IMPLEMENTS: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3, GEN-2 AC-2.1, GEN-2 AC-2.2, GEN-2 AC-2.3, GEN-3 AC-3.1, GEN-3 AC-3.2, GEN-3 AC-3.3, GEN-8 AC-8.1, GEN-8 AC-8.2, GEN-8 AC-8.3, GEN-11 AC-11.3, TPL-9 AC-9.1, TPL-9 AC-9.2
+IMPLEMENTS: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3, GEN-2 AC-2.1, GEN-2 AC-2.2, GEN-2 AC-2.3, GEN-3 AC-3.1, GEN-3 AC-3.2, GEN-3 AC-3.3, GEN-8 AC-8.1, GEN-8 AC-8.2, GEN-8 AC-8.3, GEN-11 AC-11.3, TPL-9 AC-9.1, TPL-9 AC-9.2, CLI-6 AC-6.2
 
 ```typescript
 interface GenerateOptions {
@@ -551,6 +551,88 @@ test.prop([fc.string().filter(s => s.startsWith('_'))])('underscore files exclud
   const actions = generator.processFile(filename);
   expect(actions).toHaveLength(0);
 });
+
+// Validates: P11 (Content Identity Skip)
+test.prop([fc.string()])('identical content skipped without prompt', async (content) => {
+  const conflicts = [{ outputPath: 'test.txt', newContent: content, existingContent: content }];
+  const resolution = await resolver.resolveBatch(conflicts, false, false);
+  expect(resolution.skip).toContain('test.txt');
+  expect(resolution.overwrite).not.toContain('test.txt');
+});
+
+// Validates: P12 (Diff Read-Only)
+test.prop([fc.array(fc.string())])('diff never modifies target', async (files) => {
+  const targetDir = await createTempDir(files);
+  const checksumsBefore = await computeChecksums(targetDir);
+  await differ.diff({ templatePath: 'template', targetPath: targetDir, features: [] });
+  const checksumsAfter = await computeChecksums(targetDir);
+  expect(checksumsAfter).toEqual(checksumsBefore);
+});
+
+// Validates: P13 (Temp Cleanup Guaranteed)
+test.prop([fc.boolean()])('temp cleanup even on error', async (shouldError) => {
+  const tempDirsBefore = await listTempDirs();
+  try {
+    await differ.diff({ templatePath: shouldError ? 'invalid' : 'valid', targetPath: 'target', features: [] });
+  } catch (e) { /* expected */ }
+  const tempDirsAfter = await listTempDirs();
+  expect(tempDirsAfter).toEqual(tempDirsBefore);
+});
+
+// Validates: P14 (Exact Comparison)
+test.prop([fc.string(), fc.string()])('whitespace differences detected', async (text1, text2) => {
+  fc.pre(text1 !== text2);
+  const result = await differ.compareFiles(text1, text2);
+  expect(result.status).toBe('modified');
+});
+
+// Validates: P15 (Exit Code Semantics)
+test.prop([fc.constantFrom('identical', 'different', 'error')])('exit codes match semantics', async (scenario) => {
+  const result = await runDiff(scenario);
+  if (scenario === 'identical') expect(result.exitCode).toBe(0);
+  if (scenario === 'different') expect(result.exitCode).toBe(1);
+  if (scenario === 'error') expect(result.exitCode).toBe(2);
+});
+
+// Validates: P16 (Preset Validation)
+test.prop([fc.string(), fc.record({ presets: fc.dictionary(fc.string(), fc.array(fc.string())) })])(
+  'non-existent preset errors', (presetName, config) => {
+    fc.pre(!config.presets[presetName]);
+    expect(() => featureResolver.validatePresets([presetName], config.presets)).toThrow();
+  }
+);
+
+// Validates: P17 (Feature Resolution Order)
+test.prop([fc.array(fc.string()), fc.array(fc.string()), fc.array(fc.string())])(
+  'feature resolution order', (base, preset, remove) => {
+    const result = featureResolver.resolve({ baseFeatures: base, presetFeatures: preset, removeFeatures: remove, presetDefinitions: {} });
+    const expected = new Set([...base, ...preset]);
+    remove.forEach(f => expected.delete(f));
+    expect(new Set(result)).toEqual(expected);
+  }
+);
+
+// Validates: P18 (Feature Deduplication)
+test.prop([fc.array(fc.string())])('no duplicate features', (features) => {
+  const result = featureResolver.resolve({ baseFeatures: [...features, ...features], presetFeatures: [], removeFeatures: [], presetDefinitions: {} });
+  expect(result.length).toBe(new Set(result).size);
+});
+
+// Validates: P19 (Preset Union)
+test.prop([fc.dictionary(fc.string(), fc.array(fc.string())), fc.array(fc.string())])(
+  'preset union', (presetDefs, presetNames) => {
+    fc.pre(presetNames.every(n => presetDefs[n]));
+    const result = featureResolver.resolve({ baseFeatures: [], presetFeatures: [], removeFeatures: [], presetDefinitions: presetDefs });
+    const expected = new Set(presetNames.flatMap(n => presetDefs[n]));
+    expect(new Set(result)).toEqual(expected);
+  }
+);
+
+// Validates: P20 (Silent Removal)
+test.prop([fc.array(fc.string()), fc.string()])('removing non-existent feature no error', (features, nonExistent) => {
+  fc.pre(!features.includes(nonExistent));
+  expect(() => featureResolver.resolve({ baseFeatures: features, presetFeatures: [], removeFeatures: [nonExistent], presetDefinitions: {} })).not.toThrow();
+});
 ```
 
 ### Unit Testing
@@ -570,9 +652,14 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - CLI-1 AC-1.1 → ArgumentParser
 - CLI-1 AC-1.2 → ArgumentParser
 - CLI-1 AC-1.3 → ArgumentParser
+- CLI-1 AC-1.4 → ArgumentParser
+- CLI-1 AC-1.5 → ArgumentParser
 - CLI-2 AC-2.1 → ArgumentParser
 - CLI-2 AC-2.2 → ConfigLoader
-- CLI-2 AC-2.3 → ArgumentParser
+- CLI-2 AC-2.3 → ConfigLoader
+- CLI-2 AC-2.4 → ConfigLoader
+- CLI-2 AC-2.5 → ArgumentParser
+- CLI-2 AC-2.6 → ArgumentParser
 - CLI-3 AC-3.1 → ArgumentParser
 - CLI-3 AC-3.2 → TemplateResolver
 - CLI-3 AC-3.3 → TemplateResolver
@@ -757,7 +844,7 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 
 ### Framework Features
 
-- CITTY: Command definition, argument parsing, help generation, version display
+- COMMANDER: Command definition, argument parsing, help generation with positional args, version display
 - ETA: Template rendering, partial includes, context passing
 - SMOL_TOML: TOML parsing with error location
 - DEGIT: Shallow Git fetches, ref support, subdirectory extraction
@@ -766,7 +853,7 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 
 ### External Libraries
 
-- citty (latest): CLI framework — argument parsing, help, subcommands
+- commander (latest): CLI framework — argument parsing, help with positional args, subcommands
 - eta (3.x): Template engine — fast, TypeScript-native, partials
 - smol-toml (1.x): TOML parser — lightweight, spec-compliant
 - degit (2.x): Git fetcher — shallow clones without .git
@@ -784,3 +871,5 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - 1.3.0 (2025-12-11): Added DiffEngine component, diff data models, correctness properties P12-P15, DiffError types, and DIFF-* traceability
 - 1.4.0 (2025-12-11): Added DIFF-4 AC-4.3, AC-4.4, AC-4.5 to Logger IMPLEMENTS; added diffLine method; added isbinaryfile library and BINARY DETECTION architectural decision
 - 1.5.0 (2025-12-12): Added FeatureResolver component, preset/remove-features support in ConfigLoader and ArgumentParser, correctness properties P16-P20, and FP-* traceability
+- 1.6.0 (2025-12-14): Replaced citty with commander to support positional argument display in help output (CLI-1 AC-1.5)
+- 1.7.0 (2025-12-15): Fixed alignment issues - added missing DIFF-7 AC-7.8, AC-7.9, AC-7.10 to ArgumentParser IMPLEMENTS; added property-based test examples for P11-P20; updated requirements traceability for CLI-1 AC-1.4

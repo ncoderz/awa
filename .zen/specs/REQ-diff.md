@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document defines requirements for the Zen CLI `diff` command, which compares generated template output against an existing target directory to identify differences without modifying files. This enables validation workflows, CI checks, and template development iteration.
+This document defines requirements for the Zen CLI `diff` command, which compares generated template output against an existing target directory to identify differences without modifying files. This enables validation workflows, CI checks, and template development iteration. The command accepts a target directory as an optional positional argument: `zen diff [target]`, which can also be specified via the `output` field in the configuration file.
 
 ## Glossary
 
@@ -101,12 +101,16 @@ AS A developer, I WANT `diff` to share options with `generate`, SO THAT I can us
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-7.1 [ubiquitous]: The system SHALL accept `--output <path>` to specify the target directory for comparison
-- [ ] AC-7.2 [ubiquitous]: The system SHALL accept `--template <source>` to specify the template source
-- [ ] AC-7.3 [ubiquitous]: The system SHALL accept `--features <flag>...` as a variadic option
-- [ ] AC-7.4 [ubiquitous]: The system SHALL accept `--config <path>` to specify an alternate configuration file
-- [ ] AC-7.5 [ubiquitous]: The system SHALL accept `--refresh` flag to force re-fetch of cached templates
-- [ ] AC-7.6 [ubiquitous]: The system SHALL NOT accept `--force` or `--dry-run` flags — they are not applicable to diff
+- [ ] AC-7.1 [ubiquitous]: The system SHALL accept a target directory as an optional positional argument
+- [ ] AC-7.2 [state]: WHEN target is provided as positional argument THEN the system SHALL use it regardless of config file value
+- [ ] AC-7.3 [state]: WHEN target is not provided as positional argument THEN the system SHALL use the output value from config file
+- [ ] AC-7.4 [state]: WHEN target is not provided via CLI or config THEN the system SHALL display an error
+- [ ] AC-7.5 [ubiquitous]: The system SHALL accept both relative and absolute paths for the target directory
+- [ ] AC-7.6 [ubiquitous]: The system SHALL accept `--template <source>` to specify the template source
+- [ ] AC-7.7 [ubiquitous]: The system SHALL accept `--features <flag>...` as a variadic option
+- [ ] AC-7.8 [ubiquitous]: The system SHALL accept `--config <path>` to specify an alternate configuration file
+- [ ] AC-7.9 [ubiquitous]: The system SHALL accept `--refresh` flag to force re-fetch of cached templates
+- [ ] AC-7.10 [ubiquitous]: The system SHALL NOT accept `--force` or `--dry-run` flags — they are not applicable to diff
 
 DEPENDS ON: CLI-2, CLI-3, CLI-4, CLI-7, CLI-8
 
@@ -131,4 +135,5 @@ DEPENDS ON: CLI-2, CLI-3, CLI-4, CLI-7, CLI-8
 
 ## Change Log
 
+- 1.1.0 (2025-12-14): Updated DIFF-7 to make target directory optional (can come from CLI or config)
 - 1.0.0 (2025-12-11): Initial requirements based on architecture

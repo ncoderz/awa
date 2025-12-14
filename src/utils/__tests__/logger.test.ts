@@ -153,6 +153,7 @@ describe('Logger', () => {
         modified: 0,
         newFiles: 0,
         extraFiles: 0,
+        binaryDiffers: 0,
         hasDifferences: false,
       };
 
@@ -161,6 +162,7 @@ describe('Logger', () => {
       expect(consoleLogSpy).toHaveBeenCalled();
       const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(' '));
       const output = callArgs.join(' ').toLowerCase();
+      expect(output).toContain('files compared');
       expect(output).toContain('identical');
       expect(output).toContain('no differences');
     });
@@ -174,6 +176,7 @@ describe('Logger', () => {
         modified: 1,
         newFiles: 1,
         extraFiles: 1,
+        binaryDiffers: 0,
         hasDifferences: true,
       };
 
@@ -195,6 +198,7 @@ describe('Logger', () => {
         modified: 3,
         newFiles: 2,
         extraFiles: 1,
+        binaryDiffers: 0,
         hasDifferences: true,
       };
 

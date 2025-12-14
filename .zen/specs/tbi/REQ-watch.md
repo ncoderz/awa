@@ -127,7 +127,7 @@ AS A template author, I WANT watch to accept the same options as generate, SO TH
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-9.1 [ubiquitous]: The system SHALL accept `--output <path>` for output directory
+- [ ] AC-9.1 [ubiquitous]: The system SHALL require an output directory as a positional argument
 - [ ] AC-9.2 [ubiquitous]: The system SHALL accept `--template <source>` for template source
 - [ ] AC-9.3 [ubiquitous]: The system SHALL accept `--features <flag>...` for feature flags
 - [ ] AC-9.4 [ubiquitous]: The system SHALL accept `--force` to overwrite without prompts

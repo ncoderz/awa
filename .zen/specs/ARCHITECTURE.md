@@ -52,7 +52,7 @@ Zen CLI is a TypeScript-based command-line tool that generates AI coding agent c
 | tsup | Build/bundling (ESM output) |
 | Vitest | Testing framework |
 | Biome | Linting and formatting |
-| citty | CLI framework (lightweight, modern) |
+| commander | CLI framework (mature, full-featured, supports positional args in help) |
 | @clack/prompts | Interactive CLI prompts (overwrite confirmations) |
 | Eta | Template engine (lightweight, fast, TypeScript-native) |
 | chalk 5.x | Terminal output coloring |
@@ -65,7 +65,7 @@ Zen CLI is a TypeScript-based command-line tool that generates AI coding agent c
 ```mermaid
 flowchart TB
     subgraph CLI["CLI Layer"]
-        Parser["Argument Parser<br/>(citty)"]
+        Parser["Argument Parser<br/>(commander)"]
         Prompts["Interactive Prompts<br/>(@clack/prompts)"]
     end
 
@@ -152,17 +152,19 @@ zen/
 Entry point and argument parsing.
 
 **Responsibilities:**
-- Parse command-line arguments (`--output`, `--template`, `--force`, `--dry-run`, `--config`, `--refresh`, `--features`)
+- Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--config`, `--refresh`, `--features`)
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
 - Support `generate` and `diff` subcommands
 
 **Architectural Constraints:**
-- Uses citty for command definition
+- Uses commander for command definition
+- Output directory is an optional positional argument (can come from CLI or config)
 - `--features` accepts variadic string values
 - `--config` specifies alternate config file path
 - `diff` command shares options with `generate` (except `--force`, `--dry-run`)
+- Help output displays positional argument syntax
 
 ### Configuration Loader
 
@@ -287,7 +289,7 @@ sequenceDiagram
     participant Resolver
     participant FileSystem
 
-    User->>CLI: zen generate --output ./out --features a b c
+    User->>CLI: zen generate ./out --features a b c
     CLI->>CLI: Parse arguments
     CLI->>ConfigLoader: Load .zen.toml
     ConfigLoader-->>CLI: Merged options (CLI overrides config)
@@ -345,7 +347,7 @@ sequenceDiagram
     participant TempDir
     participant FileSystem
 
-    User->>CLI: zen diff --output ./target --template ./templates
+    User->>CLI: zen diff ./target --template ./templates
     CLI->>CLI: Parse arguments
     CLI->>ConfigLoader: Load .zen.toml
     ConfigLoader-->>CLI: Merged options

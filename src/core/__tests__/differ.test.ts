@@ -210,6 +210,7 @@ describe('DiffEngine', () => {
       expect(result.modified).toBe(0);
       expect(result.newFiles).toBe(0);
       expect(result.extraFiles).toBe(0);
+      expect(result.binaryDiffers).toBe(0);
       expect(result.hasDifferences).toBe(false);
     });
 
@@ -226,6 +227,7 @@ describe('DiffEngine', () => {
 
       expect(result.modified).toBe(1);
       expect(result.hasDifferences).toBe(true);
+      expect(result.binaryDiffers).toBe(0);
       const modifiedFile = result.files.find((f) => f.status === 'modified');
       expect(modifiedFile?.unifiedDiff).toBeDefined();
     });
@@ -242,6 +244,7 @@ describe('DiffEngine', () => {
 
       expect(result.newFiles).toBe(1);
       expect(result.hasDifferences).toBe(true);
+      expect(result.binaryDiffers).toBe(0);
       const newFile = result.files.find((f) => f.status === 'new');
       expect(newFile?.relativePath).toBe('new.txt');
     });
@@ -258,6 +261,7 @@ describe('DiffEngine', () => {
 
       expect(result.extraFiles).toBe(1);
       expect(result.hasDifferences).toBe(true);
+      expect(result.binaryDiffers).toBe(0);
       const extraFile = result.files.find((f) => f.status === 'extra');
       expect(extraFile?.relativePath).toBe('extra.txt');
     });
@@ -276,6 +280,7 @@ describe('DiffEngine', () => {
       const binaryFile = result.files.find((f) => f.relativePath === 'file.bin');
       expect(binaryFile?.status).toBe('binary-differs');
       expect(binaryFile?.unifiedDiff).toBeUndefined();
+      expect(result.binaryDiffers).toBe(1);
     });
 
     // @zen-test: P13
@@ -310,6 +315,7 @@ describe('DiffEngine', () => {
       // All generated files should be marked as "new" since target doesn't exist
       expect(result.newFiles).toBe(1);
       expect(result.extraFiles).toBe(0);
+      expect(result.binaryDiffers).toBe(0);
       expect(result.hasDifferences).toBe(true);
     });
 
@@ -332,6 +338,7 @@ describe('DiffEngine', () => {
       expect(result.modified).toBe(1);
       expect(result.newFiles).toBe(1);
       expect(result.extraFiles).toBe(1);
+      expect(result.binaryDiffers).toBe(0);
       expect(result.hasDifferences).toBe(true);
       expect(result.files).toHaveLength(4);
     });

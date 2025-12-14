@@ -24,7 +24,7 @@ import { join, relative } from 'node:path';
 import { structuredPatch } from 'diff';
 import { isBinaryFile as detectBinaryFile } from 'isbinaryfile';
 import type { DiffOptions, DiffResult, FileDiff, GenerateOptions } from '../types/index.js';
-import { pathExists, readTextFile, rmDir, walkDirectory } from '../utils/fs.js';
+import { ensureDir, pathExists, readBinaryFile, rmDir, walkDirectory } from '../utils/fs.js';
 import { fileGenerator } from './generator.js';
 
 export class DiffEngine {
@@ -117,6 +117,7 @@ export class DiffEngine {
         modified,
         newFiles,
         extraFiles,
+        binaryDiffers,
         hasDifferences,
       };
     } finally {
@@ -131,6 +132,8 @@ export class DiffEngine {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     const tempPath = join(systemTemp, `zen-diff-${timestamp}-${random}`);
+
+    await ensureDir(tempPath);
     return tempPath;
   }
 
@@ -152,44 +155,39 @@ export class DiffEngine {
     targetPath: string,
     relativePath: string
   ): Promise<FileDiff> {
-    // @zen-impl: DIFF-2 AC-2.5
-    const isBinary = await this.isBinaryFile(generatedPath);
+    // Read raw bytes for byte-for-byte comparison.
+    const generatedBytes = await readBinaryFile(generatedPath);
+    const targetBytes = await readBinaryFile(targetPath);
 
-    if (isBinary) {
-      // Binary files: check if they differ by comparing content
-      const generatedContent = await readTextFile(generatedPath);
-      const targetContent = await readTextFile(targetPath);
-
-      if (generatedContent === targetContent) {
-        return {
-          relativePath,
-          status: 'identical',
-        };
-      }
-
-      return {
-        relativePath,
-        status: 'binary-differs',
-      };
-    }
-
-    // Text files: byte-for-byte comparison and unified diff
-    const generatedContent = await readTextFile(generatedPath);
-    const targetContent = await readTextFile(targetPath);
-
-    // @zen-impl: DIFF-2 AC-2.1
-    if (generatedContent === targetContent) {
+    // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.3
+    if (generatedBytes.equals(targetBytes)) {
       return {
         relativePath,
         status: 'identical',
       };
     }
 
+    // @zen-impl: DIFF-2 AC-2.5
+    // If either side is binary, do not attempt a text diff.
+    const isBinaryGenerated = await this.isBinaryFile(generatedPath);
+    const isBinaryTarget = await this.isBinaryFile(targetPath);
+
+    if (isBinaryGenerated || isBinaryTarget) {
+      return {
+        relativePath,
+        status: 'binary-differs',
+      };
+    }
+
+    // Text files: unified diff (diff library is text-based)
+    const generatedContent = generatedBytes.toString('utf-8');
+    const targetContent = targetBytes.toString('utf-8');
+
     // @zen-impl: DIFF-2 AC-2.4
     // Generate unified diff
     const patch = structuredPatch(
-      relativePath,
-      relativePath,
+      `a/${relativePath}`,
+      `b/${relativePath}`,
       targetContent,
       generatedContent,
       'target',
@@ -199,16 +197,20 @@ export class DiffEngine {
       }
     );
 
-    // Format as unified diff string
-    const unifiedDiff = patch.hunks
-      .map((hunk) => {
-        const lines = [
-          `@@ -${hunk.oldStart},${hunk.oldLines} +${hunk.newStart},${hunk.newLines} @@`,
-        ];
-        lines.push(...hunk.lines);
-        return lines.join('\n');
-      })
-      .join('\n');
+    // Format as git-style unified diff string (with file headers)
+    const headerLines = [
+      `diff --git a/${relativePath} b/${relativePath}`,
+      `--- a/${relativePath}`,
+      `+++ b/${relativePath}`,
+    ];
+
+    const hunkLines = patch.hunks.flatMap((hunk) => {
+      const lines = [`@@ -${hunk.oldStart},${hunk.oldLines} +${hunk.newStart},${hunk.newLines} @@`];
+      lines.push(...hunk.lines);
+      return lines;
+    });
+
+    const unifiedDiff = [...headerLines, ...hunkLines].join('\n');
 
     return {
       relativePath,

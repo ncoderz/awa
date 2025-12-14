@@ -134,7 +134,7 @@ refresh = true
   describe('merge', () => {
     it('should use CLI value when both CLI and config provide same option (P1)', () => {
       const cliOptions = {
-        output: './cli-output',
+        output: './cli-output', // Required from CLI
       };
 
       const fileConfig = {
@@ -156,26 +156,39 @@ refresh = true
 
       const resolved = loader.merge(cliOptions, fileConfig);
 
-      expect(resolved.output).toBe('./file-output');
+      expect(resolved.output).toBe('./file-output'); // From config
       expect(resolved.template).toBe('user/repo');
     });
 
-    it('should use default values when neither CLI nor config provide option', () => {
+    it('should throw error when output not provided in CLI or config', () => {
       const cliOptions = {};
+      const fileConfig = null;
+
+      expect(() => loader.merge(cliOptions, fileConfig)).toThrow('Output directory is required');
+    });
+
+    it('should use default values for other options when not provided', () => {
+      const cliOptions = {
+        output: './output',
+      };
       const fileConfig = null;
 
       const resolved = loader.merge(cliOptions, fileConfig);
 
-      expect(resolved.output).toBe(process.cwd());
+      expect(resolved.output).toBe('./output'); // From CLI
       expect(resolved.template).toBeNull();
       expect(resolved.features).toEqual([]);
+      expect(resolved.preset).toEqual([]);
+      expect(resolved.removeFeatures).toEqual([]);
       expect(resolved.force).toBe(false);
       expect(resolved.dryRun).toBe(false);
       expect(resolved.refresh).toBe(false);
+      expect(resolved.presets).toEqual({});
     });
 
     it('should replace features array completely, not merge (P2)', () => {
       const cliOptions = {
+        output: './output',
         features: ['cli-feature'],
       };
 
@@ -192,6 +205,7 @@ refresh = true
 
     it('should handle all boolean flags correctly', () => {
       const cliOptions = {
+        output: './output',
         force: true,
         dryRun: true,
       };
@@ -205,10 +219,15 @@ refresh = true
       expect(resolved.force).toBe(true);
       expect(resolved.dryRun).toBe(true);
       expect(resolved.refresh).toBe(true);
+      expect(resolved.preset).toEqual([]);
+      expect(resolved.removeFeatures).toEqual([]);
+      expect(resolved.presets).toEqual({});
     });
 
     it('should map dry-run from config to dryRun in resolved options', () => {
-      const cliOptions = {};
+      const cliOptions = {
+        output: './output',
+      };
 
       const fileConfig = {
         'dry-run': true,
@@ -230,6 +249,9 @@ refresh = true
       expect(resolved.output).toBe('./test');
       expect(resolved.template).toBe('user/repo');
       expect(resolved.force).toBe(false);
+      expect(resolved.preset).toEqual([]);
+      expect(resolved.removeFeatures).toEqual([]);
+      expect(resolved.presets).toEqual({});
     });
   });
 });

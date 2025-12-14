@@ -19,7 +19,10 @@
 // @zen-impl: CFG-5 AC-5.1
 // @zen-impl: CFG-6 AC-6.1
 // @zen-impl: CFG-6 AC-6.2
+// @zen-impl: CLI-1 AC-1.4
 // @zen-impl: CLI-2 AC-2.2
+// @zen-impl: CLI-2 AC-2.3
+// @zen-impl: CLI-2 AC-2.4
 // @zen-impl: CLI-4 AC-4.3
 // @zen-impl: CLI-7 AC-7.2
 
@@ -27,6 +30,7 @@ import { parse } from 'smol-toml';
 import {
   ConfigError,
   type FileConfig,
+  type PresetDefinitions,
   type RawCliOptions,
   type ResolvedOptions,
 } from '../types/index.js';
@@ -101,6 +105,31 @@ export class ConfigLoader {
         config.features = parsed.features;
       }
 
+      if (parsed.preset !== undefined) {
+        if (!Array.isArray(parsed.preset) || !parsed.preset.every((p) => typeof p === 'string')) {
+          throw new ConfigError(
+            `Invalid type for 'preset': expected array of strings`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+        config.preset = parsed.preset;
+      }
+
+      if (parsed['remove-features'] !== undefined) {
+        if (
+          !Array.isArray(parsed['remove-features']) ||
+          !parsed['remove-features'].every((f) => typeof f === 'string')
+        ) {
+          throw new ConfigError(
+            `Invalid type for 'remove-features': expected array of strings`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+        config['remove-features'] = parsed['remove-features'];
+      }
+
       if (parsed.force !== undefined) {
         if (typeof parsed.force !== 'boolean') {
           throw new ConfigError(
@@ -134,8 +163,48 @@ export class ConfigLoader {
         config.refresh = parsed.refresh;
       }
 
+      if (parsed.presets !== undefined) {
+        if (
+          parsed.presets === null ||
+          typeof parsed.presets !== 'object' ||
+          Array.isArray(parsed.presets)
+        ) {
+          throw new ConfigError(
+            `Invalid type for 'presets': expected table of string arrays`,
+            'INVALID_PRESET',
+            pathToLoad
+          );
+        }
+
+        const defs: PresetDefinitions = {};
+        for (const [presetName, value] of Object.entries(
+          parsed.presets as Record<string, unknown>
+        )) {
+          if (!Array.isArray(value) || !value.every((v) => typeof v === 'string')) {
+            throw new ConfigError(
+              `Invalid preset '${presetName}': expected array of strings`,
+              'INVALID_PRESET',
+              pathToLoad
+            );
+          }
+          defs[presetName] = value as string[];
+        }
+
+        config.presets = defs;
+      }
+
       // Warn about unknown options
-      const knownKeys = new Set(['output', 'template', 'features', 'force', 'dry-run', 'refresh']);
+      const knownKeys = new Set([
+        'output',
+        'template',
+        'features',
+        'preset',
+        'remove-features',
+        'presets',
+        'force',
+        'dry-run',
+        'refresh',
+      ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
           logger.warn(`Unknown configuration option: '${key}'`);
@@ -158,15 +227,31 @@ export class ConfigLoader {
   }
 
   // @zen-impl: CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4
+  // @zen-impl: CLI-2 AC-2.2, CLI-2 AC-2.3, CLI-2 AC-2.4
   merge(cli: RawCliOptions, file: FileConfig | null): ResolvedOptions {
     // CLI arguments override file config values
-    // If neither provided, use defaults
+    // Output can come from CLI (positional argument) or config file
 
-    const output = cli.output ?? file?.output ?? process.cwd();
+    // @zen-impl: CLI-2 AC-2.2, CLI-2 AC-2.3
+    const output = cli.output ?? file?.output;
+
+    // @zen-impl: CLI-1 AC-1.4, CLI-2 AC-2.4
+    if (!output) {
+      throw new ConfigError(
+        'Output directory is required. Provide it as a positional argument or in the config file.',
+        'MISSING_OUTPUT',
+        null
+      );
+    }
+
     const template = cli.template ?? file?.template ?? null;
 
     // Features: CLI completely replaces config (no merge)
     const features = cli.features ?? file?.features ?? [];
+
+    const preset = cli.preset ?? file?.preset ?? [];
+    const removeFeatures = cli.removeFeatures ?? file?.['remove-features'] ?? [];
+    const presets = file?.presets ?? {};
 
     const force = cli.force ?? file?.force ?? false;
     const dryRun = cli.dryRun ?? file?.['dry-run'] ?? false;
@@ -176,9 +261,12 @@ export class ConfigLoader {
       output,
       template,
       features,
+      preset,
+      removeFeatures,
       force,
       dryRun,
       refresh,
+      presets,
     };
   }
 }

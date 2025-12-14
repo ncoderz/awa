@@ -10,14 +10,20 @@ export class DiffError extends Error {
 
 // RawCliOptions - CLI argument parser output
 export interface RawCliOptions {
-  output?: string;
+  output?: string; // Optional positional argument (required if not in config)
   template?: string;
   features?: string[];
+  preset?: string[];
+  removeFeatures?: string[];
   force?: boolean;
   dryRun?: boolean;
   config?: string;
   refresh?: boolean;
-  target?: string;
+}
+
+// PresetDefinitions - Named feature bundles
+export interface PresetDefinitions {
+  [presetName: string]: string[];
 }
 
 // FileConfig - TOML configuration file structure
@@ -25,9 +31,12 @@ export interface FileConfig {
   output?: string;
   template?: string;
   features?: string[];
+  preset?: string[];
+  'remove-features'?: string[];
   force?: boolean;
   'dry-run'?: boolean;
   refresh?: boolean;
+  presets?: PresetDefinitions;
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
@@ -35,9 +44,12 @@ export interface ResolvedOptions {
   readonly output: string;
   readonly template: string | null;
   readonly features: readonly string[];
+  readonly preset: readonly string[];
+  readonly removeFeatures: readonly string[];
   readonly force: boolean;
   readonly dryRun: boolean;
   readonly refresh: boolean;
+  readonly presets: PresetDefinitions;
 }
 
 // TemplateSourceType - Template source type detection
@@ -136,6 +148,7 @@ export interface DiffResult {
   modified: number;
   newFiles: number;
   extraFiles: number;
+  binaryDiffers: number;
   hasDifferences: boolean;
 }
 
@@ -151,8 +164,14 @@ export interface CachedTemplate {
 export class ConfigError extends Error {
   constructor(
     message: string,
-    public code: 'FILE_NOT_FOUND' | 'PARSE_ERROR' | 'INVALID_TYPE',
-    public filePath?: string
+    public code:
+      | 'FILE_NOT_FOUND'
+      | 'PARSE_ERROR'
+      | 'INVALID_TYPE'
+      | 'MISSING_OUTPUT'
+      | 'INVALID_PRESET'
+      | 'UNKNOWN_PRESET',
+    public filePath?: string | null
   ) {
     super(message);
     this.name = 'ConfigError';

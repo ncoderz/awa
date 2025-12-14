@@ -20,25 +20,30 @@ This document defines requirements for the Zen CLI command-line interface layer,
 
 AS A developer, I WANT a clear command structure, SO THAT I can easily invoke generation.
 
-> The CLI provides a single primary command for template generation.
+> The CLI provides a single primary command for template generation with output directory as positional argument.
 
 ACCEPTANCE CRITERIA
 
 - [ ] AC-1.1 [ubiquitous]: The system SHALL provide a `generate` command as the primary entry point
 - [ ] AC-1.2 [event]: WHEN the user invokes `zen` without a command THEN the system SHALL display help information
-- [ ] AC-1.3 [event]: WHEN the user invokes `zen generate` THEN the system SHALL execute the generation workflow
+- [ ] AC-1.3 [ubiquitous]: The system SHALL accept an output directory as the first positional argument: `zen generate <output>`
+- [ ] AC-1.4 [conditional]: IF the user invokes `zen generate` without an output directory AND no output is specified in config THEN the system SHALL display an error and usage information
+- [ ] AC-1.5 [ubiquitous]: The help output SHALL display the positional argument syntax in the usage line
 
-### CLI-2: Output Directory Option [MUST]
+### CLI-2: Output Directory Argument [MUST]
 
 AS A developer, I WANT to specify an output directory, SO THAT generated files go where I need them.
 
-> Controls where generated files are written.
+> Controls where generated files are written. Positional argument that can be provided via CLI or config file.
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-2.1 [ubiquitous]: The system SHALL accept `--output <path>` to specify the output directory
-- [ ] AC-2.2 [state]: WHEN `--output` is not provided THEN the system SHALL use the current working directory as default
-- [ ] AC-2.3 [ubiquitous]: The system SHALL accept both relative and absolute paths for `--output`
+- [ ] AC-2.1 [ubiquitous]: The system SHALL accept an output directory as an optional positional argument
+- [ ] AC-2.2 [state]: WHEN output is provided as positional argument THEN the system SHALL use it regardless of config file value
+- [ ] AC-2.3 [state]: WHEN output is not provided as positional argument THEN the system SHALL use the value from config file
+- [ ] AC-2.4 [state]: WHEN output is not provided via CLI or config THEN the system SHALL display an error
+- [ ] AC-2.5 [ubiquitous]: The system SHALL accept both relative and absolute paths for the output directory
+- [ ] AC-2.6 [ubiquitous]: The system SHALL accept `.` to specify the current working directory
 
 ### CLI-3: Template Source Option [MUST]
 
@@ -153,7 +158,7 @@ ACCEPTANCE CRITERIA
 
 ## Constraints
 
-- CLI framework limited to citty for consistency with architecture
+- CLI framework limited to commander for consistency with architecture
 - Interactive prompts limited to @clack/prompts for consistency with architecture
 
 ## Out of Scope

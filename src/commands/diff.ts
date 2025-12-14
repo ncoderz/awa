@@ -6,6 +6,7 @@
 import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { diffEngine } from '../core/differ.js';
+import { featureResolver } from '../core/feature-resolver.js';
 import { templateResolver } from '../core/template-resolver.js';
 import { DiffError, type RawCliOptions } from '../types/index.js';
 import { pathExists } from '../utils/fs.js';
@@ -21,20 +22,28 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     // Merge CLI and file config
     const options = configLoader.merge(cliOptions, fileConfig);
 
-    // Validate target directory exists
-    const targetPath = cliOptions.target ?? options.output;
-    if (!(await pathExists(targetPath))) {
-      throw new DiffError(`Target directory does not exist: ${targetPath}`);
+    // Validate target directory exists (now from options.output)
+    if (!(await pathExists(options.output))) {
+      throw new DiffError(`Target directory does not exist: ${options.output}`);
     }
+
+    const targetPath = options.output;
 
     // Resolve template source
     const template = await templateResolver.resolve(options.template, options.refresh);
+
+    const features = featureResolver.resolve({
+      baseFeatures: [...options.features],
+      presetNames: [...options.preset],
+      removeFeatures: [...options.removeFeatures],
+      presetDefinitions: options.presets,
+    });
 
     // Perform diff
     const result = await diffEngine.diff({
       templatePath: template.localPath,
       targetPath,
-      features: [...options.features],
+      features,
     });
 
     // Display diff output
@@ -46,7 +55,14 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
             // Parse and display unified diff with colors
             const lines = file.unifiedDiff.split('\n');
             for (const line of lines) {
-              if (line.startsWith('+')) {
+              if (
+                line.startsWith('diff --git') ||
+                line.startsWith('index ') ||
+                line.startsWith('--- ') ||
+                line.startsWith('+++ ')
+              ) {
+                logger.diffLine(line, 'context');
+              } else if (line.startsWith('+')) {
                 logger.diffLine(line, 'add');
               } else if (line.startsWith('-')) {
                 logger.diffLine(line, 'remove');
@@ -65,7 +81,7 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
           logger.warn(`Extra file (not in template): ${file.relativePath}`);
           break;
         case 'binary-differs':
-          logger.warn(`Binary file differs: ${file.relativePath}`);
+          logger.warn(`binary files differ: ${file.relativePath}`);
           break;
         case 'identical':
           // Skip identical files from output
@@ -81,12 +97,13 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     // @zen-impl: DIFF-5 AC-5.1, DIFF-5 AC-5.2
     return result.hasDifferences ? 1 : 0;
   } catch (error) {
-    // @zen-impl: DIFF-5 AC-5.3
     if (error instanceof Error) {
       logger.error(error.message);
     } else {
       logger.error(String(error));
     }
-    process.exit(2);
+
+    // @zen-impl: DIFF-5 AC-5.3
+    return 2;
   }
 }

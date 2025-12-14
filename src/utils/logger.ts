@@ -104,6 +104,18 @@ export class Logger {
   diffSummary(result: DiffResult): void {
     console.log('');
 
+    const filesCompared =
+      result.identical +
+      result.modified +
+      result.newFiles +
+      result.extraFiles +
+      result.binaryDiffers;
+    const differences =
+      result.modified + result.newFiles + result.extraFiles + result.binaryDiffers;
+
+    // @zen-impl: DIFF-4 AC-4.5
+    console.log(chalk.bold(`${filesCompared} files compared, ${differences} differences`));
+
     if (!result.hasDifferences) {
       // @zen-impl: DIFF-4 AC-4.4
       console.log(chalk.green('✔ No differences found'));
@@ -123,6 +135,10 @@ export class Logger {
 
     if (result.extraFiles > 0) {
       console.log(chalk.red(`  Extra: ${result.extraFiles}`));
+    }
+
+    if (result.binaryDiffers > 0) {
+      console.log(chalk.red(`  Binary differs: ${result.binaryDiffers}`));
     }
 
     console.log('');

@@ -130,7 +130,7 @@ AS A developer, I WANT init to work in CI environments, SO THAT I can script ini
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-9.1 [ubiquitous]: The system SHALL accept `--template`, `--output`, `--features` options to bypass prompts
+- [ ] AC-9.1 [ubiquitous]: The system SHALL accept `--template`, `--features` options and a positional output directory argument to bypass prompts
 - [ ] AC-9.2 [conditional]: IF all required options are provided via CLI THEN the system SHALL skip interactive prompts
 - [ ] AC-9.3 [conditional]: IF running in a non-interactive terminal AND `--template` is not provided THEN the system SHALL display an error and exit with a non-zero exit code
 - [ ] AC-9.4 [conditional]: IF running in a non-interactive terminal AND `--template` is provided THEN the system SHALL execute initialization without interactive prompts using provided options and defaults

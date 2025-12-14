@@ -13,7 +13,7 @@ describe('Property-Based Tests', () => {
       fc.assert(
         fc.property(
           fc.record({
-            output: fc.option(fc.string(), { nil: undefined }),
+            output: fc.option(fc.string(), { nil: undefined }), // Optional in CLI
             template: fc.option(fc.string(), { nil: undefined }),
             features: fc.option(fc.array(fc.string()), { nil: undefined }),
             force: fc.option(fc.boolean(), { nil: undefined }),
@@ -29,21 +29,30 @@ describe('Property-Based Tests', () => {
             refresh: fc.option(fc.boolean(), { nil: undefined }),
           }),
           (cliOptions, fileConfig) => {
-            const loader = new ConfigLoader();
-            const resolved = loader.merge(cliOptions, fileConfig);
+            // Skip if neither has valid output (will throw error)
+            const hasValidCliOutput = cliOptions.output && cliOptions.output.trim() !== '';
+            const hasValidFileOutput = fileConfig.output && fileConfig.output.trim() !== '';
 
-            // If CLI provided a value, it should be used
-            if (cliOptions.output !== undefined) {
+            if (!hasValidCliOutput && !hasValidFileOutput) {
+              return true;
+            }
+
+            // If CLI has invalid output (empty/whitespace), treat it as absent for merge
+            const cleanedCliOptions = {
+              ...cliOptions,
+              output: hasValidCliOutput ? cliOptions.output : undefined,
+            };
+
+            const loader = new ConfigLoader();
+            const resolved = loader.merge(cleanedCliOptions, fileConfig);
+
+            // If CLI has valid output, it should be used
+            if (hasValidCliOutput) {
               return resolved.output === cliOptions.output;
             }
 
-            // If only file config provided, use that
-            if (fileConfig.output !== undefined) {
-              return resolved.output === fileConfig.output;
-            }
-
-            // Otherwise default (cwd)
-            return resolved.output === process.cwd();
+            // Otherwise config output should be used
+            return resolved.output === fileConfig.output;
           }
         ),
         { numRuns: 100 }
@@ -59,7 +68,10 @@ describe('Property-Based Tests', () => {
           fc.array(fc.string({ minLength: 1 })),
           (cliFeatures, configFeatures) => {
             const loader = new ConfigLoader();
-            const resolved = loader.merge({ features: cliFeatures }, { features: configFeatures });
+            const resolved = loader.merge(
+              { output: './output', features: cliFeatures },
+              { output: './output', features: configFeatures }
+            );
 
             // Resolved features should exactly match CLI features
             return (
@@ -218,6 +230,34 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  describe('P11: Content Identity Skip', () => {
+    // @zen-test: P11
+    it('Identical content is skipped without prompting', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.string(), async (content) => {
+          const resolver = new ConflictResolver();
+          const conflicts = [
+            {
+              outputPath: 'test.txt',
+              sourcePath: '/templates/test.txt',
+              newContent: content,
+              existingContent: content,
+            },
+          ];
+
+          const resolution = await resolver.resolveBatch(conflicts, false, false);
+
+          // Identical content should be skipped without prompting
+          return resolution.skip.includes('test.txt') && !resolution.overwrite.includes('test.txt');
+        }),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  // Note: P12-P20 require components not yet implemented (DiffEngine, FeatureResolver)
+  // These tests will be added when those components are implemented
+
   describe('Correctness Invariants', () => {
     it('Template type detection is deterministic', () => {
       fc.assert(
@@ -237,19 +277,37 @@ describe('Property-Based Tests', () => {
       fc.assert(
         fc.property(
           fc.record({
-            output: fc.option(fc.string(), { nil: undefined }),
+            output: fc.option(fc.string(), { nil: undefined }), // Optional in CLI
           }),
           fc.record({
             output: fc.option(fc.string(), { nil: undefined }),
           }),
           (cli1, config1) => {
+            // Skip if neither has valid output (will throw error)
+            const hasValidCliOutput = cli1.output && cli1.output.trim() !== '';
+            const hasValidConfigOutput = config1.output && config1.output.trim() !== '';
+
+            if (!hasValidCliOutput && !hasValidConfigOutput) {
+              return true;
+            }
+
+            // Clean invalid outputs
+            const cleanedCli = {
+              ...cli1,
+              output: hasValidCliOutput ? cli1.output : undefined,
+            };
+            const cleanedConfig = {
+              ...config1,
+              output: hasValidConfigOutput ? config1.output : undefined,
+            };
+
             const loader = new ConfigLoader();
 
             // First merge
-            const result1 = loader.merge(cli1, config1);
+            const result1 = loader.merge(cleanedCli, cleanedConfig);
 
             // Second merge with same inputs
-            const result2 = loader.merge(cli1, config1);
+            const result2 = loader.merge(cleanedCli, cleanedConfig);
 
             // Results should be identical
             return result1.output === result2.output;

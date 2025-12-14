@@ -23,11 +23,6 @@ import { pathExists } from '../../utils/fs.js';
 import { logger } from '../../utils/logger.js';
 import { diffCommand } from '../diff.js';
 
-// Spy on process.exit to prevent it from actually exiting during tests
-const _processExitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
-  throw new Error(`process.exit: ${code}`);
-}) as never);
-
 describe('diffCommand', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -42,7 +37,12 @@ describe('diffCommand', () => {
       template: './templates/zen',
       output: './output',
       features: [],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
       refresh: false,
+      force: false,
+      dryRun: false,
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
@@ -57,6 +57,41 @@ describe('diffCommand', () => {
 
   // @zen-test: P15
   // VALIDATES: DIFF-5 AC-5.1
+  test('should use output from config when not provided in CLI', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+    vi.mocked(configLoader.merge).mockReturnValue({
+      template: './templates/zen',
+      output: './from-config',
+      features: [],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
+      refresh: false,
+      force: false,
+      dryRun: false,
+    });
+
+    const exitCode = await diffCommand({
+      template: './templates/zen',
+      features: [],
+      config: undefined,
+      refresh: false,
+    });
+
+    expect(exitCode).toBe(0);
+    expect(pathExists).toHaveBeenCalledWith('./from-config');
+  });
+
   test('should return exit code 0 when files are identical', async () => {
     const mockResult: DiffResult = {
       files: [{ relativePath: 'file.txt', status: 'identical' }],
@@ -64,18 +99,18 @@ describe('diffCommand', () => {
       modified: 0,
       newFiles: 0,
       extraFiles: 0,
+      binaryDiffers: 0,
       hasDifferences: false,
     };
 
     vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
     const exitCode = await diffCommand({
-      target: './target',
+      output: './target',
       template: './templates/zen',
       features: [],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     expect(exitCode).toBe(0);
@@ -97,18 +132,18 @@ describe('diffCommand', () => {
       modified: 1,
       newFiles: 0,
       extraFiles: 0,
+      binaryDiffers: 0,
       hasDifferences: true,
     };
 
     vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
     const exitCode = await diffCommand({
-      target: './target',
+      output: './target',
       template: './templates/zen',
       features: [],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     expect(exitCode).toBe(1);
@@ -120,19 +155,15 @@ describe('diffCommand', () => {
   test('should return exit code 2 on error', async () => {
     vi.mocked(pathExists).mockResolvedValue(false);
 
-    try {
-      await diffCommand({
-        target: './non-existent',
-        template: './templates/zen',
-        features: [],
-        config: undefined,
-        refresh: false,
-        output: undefined,
-      });
-    } catch (error: unknown) {
-      expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toContain('process.exit: 2');
-    }
+    const exitCode = await diffCommand({
+      output: './non-existent',
+      template: './templates/zen',
+      features: [],
+      config: undefined,
+      refresh: false,
+    });
+
+    expect(exitCode).toBe(2);
 
     expect(logger.error).toHaveBeenCalled();
   });
@@ -152,18 +183,18 @@ describe('diffCommand', () => {
       modified: 1,
       newFiles: 0,
       extraFiles: 0,
+      binaryDiffers: 0,
       hasDifferences: true,
     };
 
     vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
     await diffCommand({
-      target: './target',
+      output: './target',
       template: './templates/zen',
       features: [],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     // Verify that diffLine was called with appropriate line types
@@ -185,18 +216,18 @@ describe('diffCommand', () => {
       modified: 0,
       newFiles: 0,
       extraFiles: 0,
+      binaryDiffers: 0,
       hasDifferences: false,
     };
 
     vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
     await diffCommand({
-      target: './target',
+      output: './target',
       template: undefined,
       features: [],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     expect(templateResolver.resolve).toHaveBeenCalled();
@@ -210,6 +241,7 @@ describe('diffCommand', () => {
       modified: 0,
       newFiles: 0,
       extraFiles: 0,
+      binaryDiffers: 0,
       hasDifferences: false,
     };
 
@@ -218,16 +250,18 @@ describe('diffCommand', () => {
       template: './templates/zen',
       output: './output',
       features: ['feature1', 'feature2'],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
       refresh: false,
     });
 
     await diffCommand({
-      target: './target',
+      output: './target',
       template: './templates/zen',
       features: ['feature1', 'feature2'],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     expect(diffEngine.diff).toHaveBeenCalledWith(
@@ -248,18 +282,18 @@ describe('diffCommand', () => {
       modified: 0,
       newFiles: 1,
       extraFiles: 1,
+      binaryDiffers: 0,
       hasDifferences: true,
     };
 
     vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
     await diffCommand({
-      target: './target',
+      output: './target',
       template: './templates/zen',
       features: [],
       config: undefined,
       refresh: false,
-      output: undefined,
     });
 
     expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('new-file.txt'));
