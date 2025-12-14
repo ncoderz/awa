@@ -20,7 +20,7 @@
     "lint:fix": "biome check --fix .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "prepare": "npm run clean && && npm run build",
+    "prepare": "npm run clean && npm run build",
     "ncu": "npx -y npm-check-updates -i",
     "clean": "node scripts/clean.mjs"
   },
