@@ -23,26 +23,13 @@
 // @zen-impl: GEN-10 AC-10.1
 // @zen-impl: GEN-10 AC-10.2
 
-import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { defineCommand, runMain } from 'citty';
+import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { diffCommand } from '../commands/diff.js';
 import { generateCommand } from '../commands/generate.js';
 import type { RawCliOptions } from '../types/index.js';
 
-// Get package.json version
-const currentFile = fileURLToPath(import.meta.url);
-const projectRoot = join(dirname(currentFile), '..', '..');
-const packageJsonPath = join(projectRoot, 'package.json');
-
-let version = '1.0.0';
-try {
-  const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
-  version = packageJson.version;
-} catch {
-  // Use default if package.json not found
-}
+const version = PACKAGE_INFO.version;
 
 // @zen-impl: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3
 const generateCmd = defineCommand({

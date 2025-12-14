@@ -10,7 +10,6 @@ permissions:
 
 env:
   CI: true
-  BROWSERSTACK_ENABLED: "false"
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:

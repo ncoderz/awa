@@ -1,29 +1,40 @@
 {
   "name": "@zen/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zen AI Coding Agent: start and finish you project right",
+  "license": "MIT",
+  "author": "Richard Sewell <six5536>",
   "type": "module",
   "bin": {
-    "zen": "./dist/cli/index.js"
+    "zen": "./dist/index.js"
   },
   "scripts": {
+    "init": "tsx scripts/init.ts",
     "dev": "tsx src/cli/index.ts",
-    "start": "node dist/cli/index.js",
-    "build": "npm run lint && npm run typecheck && tsup",
+    "start": "node dist/index.js",
+    "build": "npm run init && npm run lint && npm run typecheck && tsup",
     "gen:example": "tsx src/cli/index.ts generate --template ./templates/example --output ./outputs/example",
     "gen:zen": "tsx src/cli/index.ts generate --template ./templates/zen --output ./outputs/zen",
     "diff:zen": "tsx src/cli/index.ts diff --template ./templates/zen --target .github/agents",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "biome check .",
-    "lint:fix": "biome check --fix .",
+    "lint": "biome check --error-on-warnings .",
+    "lint:fix": "biome check --error-on-warnings --fix .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run clean && npm run build",
     "ncu": "npx -y npm-check-updates -i",
     "clean": "node scripts/clean.mjs"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "cli",
     "template",
