@@ -20,13 +20,13 @@
 // @zen-impl: TPL-10 AC-10.2
 // @zen-impl: TPL-10 AC-10.3
 
-import { createHash } from "node:crypto";
-import { rm } from "node:fs/promises";
-import { isAbsolute, join, resolve } from "node:path";
-import degit from "degit";
-import { type ResolvedTemplate, TemplateError, type TemplateSourceType } from "../types/index.js";
-import { ensureDir, getCacheDir, getTemplateDir, pathExists } from "../utils/fs.js";
-import { logger } from "../utils/logger.js";
+import { createHash } from 'node:crypto';
+import { rm } from 'node:fs/promises';
+import { isAbsolute, join, resolve } from 'node:path';
+import degit from 'degit';
+import { type ResolvedTemplate, TemplateError, type TemplateSourceType } from '../types/index.js';
+import { ensureDir, getCacheDir, getTemplateDir, pathExists } from '../utils/fs.js';
+import { logger } from '../utils/logger.js';
 
 export class TemplateResolver {
   // @zen-impl: CLI-3 AC-3.2, TPL-10 AC-10.1
@@ -35,34 +35,38 @@ export class TemplateResolver {
     if (!source) {
       const bundledPath = getTemplateDir();
       return {
-        type: "bundled",
+        type: 'bundled',
         localPath: bundledPath,
-        source: "bundled",
+        source: 'bundled',
       };
     }
 
     const type = this.detectType(source);
 
     // @zen-impl: TPL-1 AC-1.1, TPL-1 AC-1.2, TPL-1 AC-1.3, TPL-1 AC-1.4
-    if (type === "local") {
+    if (type === 'local') {
       // Resolve relative/absolute paths
       const localPath = isAbsolute(source) ? source : resolve(process.cwd(), source);
 
       // Check if path exists
       if (!(await pathExists(localPath))) {
-        throw new TemplateError(`Template source not found: ${localPath}`, "SOURCE_NOT_FOUND", source);
+        throw new TemplateError(
+          `Template source not found: ${localPath}`,
+          'SOURCE_NOT_FOUND',
+          source
+        );
       }
 
       // Local templates are not cached
       return {
-        type: "local",
+        type: 'local',
         localPath,
         source,
       };
     }
 
     // @zen-impl: TPL-2 AC-2.1 through TPL-2 AC-2.6, TPL-3 AC-3.1 through TPL-3 AC-3.4
-    if (type === "git") {
+    if (type === 'git') {
       const cachePath = this.getCachePath(source);
 
       // @zen-impl: CLI-8 AC-8.2, TPL-3 AC-3.2
@@ -73,7 +77,7 @@ export class TemplateResolver {
         // Use cached version
         logger.info(`Using cached template: ${source}`);
         return {
-          type: "git",
+          type: 'git',
           localPath: cachePath,
           source,
         };
@@ -96,28 +100,36 @@ export class TemplateResolver {
         await emitter.clone(cachePath);
 
         return {
-          type: "git",
+          type: 'git',
           localPath: cachePath,
           source,
         };
       } catch (error) {
-        throw new TemplateError(`Failed to fetch Git template: ${error instanceof Error ? error.message : String(error)}`, "FETCH_FAILED", source);
+        throw new TemplateError(
+          `Failed to fetch Git template: ${error instanceof Error ? error.message : String(error)}`,
+          'FETCH_FAILED',
+          source
+        );
       }
     }
 
-    throw new TemplateError(`Unable to resolve template source: ${source}`, "SOURCE_NOT_FOUND", source);
+    throw new TemplateError(
+      `Unable to resolve template source: ${source}`,
+      'SOURCE_NOT_FOUND',
+      source
+    );
   }
 
   // @zen-impl: TPL-2 AC-2.1 through TPL-2 AC-2.6
   detectType(source: string): TemplateSourceType {
     // Check for local path indicators
-    if (source.startsWith(".") || source.startsWith("/") || source.startsWith("~")) {
-      return "local";
+    if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {
+      return 'local';
     }
 
     // Check for Windows absolute paths
     if (/^[a-zA-Z]:/.test(source)) {
-      return "local";
+      return 'local';
     }
 
     // All other formats are treated as Git sources:
@@ -127,13 +139,13 @@ export class TemplateResolver {
     // - SSH: git@github.com:owner/repo
     // - With subdirs: owner/repo/path/to/templates
     // - With refs: owner/repo#branch
-    return "git";
+    return 'git';
   }
 
   // @zen-impl: TPL-3 AC-3.1
   getCachePath(source: string): string {
     // Create a stable cache path based on source hash
-    const hash = createHash("sha256").update(source).digest("hex").substring(0, 16);
+    const hash = createHash('sha256').update(source).digest('hex').substring(0, 16);
     const cacheDir = getCacheDir();
     return join(cacheDir, hash);
   }

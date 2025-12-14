@@ -7,19 +7,22 @@
     "zen": "./dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsup",
     "dev": "tsx src/cli/index.ts",
     "start": "node dist/cli/index.js",
+    "build": "npm run lint && npm run typecheck && tsup",
     "gen:example": "tsx src/cli/index.ts generate --template ./templates/example --output ./outputs/example",
     "gen:zen": "tsx src/cli/index.ts generate --template ./templates/zen --output ./outputs/zen",
     "diff:zen": "tsx src/cli/index.ts diff --template ./templates/zen --target .github/agents",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest run --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --fix .",
     "format": "biome format --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run clean && && npm run build",
+    "ncu": "npx -y npm-check-updates -i",
+    "clean": "node scripts/clean.mjs"
   },
   "keywords": [
     "cli",

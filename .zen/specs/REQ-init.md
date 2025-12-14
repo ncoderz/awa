@@ -79,7 +79,7 @@ AS A developer, I WANT to select feature flags interactively, SO THAT I can cust
 ACCEPTANCE CRITERIA
 
 - [ ] AC-5.1 [event]: WHEN a template is selected THEN the system SHALL check for available feature flags
-- [ ] AC-5.2 [conditional]: IF the template declares features in `_README.md` THEN the system SHALL display them as multi-select options
+- [ ] AC-5.2 [conditional]: IF the template contains a `_README.md` file with a section titled "Features" THEN the system SHALL parse feature flags from bullet-list items whose first token is a backticked flag name
 - [ ] AC-5.3 [conditional]: IF the template has no declared features THEN the system SHALL skip the feature selection step
 - [ ] AC-5.4 [event]: WHEN the user confirms feature selection THEN the system SHALL store the selected features for generation
 
@@ -92,7 +92,7 @@ AS A developer, I WANT to specify the output directory, SO THAT files are genera
 ACCEPTANCE CRITERIA
 
 - [ ] AC-6.1 [event]: WHEN feature selection is complete THEN the system SHALL prompt for output directory
-- [ ] AC-6.2 [ubiquitous]: The system SHALL suggest `.github/agents` as the default output directory
+- [ ] AC-6.2 [ubiquitous]: The system SHALL suggest the current working directory as the default output directory
 - [ ] AC-6.3 [event]: WHEN the user provides a custom path THEN the system SHALL validate it is a writable location
 - [ ] AC-6.4 [conditional]: IF the output directory does not exist THEN the system SHALL offer to create it
 
@@ -105,9 +105,9 @@ AS A developer, I WANT the wizard to create a `.zen.toml` file, SO THAT future r
 ACCEPTANCE CRITERIA
 
 - [ ] AC-7.1 [event]: WHEN configuration is complete THEN the system SHALL offer to save settings to `.zen.toml`
-- [ ] AC-7.2 [conditional]: IF user accepts THEN the system SHALL create `.zen.toml` with template, output, and features settings
+- [ ] AC-7.2 [conditional]: IF user accepts THEN the system SHALL create `.zen.toml` with `template`, `output`, and `features` settings
 - [ ] AC-7.3 [conditional]: IF `.zen.toml` already exists THEN the system SHALL prompt to overwrite or merge
-- [ ] AC-7.4 [event]: WHEN merging THEN the system SHALL preserve existing settings not covered by wizard choices
+- [ ] AC-7.4 [event]: WHEN merging THEN the system SHALL preserve existing settings not covered by wizard choices, including unknown keys
 
 ### INIT-8: Generation Execution [MUST]
 
@@ -120,7 +120,7 @@ ACCEPTANCE CRITERIA
 - [ ] AC-8.1 [event]: WHEN all configuration is complete THEN the system SHALL display a summary of choices
 - [ ] AC-8.2 [event]: WHEN the user confirms THEN the system SHALL invoke the generate workflow with collected options
 - [ ] AC-8.3 [event]: WHEN generation completes THEN the system SHALL display a success message with next steps
-- [ ] AC-8.4 [conditional]: IF the user cancels at any prompt THEN the system SHALL exit gracefully without generating files
+- [ ] AC-8.4 [conditional]: IF the user cancels at any prompt THEN the system SHALL exit with a non-zero exit code without generating files
 
 ### INIT-9: Non-Interactive Fallback [SHOULD]
 
@@ -132,7 +132,8 @@ ACCEPTANCE CRITERIA
 
 - [ ] AC-9.1 [ubiquitous]: The system SHALL accept `--template`, `--output`, `--features` options to bypass prompts
 - [ ] AC-9.2 [conditional]: IF all required options are provided via CLI THEN the system SHALL skip interactive prompts
-- [ ] AC-9.3 [conditional]: IF running in a non-interactive terminal AND required options are missing THEN the system SHALL display an error
+- [ ] AC-9.3 [conditional]: IF running in a non-interactive terminal AND `--template` is not provided THEN the system SHALL display an error and exit with a non-zero exit code
+- [ ] AC-9.4 [conditional]: IF running in a non-interactive terminal AND `--template` is provided THEN the system SHALL execute initialization without interactive prompts using provided options and defaults
 
 DEPENDS ON: CLI-2, CLI-3, CLI-4
 
@@ -147,7 +148,7 @@ ACCEPTANCE CRITERIA
 - [ ] AC-10.1 [ubiquitous]: The system SHALL support arrow keys for navigating selection lists
 - [ ] AC-10.2 [ubiquitous]: The system SHALL support Enter to confirm selection
 - [ ] AC-10.3 [ubiquitous]: The system SHALL support Ctrl+C to cancel at any point
-- [ ] AC-10.4 [ubiquitous]: The system SHALL support Escape to go back to previous prompt
+- [ ] AC-10.4 [ubiquitous]: The system SHALL support Escape to cancel the current prompt
 
 ## Assumptions
 
@@ -157,7 +158,7 @@ ACCEPTANCE CRITERIA
 
 ## Constraints
 
-- The wizard MUST complete within a reasonable number of prompts (maximum 6 steps)
+- The wizard MUST complete within a reasonable number of decision prompts (maximum 6), excluding free-form input prompts (e.g., paths/URLs) and optional preview display
 - Network access is only required for Git repository templates
 
 ## Out of Scope

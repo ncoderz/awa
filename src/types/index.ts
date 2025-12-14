@@ -157,3 +157,10 @@ export class TemplateError extends Error {
     this.name = "TemplateError";
   }
 }
+
+export class GenerationError extends Error {
+  constructor(message: string, public code: "PERMISSION_DENIED" | "DISK_FULL") {
+    super(message);
+    this.name = "GenerationError";
+  }
+}

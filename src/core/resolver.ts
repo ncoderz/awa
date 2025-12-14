@@ -14,15 +14,19 @@
 // @zen-impl: GEN-6 AC-6.3
 // @zen-impl: GEN-10 AC-10.3
 
-import { isCancel, multiselect } from "@clack/prompts";
-import type { BatchConflictResolution, ConflictItem } from "../types/index.js";
+import { isCancel, multiselect } from '@clack/prompts';
+import type { BatchConflictResolution, ConflictItem } from '../types/index.js';
 
 export class ConflictResolver {
   // @zen-impl: GEN-4 AC-4.1, GEN-4 AC-4.2, GEN-4 AC-4.3
   // @zen-impl: GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.3, GEN-5 AC-5.4, GEN-5 AC-5.5, GEN-5 AC-5.6, GEN-5 AC-5.7
   // @zen-impl: CLI-5 AC-5.2, CLI-5 AC-5.3
   // @zen-impl: GEN-6 AC-6.3
-  async resolveBatch(conflicts: ConflictItem[], force: boolean, dryRun: boolean): Promise<BatchConflictResolution> {
+  async resolveBatch(
+    conflicts: ConflictItem[],
+    force: boolean,
+    dryRun: boolean
+  ): Promise<BatchConflictResolution> {
     // In dry-run mode, never modify files (P7: Dry Run Immutable)
     if (dryRun) {
       return {
@@ -53,7 +57,7 @@ export class ConflictResolver {
     // @zen-impl: GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.5, GEN-5 AC-5.6
     // Prompt user with multi-select (all selected by default)
     const selected = await multiselect({
-      message: `The following files already exist. Select files to overwrite:`,
+      message: 'The following files already exist. Select files to overwrite:',
       options: differentFiles.map((c) => ({
         value: c.outputPath,
         label: c.outputPath,
@@ -72,7 +76,9 @@ export class ConflictResolver {
     const allPaths = differentFiles.map((c) => c.outputPath);
 
     // Files with identical content that were filtered out should be skipped
-    const identicalPaths = conflicts.filter((c) => c.newContent === c.existingContent).map((c) => c.outputPath);
+    const identicalPaths = conflicts
+      .filter((c) => c.newContent === c.existingContent)
+      .map((c) => c.outputPath);
 
     return {
       overwrite: selectedPaths,

@@ -5,9 +5,6 @@ handoffs:
   - label: Create Design
     agent: zen-design
     prompt: Create a design document based on the requirements above.
-  - label: Create Plan
-    agent: zen-plan
-    prompt: Create an implementation plan based on the requirements above.
   - label: Run Alignment
     agent: zen-alignment
     prompt: Validate alignment of the requirements with existing artifacts.
@@ -31,7 +28,6 @@ YOUR task is to create and maintain requirements in EARS format for the project.
   Relevant files = files related to current task.
   Research = investigating code, docs, or external resources to inform work.
 </definitions>
-
 
 <stateMachine name="ZenRequirements" initial="CheckForInstruction">
 
@@ -110,8 +106,8 @@ YOUR task is to create and maintain requirements in EARS format for the project.
         NOT architecture, designs, code, or documentation.
       </constraint>
       <constraint id="file-access">
-        READ: .zen/specs/ARCHITECTURE.md, .zen/specs/REQ-{feature-name}.md
         WRITE: .zen/specs/REQ-{feature-name}.md only
+        READ_ONLY: all other files.
       </constraint>
       <constraint id="engineering">
         KISS: simple over clever. YAGNI: only what's specified. DRY: research before creating.
@@ -133,20 +129,42 @@ YOUR task is to create and maintain requirements in EARS format for the project.
     <AnalyseInstruction>
       Analyse user request, consider solution & required files, clarify open points with user.
       <analyse target="user_instruction" />
-      <identify target="requirements_scope" />
+      <workflow default="ARCHITECTURE → DOCUMENTATION">
+        ARCHITECTURE → REQUIREMENTS → DESIGN → PLAN → CODE → TESTS → DOCUMENTATION
+      </workflow>
+      <identify target="scope" />
+      <identify target="relevant_files" />
       <clarify target="open_points" with="user" />
     </AnalyseInstruction>
 
     <ReadFiles>
       You MUST read all relevant files if they exist.
-      <read path=".zen/specs/ARCHITECTURE.md" />
-      <read path=".zen/specs/REQ-{feature-name}.md" />
+      <structure>
+        .zen/
+        ├── specs/
+        │   ├── ARCHITECTURE.md
+        │   ├── REQ-{feature-name}.md
+        │   ├── DESIGN-{feature-name}.md
+        │   └── API-{api-name}.tsp
+        ├── plans/
+        │   └── PLAN-{nnn}-{plan-name}.md
+        └── rules/
+            └── *.md
+      </structure>
+      <read path=".zen/specs/ARCHITECTURE.md" required="true" />
+      <read path=".zen/specs/REQ-{feature-name}.md" required="true" />
+      <read path=".zen/specs/DESIGN-{feature-name}.md" optional="true" />
+      <read path=".zen/specs/API-{api-name}.tsp" optional="true" />
+      <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" optional="true" />
+      <read path="(relevant code)" optional="true" />
+      <read path="(relevant tests)" optional="true" />
+      <read path="(relevant documents)" optional="true" />
     </ReadFiles>
 
     <PlanUpdates>
-      Solidify requirements with respect to architecture and existing requirements, clarify open points with user.
-      Create set of requirements in EARS format (INCOSE-compliant) based on the feature idea.
-      Focus on requirements which will later be turned into a design.
+      You SHALL solidify requirements with respect to architecture and existing requirements, clarify open points with user.
+      You SHALL create set of requirements in EARS format (INCOSE-compliant) based on the feature idea.
+      You SHOULD focus on requirements which will later be turned into a design.
       <analyse target="architecture,existing requirements,new requirements" />
       <identify target="new requirements, requirements to update" />
       <consider target="edge cases, UX, technical constraints, success criteria" />
@@ -182,9 +200,6 @@ YOUR task is to create and maintain requirements in EARS format for the project.
     "metadata": {
       "type": "object",
       "properties": {
-        "version": { "type": "string" },
-        "status": { "enum": ["draft", "review", "approved", "implemented", "deprecated"] },
-        "lastModified": { "type": "string", "format": "date" },
         "changeLog": {
           "type": "array",
           "items": {
@@ -268,7 +283,7 @@ YOUR task is to create and maintain requirements in EARS format for the project.
   },
   "$rendering": {
     "templates": {
-      "document": ["# Requirements Specification", "", "## Introduction", "{introduction}", "## Glossary", "{for each term: '- {TERM}: {definition}'}", "## Stakeholders", "{for each: '- {ROLE}: {description}'}", "## Requirements", "{for each requirement: templates.requirement}", "## Assumptions", "{for each: '- {assumption}'}", "## Constraints", "{for each: '- {constraint}'}", "## Out of Scope", "{for each: '- {item}'}", "## Change Log", "{for each: '- {version} ({date}, {author}): {changes}'}", "<<end of output (do not print)>>"],
+      "document": ["# Requirements Specification", "", "## Introduction", "{introduction}", "## Glossary", "{for each term: '- {TERM}: {definition}'}", "## Stakeholders", "{for each: '- {ROLE}: {description}'}", "## Requirements", "{for each requirement: templates.requirement}", "## Assumptions", "{for each: '- {assumption}'}", "## Constraints", "{for each: '- {constraint}'}", "## Out of Scope", "{for each: '- {item}'}", "## Change Log", "{for each: '- {version} ({date}, {author}): {changes}'}"],
       "requirement": ["### {id}: {title} [{PRIORITY}]", "", "AS A {role}, I WANT {want}, SO THAT {benefit}.", "", "> {rationale}", "", "ACCEPTANCE CRITERIA", "", "{for each criterion: templates.criterion}", "", "DEPENDS ON: {dependencies}"],
       "criterion": ["- [{verified: x, else: ' '}] {id} [{type}]: {statement} — {notes} [untestable]"]
     },

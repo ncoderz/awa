@@ -16,54 +16,54 @@
 // @zen-impl: GEN-11 AC-11.4
 // @zen-impl: TPL-7 AC-7.3
 
-import chalk from "chalk";
-import type { DiffResult, FileAction, GenerationResult } from "../types/index.js";
+import chalk from 'chalk';
+import type { DiffResult, FileAction, GenerationResult } from '../types/index.js';
 
 export class Logger {
   info(message: string): void {
-    console.log(chalk.blue("ℹ"), message);
+    console.log(chalk.blue('ℹ'), message);
   }
 
   success(message: string): void {
-    console.log(chalk.green("✔"), message);
+    console.log(chalk.green('✔'), message);
   }
 
   warn(message: string): void {
-    console.warn(chalk.yellow("⚠"), message);
+    console.warn(chalk.yellow('⚠'), message);
   }
 
   error(message: string): void {
-    console.error(chalk.red("✖"), message);
+    console.error(chalk.red('✖'), message);
   }
 
   fileAction(action: FileAction): void {
     const { type, outputPath } = action;
 
     switch (type) {
-      case "create":
-        console.log(chalk.green("  + "), chalk.dim(outputPath));
+      case 'create':
+        console.log(chalk.green('  + '), chalk.dim(outputPath));
         break;
-      case "overwrite":
-        console.log(chalk.yellow("  ~ "), chalk.dim(outputPath));
+      case 'overwrite':
+        console.log(chalk.yellow('  ~ '), chalk.dim(outputPath));
         break;
-      case "skip-user":
-        console.log(chalk.blue("  - "), chalk.dim(outputPath), chalk.dim("(skipped)"));
+      case 'skip-user':
+        console.log(chalk.blue('  - '), chalk.dim(outputPath), chalk.dim('(skipped)'));
         break;
-      case "skip-empty":
-        console.log(chalk.dim("  · "), chalk.dim(outputPath), chalk.dim("(empty)"));
+      case 'skip-empty':
+        console.log(chalk.dim('  · '), chalk.dim(outputPath), chalk.dim('(empty)'));
         break;
     }
   }
 
   // @zen-impl: GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6
   summary(result: GenerationResult): void {
-    console.log("");
-    console.log(chalk.bold("Summary:"));
+    console.log('');
+    console.log(chalk.bold('Summary:'));
 
     // @zen-impl: GEN-9 AC-9.6
     // Check if no files were created or overwritten
     if (result.created === 0 && result.overwritten === 0) {
-      console.log(chalk.yellow("  ⚠ No files were created or overwritten"));
+      console.log(chalk.yellow('  ⚠ No files were created or overwritten'));
     }
 
     if (result.created > 0) {
@@ -82,19 +82,19 @@ export class Logger {
       console.log(chalk.dim(`  Skipped (empty): ${result.skippedEmpty}`));
     }
 
-    console.log("");
+    console.log('');
   }
 
   // @zen-impl: DIFF-4 AC-4.3
-  diffLine(line: string, type: "add" | "remove" | "context"): void {
+  diffLine(line: string, type: 'add' | 'remove' | 'context'): void {
     switch (type) {
-      case "add":
+      case 'add':
         console.log(chalk.green(line));
         break;
-      case "remove":
+      case 'remove':
         console.log(chalk.red(line));
         break;
-      case "context":
+      case 'context':
         console.log(chalk.dim(line));
         break;
     }
@@ -102,15 +102,15 @@ export class Logger {
 
   // @zen-impl: DIFF-4 AC-4.4, DIFF-4 AC-4.5
   diffSummary(result: DiffResult): void {
-    console.log("");
+    console.log('');
 
     if (!result.hasDifferences) {
       // @zen-impl: DIFF-4 AC-4.4
-      console.log(chalk.green("✔ No differences found"));
+      console.log(chalk.green('✔ No differences found'));
     }
 
     // @zen-impl: DIFF-4 AC-4.5
-    console.log(chalk.bold("Summary:"));
+    console.log(chalk.bold('Summary:'));
     console.log(chalk.dim(`  Identical: ${result.identical}`));
 
     if (result.modified > 0) {
@@ -125,7 +125,7 @@ export class Logger {
       console.log(chalk.red(`  Extra: ${result.extraFiles}`));
     }
 
-    console.log("");
+    console.log('');
   }
 }
 

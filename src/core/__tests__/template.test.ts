@@ -1,14 +1,14 @@
 // @zen-component: TemplateEngine
 // @zen-test: P3, P4
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { TemplateEngine } from "../template.js";
-import { TemplateError } from "../../types/index.js";
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { TemplateError } from '../../types/index.js';
+import { TemplateEngine } from '../template.js';
 
-describe("TemplateEngine", () => {
+describe('TemplateEngine', () => {
   let testDir: string;
   let engine: TemplateEngine;
 
@@ -22,53 +22,55 @@ describe("TemplateEngine", () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  describe("configure", () => {
-    it("should configure template engine with directory", () => {
+  describe('configure', () => {
+    it('should configure template engine with directory', () => {
       expect(() => engine.configure(testDir)).not.toThrow();
     });
 
-    it("should clear cache on reconfigure", async () => {
+    it('should clear cache on reconfigure', async () => {
       // First configuration
       engine.configure(testDir);
-      const template = join(testDir, "test.md");
-      await writeFile(template, "Content: <%= it.features[0] %>");
+      const template = join(testDir, 'test.md');
+      await writeFile(template, 'Content: <%= it.features[0] %>');
 
-      await engine.render(template, { features: ["feature1"] });
+      await engine.render(template, { features: ['feature1'] });
 
       // Reconfigure should clear cache
       engine.configure(testDir);
 
       // Should still work after reconfigure
-      const result = await engine.render(template, { features: ["feature2"] });
-      expect(result.content).toContain("feature2");
+      const result = await engine.render(template, { features: ['feature2'] });
+      expect(result.content).toContain('feature2');
     });
   });
 
-  describe("render", () => {
+  describe('render', () => {
     beforeEach(() => {
       engine.configure(testDir);
     });
 
-    it("should throw error if not configured", async () => {
+    it('should throw error if not configured', async () => {
       const unconfiguredEngine = new TemplateEngine();
-      const templatePath = join(testDir, "test.md");
+      const templatePath = join(testDir, 'test.md');
 
-      await expect(unconfiguredEngine.render(templatePath, { features: [] })).rejects.toThrow(TemplateError);
+      await expect(unconfiguredEngine.render(templatePath, { features: [] })).rejects.toThrow(
+        TemplateError
+      );
     });
 
-    it("should render simple template", async () => {
-      const templatePath = join(testDir, "simple.md");
-      await writeFile(templatePath, "Hello, World!");
+    it('should render simple template', async () => {
+      const templatePath = join(testDir, 'simple.md');
+      await writeFile(templatePath, 'Hello, World!');
 
       const result = await engine.render(templatePath, { features: [] });
 
-      expect(result.content).toBe("Hello, World!");
+      expect(result.content).toBe('Hello, World!');
       expect(result.isEmpty).toBe(false);
       expect(result.isEmptyFileMarker).toBe(false);
     });
 
-    it("should render template with feature flags", async () => {
-      const templatePath = join(testDir, "features.md");
+    it('should render template with feature flags', async () => {
+      const templatePath = join(testDir, 'features.md');
       const templateContent = `
 <% if (it.features.includes('feature1')) { %>
 Feature 1 is enabled
@@ -79,43 +81,43 @@ Feature 2 is enabled
 `.trim();
       await writeFile(templatePath, templateContent);
 
-      const result = await engine.render(templatePath, { features: ["feature1"] });
+      const result = await engine.render(templatePath, { features: ['feature1'] });
 
-      expect(result.content).toContain("Feature 1 is enabled");
-      expect(result.content).not.toContain("Feature 2 is enabled");
+      expect(result.content).toContain('Feature 1 is enabled');
+      expect(result.content).not.toContain('Feature 2 is enabled');
     });
 
-    it("should detect empty content (whitespace only) as empty (P3)", async () => {
-      const templatePath = join(testDir, "whitespace.md");
-      await writeFile(templatePath, "   \n\t   \n   ");
+    it('should detect empty content (whitespace only) as empty (P3)', async () => {
+      const templatePath = join(testDir, 'whitespace.md');
+      await writeFile(templatePath, '   \n\t   \n   ');
 
       const result = await engine.render(templatePath, { features: [] });
 
       expect(result.isEmpty).toBe(true);
     });
 
-    it("should detect empty file marker (P4)", async () => {
-      const templatePath = join(testDir, "marker.md");
-      await writeFile(templatePath, "<!-- ZEN:EMPTY_FILE -->");
+    it('should detect empty file marker (P4)', async () => {
+      const templatePath = join(testDir, 'marker.md');
+      await writeFile(templatePath, '<!-- ZEN:EMPTY_FILE -->');
 
       const result = await engine.render(templatePath, { features: [] });
 
       expect(result.isEmptyFileMarker).toBe(true);
-      expect(result.content.trim()).toBe("<!-- ZEN:EMPTY_FILE -->");
+      expect(result.content.trim()).toBe('<!-- ZEN:EMPTY_FILE -->');
     });
 
-    it("should detect empty file marker with surrounding whitespace (P4)", async () => {
-      const templatePath = join(testDir, "marker-whitespace.md");
-      await writeFile(templatePath, "\n\n  <!-- ZEN:EMPTY_FILE -->  \n");
+    it('should detect empty file marker with surrounding whitespace (P4)', async () => {
+      const templatePath = join(testDir, 'marker-whitespace.md');
+      await writeFile(templatePath, '\n\n  <!-- ZEN:EMPTY_FILE -->  \n');
 
       const result = await engine.render(templatePath, { features: [] });
 
       expect(result.isEmptyFileMarker).toBe(true);
     });
 
-    it("should not detect empty file marker if mixed with other content", async () => {
-      const templatePath = join(testDir, "mixed.md");
-      await writeFile(templatePath, "Some content\n<!-- ZEN:EMPTY_FILE -->");
+    it('should not detect empty file marker if mixed with other content', async () => {
+      const templatePath = join(testDir, 'mixed.md');
+      await writeFile(templatePath, 'Some content\n<!-- ZEN:EMPTY_FILE -->');
 
       const result = await engine.render(templatePath, { features: [] });
 
@@ -123,8 +125,8 @@ Feature 2 is enabled
       expect(result.isEmpty).toBe(false);
     });
 
-    it("should handle conditional empty file marker", async () => {
-      const templatePath = join(testDir, "conditional-empty.md");
+    it('should handle conditional empty file marker', async () => {
+      const templatePath = join(testDir, 'conditional-empty.md');
       const templateContent = `
 <% if (it.features.length === 0) { %>
 <!-- ZEN:EMPTY_FILE -->
@@ -139,32 +141,35 @@ Features: <%= it.features.join(', ') %>
       expect(result1.isEmptyFileMarker).toBe(true);
 
       // With features - should have content
-      const result2 = await engine.render(templatePath, { features: ["test"] });
+      const result2 = await engine.render(templatePath, { features: ['test'] });
       expect(result2.isEmpty).toBe(false);
-      expect(result2.content).toContain("test");
+      expect(result2.content).toContain('test');
     });
 
-    it("should support partials via include", async () => {
+    it('should support partials via include', async () => {
       // Create partial directory
-      const partialsDir = join(testDir, "_partials");
+      const partialsDir = join(testDir, '_partials');
       await mkdir(partialsDir);
 
       // Create partial - no extension needed since templates use exact filenames
-      const partialPath = join(partialsDir, "header");
-      await writeFile(partialPath, "# <%= it.title %>\n");
+      const partialPath = join(partialsDir, 'header');
+      await writeFile(partialPath, '# <%= it.title %>\n');
 
       // Create main template
-      const templatePath = join(testDir, "main.md");
-      await writeFile(templatePath, '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here');
+      const templatePath = join(testDir, 'main.md');
+      await writeFile(
+        templatePath,
+        '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here'
+      );
 
       const result = await engine.render(templatePath, { features: [] });
 
-      expect(result.content).toContain("# My Document");
-      expect(result.content).toContain("Content here");
+      expect(result.content).toContain('# My Document');
+      expect(result.content).toContain('Content here');
     });
 
-    it("should handle arrays in feature context", async () => {
-      const templatePath = join(testDir, "array.md");
+    it('should handle arrays in feature context', async () => {
+      const templatePath = join(testDir, 'array.md');
       const templateContent = `
 Features:
 <% it.features.forEach(function(feature) { %>
@@ -174,30 +179,30 @@ Features:
       await writeFile(templatePath, templateContent);
 
       const result = await engine.render(templatePath, {
-        features: ["planning", "testing", "documentation"],
+        features: ['planning', 'testing', 'documentation'],
       });
 
-      expect(result.content).toContain("- planning");
-      expect(result.content).toContain("- testing");
-      expect(result.content).toContain("- documentation");
+      expect(result.content).toContain('- planning');
+      expect(result.content).toContain('- testing');
+      expect(result.content).toContain('- documentation');
     });
 
-    it("should throw error for non-existent template", async () => {
-      const nonexistentPath = join(testDir, "nonexistent.md");
+    it('should throw error for non-existent template', async () => {
+      const nonexistentPath = join(testDir, 'nonexistent.md');
 
       await expect(engine.render(nonexistentPath, { features: [] })).rejects.toThrow(TemplateError);
     });
 
-    it("should throw error for template with syntax error", async () => {
-      const templatePath = join(testDir, "syntax-error.md");
-      await writeFile(templatePath, "<% if (unclosed condition %>");
+    it('should throw error for template with syntax error', async () => {
+      const templatePath = join(testDir, 'syntax-error.md');
+      await writeFile(templatePath, '<% if (unclosed condition %>');
 
       await expect(engine.render(templatePath, { features: [] })).rejects.toThrow(TemplateError);
     });
 
-    it("should preserve newlines and formatting", async () => {
-      const templatePath = join(testDir, "formatting.md");
-      const templateContent = "Line 1\n\nLine 3\n\n\nLine 6";
+    it('should preserve newlines and formatting', async () => {
+      const templatePath = join(testDir, 'formatting.md');
+      const templateContent = 'Line 1\n\nLine 3\n\n\nLine 6';
       await writeFile(templatePath, templateContent);
 
       const result = await engine.render(templatePath, { features: [] });
@@ -205,13 +210,13 @@ Features:
       expect(result.content).toBe(templateContent);
     });
 
-    it("should not escape HTML by default", async () => {
-      const templatePath = join(testDir, "html.md");
-      await writeFile(templatePath, "<div>HTML content</div>");
+    it('should not escape HTML by default', async () => {
+      const templatePath = join(testDir, 'html.md');
+      await writeFile(templatePath, '<div>HTML content</div>');
 
       const result = await engine.render(templatePath, { features: [] });
 
-      expect(result.content).toBe("<div>HTML content</div>");
+      expect(result.content).toBe('<div>HTML content</div>');
     });
   });
 });

@@ -1,15 +1,15 @@
 // Property-Based Tests
 // Tests for correctness properties P1-P10 from design document
 
-import { describe, it } from "vitest";
-import * as fc from "fast-check";
-import { ConfigLoader } from "../core/config.js";
-import { TemplateResolver } from "../core/template-resolver.js";
-import { ConflictResolver } from "../core/resolver.js";
+import * as fc from 'fast-check';
+import { describe, it } from 'vitest';
+import { ConfigLoader } from '../core/config.js';
+import { ConflictResolver } from '../core/resolver.js';
+import { TemplateResolver } from '../core/template-resolver.js';
 
-describe("Property-Based Tests", () => {
-  describe("P1: CLI Override", () => {
-    it("CLI arguments always override config file values", () => {
+describe('Property-Based Tests', () => {
+  describe('P1: CLI Override', () => {
+    it('CLI arguments always override config file values', () => {
       fc.assert(
         fc.property(
           fc.record({
@@ -25,7 +25,7 @@ describe("Property-Based Tests", () => {
             template: fc.option(fc.string(), { nil: undefined }),
             features: fc.option(fc.array(fc.string()), { nil: undefined }),
             force: fc.option(fc.boolean(), { nil: undefined }),
-            "dry-run": fc.option(fc.boolean(), { nil: undefined }),
+            'dry-run': fc.option(fc.boolean(), { nil: undefined }),
             refresh: fc.option(fc.boolean(), { nil: undefined }),
           }),
           (cliOptions, fileConfig) => {
@@ -51,130 +51,175 @@ describe("Property-Based Tests", () => {
     });
   });
 
-  describe("P2: Features Replace", () => {
-    it("CLI features completely replace config features (no merge)", () => {
+  describe('P2: Features Replace', () => {
+    it('CLI features completely replace config features (no merge)', () => {
       fc.assert(
-        fc.property(fc.array(fc.string({ minLength: 1 })), fc.array(fc.string({ minLength: 1 })), (cliFeatures, configFeatures) => {
-          const loader = new ConfigLoader();
-          const resolved = loader.merge({ features: cliFeatures }, { features: configFeatures });
+        fc.property(
+          fc.array(fc.string({ minLength: 1 })),
+          fc.array(fc.string({ minLength: 1 })),
+          (cliFeatures, configFeatures) => {
+            const loader = new ConfigLoader();
+            const resolved = loader.merge({ features: cliFeatures }, { features: configFeatures });
 
-          // Resolved features should exactly match CLI features
-          return resolved.features.length === cliFeatures.length && resolved.features.every((f, i) => f === cliFeatures[i]);
-        }),
+            // Resolved features should exactly match CLI features
+            return (
+              resolved.features.length === cliFeatures.length &&
+              resolved.features.every((f, i) => f === cliFeatures[i])
+            );
+          }
+        ),
         { numRuns: 50 }
       );
     });
   });
 
-  describe("P7: Dry Run Immutable", () => {
-    it("Dry run mode never prompts user", async () => {
+  describe('P7: Dry Run Immutable', () => {
+    it('Dry run mode never prompts user', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.array(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 5 }), fc.boolean(), async (filePaths, force) => {
-          const resolver = new ConflictResolver();
-          const conflicts = filePaths.map((path) => ({
-            outputPath: path,
-            sourcePath: `/templates/${path}`,
-            newContent: "new",
-            existingContent: "old",
-          }));
-          const resolution = await resolver.resolveBatch(conflicts, force, true);
+        fc.asyncProperty(
+          fc.array(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 5 }),
+          fc.boolean(),
+          async (filePaths, force) => {
+            const resolver = new ConflictResolver();
+            const conflicts = filePaths.map((path) => ({
+              outputPath: path,
+              sourcePath: `/templates/${path}`,
+              newContent: 'new',
+              existingContent: 'old',
+            }));
+            const resolution = await resolver.resolveBatch(conflicts, force, true);
 
-          // In dry-run mode, should always skip all without prompting
-          return resolution.overwrite.length === 0 && resolution.skip.length === filePaths.length;
-        }),
-        { numRuns: 50 }
-      );
-    });
-  });
-
-  describe("P8: Force No Prompt", () => {
-    it("Force mode never prompts (but respects dry-run)", async () => {
-      await fc.assert(
-        fc.asyncProperty(fc.array(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 5 }), fc.boolean(), async (filePaths, dryRun) => {
-          const resolver = new ConflictResolver();
-          const conflicts = filePaths.map((path) => ({
-            outputPath: path,
-            sourcePath: `/templates/${path}`,
-            newContent: "new",
-            existingContent: "old",
-          }));
-          const resolution = await resolver.resolveBatch(conflicts, true, dryRun);
-
-          // In force mode with dry-run, all should be skipped (P7 takes precedence)
-          // In force mode without dry-run, all should be overwritten
-          if (dryRun) {
+            // In dry-run mode, should always skip all without prompting
             return resolution.overwrite.length === 0 && resolution.skip.length === filePaths.length;
           }
-          return resolution.overwrite.length === filePaths.length && resolution.skip.length === 0;
-        }),
+        ),
         { numRuns: 50 }
       );
     });
   });
 
-  describe("P9: Local No Cache", () => {
-    it("Local templates are never cached", () => {
-      fc.assert(
-        fc.property(fc.oneof(fc.constant("./templates"), fc.constant("../templates"), fc.constant("/absolute/path"), fc.constant("~/home/path")), (localPath) => {
-          const resolver = new TemplateResolver();
-          const type = resolver.detectType(localPath);
+  describe('P8: Force No Prompt', () => {
+    it('Force mode never prompts (but respects dry-run)', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.array(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 5 }),
+          fc.boolean(),
+          async (filePaths, dryRun) => {
+            const resolver = new ConflictResolver();
+            const conflicts = filePaths.map((path) => ({
+              outputPath: path,
+              sourcePath: `/templates/${path}`,
+              newContent: 'new',
+              existingContent: 'old',
+            }));
+            const resolution = await resolver.resolveBatch(conflicts, true, dryRun);
 
-          // Local paths should always be detected as local
-          return type === "local";
-        }),
-        { numRuns: 20 }
-      );
-    });
-  });
-
-  describe("P10: Git Cache Reuse", () => {
-    it("Git sources generate consistent cache paths", () => {
-      fc.assert(
-        fc.property(fc.oneof(fc.constant("user/repo"), fc.constant("github:user/repo"), fc.constant("https://github.com/user/repo"), fc.constant("git@github.com:user/repo")), (gitSource) => {
-          const resolver = new TemplateResolver();
-
-          // Same source should generate same cache path
-          const path1 = resolver.getCachePath(gitSource);
-          const path2 = resolver.getCachePath(gitSource);
-
-          return path1 === path2;
-        }),
-        { numRuns: 20 }
-      );
-    });
-
-    it("Different git sources generate different cache paths", () => {
-      fc.assert(
-        fc.property(fc.string({ minLength: 5 }), fc.string({ minLength: 5 }), (source1, source2) => {
-          fc.pre(source1 !== source2);
-
-          const resolver = new TemplateResolver();
-          const path1 = resolver.getCachePath(source1);
-          const path2 = resolver.getCachePath(source2);
-
-          // Different sources should generate different paths
-          return path1 !== path2;
-        }),
+            // In force mode with dry-run, all should be skipped (P7 takes precedence)
+            // In force mode without dry-run, all should be overwritten
+            if (dryRun) {
+              return (
+                resolution.overwrite.length === 0 && resolution.skip.length === filePaths.length
+              );
+            }
+            return resolution.overwrite.length === filePaths.length && resolution.skip.length === 0;
+          }
+        ),
         { numRuns: 50 }
       );
     });
   });
 
-  describe("P5: Underscore Exclusion", () => {
-    it("Files starting with underscore are never processed", () => {
+  describe('P9: Local No Cache', () => {
+    it('Local templates are never cached', () => {
       fc.assert(
-        fc.property(fc.oneof(fc.constant("_hidden.md"), fc.constant("_private.txt"), fc.constant("_README.md"), fc.constant("_.md")), (filename) => {
-          // Files starting with underscore should be excluded
-          // This is verified by our walkDirectory function
-          return filename.startsWith("_");
-        }),
+        fc.property(
+          fc.oneof(
+            fc.constant('./templates'),
+            fc.constant('../templates'),
+            fc.constant('/absolute/path'),
+            fc.constant('~/home/path')
+          ),
+          (localPath) => {
+            const resolver = new TemplateResolver();
+            const type = resolver.detectType(localPath);
+
+            // Local paths should always be detected as local
+            return type === 'local';
+          }
+        ),
         { numRuns: 20 }
       );
     });
   });
 
-  describe("Correctness Invariants", () => {
-    it("Template type detection is deterministic", () => {
+  describe('P10: Git Cache Reuse', () => {
+    it('Git sources generate consistent cache paths', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            fc.constant('user/repo'),
+            fc.constant('github:user/repo'),
+            fc.constant('https://github.com/user/repo'),
+            fc.constant('git@github.com:user/repo')
+          ),
+          (gitSource) => {
+            const resolver = new TemplateResolver();
+
+            // Same source should generate same cache path
+            const path1 = resolver.getCachePath(gitSource);
+            const path2 = resolver.getCachePath(gitSource);
+
+            return path1 === path2;
+          }
+        ),
+        { numRuns: 20 }
+      );
+    });
+
+    it('Different git sources generate different cache paths', () => {
+      fc.assert(
+        fc.property(
+          fc.string({ minLength: 5 }),
+          fc.string({ minLength: 5 }),
+          (source1, source2) => {
+            fc.pre(source1 !== source2);
+
+            const resolver = new TemplateResolver();
+            const path1 = resolver.getCachePath(source1);
+            const path2 = resolver.getCachePath(source2);
+
+            // Different sources should generate different paths
+            return path1 !== path2;
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+  });
+
+  describe('P5: Underscore Exclusion', () => {
+    it('Files starting with underscore are never processed', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            fc.constant('_hidden.md'),
+            fc.constant('_private.txt'),
+            fc.constant('_README.md'),
+            fc.constant('_.md')
+          ),
+          (filename) => {
+            // Files starting with underscore should be excluded
+            // This is verified by our walkDirectory function
+            return filename.startsWith('_');
+          }
+        ),
+        { numRuns: 20 }
+      );
+    });
+  });
+
+  describe('Correctness Invariants', () => {
+    it('Template type detection is deterministic', () => {
       fc.assert(
         fc.property(fc.string({ minLength: 1 }), (source) => {
           const resolver = new TemplateResolver();
@@ -188,7 +233,7 @@ describe("Property-Based Tests", () => {
       );
     });
 
-    it("Config merge is associative for defaults", () => {
+    it('Config merge is associative for defaults', () => {
       fc.assert(
         fc.property(
           fc.record({
@@ -214,16 +259,22 @@ describe("Property-Based Tests", () => {
       );
     });
 
-    it("Cache path generation is collision-resistant", () => {
+    it('Cache path generation is collision-resistant', () => {
       fc.assert(
-        fc.property(fc.uniqueArray(fc.string({ minLength: 1, maxLength: 50 }), { minLength: 10, maxLength: 50 }), (sources) => {
-          const resolver = new TemplateResolver();
-          const paths = sources.map((s) => resolver.getCachePath(s));
+        fc.property(
+          fc.uniqueArray(fc.string({ minLength: 1, maxLength: 50 }), {
+            minLength: 10,
+            maxLength: 50,
+          }),
+          (sources) => {
+            const resolver = new TemplateResolver();
+            const paths = sources.map((s) => resolver.getCachePath(s));
 
-          // All paths should be unique (no collisions) when sources are unique
-          const uniquePaths = new Set(paths);
-          return uniquePaths.size === sources.length;
-        }),
+            // All paths should be unique (no collisions) when sources are unique
+            const uniquePaths = new Set(paths);
+            return uniquePaths.size === sources.length;
+          }
+        ),
         { numRuns: 20 }
       );
     });

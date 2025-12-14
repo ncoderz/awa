@@ -1,14 +1,14 @@
 // @zen-component: ConfigLoader
 // @zen-test: P1
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { ConfigLoader } from "../config.js";
-import { ConfigError } from "../../types/index.js";
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { ConfigError } from '../../types/index.js';
+import { ConfigLoader } from '../config.js';
 
-describe("ConfigLoader", () => {
+describe('ConfigLoader', () => {
   let testDir: string;
   let loader: ConfigLoader;
 
@@ -22,9 +22,9 @@ describe("ConfigLoader", () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  describe("load", () => {
-    it("should parse valid TOML configuration", async () => {
-      const configPath = join(testDir, ".zen.toml");
+  describe('load', () => {
+    it('should parse valid TOML configuration', async () => {
+      const configPath = join(testDir, '.zen.toml');
       const tomlContent = `
 output = "./out"
 template = "user/repo"
@@ -38,16 +38,16 @@ refresh = true
       const config = await loader.load(configPath);
 
       expect(config).toEqual({
-        output: "./out",
-        template: "user/repo",
-        features: ["planning", "testing"],
+        output: './out',
+        template: 'user/repo',
+        features: ['planning', 'testing'],
         force: true,
-        "dry-run": false,
+        'dry-run': false,
         refresh: true,
       });
     });
 
-    it("should return null if default config path does not exist", async () => {
+    it('should return null if default config path does not exist', async () => {
       // Change to test directory where no .zen.toml exists
       const originalCwd = process.cwd();
       process.chdir(testDir);
@@ -60,70 +60,70 @@ refresh = true
       }
     });
 
-    it("should throw error if explicit config path does not exist", async () => {
-      const nonexistentPath = join(testDir, "missing.toml");
+    it('should throw error if explicit config path does not exist', async () => {
+      const nonexistentPath = join(testDir, 'missing.toml');
 
       await expect(loader.load(nonexistentPath)).rejects.toThrow(ConfigError);
       await expect(loader.load(nonexistentPath)).rejects.toMatchObject({
-        code: "FILE_NOT_FOUND",
+        code: 'FILE_NOT_FOUND',
       });
     });
 
-    it("should throw error on invalid TOML syntax", async () => {
-      const configPath = join(testDir, "invalid.toml");
-      await writeFile(configPath, "this is [ not valid TOML");
+    it('should throw error on invalid TOML syntax', async () => {
+      const configPath = join(testDir, 'invalid.toml');
+      await writeFile(configPath, 'this is [ not valid TOML');
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
       await expect(loader.load(configPath)).rejects.toMatchObject({
-        code: "PARSE_ERROR",
+        code: 'PARSE_ERROR',
       });
     });
 
-    it("should throw error if output is not a string", async () => {
-      const configPath = join(testDir, "bad-output.toml");
-      await writeFile(configPath, "output = 123");
+    it('should throw error if output is not a string', async () => {
+      const configPath = join(testDir, 'bad-output.toml');
+      await writeFile(configPath, 'output = 123');
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
       await expect(loader.load(configPath)).rejects.toMatchObject({
-        code: "INVALID_TYPE",
+        code: 'INVALID_TYPE',
       });
     });
 
-    it("should throw error if template is not a string", async () => {
-      const configPath = join(testDir, "bad-template.toml");
-      await writeFile(configPath, "template = true");
+    it('should throw error if template is not a string', async () => {
+      const configPath = join(testDir, 'bad-template.toml');
+      await writeFile(configPath, 'template = true');
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
     });
 
-    it("should throw error if features is not an array of strings", async () => {
-      const configPath = join(testDir, "bad-features.toml");
+    it('should throw error if features is not an array of strings', async () => {
+      const configPath = join(testDir, 'bad-features.toml');
       await writeFile(configPath, 'features = ["valid", 123]');
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
     });
 
-    it("should throw error if force is not a boolean", async () => {
-      const configPath = join(testDir, "bad-force.toml");
+    it('should throw error if force is not a boolean', async () => {
+      const configPath = join(testDir, 'bad-force.toml');
       await writeFile(configPath, 'force = "yes"');
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
     });
 
-    it("should handle partial configuration", async () => {
-      const configPath = join(testDir, "partial.toml");
+    it('should handle partial configuration', async () => {
+      const configPath = join(testDir, 'partial.toml');
       await writeFile(configPath, 'output = "./output"');
 
       const config = await loader.load(configPath);
 
       expect(config).toEqual({
-        output: "./output",
+        output: './output',
       });
     });
 
-    it("should handle empty configuration", async () => {
-      const configPath = join(testDir, "empty.toml");
-      await writeFile(configPath, "");
+    it('should handle empty configuration', async () => {
+      const configPath = join(testDir, 'empty.toml');
+      await writeFile(configPath, '');
 
       const config = await loader.load(configPath);
 
@@ -131,36 +131,36 @@ refresh = true
     });
   });
 
-  describe("merge", () => {
-    it("should use CLI value when both CLI and config provide same option (P1)", () => {
+  describe('merge', () => {
+    it('should use CLI value when both CLI and config provide same option (P1)', () => {
       const cliOptions = {
-        output: "./cli-output",
+        output: './cli-output',
       };
 
       const fileConfig = {
-        output: "./file-output",
+        output: './file-output',
       };
 
       const resolved = loader.merge(cliOptions, fileConfig);
 
-      expect(resolved.output).toBe("./cli-output");
+      expect(resolved.output).toBe('./cli-output');
     });
 
-    it("should use config value when CLI option is not provided", () => {
+    it('should use config value when CLI option is not provided', () => {
       const cliOptions = {};
 
       const fileConfig = {
-        output: "./file-output",
-        template: "user/repo",
+        output: './file-output',
+        template: 'user/repo',
       };
 
       const resolved = loader.merge(cliOptions, fileConfig);
 
-      expect(resolved.output).toBe("./file-output");
-      expect(resolved.template).toBe("user/repo");
+      expect(resolved.output).toBe('./file-output');
+      expect(resolved.template).toBe('user/repo');
     });
 
-    it("should use default values when neither CLI nor config provide option", () => {
+    it('should use default values when neither CLI nor config provide option', () => {
       const cliOptions = {};
       const fileConfig = null;
 
@@ -174,23 +174,23 @@ refresh = true
       expect(resolved.refresh).toBe(false);
     });
 
-    it("should replace features array completely, not merge (P2)", () => {
+    it('should replace features array completely, not merge (P2)', () => {
       const cliOptions = {
-        features: ["cli-feature"],
+        features: ['cli-feature'],
       };
 
       const fileConfig = {
-        features: ["config-feature1", "config-feature2"],
+        features: ['config-feature1', 'config-feature2'],
       };
 
       const resolved = loader.merge(cliOptions, fileConfig);
 
-      expect(resolved.features).toEqual(["cli-feature"]);
-      expect(resolved.features).not.toContain("config-feature1");
-      expect(resolved.features).not.toContain("config-feature2");
+      expect(resolved.features).toEqual(['cli-feature']);
+      expect(resolved.features).not.toContain('config-feature1');
+      expect(resolved.features).not.toContain('config-feature2');
     });
 
-    it("should handle all boolean flags correctly", () => {
+    it('should handle all boolean flags correctly', () => {
       const cliOptions = {
         force: true,
         dryRun: true,
@@ -207,11 +207,11 @@ refresh = true
       expect(resolved.refresh).toBe(true);
     });
 
-    it("should map dry-run from config to dryRun in resolved options", () => {
+    it('should map dry-run from config to dryRun in resolved options', () => {
       const cliOptions = {};
 
       const fileConfig = {
-        "dry-run": true,
+        'dry-run': true,
       };
 
       const resolved = loader.merge(cliOptions, fileConfig);
@@ -219,16 +219,16 @@ refresh = true
       expect(resolved.dryRun).toBe(true);
     });
 
-    it("should handle null file config", () => {
+    it('should handle null file config', () => {
       const cliOptions = {
-        output: "./test",
-        template: "user/repo",
+        output: './test',
+        template: 'user/repo',
       };
 
       const resolved = loader.merge(cliOptions, null);
 
-      expect(resolved.output).toBe("./test");
-      expect(resolved.template).toBe("user/repo");
+      expect(resolved.output).toBe('./test');
+      expect(resolved.template).toBe('user/repo');
       expect(resolved.force).toBe(false);
     });
   });

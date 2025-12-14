@@ -23,12 +23,17 @@
 // @zen-impl: CLI-4 AC-4.3
 // @zen-impl: CLI-7 AC-7.2
 
-import { parse } from "smol-toml";
-import { ConfigError, type FileConfig, type RawCliOptions, type ResolvedOptions } from "../types/index.js";
-import { pathExists, readTextFile } from "../utils/fs.js";
-import { logger } from "../utils/logger.js";
+import { parse } from 'smol-toml';
+import {
+  ConfigError,
+  type FileConfig,
+  type RawCliOptions,
+  type ResolvedOptions,
+} from '../types/index.js';
+import { pathExists, readTextFile } from '../utils/fs.js';
+import { logger } from '../utils/logger.js';
 
-const DEFAULT_CONFIG_PATH = ".zen.toml";
+const DEFAULT_CONFIG_PATH = '.zen.toml';
 
 export class ConfigLoader {
   // @zen-impl: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4
@@ -40,7 +45,11 @@ export class ConfigLoader {
 
     // If explicit path provided but doesn't exist, error
     if (configPath && !exists) {
-      throw new ConfigError(`Configuration file not found: ${configPath}`, "FILE_NOT_FOUND", configPath);
+      throw new ConfigError(
+        `Configuration file not found: ${configPath}`,
+        'FILE_NOT_FOUND',
+        configPath
+      );
     }
 
     // If default path doesn't exist, return null (no error)
@@ -57,49 +66,76 @@ export class ConfigLoader {
       const config: FileConfig = {};
 
       if (parsed.output !== undefined) {
-        if (typeof parsed.output !== "string") {
-          throw new ConfigError(`Invalid type for 'output': expected string, got ${typeof parsed.output}`, "INVALID_TYPE", pathToLoad);
+        if (typeof parsed.output !== 'string') {
+          throw new ConfigError(
+            `Invalid type for 'output': expected string, got ${typeof parsed.output}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
         config.output = parsed.output;
       }
 
       if (parsed.template !== undefined) {
-        if (typeof parsed.template !== "string") {
-          throw new ConfigError(`Invalid type for 'template': expected string, got ${typeof parsed.template}`, "INVALID_TYPE", pathToLoad);
+        if (typeof parsed.template !== 'string') {
+          throw new ConfigError(
+            `Invalid type for 'template': expected string, got ${typeof parsed.template}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
         config.template = parsed.template;
       }
 
       if (parsed.features !== undefined) {
-        if (!Array.isArray(parsed.features) || !parsed.features.every((f) => typeof f === "string")) {
-          throw new ConfigError(`Invalid type for 'features': expected array of strings`, "INVALID_TYPE", pathToLoad);
+        if (
+          !Array.isArray(parsed.features) ||
+          !parsed.features.every((f) => typeof f === 'string')
+        ) {
+          throw new ConfigError(
+            `Invalid type for 'features': expected array of strings`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
         config.features = parsed.features;
       }
 
       if (parsed.force !== undefined) {
-        if (typeof parsed.force !== "boolean") {
-          throw new ConfigError(`Invalid type for 'force': expected boolean, got ${typeof parsed.force}`, "INVALID_TYPE", pathToLoad);
+        if (typeof parsed.force !== 'boolean') {
+          throw new ConfigError(
+            `Invalid type for 'force': expected boolean, got ${typeof parsed.force}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
         config.force = parsed.force;
       }
 
-      if (parsed["dry-run"] !== undefined) {
-        if (typeof parsed["dry-run"] !== "boolean") {
-          throw new ConfigError(`Invalid type for 'dry-run': expected boolean, got ${typeof parsed["dry-run"]}`, "INVALID_TYPE", pathToLoad);
+      if (parsed['dry-run'] !== undefined) {
+        if (typeof parsed['dry-run'] !== 'boolean') {
+          throw new ConfigError(
+            `Invalid type for 'dry-run': expected boolean, got ${typeof parsed['dry-run']}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
-        config["dry-run"] = parsed["dry-run"];
+        config['dry-run'] = parsed['dry-run'];
       }
 
       if (parsed.refresh !== undefined) {
-        if (typeof parsed.refresh !== "boolean") {
-          throw new ConfigError(`Invalid type for 'refresh': expected boolean, got ${typeof parsed.refresh}`, "INVALID_TYPE", pathToLoad);
+        if (typeof parsed.refresh !== 'boolean') {
+          throw new ConfigError(
+            `Invalid type for 'refresh': expected boolean, got ${typeof parsed.refresh}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
         }
         config.refresh = parsed.refresh;
       }
 
       // Warn about unknown options
-      const knownKeys = new Set(["output", "template", "features", "force", "dry-run", "refresh"]);
+      const knownKeys = new Set(['output', 'template', 'features', 'force', 'dry-run', 'refresh']);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
           logger.warn(`Unknown configuration option: '${key}'`);
@@ -113,7 +149,11 @@ export class ConfigLoader {
       }
 
       // TOML parsing error
-      throw new ConfigError(`Failed to parse TOML configuration: ${error instanceof Error ? error.message : String(error)}`, "PARSE_ERROR", pathToLoad);
+      throw new ConfigError(
+        `Failed to parse TOML configuration: ${error instanceof Error ? error.message : String(error)}`,
+        'PARSE_ERROR',
+        pathToLoad
+      );
     }
   }
 
@@ -129,7 +169,7 @@ export class ConfigLoader {
     const features = cli.features ?? file?.features ?? [];
 
     const force = cli.force ?? file?.force ?? false;
-    const dryRun = cli.dryRun ?? file?.["dry-run"] ?? false;
+    const dryRun = cli.dryRun ?? file?.['dry-run'] ?? false;
     const refresh = cli.refresh ?? file?.refresh ?? false;
 
     return {

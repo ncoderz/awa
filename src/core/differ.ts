@@ -20,10 +20,10 @@
 // @zen-impl: DIFF-6 AC-6.3
 
 import { tmpdir } from "node:os";
-import { join, relative, sep } from "node:path";
+import { join, relative } from "node:path";
 import { structuredPatch } from "diff";
 import { isBinaryFile as detectBinaryFile } from "isbinaryfile";
-import type { DiffOptions, DiffResult, FileDiff, FileDiffStatus, GenerateOptions } from "../types/index.js";
+import type { DiffOptions, DiffResult, FileDiff, GenerateOptions } from "../types/index.js";
 import { pathExists, readTextFile, rmDir, walkDirectory } from "../utils/fs.js";
 import { fileGenerator } from "./generator.js";
 
@@ -140,7 +140,7 @@ export class DiffEngine {
       if (await pathExists(tempPath)) {
         await rmDir(tempPath);
       }
-    } catch (error) {
+    } catch (_error) {
       // Swallow cleanup errors - temp directory will be cleaned by OS eventually
       // This ensures cleanup errors don't mask the actual diff results
     }

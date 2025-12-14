@@ -192,7 +192,7 @@ const main = defineCommand({
   meta: {
     name: "zen",
     version,
-    description: "TypeScript CLI tool for generating AI coding agent configuration files",
+    description: "Zen - tool for generating AI coding agent configuration files",
   },
   subCommands: {
     generate: generateCmd,

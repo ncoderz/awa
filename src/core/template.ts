@@ -17,11 +17,11 @@
 // @zen-impl: TPL-11 AC-11.1
 // @zen-impl: TPL-11 AC-11.2
 
-import { Eta } from "eta";
-import { type RenderResult, type TemplateContext, TemplateError } from "../types/index.js";
-import { readTextFile } from "../utils/fs.js";
+import { Eta } from 'eta';
+import { type RenderResult, type TemplateContext, TemplateError } from '../types/index.js';
+import { readTextFile } from '../utils/fs.js';
 
-const EMPTY_FILE_MARKER = "<!-- ZEN:EMPTY_FILE -->";
+const EMPTY_FILE_MARKER = '<!-- ZEN:EMPTY_FILE -->';
 
 export class TemplateEngine {
   private eta: Eta | null = null;
@@ -39,7 +39,7 @@ export class TemplateEngine {
       views: templateDir,
       cache: true, // Enable compilation caching
       autoEscape: false, // Don't escape HTML by default
-      defaultExtension: "", // No automatic extension - use exact path as specified (AC-8.2)
+      defaultExtension: '', // No automatic extension - use exact path as specified (AC-8.2)
     });
   }
 
@@ -49,7 +49,10 @@ export class TemplateEngine {
   // @zen-impl: TPL-11 AC-11.1, TPL-11 AC-11.2
   async render(templatePath: string, context: TemplateContext): Promise<RenderResult> {
     if (!this.eta || !this.templateDir) {
-      throw new TemplateError("Template engine not configured. Call configure() first.", "RENDER_ERROR");
+      throw new TemplateError(
+        'Template engine not configured. Call configure() first.',
+        'RENDER_ERROR'
+      );
     }
 
     try {
@@ -75,7 +78,11 @@ export class TemplateEngine {
         isEmptyFileMarker,
       };
     } catch (error) {
-      throw new TemplateError(`Failed to render template ${templatePath}: ${error instanceof Error ? error.message : String(error)}`, "RENDER_ERROR", templatePath);
+      throw new TemplateError(
+        `Failed to render template ${templatePath}: ${error instanceof Error ? error.message : String(error)}`,
+        'RENDER_ERROR',
+        templatePath
+      );
     }
   }
 }
