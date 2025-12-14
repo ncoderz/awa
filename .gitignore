@@ -1,3 +1,4 @@
+.vscode/mise-tools/
 node_modules/
 dist/
 coverage/

@@ -15,12 +15,18 @@
 // @zen-impl: TPL-9 AC-9.1
 // @zen-impl: TPL-9 AC-9.2
 
-import { join, relative } from "node:path";
-import { type ConflictItem, type FileAction, type GenerateOptions, GenerationError, type GenerationResult } from "../types/index.js";
-import { pathExists, readTextFile, walkDirectory, writeTextFile } from "../utils/fs.js";
-import { logger } from "../utils/logger.js";
-import { conflictResolver } from "./resolver.js";
-import { templateEngine } from "./template.js";
+import { join, relative } from 'node:path';
+import {
+  type ConflictItem,
+  type FileAction,
+  type GenerateOptions,
+  GenerationError,
+  type GenerationResult,
+} from '../types/index.js';
+import { pathExists, readTextFile, walkDirectory, writeTextFile } from '../utils/fs.js';
+import { logger } from '../utils/logger.js';
+import { conflictResolver } from './resolver.js';
+import { templateEngine } from './template.js';
 
 export class FileGenerator {
   // @zen-impl: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3
@@ -62,13 +68,13 @@ export class FileGenerator {
         if (result.isEmpty && !result.isEmptyFileMarker) {
           // Skip empty files
           actions.push({
-            type: "skip-empty",
+            type: 'skip-empty',
             sourcePath: templateFile,
             outputPath: outputFile,
           });
           skippedEmpty++;
           logger.fileAction({
-            type: "skip-empty",
+            type: 'skip-empty',
             sourcePath: templateFile,
             outputPath: outputFile,
           });
@@ -76,7 +82,7 @@ export class FileGenerator {
         }
 
         // Get final content (empty string if marker)
-        const content = result.isEmptyFileMarker ? "" : result.content;
+        const content = result.isEmptyFileMarker ? '' : result.content;
 
         // Check for conflicts
         const fileExists = await pathExists(outputFile);
@@ -114,13 +120,13 @@ export class FileGenerator {
             await writeTextFile(file.outputFile, file.content);
           }
           actions.push({
-            type: "create",
+            type: 'create',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
           created++;
           logger.fileAction({
-            type: "create",
+            type: 'create',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
@@ -130,26 +136,26 @@ export class FileGenerator {
             await writeTextFile(file.outputFile, file.content);
           }
           actions.push({
-            type: "overwrite",
+            type: 'overwrite',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
           overwritten++;
           logger.fileAction({
-            type: "overwrite",
+            type: 'overwrite',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
         } else if (resolution.skip.includes(file.outputFile)) {
           // Skip file
           actions.push({
-            type: "skip-user",
+            type: 'skip-user',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
           skippedUser++;
           logger.fileAction({
-            type: "skip-user",
+            type: 'skip-user',
             sourcePath: file.templateFile,
             outputPath: file.outputFile,
           });
@@ -166,13 +172,13 @@ export class FileGenerator {
       };
     } catch (error) {
       // @zen-impl: GEN-2 AC-2.3, GEN-11 AC-11.3
-      if (error instanceof Error && "code" in error) {
+      if (error instanceof Error && 'code' in error) {
         const code = (error as NodeJS.ErrnoException).code;
-        if (code === "EACCES" || code === "EPERM") {
-          throw new GenerationError(`Permission denied: ${error.message}`, "PERMISSION_DENIED");
+        if (code === 'EACCES' || code === 'EPERM') {
+          throw new GenerationError(`Permission denied: ${error.message}`, 'PERMISSION_DENIED');
         }
-        if (code === "ENOSPC") {
-          throw new GenerationError(`Disk full: ${error.message}`, "DISK_FULL");
+        if (code === 'ENOSPC') {
+          throw new GenerationError(`Disk full: ${error.message}`, 'DISK_FULL');
         }
       }
       throw error;

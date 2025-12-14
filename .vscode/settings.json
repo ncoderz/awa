@@ -4,12 +4,33 @@
   "editor.wordWrapColumn": 100,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
   "files.eol": "\n",
   "files.autoSave": "onFocusChange",
   "files.trimTrailingWhitespace": true,
-  "eslint.format.enable": true,
+  "eslint.format.enable": false,
+  "prettier.enable": false,
+  "eslint.enable": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "search.exclude": {
     "**/.yarn": true,
