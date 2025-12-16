@@ -28,6 +28,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 <file type="design" path=".zen/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="api" path=".zen/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="tasks" path=".zen/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="code" required="if relevant" />
 
 ## Action
 

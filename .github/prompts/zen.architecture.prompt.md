@@ -25,7 +25,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" if="exists" />
-<file type="code" path="src/**/*" required="if reverse workflow" />
+<file type="code" required="if reverse workflow" />
 
 ## Action
 

@@ -26,7 +26,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" />
 <file type="requirements" path=".zen/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="code" path="src/**/*" required="if reverse workflow" />
+<file type="code" required="if reverse workflow" />
 
 ## Action
 
