@@ -27,11 +27,11 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │       └── VALIDATION_REPORT.schema.md
   ├── specs/
   │   ├── ARCHITECTURE.md
-  │   ├── REQ-{code}-{feature-name}.md
-  │   ├── DESIGN-{code}-{feature-name}.md
-  │   └── API-{code}-{api-name}.tsp
+  │   ├── REQ-{CODE}-{feature-name}.md
+  │   ├── DESIGN-{CODE}-{feature-name}.md
+  │   └── API-{CODE}-{api-name}.tsp
   ├── tasks/
-  │   └── TASK-{code}-{feature-name}-{nnn}.md
+  │   └── TASK-{CODE}-{feature-name}-{nnn}.md
   ├── plans/
   │   └── PLAN-{nnn}-{plan-name}.md
   └── rules/
@@ -40,42 +40,44 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 
 <file_descriptions>
 - ARCHITECTURE.md: High-level architecture overview of the project.
-- REQ-{code}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
-- DESIGN-{code}-{feature-name}.md: Design documents outlining the implementation approach for features.
-- API-{code}-{api-name}.tsp: TypeSpec files defining major APIs.
-- TASK-{code}-{feature-name}-{nnn}.md: Step-by-step tasks for implementing features or tasks.
+- REQ-{CODE}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
+- DESIGN-{CODE}-{feature-name}.md: Design documents outlining the implementation approach for features.
+- API-{CODE}-{api-name}.tsp: TypeSpec files defining major APIs.
+- TASK-{CODE}-{feature-name}-{nnn}.md: Step-by-step tasks for implementing features or tasks.
 - PLAN-{nnn}-{plan-name}.md: Ad-hoc plans for vibe coding.
 - rules/*.md: Rules specific to the project (e.g. Coding standards, best practices to follow).
 </file_descriptions>
 
 <traceability_chain>
-REQ-{code}-{n} = requirement id, e.g. REQ-cli-3
-AC-{code}-{n}.{m} = acceptance criterion id, e.g. AC-cli-3.1
-P-{code}-{n} = correctness property id, e.g. P-cli-2
-@zen-component = code marker → design component, e.g. // @zen-component: cli-Parser
-@zen-impl = code marker → AC, e.g. // @zen-impl: AC-cli-3.1
-@zen-test = test marker → property or AC, e.g. // @zen-test: P-cli-2 or // @zen-test: AC-cli-3.1
+{CODE}-{n} = requirement id, e.g. DIFF-1; subrequirement id = {CODE}-{n}.{p}, e.g. DIFF-1.1
+{CODE}-{n}[.{p}]_AC-{m} = acceptance criterion id, e.g. DIFF-1_AC-1 or DIFF-1.1_AC-2
+{CODE}_P-{n} = correctness property id, e.g. DIFF_P-2
+@zen-component = code marker → design component, e.g. // @zen-component: DIFF-Parser
+@zen-impl = code marker → AC, e.g. // @zen-impl: DIFF-1.1_AC-1
+@zen-test = test marker → property or AC, e.g. // @zen-test: DIFF_P-2 or // @zen-test: DIFF-1.1_AC-1
 
-REQ-{code}-{feature}.md
-  └── REQ-{code}-{n}: Title
-        └── AC-{code}-{n}.{m}: Criterion
+REQ-{CODE}-{feature}.md
+    └── {CODE}-{n}: Title
+      ├── {CODE}-{n}_AC-{m}: Criterion
+      └── {CODE}-{n}.{p}: Subrequirement
+        └── {CODE}-{n}.{p}_AC-{m}: Criterion
               │
               ▼
-DESIGN-{code}-{feature}.md
-  └── {code}-{ComponentName}
-        ├── IMPLEMENTS: AC-{code}-{n}.{m}
-        └── P-{code}-{n}: Property
-              └── VALIDATES: AC-{code}-{n}.{m} | REQ-{code}-{n}
+DESIGN-{CODE}-{feature}.md
+    └── {CODE}-{ComponentName}
+      ├── IMPLEMENTS: {CODE}-{n}[.{p}]_AC-{m}
+      └── {CODE}_P-{n}: Property
+        └── VALIDATES: {CODE}-{n}[.{p}]_AC-{m} | {CODE}-{n}
               │
               ▼
 (implementation)
-  └── @zen-component: {code}-{ComponentName}
-        └── @zen-impl: AC-{code}-{n}.{m}
+  └── @zen-component: {CODE}-{ComponentName}
+      └── @zen-impl: {CODE}-{n}[.{p}]_AC-{m}
               │
               ▼
 (tests)
-  ├── @zen-test: P-{code}-{n}        // verifies property
-  └── @zen-test: AC-{code}-{n}.{m}   // verifies AC directly
+  ├── @zen-test: {CODE}_P-{n}               // verifies property
+  └── @zen-test: {CODE}-{n}[.{p}]_AC-{m}    // verifies AC directly
 
 Markers create the trace, not file paths.
 </traceability_chain>
@@ -88,7 +90,7 @@ Any file exceeding 500 lines MUST be split logically into multiple files unless 
 - KISS: Simple solutions over clever ones
 - YAGNI: Build only what's specified
 - DRY: Research existing code before creating new
-- Reference, Don't Duplicate: Use IDs (e.g., `AC-cli-3.1`) or other references. Never restate content
+- Reference, Don't Duplicate: Use IDs (e.g., `DIFF-1.1_AC-1`) or other references. Never restate content
 - Trace Everything: Explicit links between artifacts
 </core_principles>
 </zen>

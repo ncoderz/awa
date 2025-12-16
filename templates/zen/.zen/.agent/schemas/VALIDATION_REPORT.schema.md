@@ -18,12 +18,12 @@
     MISSING | DIFFERENCE | CONFLICT | INCOMPLETE | UNTESTED | ORPHAN | SUPERSET
   </finding-type>
   <trace_matrix>
-    <trace in="DESIGN component" marker="IMPLEMENTS: AC-{code}-{n}.{m}" to="REQ AC" />
-    <trace in="DESIGN property" marker="P-{code}-{n} VALIDATES: AC-{code}-{n}.{m} | REQ-{code}-{n}" to="REQ" />
-    <trace in="code" marker="@zen-component: {code}-{ComponentName}" to="DESIGN component" />
-    <trace in="code" marker="@zen-impl: AC-{code}-{n}.{m}" to="REQ AC" />
-    <trace in="tests" marker="@zen-test: P-{code}-{n}" to="DESIGN property" />
-    <trace in="tests" marker="@zen-test: AC-{code}-{n}.{m}" to="REQ AC" />
+    <trace in="DESIGN component" marker="IMPLEMENTS: {CODE}-{n}[.{p}]_AC-{m}" to="REQ AC" />
+    <trace in="DESIGN property" marker="{CODE}_P-{n} VALIDATES: {CODE}-{n}[.{p}]_AC-{m} | {CODE}-{n}" to="REQ" />
+    <trace in="code" marker="@zen-component: {CODE}-{ComponentName}" to="DESIGN component" />
+    <trace in="code" marker="@zen-impl: {CODE}-{n}[.{p}]_AC-{m}" to="REQ AC" />
+    <trace in="tests" marker="@zen-test: {CODE}_P-{n}" to="DESIGN property" />
+    <trace in="tests" marker="@zen-test: {CODE}-{n}[.{p}]_AC-{m}" to="REQ AC" />
     <infer target="semantic_traces" when="markers missing" confidence="LIKELY|UNCERTAIN" />
   </trace_matrix>
 </definitions>
@@ -123,33 +123,33 @@
 <example>
 # ALIGNMENT REPORT
 
-DESIGN-wks-workspace.md ↔ src/workspace/**
+DESIGN-WKS-workspace.md ↔ src/workspace/**
 
 ---
 
 ### 1. CRITICAL [CERTAIN] MISSING
 
-**Source:** wks-WorkspaceConfig (IMPLEMENTS: AC-wks-1.1)
+**Source:** WKS-WorkspaceConfig (IMPLEMENTS: WKS-1_AC-1)
 > pub fn load(root: &Path) -> Result<Self, WorkspaceError>
 
 **Target:** (not found)
 
-Design component declares IMPLEMENTS: AC-wks-1.1, but no code file contains @zen-component: wks-WorkspaceConfig with @zen-impl: AC-wks-1.1.
+Design component declares IMPLEMENTS: WKS-1_AC-1, but no code file contains @zen-component: WKS-WorkspaceConfig with @zen-impl: WKS-1_AC-1.
 
-**Resolution:** Add @zen-component: wks-WorkspaceConfig and @zen-impl: AC-wks-1.1 to src/workspace/config.rs
+**Resolution:** Add @zen-component: WKS-WorkspaceConfig and @zen-impl: WKS-1_AC-1 to src/workspace/config.rs
 
 ---
 
 ### 2. MAJOR [CERTAIN] UNTESTED
 
-**Source:** P-wks-2
+**Source:** WKS_P-2
 > For any valid EngineLibrary, the crate SHALL contain zero binary targets
 
 **Target:** (not found)
 
-Property P-wks-2 exists in design but no test file contains @zen-test: P-wks-2.
+Property WKS_P-2 exists in design but no test file contains @zen-test: WKS_P-2.
 
-**Resolution:** Add test with @zen-test: P-wks-2 marker
+**Resolution:** Add test with @zen-test: WKS_P-2 marker
 
 ---
 

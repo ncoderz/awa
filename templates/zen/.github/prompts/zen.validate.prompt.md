@@ -38,10 +38,10 @@ y = target artifact (what x is validated against) = requirement(s).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" />
-<file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".zen/specs/DESIGN-{code}-{feature-name}.md" required="if relevant" />
-<file type="api" path=".zen/specs/API-{code}-{feature-name}.md" required="if relevant" />
-<file type="tasks" path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="requirements" path=".zen/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="design" path=".zen/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="api" path=".zen/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="tasks" path=".zen/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
 <file type="plan" path=".zen/plans/PLAN-{nnn}-{plan-name}.md" required="if relevant" />
 <file type="code_and_tests" path="various" required="if relevant" />
 

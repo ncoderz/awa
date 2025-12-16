@@ -27,9 +27,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" />
-<file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".zen/specs/DESIGN-{code}-{feature-name}.md" required="if relevant" />
-<file type="api" path=".zen/specs/API-{code}-{feature-name}.md" required="if relevant" />
+<file type="requirements" path=".zen/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="design" path=".zen/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="api" path=".zen/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
 
 ## Action
 
@@ -38,15 +38,15 @@ Update or create the task list document(s) as specified in the instruction above
 ## Process
 
 1. PARSE REQ
-   - Extract requirements (REQ-{code}-{n}) with priorities (must/should/could)
-   - Extract acceptance criteria (AC-{code}-{n}.{m}) with types
+   - Extract requirements ({CODE}-{n}) with priorities (must/should/could)
+   - Extract acceptance criteria ({CODE}-{n}[.{p}]_AC-{m}) with types
    - Note dependencies between requirements
    - Identify testable criteria
 
 2. PARSE DESIGN
-   - Extract components ({code}-{ComponentName}) and interfaces
+   - Extract components ({CODE}-{ComponentName}) and interfaces
    - Map IMPLEMENTS references (component → ACs)
-   - Extract properties (P-{code}-{n}) and VALIDATES references
+   - Extract properties ({CODE}_P-{n}) and VALIDATES references
    - Note architectural decisions and constraints
    - Extract error types for error handling tasks
 
@@ -72,9 +72,9 @@ Update or create the task list document(s) as specified in the instruction above
 
 ### From Requirements
 
-- Each requirement (REQ-{code}-{n}) becomes a phase (priority order)
+- Each requirement ({CODE}-{n}) becomes a phase (priority order)
 - All ACs for that requirement → tasks within its phase
-- Subrequirements (REQ-{code}-{n}_{m}) nest under parent phase
+- Subrequirements ({CODE}-{n}.{p}) nest under parent phase
 
 ### From Design Components
 
@@ -84,7 +84,7 @@ Update or create the task list document(s) as specified in the instruction above
 
 ### From Properties
 
-- Each property (P-{code}-{n}) → test task
+- Each property ({CODE}_P-{n}) → test task
 - Property's VALIDATES list → determines test assertions
 - Property type determines test approach:
   - Invariants → property-based tests
@@ -102,14 +102,14 @@ Update or create the task list document(s) as specified in the instruction above
 - Project initialization
 - Dependency installation
 - Configuration scaffolding
-- No REQ labels, no IMPLEMENTS lines
+- No requirement labels, no IMPLEMENTS lines
 
 ### Phase 2: Foundation
 
 - Core types from DESIGN dataModels
 - Error types from DESIGN errorHandling
 - Shared interfaces
-- No REQ labels, IMPLEMENTS only if AC covers foundation
+- No requirement labels, IMPLEMENTS only if AC covers foundation
 
 ### Phase 3+: Requirements (priority order)
 
@@ -125,7 +125,7 @@ Each phase should be independently testable after completion.
 - Integration tests across requirements
 - Documentation updates
 - Cross-cutting concerns
-- No REQ labels
+- No requirement labels
 
 ## Validation Checklist
 
@@ -134,7 +134,7 @@ Before output, verify:
 - [ ] Every task has correct format (checkbox, ID, description, path)
 - [ ] Every AC appears in at least one IMPLEMENTS line
 - [ ] Every P appears in at least one TESTS line
-- [ ] REQ labels only on requirement phase tasks
+- [ ] Requirement labels only on requirement phase tasks
 - [ ] [P] markers only where truly parallelizable
 - [ ] Dependencies match DESIGN component order
 - [ ] Each requirement phase has clear test criteria
@@ -142,7 +142,7 @@ Before output, verify:
 
 ## Output File(s)
 
-<file path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" />
+<file path=".zen/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" />
 
 ## Rules
 

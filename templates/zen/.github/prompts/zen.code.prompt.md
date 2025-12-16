@@ -24,10 +24,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" />
-<file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".zen/specs/DESIGN-{code}-{feature-name}.md" required="if relevant" />
-<file type="api" path=".zen/specs/API-{code}-{feature-name}.md" required="if relevant" />
-<file type="tasks" path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="requirements" path=".zen/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="design" path=".zen/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="api" path=".zen/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="tasks" path=".zen/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
 
 ## Action
 
@@ -38,51 +38,51 @@ Implement code and tests based on architecture, requirements, and design (tasks 
 You MUST add these markers to create explicit traces:
 
 ```
-// @zen-component: {code}-{ComponentName}
+// @zen-component: {CODE}-{ComponentName}
 ```
 Place at the top of each file/module that implements a design component.
 
 ```
-// @zen-impl: AC-{code}-{n}.{m}
+// @zen-impl: {CODE}-{n}[.{p}]_AC-{m}
 ```
 Place above code that satisfies an acceptance criterion. Multiple markers allowed per block.
 
 ```
-// @zen-test: P-{code}-{n}
-// @zen-test: AC-{code}-{n}.{m}
+// @zen-test: {CODE}_P-{n}
+// @zen-test: {CODE}-{n}[.{p}]_AC-{m}
 ```
 Place above tests. Use P- for property-based tests, AC- for direct acceptance tests.
 
 ## Implementation Process
 
 1. PARSE DESIGN
-   - Identify components and their interfaces
-   - Note IMPLEMENTS references (which ACs each component covers)
-   - Note properties (P-) and what they VALIDATE
+  - Identify components and their interfaces
+  - Note IMPLEMENTS references (which ACs each component covers)
+  - Note properties ({CODE}_P-{n}) and what they VALIDATE
 
 2. PARSE REQ
-   - Understand acceptance criteria being implemented
-   - Note criterion types (event, ubiquitous, conditional, etc.)
+  - Understand acceptance criteria being implemented
+  - Note criterion types (event, ubiquitous, conditional, etc.)
 
 3. IF TASKS PROVIDED
-   - Follow task order strictly
-   - Implement one task at a time
-   - Update TASK file checkmark, and report completion of each task before proceeding to the next
+  - Follow task order strictly
+  - Implement one task at a time
+  - Update TASK file checkmark, and report completion of each task before proceeding to the next
 
 4. IF NO TASKS
-   - Implement components in dependency order
-   - Start with bootstrapping, then types/interfaces, then core logic, then entry points
+  - Implement components in dependency order
+  - Start with bootstrapping, then types/interfaces, then core logic, then entry points
 
 5. FOR EACH COMPONENT
-   - Add @zen-component marker at file/module top
-   - Implement interface as specified in DESIGN
-   - Add @zen-impl marker above code satisfying each AC
-   - One AC may require multiple @zen-impl markers across files
+  - Add @zen-component marker at file/module top
+  - Implement interface as specified in DESIGN
+  - Add @zen-impl marker above code satisfying each AC
+  - One AC may require multiple @zen-impl markers across files
 
 6. FOR EACH TEST
-   - Property tests (@zen-test: P-): Use property-based testing framework
-   - Acceptance tests (@zen-test: AC-): Use example-based assertions
-   - A single test may verify multiple ACs or properties
+  - Property tests (@zen-test: {CODE}_P-{n}): Use property-based testing framework
+  - Acceptance tests (@zen-test: {CODE}-{n}[.{p}]_AC-{m}): Use example-based assertions
+  - A single test may verify multiple ACs or properties
 
 ## Output File(s)
 
@@ -96,33 +96,33 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
 - Never add @zen-impl without understanding the AC's criterion type
 - Prefer one @zen-component per file; split if file covers multiple components
 - Keep @zen-impl markers close to the implementing code, not at file top
-- If AC cannot be fully satisfied, add marker with comment: `// @zen-impl: AC-x-n.m (partial: reason)`
+- If AC cannot be fully satisfied, add marker with comment: `// @zen-impl: {CODE}-{n}[.{p}]_AC-{m} (partial: reason)`
 - If PLAN task is blocked, report blocker and await instruction
 
 ## Example
 
 Given:
-- REQ-cfg-1: Config Loading with AC-cfg-1.1 (load from path), AC-cfg-1.2 (merge with defaults)
-- DESIGN component cfg-ConfigLoader with IMPLEMENTS: AC-cfg-1.1, AC-cfg-1.2
-- DESIGN property P-cfg-1 [Default Preservation] VALIDATES: AC-cfg-1.2
+- CFG-1: Config Loading with CFG-1_AC-1 (load from path), CFG-1_AC-2 (merge with defaults)
+- DESIGN component CFG-ConfigLoader with IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
+- DESIGN property CFG_P-1 [Default Preservation] VALIDATES: CFG-1_AC-2
 
 Output:
 
 ```typescript
 // FILE: src/config/loader.ts
 
-// @zen-component: cfg-ConfigLoader
+// @zen-component: CFG-ConfigLoader
 
 import { Config, RawConfig } from './types';
 import { defaults } from './defaults';
 
-// @zen-impl: AC-cfg-1.1
+// @zen-impl: CFG-1_AC-1
 export async function load(path: string): Promise {
   const content = await fs.readFile(path, 'utf8');
   return parse(content);
 }
 
-// @zen-impl: AC-cfg-1.2
+// @zen-impl: CFG-1_AC-2
 export function merge(raw: RawConfig): Config {
   return { ...defaults, ...raw };
 }
@@ -133,7 +133,7 @@ export function merge(raw: RawConfig): Config {
 
 import * as fc from 'fast-check';
 
-// @zen-test: P-cfg-1
+// @zen-test: CFG_P-1
 test.prop([fc.object()])('preserves defaults for missing keys', (partial) => {
   const result = merge(partial);
   for (const [key, value] of Object.entries(defaults)) {
@@ -143,7 +143,7 @@ test.prop([fc.object()])('preserves defaults for missing keys', (partial) => {
   }
 });
 
-// @zen-test: AC-cfg-1.1
+// @zen-test: CFG-1_AC-1
 test('loads config from valid path', async () => {
   const config = await load('fixtures/valid.toml');
   expect(config).toBeDefined();

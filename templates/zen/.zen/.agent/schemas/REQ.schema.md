@@ -1,4 +1,4 @@
-<schema target-files=".zen/specs/REQ-{code}-{feature-name}.md">
+<schema target-files=".zen/specs/REQ-{CODE}-{feature-name}.md">
 
 ```json
 {
@@ -18,7 +18,7 @@
     "requirement": {
       "required": ["id", "title", "story", "criteria"],
       "properties": {
-        "id": { "type": "pattern: REQ-{code}-{n} or REQ-{code}-{n}_{m} for subrequirements (e.g., REQ-cli-3, REQ-eng-1_1)" },
+        "id": { "type": "pattern: {CODE}-{n} or {CODE}-{n}.{p} for subrequirements (e.g., CLI-3, ENG-1.1)" },
         "title": { "type": "short title" },
         "story": { "required": ["role", "want", "benefit"], "properties": { "role": {}, "want": {}, "benefit": {} } },
         "criteria": { "type": "array", "items": { "$ref": "#/$defs/criterion" } },
@@ -31,7 +31,7 @@
     "criterion": {
       "required": ["id", "type", "statement"],
       "properties": {
-        "id": { "type": "pattern: AC-{code}-{n}.{m} or AC-{code}-{n}_{m}.{p} for subrequirements (e.g., AC-cli-3.1, AC-eng-1_1.2)" },
+        "id": { "type": "pattern: {CODE}-{n}[.{p}]_AC-{m} for subrequirements (e.g., CLI-3_AC-1, ENG-1.1_AC-2)" },
         "type": { "enum": ["ubiquitous", "event", "state", "conditional", "optional", "complex"] },
         "statement": { "type": "testable statement using SHALL/SHOULD/MAY" },
         "notes": { "type": "additional context" },
@@ -68,7 +68,7 @@ Core engine requirements for game framework.
 
 ## Requirements
 
-### REQ-eng-1: Core Engine Framework [MUST]
+### ENG-1: Core Engine Framework [MUST]
 
 AS A game developer, I WANT a game loop, SO THAT predictable execution.
 
@@ -76,30 +76,30 @@ AS A game developer, I WANT a game loop, SO THAT predictable execution.
 
 ACCEPTANCE CRITERIA
 
-- [x] AC-eng-1.1 [event]: WHEN engine initializes THEN system SHALL create context
-- [ ] AC-eng-1.2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging — CLI flag
-- [ ] AC-eng-1.3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
-- [ ] AC-eng-1.4 [event]: WHEN multiple `--preset` options are provided THEN system SHALL collect all values
-- [ ] AC-eng-1.5 [conditional]: IF config contains a `[presets]` table THEN system SHALL parse it as a dictionary
+- [x] ENG-1_AC-1 [event]: WHEN engine initializes THEN system SHALL create context
+- [ ] ENG-1_AC-2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging — CLI flag
+- [ ] ENG-1_AC-3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
+- [ ] ENG-1_AC-4 [event]: WHEN multiple `--preset` options are provided THEN system SHALL collect all values
+- [ ] ENG-1_AC-5 [conditional]: IF config contains a `[presets]` table THEN system SHALL parse it as a dictionary
 
-### REQ-eng-1_1: Subsystem Registration [SHOULD]
+### ENG-1.1: Subsystem Registration [SHOULD]
 
 AS A engine maintainer, I WANT subsystems to self-register, SO THAT modular architecture.
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-eng-1_1.1 [event]: WHEN subsystem loads THEN it SHALL register with context
+- [ ] ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN it SHALL register with context
 
-### REQ-eng-2: Resource Management [MUST]
+### ENG-2: Resource Management [MUST]
 
 AS A game developer, I WANT automatic resource loading, SO THAT simplified asset management.
 
 ACCEPTANCE CRITERIA
 
-- [ ] AC-eng-2.1 [event]: WHEN resource requested THEN system SHALL load asynchronously
-- [ ] AC-eng-2.2 [ubiquitous]: The system SHALL cache loaded resources
+- [ ] ENG-2_AC-1 [event]: WHEN resource requested THEN system SHALL load asynchronously
+- [ ] ENG-2_AC-2 [ubiquitous]: The system SHALL cache loaded resources
 
-DEPENDS ON: REQ-eng-1
+DEPENDS ON: ENG-1
 
 ## Assumptions
 

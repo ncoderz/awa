@@ -67,9 +67,9 @@
     "component": {
       "required": ["name", "description", "interface"],
       "properties": {
-        "name": { "type": "pattern: {code}-{ComponentName} (e.g., cli-Parser, cfg-ConfigLoader)" },
+        "name": { "type": "pattern: {CODE}-{ComponentName} (e.g., CLI-Parser, CFG-ConfigLoader)" },
         "description": { "type": "HOW it works, not WHAT (WHAT is in ACs)" },
-        "implements": { "type": "array of AC IDs (e.g., AC-cfg-1.1, AC-cfg-1.2)" },
+        "implements": { "type": "array of AC IDs (e.g., CFG-1_AC-1, CFG-1_AC-2)" },
         "interface": { "type": "code block" }
       }
     },
@@ -78,26 +78,26 @@
     "property": {
       "required": ["id", "name", "description", "validates"],
       "properties": {
-        "id": { "type": "pattern: P-{code}-{n} (e.g., P-cfg-1, P-gen-2)" },
+        "id": { "type": "pattern: {CODE}_P-{n} (e.g., CFG_P-1, GEN_P-2)" },
         "name": {},
         "description": {},
-        "validates": { "type": "array of AC or REQ IDs (e.g., AC-cfg-4.1, REQ-gen-6)" }
+        "validates": { "type": "array of AC or REQ IDs (e.g., CFG-4_AC-1, GEN-6)" }
       }
     },
     "errorType": { "required": ["name", "variants"], "properties": { "name": {}, "description": {}, "variants": { "type": "array", "items": { "properties": { "name": {}, "description": {} } } } } },
     "traceEntry": {
       "required": ["criterionId", "componentName"],
       "properties": {
-        "criterionId": { "type": "AC-{code}-{n}.{m}" },
-        "componentName": { "type": "{code}-{ComponentName}" },
-        "propertyId": { "type": "P-{code}-{n}" },
+        "criterionId": { "type": "{CODE}-{n}[.{p}]_AC-{m}" },
+        "componentName": { "type": "{CODE}-{ComponentName}" },
+        "propertyId": { "type": "{CODE}_P-{n}" },
         "status": { "enum": ["implemented", "partial", "deferred", "n/a"] },
         "notes": {}
       }
     }
   },
   "$render": {
-    "template": "# Design Specification\n\n## Overview\n{overview}\n\n## Architecture\n\nAFFECTED LAYERS: {affectedLayers?}\n\n### High-Level Architecture\n{architecture.highLevelArchitecture.description}\n\n```mermaid\n{architecture.highLevelArchitecture.diagram}\n```\n\n### Module Organization\n```\n{architecture.moduleOrganization.structure}\n```\n\n### Architectural Decisions\n{architecturalDecisions→'- {DECISION}: {rationale}. Alternatives: {alternatives?}'}\n\n## Components and Interfaces\n{componentsAndInterfaces→'### {name}\n\n{description}\n\nIMPLEMENTS: {implements?}\n\n```typescript\n{interface}\n```'}\n\n## Data Models\n\n### Core Types\n{dataModels.coreTypes→'- {NAME}: {description}\n```typescript\n{definition}\n```'}\n\n### Entities\n{dataModels.entities→'### {name}\n{description}\n{fields→\"- {NAME} ({type}, {required?}): {description}\"}'}\n\n## Correctness Properties\n{correctnessProperties→'- {id} [{name}]: {description}\n  VALIDATES: {validates}'}\n\n## Error Handling\n{errorHandling.errorTypes→'### {name}\n{description}\n{variants→\"- {NAME}: {description}\"}'}\n\n### Strategy\nPRINCIPLES:\n{errorHandling.strategy.principles→'- {}'}\n\n## Testing Strategy\n\n### Property-Based Testing\n- FRAMEWORK: {testingStrategy.propertyBasedTesting.framework}\n- MINIMUM_ITERATIONS: {testingStrategy.propertyBasedTesting.minimumIterations}\n- TAG_FORMAT: {testingStrategy.propertyBasedTesting.tagFormat?}\n{testingStrategy.propertyBasedTesting.exampleTests→'```typescript\n// @zen-test: {propertyId}\n{code}\n```'}\n\n### Unit Testing\n{testingStrategy.unitTesting.description?}\n- AREAS: {testingStrategy.unitTesting.areas?}\n\n### Integration Testing\n{testingStrategy.integrationTesting.description?}\n- SCENARIOS: {testingStrategy.integrationTesting.scenarios?}\n\n## Requirements Traceability\nSOURCE: {requirementsTraceability.source}\n{requirementsTraceability.matrix→'- {criterionId} → {componentName} ({propertyId?}) [{status?|omit if implemented}] {notes?}'}\n\n## Library Usage\n\n### Framework Features\n{libraryUsage.frameworkFeatures→'- {FEATURE}: {usage}'}\n\n### External Libraries\n{libraryUsage.externalLibraries→'- {name} ({version}): {purpose}'}\n\n## Change Log\n{metadata.changeLog→'- {version} ({date}): {changes}'}",
+    "template": "# Design Specification\n\n## Overview\n{overview}\n\n## Architecture\n\nAFFECTED LAYERS: {affectedLayers?}\n\n### High-Level Architecture\n{architecture.highLevelArchitecture.description}\n\n```mermaid\n{architecture.highLevelArchitecture.diagram}\n```\n\n### Module Organization\n```\n{architecture.moduleOrganization.structure}\n```\n\n### Architectural Decisions\n{architecturalDecisions→'- {DECISION}: {rationale}. Alternatives: {alternatives?}'}\n\n## Components and Interfaces\n{componentsAndInterfaces→'### {name}\n\n{description}\n\nIMPLEMENTS: {implements?}\n\n```typescript\n{interface}\n```'}\n\n## Data Models\n\n### Core Types\n{dataModels.coreTypes→'- {NAME}: {description}\n```typescript\n{definition}\n```'}\n\n### Entities\n{dataModels.entities→'### {name}\n{description}\n{fields→\"- {NAME} ({type}, {required?}): {description}\"}'}\n\n## Correctness Properties\n{correctnessProperties→'- {id} [{name}]: {description}\n  VALIDATES: {validates}'}\n\n## Error Handling\n{errorHandling.errorTypes→'### {name}\n{description}\n{variants→\"- {NAME}: {description}\"}'}\n\n### Strategy\nPRINCIPLES:\n{errorHandling.strategy.principles→'- {}'}\n\n## Testing Strategy\n\n### Property-Based Testing\n- FRAMEWORK: {testingStrategy.propertyBasedTesting.framework}\n- MINIMUM_ITERATIONS: {testingStrategy.propertyBasedTesting.minimumIterations}\n- TAG_FORMAT: {testingStrategy.propertyBasedTesting.tagFormat?}\n{testingStrategy.propertyBasedTesting.exampleTests→'```typescript\n// @zen-test: {propertyId}\n{CODE}\n```'}\n\n### Unit Testing\n{testingStrategy.unitTesting.description?}\n- AREAS: {testingStrategy.unitTesting.areas?}\n\n### Integration Testing\n{testingStrategy.integrationTesting.description?}\n- SCENARIOS: {testingStrategy.integrationTesting.scenarios?}\n\n## Requirements Traceability\nSOURCE: {requirementsTraceability.source}\n{requirementsTraceability.matrix→'- {criterionId} → {componentName} ({propertyId?}) [{status?|omit if implemented}] {notes?}'}\n\n## Library Usage\n\n### Framework Features\n{libraryUsage.frameworkFeatures→'- {FEATURE}: {usage}'}\n\n### External Libraries\n{libraryUsage.externalLibraries→'- {name} ({version}): {purpose}'}\n\n## Change Log\n{metadata.changeLog→'- {version} ({date}): {changes}'}",
     "omit": ["section if empty", "AFFECTED LAYERS if absent", "IMPLEMENTS if empty", "(propertyId) if absent", "[status] if implemented", "notes/alternatives if empty"],
     "prohibited": ["**bold** — use CAPITALS", "*italic*", "tables — use lists", "ASCII diagrams — use mermaid", "FieldName: value patterns", "restating WHAT (requirements) — describe HOW (design)"]
   }
@@ -149,11 +149,11 @@ src/
 
 ## Components and Interfaces
 
-### cfg-ConfigLoader
+### CFG-ConfigLoader
 
 Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied.
 
-IMPLEMENTS: AC-cfg-1.1, AC-cfg-1.2, AC-cfg-4.1
+IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-4_AC-1
 
 ```typescript
 interface ConfigLoader {
@@ -179,11 +179,11 @@ interface ResolvedOptions {
 
 ## Correctness Properties
 
-- P-cfg-1 [CLI Override]: CLI arguments always override config file values for the same option
-  VALIDATES: AC-cfg-4.1, AC-cfg-4.2
+- CFG_P-1 [CLI Override]: CLI arguments always override config file values for the same option
+  VALIDATES: CFG-4_AC-1, CFG-4_AC-2
 
-- P-gen-2 [Dry Run Immutable]: Dry-run mode never modifies the file system
-  VALIDATES: AC-gen-6.1, AC-gen-6.2
+- GEN_P-2 [Dry Run Immutable]: Dry-run mode never modifies the file system
+  VALIDATES: GEN-6_AC-1, GEN-6_AC-2
 
 ## Error Handling
 
@@ -208,10 +208,10 @@ PRINCIPLES:
 
 - FRAMEWORK: fast-check
 - MINIMUM_ITERATIONS: 100
-- TAG_FORMAT: @zen-test: P-{code}-{n}
+- TAG_FORMAT: @zen-test: {CODE}_P-{n}
 
 ```typescript
-// @zen-test: P-cfg-1
+// @zen-test: CFG_P-1
 test.prop([fc.string(), fc.string()])('CLI overrides config', (cliValue, configValue) => {
   const cli = { output: cliValue };
   const config = { output: configValue };
@@ -224,15 +224,15 @@ test.prop([fc.string(), fc.string()])('CLI overrides config', (cliValue, configV
 
 Test individual components in isolation
 
-- AREAS: cfg-ConfigLoader merge logic, tpl-TemplateResolver type detection
+- AREAS: CFG-ConfigLoader merge logic, TPL-TemplateResolver type detection
 
 ## Requirements Traceability
 
-SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-cfg.md
+SOURCE: .zen/specs/REQ-CLI.md, .zen/specs/REQ-CFG.md
 
-- AC-cfg-1.1 → cfg-ConfigLoader (P-cfg-1)
-- AC-cfg-4.1 → cfg-ConfigLoader (P-cfg-1)
-- AC-gen-6.1 → gen-FileGenerator (P-gen-2) [partial] pending review
+- CFG-1_AC-1 → CFG-ConfigLoader (CFG_P-1)
+- CFG-4_AC-1 → CFG-ConfigLoader (CFG_P-1)
+- GEN-6_AC-1 → GEN-FileGenerator (GEN_P-2) [partial] pending review
 
 ## Library Usage
 

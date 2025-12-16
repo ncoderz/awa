@@ -1,4 +1,4 @@
-<schema target-files=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md">
+<schema target-files=".zen/tasks/TASK-{CODE}-{feature-name}-{nnn}.md">
 
 ```json
 {
@@ -25,7 +25,7 @@
       "properties": {
         "name": { "type": "phase name" },
         "type": { "enum": ["setup", "foundation", "requirement", "polish"] },
-        "requirement": { "type": "REQ-{code}-{n} (only for requirement phases)" },
+        "requirement": { "type": "{CODE}-{n} (only for requirement phases)" },
         "priority": { "enum": ["must", "should", "could"] },
         "goal": { "type": "requirement's story.want (only for requirement phases)" },
         "testCriteria": { "type": "how to verify phase is complete" },
@@ -35,20 +35,20 @@
     "task": {
       "required": ["id", "description", "path"],
       "properties": {
-        "id": { "type": "pattern: T-{code}-{nnn} (e.g., T-cfg-001)" },
+        "id": { "type": "pattern: T-{CODE}-{nnn} (e.g., T-CFG-001)" },
         "parallel": { "type": "boolean, true if parallelizable" },
-        "requirement": { "type": "REQ-{code}-{n} (only in requirement phases)" },
+        "requirement": { "type": "{CODE}-{n} (only in requirement phases)" },
         "description": { "type": "clear action" },
         "path": { "type": "target file path" },
-        "implements": { "type": "array of AC-{code}-{n}.{m}" },
-        "tests": { "type": "array of P-{code}-{n} or AC-{code}-{n}.{m}" }
+        "implements": { "type": "array of {CODE}-{n}[.{p}]_AC-{m}" },
+        "tests": { "type": "array of {CODE}_P-{n} or {CODE}-{n}[.{p}]_AC-{m}" }
       }
     },
     "dependency": {
       "required": ["requirement", "dependsOn"],
       "properties": {
-        "requirement": { "type": "REQ-{code}-{n}" },
-        "dependsOn": { "type": "array of REQ-{code}-{n} or empty" },
+        "requirement": { "type": "{CODE}-{n}" },
+        "dependsOn": { "type": "array of {CODE}-{n} or empty" },
         "reason": { "type": "why dependency exists" }
       }
     }
@@ -66,70 +66,70 @@
 # Implementation Tasks
 
 FEATURE: Configuration System
-SOURCE: REQ-cfg-config.md, DESIGN-cfg-config.md
+SOURCE: REQ-CFG-config.md, DESIGN-CFG-config.md
 
 ## Phase 1: Setup
 
-- [ ] T-cfg-001 Initialize module structure → src/config/
-- [ ] T-cfg-002 [P] Add dependencies (smol-toml) → package.json
+- [ ] T-CFG-001 Initialize module structure → src/config/
+- [ ] T-CFG-002 [P] Add dependencies (smol-toml) → package.json
 
 ## Phase 2: Foundation
 
-- [ ] T-cfg-003 Define Config and RawConfig types → src/config/types.ts
-- [ ] T-cfg-004 Define ConfigError variants → src/config/errors.ts
+- [ ] T-CFG-003 Define Config and RawConfig types → src/config/types.ts
+- [ ] T-CFG-004 Define ConfigError variants → src/config/errors.ts
 
 ## Phase 3: Config Loading [MUST]
 
 GOAL: Load and merge configuration from file with defaults
 TEST CRITERIA: Can load valid TOML, missing keys get defaults
 
-- [ ] T-cfg-010 [REQ-cfg-1] Implement load function → src/config/loader.ts
-      IMPLEMENTS: AC-cfg-1.1
-- [ ] T-cfg-011 [REQ-cfg-1] Implement merge function → src/config/loader.ts
-      IMPLEMENTS: AC-cfg-1.2
-- [ ] T-cfg-012 [P] [REQ-cfg-1] Property test for default preservation → tests/config/loader.test.ts
-      TESTS: P-cfg-1
-- [ ] T-cfg-013 [P] [REQ-cfg-1] Test load from valid path → tests/config/loader.test.ts
-      TESTS: AC-cfg-1.1
+- [ ] T-CFG-010 [CFG-1] Implement load function → src/config/loader.ts
+  IMPLEMENTS: CFG-1_AC-1
+- [ ] T-CFG-011 [CFG-1] Implement merge function → src/config/loader.ts
+  IMPLEMENTS: CFG-1_AC-2
+- [ ] T-CFG-012 [P] [CFG-1] Property test for default preservation → tests/config/loader.test.ts
+  TESTS: CFG_P-1
+- [ ] T-CFG-013 [P] [CFG-1] Test load from valid path → tests/config/loader.test.ts
+  TESTS: CFG-1_AC-1
 
 ## Phase 4: Config Validation [SHOULD]
 
 GOAL: Validate loaded config against schema
 TEST CRITERIA: Invalid config rejected with clear error
 
-- [ ] T-cfg-020 [REQ-cfg-2] Implement validate function → src/config/validator.ts
-      IMPLEMENTS: AC-cfg-2.1
-- [ ] T-cfg-021 [P] [REQ-cfg-2] Test schema validation → tests/config/validator.test.ts
-      TESTS: AC-cfg-2.1
+- [ ] T-CFG-020 [CFG-2] Implement validate function → src/config/validator.ts
+  IMPLEMENTS: CFG-2_AC-1
+- [ ] T-CFG-021 [P] [CFG-2] Test schema validation → tests/config/validator.test.ts
+  TESTS: CFG-2_AC-1
 
 ## Phase 5: Polish
 
-- [ ] T-cfg-030 Integration test: load → validate → use → tests/config/integration.test.ts
-      TESTS: AC-cfg-1.1, AC-cfg-2.1
+- [ ] T-CFG-030 Integration test: load → validate → use → tests/config/integration.test.ts
+  TESTS: CFG-1_AC-1, CFG-2_AC-1
 
 ---
 
 ## Dependencies
 
-REQ-cfg-1 → (none)
-REQ-cfg-2 → REQ-cfg-1 (validates loaded config)
+CFG-1 → (none)
+CFG-2 → CFG-1 (validates loaded config)
 
 ## Parallel Opportunities
 
-Phase 3: T-cfg-012, T-cfg-013 can run parallel after T-cfg-011
-Phase 4: T-cfg-021 can run parallel with T-cfg-020
+Phase 3: T-CFG-012, T-CFG-013 can run parallel after T-CFG-011
+Phase 4: T-CFG-021 can run parallel with T-CFG-020
 
 ## Trace Summary
 
 | AC | Task | Test |
 |----|------|------|
-| AC-cfg-1.1 | T-cfg-010 | T-cfg-013 |
-| AC-cfg-1.2 | T-cfg-011 | T-cfg-012 |
-| AC-cfg-2.1 | T-cfg-020 | T-cfg-021 |
+| CFG-1_AC-1 | T-CFG-010 | T-CFG-013 |
+| CFG-1_AC-2 | T-CFG-011 | T-CFG-012 |
+| CFG-2_AC-1 | T-CFG-020 | T-CFG-021 |
 
 | Property | Test |
 |----------|------|
-| P-cfg-1 | T-cfg-012 |
+| CFG_P-1 | T-CFG-012 |
 
 UNCOVERED: (none)
 </example>

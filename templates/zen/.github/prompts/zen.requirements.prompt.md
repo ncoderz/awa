@@ -25,7 +25,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" />
-<file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
+<file type="requirements" path=".zen/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="code" path="src/**/*" required="if reverse workflow" />
 
 ## Action
@@ -36,7 +36,7 @@ If deriving from existing code (reverse workflow), analyze the codebase to extra
 
 ## Output File(s)
 
-<file path=".zen/specs/REQ-{code}-{feature-name}.md" />
+<file path=".zen/specs/REQ-{CODE}-{feature-name}.md" />
 
 ## Rules
 
@@ -44,7 +44,7 @@ You SHALL solidify requirements with respect to architecture and existing requir
 You SHALL create set of requirements in EARS format (INCOSE-compliant) based on the feature idea.
 You SHALL identify existing requirements to update, or new requirements to create.
 You SHALL consider edge cases, UX, technical constraints, success criteria.
-You SHALL ensure the 3-letter {code} used in the filename is unique within the project.
+You SHALL ensure the 3-letter {CODE} used in the filename is unique within the project.
 You SHOULD focus on requirements which will later be turned into a design.
 You SHOULD keep requirements at a manageable level of detail.
 You SHALL support reverse workflow: deriving requirements from existing code when requested.

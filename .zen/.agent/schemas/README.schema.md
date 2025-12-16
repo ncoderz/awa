@@ -46,7 +46,7 @@
     }
   },
   "$render": {
-    "template": "# {title}\\n\\n{badges?}\\n\\n{description}\\n\\n## Features\\n{features→'- {}'}\\n\\n## Installation\\n\\n### Prerequisites\\n{installation.prerequisites→'- {}'}\\n\\n### Install\\n{installation.steps→'```bash\\n{}\\n```'}\\n\\n## Usage\\n\\n{usage.quickStart}\\n\\n### Examples\\n{usage.examples→'#### {title}\\n{description?}\\n```\\n{code}\\n```'}\\n\\n## Documentation\\n{documentation→'- [{title}]({path}) — {description?}'}\\n\\n## Contributing\\n{contributing}\\n\\n## License\\n{license}\\n\\n## Acknowledgments\\n{acknowledgments→'- {}'}",
+    "template": "# {title}\\n\\n{badges?}\\n\\n{description}\\n\\n## Features\\n{features→'- {}'}\\n\\n## Installation\\n\\n### Prerequisites\\n{installation.prerequisites→'- {}'}\\n\\n### Install\\n{installation.steps→'```bash\\n{}\\n```'}\\n\\n## Usage\\n\\n{usage.quickStart}\\n\\n### Examples\\n{usage.examples→'#### {title}\\n{description?}\\n```\\n{CODE}\\n```'}\\n\\n## Documentation\\n{documentation→'- [{title}]({path}) — {description?}'}\\n\\n## Contributing\\n{contributing}\\n\\n## License\\n{license}\\n\\n## Acknowledgments\\n{acknowledgments→'- {}'}",
     "omit": ["section if empty", "badges if absent", "Prerequisites if empty", "description in examples if absent", "Acknowledgments if empty"],
     "prohibited": ["**bold** in section headers", "implementation details", "internal architecture", "excessive length — link to /docs instead"]
   }
