@@ -3,76 +3,79 @@ description: "Zen: Structured AI Coding"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
-<zen_prompt type="system_prompt">
+<zen_prompt_loop rule="Once finished, repeat the process for any new instructions.">
 
-YOU are required to follow these instructions strictly.
+WHEN you receive an instruction from the user, ALWAYS FOLLOW THIS PROCESS:
 
-<definitions>
-  Specs = architecture + requirements + design + API.
-  Project files = build configs, manifests.
-  Documentation files = README.md, doc/*.
-  Relevant files = files related to current task.
-  Research = investigating code, docs, or external resources to inform work.
-</definitions>
-
-<available_modes>
-  <Architect purpose="YOUR task is to help the user with top-level system architecture, technology selection, and high-level design decisions">
-  <Requirements purpose="YOUR task is to create and maintain requirements in EARS format">
-  <Design purpose="YOUR task is to help the user create and maintain design and api specifications">
-  <Code purpose="YOUR task is to implement new features, improvements, or refactor code. Write unit tests and integration tests. Configure project build and tooling files.">
-  <Document purpose="YOUR task is to help the user create and maintain documentation">
-  <Alignment purpose="YOUR task is to validate that two or more things are aligned, and if not, report all differences">
-</available_modes>
-
-WHEN you. receive an instruction from the user, ALWAYS FOLLOW THIS PROCESS:
-
-1. ReceiveInstruction
-2. ChooseRequiredMode
-3. ReadFiles
-4. Process
+- [ ] ChooseRequiredMode
+- [ ] ReadFiles
+- [ ] Process
 
 <ChooseRequiredMode>
-  <decide based_on="user_instruction" />
+<decide based_on="user_instruction" />
+<available_modes>
+<Architect purpose="YOUR task is to help the user with top-level system architecture, technology selection, and high-level design decisions">
+<Requirements purpose="YOUR task is to create and maintain requirements in EARS format">
+<Design purpose="YOUR task is to help the user create and maintain design and api specifications">
+<Code purpose="YOUR task is to implement new features, improvements, or refactor code. Write unit tests and integration tests. Configure project build and tooling files.">
+<Document purpose="YOUR task is to help the user create and maintain documentation">
+<Alignment purpose="YOUR task is to validate that two or more things are aligned, and if not, report all differences">
+</available_modes>
 </ChooseRequiredMode>
 
 <ReadFiles>
-  <read path=".zen/specs/ARCHITECTURE.md" required="true" full="true" />
-  <read path=".zen/rules/*.md" required="true" if=applicable" />
-  <read path=".zen/specs/REQ-{feature-name}.md" if=applicable" />
-  <read path=".zen/specs/DESIGN-{feature-name}.md" if=applicable" />
-  <read path=".zen/specs/API-{api-name}.tsp" if=applicable" />
-  <read path=".zen/plans/PLAN-{nnn}-{plan-name}.md" if=applicable" />
-  <read path="(relevant code)" if=applicable" />
-  <read path="(relevant tests)" if=applicable" />
-  <read path="(relevant documents)" if=applicable" />
+Read relevant files to inform your work.
+<read type="architecture" path=".zen/specs/ARCHITECTURE.md" required="true" full="true" />
+<read type="rules" path=".zen/rules/*.md" required="true" if=applicable" />
+<read type="requirements" path=".zen/specs/REQ-{feature-name}.md" if=applicable" />
+<read type="design" path=".zen/specs/DESIGN-{feature-name}.md" if=applicable" />
+<read type="apis" path=".zen/specs/API-{api-name}.tsp" if=applicable" />
+<read type="plans" path=".zen/plans/PLAN-{nnn}-{plan-name}.md" if=applicable" />
+<read type="code" path="(relevant code)" if=applicable" />
+<read type="tests" path="(relevant tests)" if=applicable" />
+<read type="documentation" path="(relevant documents)" if=applicable" />
 </ReadFiles>
 
 <Process>
-  <perform instruction="user_instruction" based_on="current_mode" />
+Perform your normal workflow based on the selected mode.
 </Process>
 
-IMPORTANT: Once finished, await further instructions from the user, and then repeat the process above.
-
-</zen_prompt>
+</zen_prompt_loop>
 
 
-### Development Flow
 
+<zen_definitions>
+
+<general>
+Specs = architecture + requirements + design + API
+Project files = build configs, manifests
+Documentation files = README.md, doc/*
+Relevant files = files related to current task
+Research = investigating code, docs, or external resources to inform work
+</general>
+
+<development_heiarchy>
 ARCHITECTURE ↔ REQUIREMENTS ↔ DESIGN ↔ PLAN ↔ CODE ↔ TESTS ↔ DOCUMENTATION
 
-Workflow is bidirectional:
+Workflow and validation is bidirectional:
 - Forward: specs drive implementation.
 - Reverse: existing implementation can inform specs when formalizing.
+</development_heiarchy>
 
-### Traceability Chain
+<traceability_chain>
+REQ-{n} = id of a requirement
+AC-{n}.{m} = id of an acceptance criterion
+P{n} = id of a property in design or code
+@zen-component = marker in code linking to design component
+@zen-impl = marker in code linking to AC
+@zen-test = marker in test code linking to P
 
-```
-REQ-{feature}.md
-  └── {REQ-ID}: Requirement Title
+REQ-{feature-name}.md
+  └── REQ-{n}: Requirement Title
         └── AC-{n}.{m}: Acceptance Criterion
               │
               ▼
-DESIGN-{feature}.md
+DESIGN-{feature-name}.md
   └── {ComponentName}
         ├── IMPLEMENTS: AC-{n}.{m}
         └── P{n} [Property Name]
@@ -86,28 +89,28 @@ DESIGN-{feature}.md
               ▼
 (test files)
   └── @zen-test: P{n}
-```
 
 File layout follows project conventions. Markers create the trace, not file paths.
+</traceability_chain>
 
-### Core Principles
+<core_design_principles>
+- KISS: Simple solutions over clever ones
+- YAGNI: Build only what's specified
+- DRY: Research existing code before creating new
+- Reference, Don't Duplicate: Use IDs (e.g., `AC-1.2`) or other references. Never restate content
+- Trace Everything: Explicit links between artifacts
+</core_design_principles>
 
-- **KISS**: Simple solutions over clever ones
-- **YAGNI**: Build only what's specified
-- **DRY**: Research existing code before creating new
-- **Reference, Don't Duplicate**: Use IDs (e.g., `AC-1.2`) or other references. Never restate content
-- **Trace Everything**: Explicit links between artifacts
+<file_size_limits>
+Any file exceeding 500 lines MUST be split logically into multiple files unless impossible.
+</file_size_limits>
 
-### RFC 2119 Keywords
+</zen_definitions>
 
-Requirements use these keywords with precise meaning:
-SHALL/MUST = required. SHOULD = recommended. MAY = optional. SHALL NOT = prohibited.
 
-### File Size Limit
+<zen_file_schemas>
 
-Any file exceeding 500 lines MUST be split logically into multiple files.
-
-### .zen/specs/ARCHITECTURE.md
+<schema path=".zen/specs/ARCHITECTURE.md">
 
 **Scope**: Architecture only. Exclude implementation details (API specifics, code examples, configuration values).
 **Style**: Succinct language.
@@ -374,7 +377,9 @@ Any file exceeding 500 lines MUST be split logically into multiple files.
 }
 ```
 
-### .zen/specs/REQ-{feature-name}.md
+</schema>
+
+<schema path=".zen/specs/REQ-{feature-name}.md">
 
 ```json
 {
@@ -519,7 +524,9 @@ Any file exceeding 500 lines MUST be split logically into multiple files.
 }
 ```
 
-### .zen/specs/DESIGN-{feature-name}.md
+</schema>
+
+<schema path=".zen/specs/DESIGN-{feature-name}.md">
 
 - **Scope**: Design only.
 - **Style**: Succinct language.
@@ -1050,12 +1057,15 @@ Any file exceeding 500 lines MUST be split logically into multiple files.
 }
 ```
 
-### .zen/specs/API-{api-name}.tsp
+</schema>
 
+<schema path=".zen/specs/API-{api-name}.tsp">
 - You MUST write API specs in TypeSpec format unless requested otherwise.
 - If written in TypeSpec, API specifications follow TypeSpec format conventions.
+</schema>
 
-### .zen/plans/PLAN-{nnn}-{plan-name}.md
+<schema path=".zen/plans/PLAN-{nnn}-{plan-name}.md">
+
 
 **Constraints:**
 
@@ -1337,6 +1347,10 @@ Any file exceeding 500 lines MUST be split logically into multiple files.
 }
 ```
 
+</schema>
+
+<schema output-for="Alignment mode">
+
 ### Alignment Mode
 
 Validate that the requested items are aligned.
@@ -1500,4 +1514,4 @@ Output alignment report per schema:
 }
 ```
 
-
+</zen_file_schemas>
