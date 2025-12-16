@@ -44,6 +44,7 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       templatePath: template.localPath,
       targetPath,
       features,
+      listUnknown: options.listUnknown,
     });
 
     // Display diff output

@@ -35,6 +35,7 @@
 // @zen-impl: DIFF-7 AC-7.8
 // @zen-impl: DIFF-7 AC-7.9
 // @zen-impl: DIFF-7 AC-7.10
+// @zen-impl: DIFF-7 AC-7.11
 // @zen-impl: FP-2 AC-2.1
 // @zen-impl: FP-2 AC-2.2
 // @zen-impl: FP-2 AC-2.4
@@ -120,6 +121,8 @@ program
   .option('-c, --config <path>', 'Path to configuration file')
   // @zen-impl: DIFF-7 AC-7.9
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  // @zen-impl: DIFF-7 AC-7.11
+  .option('--list-unknown', 'Include target-only files in diff results', false)
   // @zen-impl: DIFF-7 AC-7.10 - Note: --force and --dry-run are intentionally NOT accepted for diff command
   .action(async (target: string | undefined, options) => {
     const cliOptions: RawCliOptions = {
@@ -130,6 +133,7 @@ program
       removeFeatures: options.removeFeatures || [],
       config: options.config,
       refresh: options.refresh,
+      listUnknown: options.listUnknown,
     };
 
     const exitCode = await diffCommand(cliOptions);

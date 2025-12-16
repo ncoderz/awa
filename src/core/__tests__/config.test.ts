@@ -32,6 +32,7 @@ features = ["planning", "testing"]
 force = true
 dry-run = false
 refresh = true
+list-unknown = true
 `;
       await writeFile(configPath, tomlContent);
 
@@ -44,6 +45,7 @@ refresh = true
         force: true,
         'dry-run': false,
         refresh: true,
+        'list-unknown': true,
       });
     });
 
@@ -184,6 +186,7 @@ refresh = true
       expect(resolved.dryRun).toBe(false);
       expect(resolved.refresh).toBe(false);
       expect(resolved.presets).toEqual({});
+      expect(resolved.listUnknown).toBe(false);
     });
 
     it('should replace features array completely, not merge (P2)', () => {
@@ -208,10 +211,12 @@ refresh = true
         output: './output',
         force: true,
         dryRun: true,
+        listUnknown: true,
       };
 
       const fileConfig = {
         refresh: true,
+        'list-unknown': false,
       };
 
       const resolved = loader.merge(cliOptions, fileConfig);
@@ -222,6 +227,7 @@ refresh = true
       expect(resolved.preset).toEqual([]);
       expect(resolved.removeFeatures).toEqual([]);
       expect(resolved.presets).toEqual({});
+      expect(resolved.listUnknown).toBe(true);
     });
 
     it('should map dry-run from config to dryRun in resolved options', () => {

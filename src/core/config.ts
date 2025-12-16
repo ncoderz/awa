@@ -193,6 +193,17 @@ export class ConfigLoader {
         config.presets = defs;
       }
 
+      if (parsed['list-unknown'] !== undefined) {
+        if (typeof parsed['list-unknown'] !== 'boolean') {
+          throw new ConfigError(
+            `Invalid type for 'list-unknown': expected boolean, got ${typeof parsed['list-unknown']}`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+        config['list-unknown'] = parsed['list-unknown'];
+      }
+
       // Warn about unknown options
       const knownKeys = new Set([
         'output',
@@ -204,6 +215,7 @@ export class ConfigLoader {
         'force',
         'dry-run',
         'refresh',
+        'list-unknown',
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
@@ -256,6 +268,7 @@ export class ConfigLoader {
     const force = cli.force ?? file?.force ?? false;
     const dryRun = cli.dryRun ?? file?.['dry-run'] ?? false;
     const refresh = cli.refresh ?? file?.refresh ?? false;
+    const listUnknown = cli.listUnknown ?? file?.['list-unknown'] ?? false;
 
     return {
       output,
@@ -267,6 +280,7 @@ export class ConfigLoader {
       dryRun,
       refresh,
       presets,
+      listUnknown,
     };
   }
 }

@@ -45,15 +45,16 @@ ACCEPTANCE CRITERIA
 
 ### DIFF-3: Missing File Detection [MUST]
 
-AS A developer, I WANT to see files that exist in one directory but not the other, SO THAT I can identify new or removed templates.
+AS A developer, I WANT to see newly generated files, and optionally target-only files, SO THAT I can identify template additions and unknown files when requested.
 
-> Ensures complete coverage of template additions and removals.
+> Default behaviour reports only generated files; target-only files are opt-in via a flag.
 
 ACCEPTANCE CRITERIA
 
 - [ ] AC-3.1 [conditional]: IF a generated file has no corresponding target file THEN the system SHALL report it as "new file"
-- [ ] AC-3.2 [conditional]: IF a target file has no corresponding generated file THEN the system SHALL report it as "extra file in target"
-- [ ] AC-3.3 [ubiquitous]: The system SHALL include missing file information in the diff output
+- [ ] AC-3.2 [conditional]: IF the `--list-unknown` flag is provided AND a target file has no corresponding generated file THEN the system SHALL report it as "extra file in target"
+- [ ] AC-3.3 [conditional]: IF the `--list-unknown` flag is NOT provided THEN the system SHALL ignore target-only files in diff results and summary
+- [ ] AC-3.4 [ubiquitous]: The system SHALL include missing file information in the diff output according to the flag behaviour
 
 ### DIFF-4: Diff Output Format [MUST]
 
@@ -111,6 +112,7 @@ ACCEPTANCE CRITERIA
 - [ ] AC-7.8 [ubiquitous]: The system SHALL accept `--config <path>` to specify an alternate configuration file
 - [ ] AC-7.9 [ubiquitous]: The system SHALL accept `--refresh` flag to force re-fetch of cached templates
 - [ ] AC-7.10 [ubiquitous]: The system SHALL NOT accept `--force` or `--dry-run` flags — they are not applicable to diff
+- [ ] AC-7.11 [ubiquitous]: The system SHALL accept `--list-unknown` to include target-only files in diff results
 
 DEPENDS ON: CLI-2, CLI-3, CLI-4, CLI-7, CLI-8
 
@@ -135,5 +137,6 @@ DEPENDS ON: CLI-2, CLI-3, CLI-4, CLI-7, CLI-8
 
 ## Change Log
 
+- 1.2.0 (2025-12-16): Added `--list-unknown` flag and made target-only file reporting opt-in
 - 1.1.0 (2025-12-14): Updated DIFF-7 to make target directory optional (can come from CLI or config)
 - 1.0.0 (2025-12-11): Initial requirements based on architecture

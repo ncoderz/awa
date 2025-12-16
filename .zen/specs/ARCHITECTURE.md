@@ -265,7 +265,7 @@ Compares generated output against existing target files.
 - Generate templates to a temporary directory
 - Compare generated files against target directory
 - Produce unified diff output for each differing file
-- Report missing files (in target but not generated, or vice versa)
+- Report generated-only files by default; optionally report target-only files when flag is enabled
 - Clean up temporary directory after diff
 
 **Architectural Constraints:**
@@ -375,8 +375,12 @@ sequenceDiagram
         end
     end
 
-    loop For each target file not in generated
-        DiffEngine->>DiffEngine: Record as "extra file in target"
+    alt `--list-unknown` provided
+        loop For each target file not in generated
+            DiffEngine->>DiffEngine: Record as "extra file in target"
+        end
+    else Without flag
+        DiffEngine->>DiffEngine: Skip target-only files
     end
 
     DiffEngine-->>CLI: Diff results
@@ -426,6 +430,7 @@ sequenceDiagram
 - Temp directory cleaned up after diff (even on error)
 - Exit code 0 = all files identical, exit code 1 = differences found
 - Diff output uses git-style unified format with color
+- Target-only files are ignored by default; `--list-unknown` includes them in results and summary
 
 ### Configuration File
 - Default location: `.zen.toml` in current directory

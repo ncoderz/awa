@@ -43,6 +43,7 @@ describe('diffCommand', () => {
       refresh: false,
       force: false,
       dryRun: false,
+      listUnknown: false,
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
@@ -79,6 +80,7 @@ describe('diffCommand', () => {
       refresh: false,
       force: false,
       dryRun: false,
+      listUnknown: false,
     });
 
     const exitCode = await diffCommand({
@@ -86,6 +88,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(exitCode).toBe(0);
@@ -111,6 +114,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(exitCode).toBe(0);
@@ -144,6 +148,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(exitCode).toBe(1);
@@ -161,6 +166,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(exitCode).toBe(2);
@@ -195,6 +201,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     // Verify that diffLine was called with appropriate line types
@@ -228,6 +235,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(templateResolver.resolve).toHaveBeenCalled();
@@ -254,6 +262,7 @@ describe('diffCommand', () => {
       removeFeatures: [],
       presets: {},
       refresh: false,
+      listUnknown: false,
     });
 
     await diffCommand({
@@ -262,11 +271,52 @@ describe('diffCommand', () => {
       features: ['feature1', 'feature2'],
       config: undefined,
       refresh: false,
+      listUnknown: undefined,
     });
 
     expect(diffEngine.diff).toHaveBeenCalledWith(
       expect.objectContaining({
         features: ['feature1', 'feature2'],
+      })
+    );
+  });
+
+  // VALIDATES: DIFF-7 AC-7.11
+  test('should pass listUnknown flag to diff engine', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+    vi.mocked(configLoader.merge).mockReturnValue({
+      template: './templates/zen',
+      output: './output',
+      features: [],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
+      refresh: false,
+      listUnknown: true,
+    });
+
+    await diffCommand({
+      output: './target',
+      template: './templates/zen',
+      features: [],
+      config: undefined,
+      refresh: false,
+      listUnknown: true,
+    });
+
+    expect(diffEngine.diff).toHaveBeenCalledWith(
+      expect.objectContaining({
+        listUnknown: true,
       })
     );
   });
@@ -294,6 +344,7 @@ describe('diffCommand', () => {
       features: [],
       config: undefined,
       refresh: false,
+      listUnknown: true,
     });
 
     expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('new-file.txt'));

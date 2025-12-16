@@ -293,15 +293,16 @@ interface Logger {
 
 ### DiffEngine
 
-Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, and produces unified diff output.
+Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, produces unified diff output, and only includes target-only files when explicitly requested.
 
-IMPLEMENTS: DIFF-1 AC-1.1, DIFF-1 AC-1.2, DIFF-1 AC-1.3, DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5, DIFF-3 AC-3.1, DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-4 AC-4.1, DIFF-4 AC-4.2, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5, DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3, DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+IMPLEMENTS: DIFF-1 AC-1.1, DIFF-1 AC-1.2, DIFF-1 AC-1.3, DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5, DIFF-3 AC-3.1, DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4, DIFF-4 AC-4.1, DIFF-4 AC-4.2, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5, DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3, DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3, DIFF-7 AC-7.11
 
 ```typescript
 interface DiffOptions {
   templatePath: string;
   targetPath: string;
   features: string[];
+  listUnknown: boolean; // when true, include target-only files in results
 }
 
 type FileDiffStatus = 'identical' | 'modified' | 'new' | 'extra' | 'binary-differs';
@@ -469,6 +470,9 @@ Represents a cached Git template.
 
 - P15 [Exit Code Semantics]: Exit 0 means identical, exit 1 means differences, exit 2 means error
   VALIDATES: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
+
+- P21 [Unknown Opt-In]: Target-only files are excluded unless `listUnknown` is true; when true, they are reported as extras without altering generation scope
+  VALIDATES: DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4, DIFF-7 AC-7.11
 
 - P16 [Preset Validation]: Referencing a non-existent preset name results in an error
   VALIDATES: FP-2 AC-2.3
@@ -794,8 +798,9 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - DIFF-2 AC-2.4 → DiffEngine
 - DIFF-2 AC-2.5 → DiffEngine
 - DIFF-3 AC-3.1 → DiffEngine
-- DIFF-3 AC-3.2 → DiffEngine
-- DIFF-3 AC-3.3 → DiffEngine
+- DIFF-3 AC-3.2 → DiffEngine (P21)
+- DIFF-3 AC-3.3 → DiffEngine (P21)
+- DIFF-3 AC-3.4 → DiffEngine (P21)
 - DIFF-4 AC-4.1 → DiffEngine
 - DIFF-4 AC-4.2 → DiffEngine
 - DIFF-4 AC-4.3 → Logger
@@ -813,6 +818,7 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - DIFF-7 AC-7.4 → ArgumentParser
 - DIFF-7 AC-7.5 → ArgumentParser
 - DIFF-7 AC-7.6 → ArgumentParser
+- DIFF-7 AC-7.11 → ArgumentParser
 - FP-1 AC-1.1 → ConfigLoader
 - FP-1 AC-1.2 → ConfigLoader
 - FP-1 AC-1.3 → ConfigLoader
@@ -873,3 +879,4 @@ SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-template
 - 1.5.0 (2025-12-12): Added FeatureResolver component, preset/remove-features support in ConfigLoader and ArgumentParser, correctness properties P16-P20, and FP-* traceability
 - 1.6.0 (2025-12-14): Replaced citty with commander to support positional argument display in help output (CLI-1 AC-1.5)
 - 1.7.0 (2025-12-15): Fixed alignment issues - added missing DIFF-7 AC-7.8, AC-7.9, AC-7.10 to ArgumentParser IMPLEMENTS; added property-based test examples for P11-P20; updated requirements traceability for CLI-1 AC-1.4
+- 1.8.0 (2025-12-16): Added opt-in target-only listing via `listUnknown`, updated DiffEngine/traceability, and new correctness property P21

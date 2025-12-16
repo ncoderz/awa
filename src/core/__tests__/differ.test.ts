@@ -204,6 +204,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: false,
       });
 
       expect(result.identical).toBe(1);
@@ -223,6 +224,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: false,
       });
 
       expect(result.modified).toBe(1);
@@ -240,6 +242,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: false,
       });
 
       expect(result.newFiles).toBe(1);
@@ -249,14 +252,15 @@ describe('DiffEngine', () => {
       expect(newFile?.relativePath).toBe('new.txt');
     });
 
-    // VALIDATES: DIFF-3 AC-3.2
-    test('should report extra files in target', async () => {
+    // VALIDATES: DIFF-3 AC-3.2, DIFF-3 AC-3.3
+    test('should report extra files in target when listUnknown is true', async () => {
       await writeFile(join(targetDir, 'extra.txt'), 'content');
 
       const result = await diffEngine.diff({
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: true,
       });
 
       expect(result.extraFiles).toBe(1);
@@ -264,6 +268,22 @@ describe('DiffEngine', () => {
       expect(result.binaryDiffers).toBe(0);
       const extraFile = result.files.find((f) => f.status === 'extra');
       expect(extraFile?.relativePath).toBe('extra.txt');
+    });
+
+    // VALIDATES: DIFF-3 AC-3.3, DIFF-3 AC-3.4
+    test('should ignore target-only files when listUnknown is false', async () => {
+      await writeFile(join(targetDir, 'extra.txt'), 'content');
+
+      const result = await diffEngine.diff({
+        templatePath: templateDir,
+        targetPath: targetDir,
+        features: [],
+        listUnknown: false,
+      });
+
+      expect(result.extraFiles).toBe(0);
+      expect(result.files.find((f) => f.status === 'extra')).toBeUndefined();
+      expect(result.hasDifferences).toBe(false);
     });
 
     // VALIDATES: DIFF-2 AC-2.5
@@ -275,6 +295,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: true,
       });
 
       const binaryFile = result.files.find((f) => f.relativePath === 'file.bin');
@@ -310,6 +331,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: '/non/existent/path',
         features: [],
+        listUnknown: false,
       });
 
       // All generated files should be marked as "new" since target doesn't exist
@@ -332,6 +354,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: true,
       });
 
       expect(result.identical).toBe(1);

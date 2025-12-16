@@ -35,7 +35,7 @@ export class DiffEngine {
   // @zen-impl: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
   // @zen-impl: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
   async diff(options: DiffOptions): Promise<DiffResult> {
-    const { templatePath, targetPath, features } = options;
+    const { templatePath, targetPath, features, listUnknown } = options;
 
     // @zen-impl: DIFF-1 AC-1.1, DIFF-1 AC-1.2
     const tempPath = await this.createTempDir();
@@ -72,29 +72,33 @@ export class DiffEngine {
         }
       }
 
-      // Compare files
+      // Compare files: iterate generated files first; optionally include target-only files when requested
       const files: FileDiff[] = [];
-      const allFiles = new Set([...generatedFiles, ...targetFiles]);
 
-      for (const relPath of allFiles) {
+      for (const relPath of generatedFiles) {
         const generatedFilePath = join(tempPath, relPath);
         const targetFilePath = join(targetPath, relPath);
 
-        const inGenerated = generatedFiles.has(relPath);
-        const inTarget = targetFiles.has(relPath);
-
-        if (inGenerated && inTarget) {
+        if (targetFiles.has(relPath)) {
           // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5
           const fileDiff = await this.compareFiles(generatedFilePath, targetFilePath, relPath);
           files.push(fileDiff);
-        } else if (inGenerated && !inTarget) {
+        } else {
           // @zen-impl: DIFF-3 AC-3.1
           files.push({
             relativePath: relPath,
             status: 'new',
           });
-        } else if (!inGenerated && inTarget) {
-          // @zen-impl: DIFF-3 AC-3.2
+        }
+      }
+
+      if (listUnknown) {
+        for (const relPath of targetFiles) {
+          if (generatedFiles.has(relPath)) {
+            continue;
+          }
+
+          // @zen-impl: DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4
           files.push({
             relativePath: relPath,
             status: 'extra',

@@ -19,6 +19,7 @@ export interface RawCliOptions {
   dryRun?: boolean;
   config?: string;
   refresh?: boolean;
+  listUnknown?: boolean;
 }
 
 // PresetDefinitions - Named feature bundles
@@ -37,6 +38,7 @@ export interface FileConfig {
   'dry-run'?: boolean;
   refresh?: boolean;
   presets?: PresetDefinitions;
+  'list-unknown'?: boolean;
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
@@ -50,6 +52,7 @@ export interface ResolvedOptions {
   readonly dryRun: boolean;
   readonly refresh: boolean;
   readonly presets: PresetDefinitions;
+  readonly listUnknown: boolean;
 }
 
 // TemplateSourceType - Template source type detection
@@ -129,6 +132,7 @@ export interface DiffOptions {
   templatePath: string;
   targetPath: string;
   features: string[];
+  listUnknown: boolean;
 }
 
 // FileDiffStatus - File comparison status
