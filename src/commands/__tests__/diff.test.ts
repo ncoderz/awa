@@ -29,7 +29,7 @@ describe('diffCommand', () => {
 
     // Set up default mocks
     vi.mocked(configLoader.load).mockResolvedValue({
-      outputPath: './output',
+      output: './output',
       features: [],
       refresh: false,
     });
@@ -47,6 +47,7 @@ describe('diffCommand', () => {
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
+      type: 'local',
       localPath: './templates/zen',
       source: 'local',
     });
@@ -260,6 +261,8 @@ describe('diffCommand', () => {
       features: ['feature1', 'feature2'],
       preset: [],
       removeFeatures: [],
+      force: false,
+      dryRun: false,
       presets: {},
       refresh: false,
       listUnknown: false,
@@ -300,6 +303,8 @@ describe('diffCommand', () => {
       features: [],
       preset: [],
       removeFeatures: [],
+      force: false,
+      dryRun: false,
       presets: {},
       refresh: false,
       listUnknown: true,

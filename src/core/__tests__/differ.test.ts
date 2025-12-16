@@ -183,12 +183,11 @@ describe('DiffEngine', () => {
       await writeFile(join(targetDir, 'existing.txt'), 'original');
       await writeFile(join(templateDir, 'template.txt'), 'template content');
 
-      const _beforeModTime = (await pathExists(join(targetDir, 'existing.txt'))) ? Date.now() : 0;
-
       await diffEngine.diff({
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: false,
       });
 
       const targetContent = await pathExists(join(targetDir, 'existing.txt'));
@@ -313,6 +312,7 @@ describe('DiffEngine', () => {
         templatePath: templateDir,
         targetPath: targetDir,
         features: [],
+        listUnknown: false,
       });
 
       // Temp directory should be cleaned up

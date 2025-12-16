@@ -57,23 +57,23 @@ describe('Logger', () => {
 
   describe('fileAction', () => {
     it('should log created file actions', () => {
-      logger.fileAction({ type: 'create', outputPath: 'test.md' });
+      logger.fileAction({ type: 'create', sourcePath: 'source.md', outputPath: 'test.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.anything(), expect.anything());
     });
 
     it('should log skipped file actions', () => {
-      logger.fileAction({ type: 'skip-user', outputPath: 'existing.md' });
+      logger.fileAction({ type: 'skip-user', sourcePath: 'source.md', outputPath: 'existing.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
     it('should log overwritten file actions', () => {
-      logger.fileAction({ type: 'overwrite', outputPath: 'replaced.md' });
+      logger.fileAction({ type: 'overwrite', sourcePath: 'source.md', outputPath: 'replaced.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
     it('should log empty file actions', () => {
-      logger.fileAction({ type: 'skip-empty', outputPath: 'blank.md' });
+      logger.fileAction({ type: 'skip-empty', sourcePath: 'source.md', outputPath: 'blank.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
   });
@@ -81,16 +81,18 @@ describe('Logger', () => {
   describe('summary', () => {
     it('should display counts for all action types', () => {
       const result = {
+        actions: [],
         created: 5,
         skippedUser: 2,
         overwritten: 1,
+        skipped: 2,
         skippedEmpty: 3,
       };
 
       logger.summary(result);
 
       expect(consoleLogSpy).toHaveBeenCalled();
-      const output = consoleLogSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+      const output = consoleLogSpy.mock.calls.map((call: unknown[]) => call.join(' ')).join('\n');
       expect(output).toContain('5');
       expect(output).toContain('2');
       expect(output).toContain('1');
@@ -99,9 +101,11 @@ describe('Logger', () => {
 
     it('should handle zero counts gracefully', () => {
       const result = {
+        actions: [],
         created: 0,
         skippedUser: 0,
         overwritten: 0,
+        skipped: 0,
         skippedEmpty: 0,
       };
 
@@ -160,7 +164,7 @@ describe('Logger', () => {
       logger.diffSummary(result);
 
       expect(consoleLogSpy).toHaveBeenCalled();
-      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(' '));
+      const callArgs = consoleLogSpy.mock.calls.map((call: unknown[]) => call.join(' '));
       const output = callArgs.join(' ').toLowerCase();
       expect(output).toContain('files compared');
       expect(output).toContain('identical');
@@ -183,7 +187,7 @@ describe('Logger', () => {
       logger.diffSummary(result);
 
       expect(consoleLogSpy).toHaveBeenCalled();
-      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(' '));
+      const callArgs = consoleLogSpy.mock.calls.map((call: unknown[]) => call.join(' '));
       const output = callArgs.join(' ');
       expect(output).toContain('2');
       expect(output).toContain('1');
@@ -206,7 +210,7 @@ describe('Logger', () => {
 
       expect(consoleLogSpy).toHaveBeenCalled();
       // Verify summary includes all relevant information
-      const callArgs = consoleLogSpy.mock.calls.map((call) => call.join(' '));
+      const callArgs = consoleLogSpy.mock.calls.map((call: unknown[]) => call.join(' '));
       const output = callArgs.join(' ').toLowerCase();
       expect(output).toContain('5');
       expect(output).toContain('3');

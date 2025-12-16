@@ -1,5 +1,5 @@
 ---
-description: "Zen v0.1: Structured AI Coding"
+description: "Zen 1.1.3"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
