@@ -33,7 +33,7 @@ export class TemplateResolver {
   async resolve(source: string | null, refresh: boolean): Promise<ResolvedTemplate> {
     // If no source provided, use bundled templates
     if (!source) {
-      const bundledPath = getTemplateDir();
+      const bundledPath = join(getTemplateDir(), 'zen');
       return {
         type: 'bundled',
         localPath: bundledPath,

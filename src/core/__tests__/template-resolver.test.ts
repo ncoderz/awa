@@ -111,7 +111,7 @@ describe('TemplateResolver', () => {
 
       expect(resolved.type).toBe('bundled');
       expect(resolved.source).toBe('bundled');
-      expect(resolved.localPath).toContain('templates');
+      expect(resolved.localPath).toMatch(/templates[/\\]zen$/);
     });
 
     it('should resolve local template with absolute path (P9)', async () => {
