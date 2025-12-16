@@ -15,7 +15,7 @@
     "build": "npm run init && npm run lint && npm run typecheck && tsup",
     "gen:example": "tsx src/cli/index.ts generate ./outputs/example --template ./templates/example",
     "gen:zen": "tsx src/cli/index.ts generate ./outputs/zen --template ./templates/zen",
-    "diff:zen": "tsx src/cli/index.ts diff .github/agents --template ./templates/zen",
+    "diff:zen": "tsx src/cli/index.ts diff . --template ./templates/zen",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

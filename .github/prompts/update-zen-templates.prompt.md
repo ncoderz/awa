@@ -5,7 +5,7 @@ tools: ["edit", "runCommands", "search", "read"]
 
 # Update Zen Templates Prompt
 
-This prompt guides you through updating the Zen template files in `./templates/zen` to match changes made in the generated agent files in `./.github/agents/zen-*.md`.
+This prompt guides you through updating the Zen template files in `./templates/zen` to match changes made in the generated Zen agent files.
 
 ## Context
 
@@ -22,8 +22,16 @@ Templates use Eta syntax:
 
 Key files:
 
-- **Generated files**: `./.github/agents/zen-*.md`
-- **Template files**: `./templates/zen/zen-*.md` (mirror generated files)
+- **Generated files** (TARGET - do not modify):
+  - `./.zen/.agent/zen.core.md` - Core agent configuration
+  - `./.zen/.agent/schemas/*.schema.md` - Schema definitions (ARCHITECTURE, DESIGN, PLAN, REQ, TASK, etc.)
+  - `./.github/agents/zen.agent.md` - Main Zen agent file
+  - `./.github/prompts/zen.*.prompt.md` - Mode-specific prompts (architecture, code, design, documentation, plan, requirements, tasks, validate)
+- **Template files** (SOURCE - edit these): `./templates/zen/` mirrors the root directory structure:
+  - `./templates/zen/.zen/.agent/zen.core.md` → `./.zen/.agent/zen.core.md`
+  - `./templates/zen/.zen/.agent/schemas/*.schema.md` → `./.zen/.agent/schemas/*.schema.md`
+  - `./templates/zen/.github/agents/zen.agent.md` → `./.github/agents/zen.agent.md`
+  - `./templates/zen/.github/prompts/zen.*.prompt.md` → `./.github/prompts/zen.*.prompt.md`
 - **Partial files**: `./templates/zen/_partials/*.md` (shared content included by templates)
 
 ## State Machine
@@ -35,8 +43,14 @@ Key files:
     <actions>
       <run command="npm run diff:zen" description="Generate diff report between templates and target files" />
       <analyze target="diff_output" description="Identify which files have differences" />
-      <read path="./.github/agents/zen-*.md" description="Read generated agent files with changes" />
-      <read path="./templates/zen/zen-*.md" description="Read corresponding template files" />
+      <read path="./.zen/.agent/zen.core.md" description="Read core agent file" />
+      <read path="./.zen/.agent/schemas/*.schema.md" description="Read schema files" />
+      <read path="./.github/agents/zen.agent.md" description="Read main agent file" />
+      <read path="./.github/prompts/zen.*.prompt.md" description="Read mode-specific prompt files" />
+      <read path="./templates/zen/.zen/.agent/*.md" description="Read corresponding template files" />
+      <read path="./templates/zen/.zen/.agent/schemas/*.schema.md" description="Read schema template files" />
+      <read path="./templates/zen/.github/agents/*.md" description="Read agent template files" />
+      <read path="./templates/zen/.github/prompts/*.prompt.md" description="Read prompt template files" />
       <read path="./templates/zen/_partials/*.md" description="Read partial files that may be included" />
       <identify target="change_locations" description="Determine if changes are in template-specific content or in partials" />
     </actions>
@@ -54,12 +68,13 @@ Key files:
         <if condition="change is in partial content">
           <edit path="./templates/zen/_partials/{partial}.md" description="Update partial file with changes" />
         </if>
-        <if condition="change is in template-specific content">
-          <edit path="./templates/zen/{template}.agent.md" description="Update template file with changes" />
+        <if condition="change is in a target file">
+          <edit path="./templates/zen/{target_path}" description="Update template file (mirrors root structure)" />
         </if>
       </foreach>
-      <note>NEVER modify files in ./.github/agents/ - these are target files only</note>
+      <note>NEVER modify files in ./.zen/.agent/, ./.github/agents/, or ./.github/prompts/ - these are target files only</note>
       <note>Only edit files in ./templates/zen/ directory</note>
+      <note>Template paths mirror root: e.g., ./.github/agents/zen.agent.md → ./templates/zen/.github/agents/zen.agent.md</note>
       <note>Preserve Eta template syntax (includes, conditionals, variables)</note>
       <note>If content appears in multiple generated files, it likely belongs in a partial</note>
     </actions>
@@ -112,11 +127,13 @@ Key files:
 
 ## Important Notes
 
-1. **NEVER MODIFY TARGET FILES**: You SHALL NOT modify or regenerate files in `./.github/agents/`. These are the target files that contain the desired changes. Only update template files in `./templates/zen/` to match them.
-2. **Partial vs Template**: If the same content appears in multiple generated files, it's likely from a shared partial in `_partials/`
-3. **Preserve Syntax**: Maintain all Eta template syntax (`<%~`, `<%`, `%>`, etc.)
-4. **Template Data**: Templates receive an `it` object with data (check `_README.md` for structure)
-5. **File Permissions**: The `file-permissions-table.md` partial is parameterized and receives a `permissions` object
+1. **NEVER MODIFY TARGET FILES**: You SHALL NOT modify or regenerate files in `./.zen/.agent/`, `./.github/agents/`, or `./.github/prompts/`. These are the target files that contain the desired changes. Only update template files in `./templates/zen/` to match them.
+2. **Template Structure**: Templates mirror root directory structure. For example:
+   - `./.github/agents/zen.agent.md` → `./templates/zen/.github/agents/zen.agent.md`
+   - `./.zen/.agent/schemas/DESIGN.schema.md` → `./templates/zen/.zen/.agent/schemas/DESIGN.schema.md`
+3. **Partial vs Template**: If the same content appears in multiple generated files, it's likely from a shared partial in `_partials/`
+4. **Preserve Syntax**: Maintain all Eta template syntax (`<%~`, `<%`, `%>`, etc.)
+5. **Template Data**: Templates receive an `it` object with data (check `_README.md` for structure)
 6. **Exact Match**: The diff must show zero differences for success (whitespace-sensitive)
 7. **Iteration Limit**: Maximum 10 iterations to prevent infinite loops
 
@@ -126,7 +143,12 @@ Key files:
 npm run diff:zen
 ```
 
-This runs: `tsx src/cli/index.ts diff --template ./templates/zen --target .github/agents`
+This runs: `tsx src/cli/index.ts diff . --template ./templates/zen`
+
+Compares templates against the root directory, matching files like:
+- `./.zen/.agent/` - Core agent and schema files
+- `./.github/agents/` - Main agent file
+- `./.github/prompts/` - Mode-specific prompt files
 
 Exit codes:
 
@@ -136,13 +158,17 @@ Exit codes:
 ## Example Workflow
 
 1. Run `npm run diff:zen` to see what changed
-2. If `zen-vibe.agent.md` has changes:
-   - Read `./.github/agents/zen-vibe.agent.md` (generated, has changes)
-   - Read `./templates/zen/zen-vibe.agent.md` (template source)
+2. If `.github/prompts/zen.code.prompt.md` has changes:
+   - Read `./.github/prompts/zen.code.prompt.md` (target, has changes)
+   - Read `./templates/zen/.github/prompts/zen.code.prompt.md` (template source)
    - Read `./templates/zen/_partials/header.md` (if changes are in header)
-   - Apply changes to appropriate file(s)
-3. Run `npm run diff:zen` again to validate
-4. Repeat until exit code is 0
+   - Apply changes to appropriate template file(s)
+3. If `.zen/.agent/schemas/DESIGN.schema.md` has changes:
+   - Read `./.zen/.agent/schemas/DESIGN.schema.md` (target, has changes)
+   - Read `./templates/zen/.zen/.agent/schemas/DESIGN.schema.md` (template source)
+   - Apply changes to the template
+4. Run `npm run diff:zen` again to validate
+5. Repeat until exit code is 0
 
 ## Success Criteria
 
