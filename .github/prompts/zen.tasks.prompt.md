@@ -19,7 +19,7 @@ argument-hint: "<design> [<instructions>]"
 ## User Input
 
 ```text
-${input:instruction}
+${input}
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
@@ -140,11 +140,11 @@ Before output, verify:
 - [ ] Each requirement phase has clear test criteria
 - [ ] Trace summary accounts for all ACs and Ps
 
-## Ouput File(s)
+## Output File(s)
 
 <file path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" />
 
-# Rules
+## Rules
 
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

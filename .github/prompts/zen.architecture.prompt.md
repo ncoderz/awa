@@ -3,9 +3,9 @@ description: Create or update ARCHITECTURE.md
 argument-hint: "<architecture-instructions>"
 ---
 
-# Create or Update Requirements
+# Create or Update Architecture
 
-## Read Files
+## Bootstrap
 
 <tool name="read_file">
  <read path=".zen/.agent/zen.core.md" required="true" error="on not found" />
@@ -17,7 +17,7 @@ argument-hint: "<architecture-instructions>"
 ## User Input
 
 ```text
-${input:instruction}
+${input}
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
@@ -25,12 +25,15 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".zen/specs/ARCHITECTURE.md" if="exists" />
+<file type="code" path="src/**/*" required="if reverse workflow" />
 
 ## Action
 
 Update or create the architecture document as specified in the instruction above, following Zen conventions.
 
-## Ouput File(s)
+If deriving from existing code (reverse workflow), analyze the codebase to extract architectural patterns, technology stack, and component structure.
+
+## Output File(s)
 
 <file path=".zen/specs/ARCHITECTURE.md" />
 
@@ -42,5 +45,6 @@ You SHALL ensure each section of the architecture is addressed.
 You SHALL establish architectural rules and constraints.
 You SHALL focus on top-level architecture, not design.
 You SHOULD keep architecture at a manageable level of detail.
+You SHALL support reverse workflow: deriving architecture from existing code when requested.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

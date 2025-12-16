@@ -5,7 +5,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 
 <zen>
 <workflow default-direction="ARCHITECTURE → DOCUMENTATION">
-  ARCHITECTURE → REQUIREMENTS → DESIGN → PLAN → CODE → TESTS → DOCUMENTATION
+  ARCHITECTURE → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 </workflow>
 
 <file_structure>
@@ -16,12 +16,17 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │       ├── REQ.schema.md
   │       ├── DESIGN.schema.md
   │       ├── API.schema.md
-  │       └── PLAN.schema.md
+  │       ├── TASK.schema.md
+  │       ├── PLAN.schema.md
+  │       ├── README.schema.md
+  │       └── VALIDATION_REPORT.schema.md
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── REQ-{code}-{feature-name}.md
   │   ├── DESIGN-{code}-{feature-name}.md
   │   └── API-{code}-{api-name}.tsp
+  ├── tasks/
+  │   └── TASK-{code}-{feature-name}-{nnn}.md
   ├── plans/
   │   └── PLAN-{nnn}-{plan-name}.md
   └── rules/
@@ -33,39 +38,41 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 - REQ-{code}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
 - DESIGN-{code}-{feature-name}.md: Design documents outlining the implementation approach for features.
 - API-{code}-{api-name}.tsp: TypeSpec files defining major APIs.
-- PLAN-{nnn}-{plan-name}.md: Step-by-step plans for implementing features or tasks.
+- TASK-{code}-{feature-name}-{nnn}.md: Step-by-step tasks for implementing features or tasks.
+- PLAN-{nnn}-{plan-name}.md: Ad-hoc plans for vibe coding.
 - rules/*.md: Rules specific to the project (e.g. Coding standards, best practices to follow).
 </file_descriptions>
 
 <traceability_chain>
-REQ-{code}-{n} = id of a requirement, e.g. REQ-cli-3
-AC-{code}-{n}.{m} = id of an acceptance criterion, e.g. AC-cli-3.1
-P-{code}-{n} = id of a correctness property in design or code, e.g. P-cli-2
-@zen-component = marker in code linking to design component, e.g.  `// @zen-component: cli-Parser`
-@zen-impl = marker in code linking to AC, e.g. `// @zen-impl: AC-cli-3.1`
-@zen-test = marker in test code linking to P, e.g. `// @zen-test: P-cli-2`
+REQ-{code}-{n} = requirement id, e.g. REQ-cli-3
+AC-{code}-{n}.{m} = acceptance criterion id, e.g. AC-cli-3.1
+P-{code}-{n} = correctness property id, e.g. P-cli-2
+@zen-component = code marker → design component, e.g. // @zen-component: cli-Parser
+@zen-impl = code marker → AC, e.g. // @zen-impl: AC-cli-3.1
+@zen-test = test marker → property or AC, e.g. // @zen-test: P-cli-2 or // @zen-test: AC-cli-3.1
 
-REQ-{code}-{feature-name}.md
-  └── REQ-{n}: Requirement Title
-        └── AC-{n}.{m}: Acceptance Criterion
+REQ-{code}-{feature}.md
+  └── REQ-{code}-{n}: Title
+        └── AC-{code}-{n}.{m}: Criterion
               │
               ▼
-DESIGN-{code}-{feature-name}.md
+DESIGN-{code}-{feature}.md
   └── {code}-{ComponentName}
         ├── IMPLEMENTS: AC-{code}-{n}.{m}
-        └── P{n} [Property Name]
-              └── VALIDATES: AC-{code}-{n}.{m} and/or {REQ-{code}-{n}}
+        └── P-{code}-{n}: Property
+              └── VALIDATES: AC-{code}-{n}.{m} | REQ-{code}-{n}
               │
               ▼
-(implementation files)
+(implementation)
   └── @zen-component: {code}-{ComponentName}
         └── @zen-impl: AC-{code}-{n}.{m}
               │
               ▼
-(test files)
-  └── @zen-test: P-{code}-{n}
+(tests)
+  ├── @zen-test: P-{code}-{n}        // verifies property
+  └── @zen-test: AC-{code}-{n}.{m}   // verifies AC directly
 
-File layout follows project conventions. Markers create the trace, not file paths.
+Markers create the trace, not file paths.
 </traceability_chain>
 
 <file_size_limits>

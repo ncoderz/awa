@@ -16,19 +16,13 @@ argument-hint: "<source> [<target>]"
 
 ## User Input
 
-### Source (aka x)
 ```text
-${input:source:source-artifact}
+${input}
 ```
 
-If x is not specified, it is the last completed work.
-
-### Target (aka y)
-```text
-${input:target:target-artifact}
-```
-
-If y is not specified, it is implied according to these rules:
+Format: `<source> [<target>]` where:
+- **Source (x)**: The artifact being validated. If not specified, use the last completed work.
+- **Target (y)**: The artifact to validate against. If not specified, it is implied according to these rules:
 
 1. x is plan → ask for clarification
 2. previous work against a plan → use that plan
@@ -47,14 +41,16 @@ y = target artifact (what x is validated against) = requirement(s).
 <file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
 <file type="design" path=".zen/specs/DESIGN-{code}-{feature-name}.md" required="if relevant" />
 <file type="api" path=".zen/specs/API-{code}-{feature-name}.md" required="if relevant" />
-<file type="plan" path=".zen/plans/PLAN-{code}-{feature-name}.md" required="if relevant" />
+<file type="tasks" path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="plan" path=".zen/plans/PLAN-{nnn}-{plan-name}.md" required="if relevant" />
+<file type="code_and_tests" path="various" required="if relevant" />
 
 ## Action
 
-Validate that the specified source:y aligns with the target:y, and if not, report all differences.
+Validate that the specified source:x aligns with the target:y, and if not, report all differences.
 Follow Zen conventions.
 
-## Ouputs
+## Outputs
 
 <report schema=".zen/.agent/schemas/VALIDATION_REPORT.schema.md" />
 

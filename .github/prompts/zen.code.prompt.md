@@ -1,9 +1,9 @@
 ---
-description: Implement code and tests based on architecture, requirements, and design (plan optional)
+description: Implement code and tests based on architecture, requirements, and design (tasks optional)
 argument-hint: "<task|plan|design> [<instructions>]"
 ---
 
-# Create or Update Design(s)
+# Implement Code and Tests from Architecture, Requirements, Design, and (optional) Tasks
 
 ## Bootstrap
 
@@ -16,7 +16,7 @@ argument-hint: "<task|plan|design> [<instructions>]"
 ## User Input
 
 ```text
-${input:instruction}
+${input}
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
@@ -27,11 +27,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 <file type="requirements" path=".zen/specs/REQ-{code}-{feature-name}.md" required="if relevant" />
 <file type="design" path=".zen/specs/DESIGN-{code}-{feature-name}.md" required="if relevant" />
 <file type="api" path=".zen/specs/API-{code}-{feature-name}.md" required="if relevant" />
-<file type="tasks" path=".zen/tasks/API-{code}-{feature-name}.md" required="if relevant" />
+<file type="tasks" path=".zen/tasks/TASK-{code}-{feature-name}-{nnn}.md" required="if relevant" />
 
 ## Action
 
-Implement code and tests based on architecture, requirements, and design (plan optional) as specified in the instruction above, following Zen conventions.
+Implement code and tests based on architecture, requirements, and design (tasks optional) as specified in the instruction above, following Zen conventions.
 
 ## Traceability Markers
 
@@ -67,7 +67,7 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
 3. IF TASKS PROVIDED
    - Follow task order strictly
    - Implement one task at a time
-   - Report completion of each task before proceeding
+   - Update TASK file checkmark, and report completion of each task before proceeding to the next
 
 4. IF NO TASKS
    - Implement components in dependency order
@@ -84,7 +84,7 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
    - Acceptance tests (@zen-test: AC-): Use example-based assertions
    - A single test may verify multiple ACs or properties
 
-## Ouput File(s)
+## Output File(s)
 
 - source code files with appropriate markers
 - test files with appropriate markers
@@ -165,4 +165,3 @@ You MUST ensure every feature implementation traces to at least one acceptance c
 You MUST ensure every test file traces to at least one design property.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.
-
