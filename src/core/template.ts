@@ -1,21 +1,21 @@
-// @zen-component: TemplateEngine
-// @zen-impl: TPL-4 AC-4.1
-// @zen-impl: TPL-4 AC-4.2
-// @zen-impl: TPL-4 AC-4.3
-// @zen-impl: TPL-4 AC-4.4
-// @zen-impl: TPL-5 AC-5.1
-// @zen-impl: TPL-5 AC-5.2
-// @zen-impl: TPL-5 AC-5.3
-// @zen-impl: TPL-6 AC-6.1
-// @zen-impl: TPL-6 AC-6.2
-// @zen-impl: TPL-7 AC-7.1
-// @zen-impl: TPL-7 AC-7.2
-// @zen-impl: TPL-8 AC-8.1
-// @zen-impl: TPL-8 AC-8.2
-// @zen-impl: TPL-8 AC-8.3
-// @zen-impl: TPL-8 AC-8.4
-// @zen-impl: TPL-11 AC-11.1
-// @zen-impl: TPL-11 AC-11.2
+// @zen-component: TPL-TemplateEngine
+// @zen-impl: TPL-4_AC-1
+// @zen-impl: TPL-4_AC-2
+// @zen-impl: TPL-4_AC-3
+// @zen-impl: TPL-4_AC-4
+// @zen-impl: TPL-5_AC-1
+// @zen-impl: TPL-5_AC-2
+// @zen-impl: TPL-5_AC-3
+// @zen-impl: TPL-6_AC-1
+// @zen-impl: TPL-6_AC-2
+// @zen-impl: TPL-7_AC-1
+// @zen-impl: TPL-7_AC-2
+// @zen-impl: TPL-8_AC-1
+// @zen-impl: TPL-8_AC-2
+// @zen-impl: TPL-8_AC-3
+// @zen-impl: TPL-8_AC-4
+// @zen-impl: TPL-11_AC-1
+// @zen-impl: TPL-11_AC-2
 
 import { Eta } from 'eta';
 import { type RenderResult, type TemplateContext, TemplateError } from '../types/index.js';
@@ -28,12 +28,12 @@ export class TemplateEngine {
   private templateDir: string | null = null;
   private compiledCache = new Map<string, unknown>();
 
-  // @zen-impl: TPL-8 AC-8.1, TPL-8 AC-8.2, TPL-8 AC-8.3, TPL-8 AC-8.4
+  // @zen-impl: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
   configure(templateDir: string): void {
     this.templateDir = templateDir;
     this.compiledCache.clear();
 
-    // @zen-impl: TPL-4 AC-4.1, TPL-4 AC-4.2, TPL-4 AC-4.3, TPL-4 AC-4.4
+    // @zen-impl: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4
     // Configure Eta with partials support
     this.eta = new Eta({
       views: templateDir,
@@ -43,10 +43,10 @@ export class TemplateEngine {
     });
   }
 
-  // @zen-impl: TPL-5 AC-5.1, TPL-5 AC-5.2, TPL-5 AC-5.3
-  // @zen-impl: TPL-6 AC-6.1, TPL-6 AC-6.2
-  // @zen-impl: TPL-7 AC-7.1, TPL-7 AC-7.2
-  // @zen-impl: TPL-11 AC-11.1, TPL-11 AC-11.2
+  // @zen-impl: TPL-5_AC-1, TPL-5_AC-2, TPL-5_AC-3
+  // @zen-impl: TPL-6_AC-1, TPL-6_AC-2
+  // @zen-impl: TPL-7_AC-1, TPL-7_AC-2
+  // @zen-impl: TPL-11_AC-1, TPL-11_AC-2
   async render(templatePath: string, context: TemplateContext): Promise<RenderResult> {
     if (!this.eta || !this.templateDir) {
       throw new TemplateError(

@@ -1,35 +1,5 @@
 # Zen CLI Architecture
 
-## Table of Contents
-- [Zen CLI Architecture](#zen-cli-architecture)
-  - [Table of Contents](#table-of-contents)
-  - [Project Purpose](#project-purpose)
-  - [System Overview](#system-overview)
-  - [Technology Stack](#technology-stack)
-  - [High-Level Architecture](#high-level-architecture)
-  - [Directory Structure](#directory-structure)
-  - [Component Details](#component-details)
-    - [CLI Layer](#cli-layer)
-    - [Configuration Loader](#configuration-loader)
-    - [Template Resolver](#template-resolver)
-    - [Template Engine](#template-engine)
-    - [File Generator](#file-generator)
-    - [Conflict Resolver](#conflict-resolver)
-    - [Diff Engine](#diff-engine)
-  - [Component Interactions](#component-interactions)
-    - [Diff Command Flow](#diff-command-flow)
-  - [Architectural Rules](#architectural-rules)
-    - [Performance](#performance)
-    - [Maintainability](#maintainability)
-    - [Security](#security)
-    - [Testing](#testing)
-    - [Code Quality](#code-quality)
-    - [Template Design](#template-design)
-    - [Diff](#diff)
-    - [Configuration File](#configuration-file)
-    - [Template Sources](#template-sources)
-  - [Developer Commands](#developer-commands)
-
 ## Project Purpose
 
 Zen CLI is a TypeScript-based command-line tool that generates AI coding agent configuration files via templating. It produces the Zen agent system prompt files (`.github/agents/*.agent.md`) from customizable templates with conditional output support based on user-specified feature flags.
@@ -151,14 +121,16 @@ zen/
 
 Entry point and argument parsing.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--config`, `--refresh`, `--features`)
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
 - Support `generate` and `diff` subcommands
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Uses commander for command definition
 - Output directory is an optional positional argument (can come from CLI or config)
 - `--features` accepts variadic string values
@@ -170,13 +142,15 @@ Entry point and argument parsing.
 
 Loads and merges configuration from file and CLI.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Load `.zen.toml` from current directory (default) or `--config` path
 - Parse TOML configuration
 - Merge CLI arguments over config file values (CLI wins)
 - Provide unified options object to commands
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Uses smol-toml for parsing
 - Missing config file is not an error (all options have defaults or are CLI-provided)
 - CLI arguments always override config file values
@@ -186,13 +160,15 @@ Loads and merges configuration from file and CLI.
 
 Resolves template source to a local directory.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Detect template source type (local path vs Git repo)
 - Fetch Git repositories to local cache
 - Support branch/tag/commit references
 - Return resolved local path for template engine
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Uses degit for shallow Git fetches (no .git folder, fast)
 - Git URL formats supported:
   - `owner/repo` (GitHub shorthand)
@@ -211,14 +187,16 @@ Resolves template source to a local directory.
 
 Wrapper around Eta for template rendering.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Load templates from specified directory
 - Render templates with context (feature flags as `features` array)
 - Support conditional output via template logic
 - Handle empty template output (skip file creation)
 - Support partials (shared content blocks) for composition
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Templates use Eta syntax (`<%= %>`, `<% %>`, `<%~ %>`)
 - Feature flags accessible as `it.features` array in templates
 - Empty string output = skip file creation
@@ -230,13 +208,15 @@ Wrapper around Eta for template rendering.
 
 Orchestrates file creation from rendered templates.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Walk template directory structure
 - Invoke template engine for each file
 - Create output directory structure
 - Delegate conflict resolution to resolver
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Mirrors template directory structure in output
 - Creates missing directories automatically
 - Template filename = output filename (no `.eta` extension in template names)
@@ -246,12 +226,14 @@ Orchestrates file creation from rendered templates.
 
 Handles existing file conflicts.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Detect existing files
 - Prompt user for action (overwrite/skip) unless `--force`
 - Skip prompts in `--dry-run` mode
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Uses @clack/prompts select for user choice
 - Prompt offers "overwrite" and "skip" options
 - Respects `--force` flag to auto-overwrite
@@ -261,14 +243,16 @@ Handles existing file conflicts.
 
 Compares generated output against existing target files.
 
-**Responsibilities:**
+RESPONSIBILITIES
+
 - Generate templates to a temporary directory
 - Compare generated files against target directory
 - Produce unified diff output for each differing file
 - Report generated-only files by default; optionally report target-only files when flag is enabled
 - Clean up temporary directory after diff
 
-**Architectural Constraints:**
+CONSTRAINTS
+
 - Uses Node.js built-in `os.tmpdir()` for cross-platform temp directory
 - Uses `diff` npm package for cross-platform unified diff generation
 - Exact comparison (whitespace-sensitive) for all text files
@@ -460,7 +444,7 @@ sequenceDiagram
 
 ## Developer Commands
 
-**Note:** These commands use the local development version via `npm run`. For the installed CLI, use `npx zen` or `zen` directly.
+NOTE: These commands use the local development version via `npm run`. For the installed CLI, use `npx zen` or `zen` directly.
 
 | Command | Description |
 |---------|-------------|
@@ -478,3 +462,10 @@ sequenceDiagram
 | `npm run lint:fix` | Fix linting issues automatically |
 | `npm run format` | Format code with Biome |
 | `npm run typecheck` | TypeScript type checking |
+
+## Change Log
+
+- 1.0.0 (2025-12-11): Initial architecture
+- 1.1.0 (2025-12-11): Added Diff Engine component and diff command flow
+- 1.2.0 (2025-12-16): Added list-unknown flag for target-only file reporting
+- 2.0.0 (2025-12-19): Schema alignment update - removed Table of Contents, replaced bold with CAPITALS, added Change Log

@@ -1,4 +1,4 @@
-// @zen-component: TemplateResolver
+// @zen-component: TPL-TemplateResolver
 // @zen-test: P9, P10
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';

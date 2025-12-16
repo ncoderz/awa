@@ -1,20 +1,20 @@
-// @zen-component: Logger
-// @zen-impl: CLI-6 AC-6.3
-// @zen-impl: GEN-6 AC-6.4
-// @zen-impl: GEN-7 AC-7.1
-// @zen-impl: GEN-7 AC-7.2
-// @zen-impl: GEN-7 AC-7.3
-// @zen-impl: GEN-7 AC-7.4
-// @zen-impl: GEN-9 AC-9.1
-// @zen-impl: GEN-9 AC-9.2
-// @zen-impl: GEN-9 AC-9.3
-// @zen-impl: GEN-9 AC-9.4
-// @zen-impl: GEN-9 AC-9.5
-// @zen-impl: GEN-9 AC-9.6
-// @zen-impl: GEN-11 AC-11.1
-// @zen-impl: GEN-11 AC-11.2
-// @zen-impl: GEN-11 AC-11.4
-// @zen-impl: TPL-7 AC-7.3
+// @zen-component: GEN-Logger
+// @zen-impl: CLI-6_AC-3
+// @zen-impl: GEN-6_AC-4
+// @zen-impl: GEN-7_AC-1
+// @zen-impl: GEN-7_AC-2
+// @zen-impl: GEN-7_AC-3
+// @zen-impl: GEN-7_AC-4
+// @zen-impl: GEN-9_AC-1
+// @zen-impl: GEN-9_AC-2
+// @zen-impl: GEN-9_AC-3
+// @zen-impl: GEN-9_AC-4
+// @zen-impl: GEN-9_AC-5
+// @zen-impl: GEN-9_AC-6
+// @zen-impl: GEN-11_AC-1
+// @zen-impl: GEN-11_AC-2
+// @zen-impl: GEN-11_AC-4
+// @zen-impl: TPL-7_AC-3
 
 import chalk from 'chalk';
 import type { DiffResult, FileAction, GenerationResult } from '../types/index.js';
@@ -55,12 +55,12 @@ export class Logger {
     }
   }
 
-  // @zen-impl: GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6
+  // @zen-impl: GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6
   summary(result: GenerationResult): void {
     console.log('');
     console.log(chalk.bold('Summary:'));
 
-    // @zen-impl: GEN-9 AC-9.6
+    // @zen-impl: GEN-9_AC-6
     // Check if no files were created or overwritten
     if (result.created === 0 && result.overwritten === 0) {
       console.log(chalk.yellow('  ⚠ No files were created or overwritten'));
@@ -85,7 +85,7 @@ export class Logger {
     console.log('');
   }
 
-  // @zen-impl: DIFF-4 AC-4.3
+  // @zen-impl: DIFF-4_AC-3
   diffLine(line: string, type: 'add' | 'remove' | 'context'): void {
     switch (type) {
       case 'add':
@@ -100,7 +100,7 @@ export class Logger {
     }
   }
 
-  // @zen-impl: DIFF-4 AC-4.4, DIFF-4 AC-4.5
+  // @zen-impl: DIFF-4_AC-4, DIFF-4_AC-5
   diffSummary(result: DiffResult): void {
     console.log('');
 
@@ -113,15 +113,15 @@ export class Logger {
     const differences =
       result.modified + result.newFiles + result.extraFiles + result.binaryDiffers;
 
-    // @zen-impl: DIFF-4 AC-4.5
+    // @zen-impl: DIFF-4_AC-5
     console.log(chalk.bold(`${filesCompared} files compared, ${differences} differences`));
 
     if (!result.hasDifferences) {
-      // @zen-impl: DIFF-4 AC-4.4
+      // @zen-impl: DIFF-4_AC-4
       console.log(chalk.green('✔ No differences found'));
     }
 
-    // @zen-impl: DIFF-4 AC-4.5
+    // @zen-impl: DIFF-4_AC-5
     console.log(chalk.bold('Summary:'));
     console.log(chalk.dim(`  Identical: ${result.identical}`));
 

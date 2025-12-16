@@ -1,30 +1,30 @@
-// @zen-component: ConfigLoader
-// @zen-impl: CFG-1 AC-1.1
-// @zen-impl: CFG-1 AC-1.2
-// @zen-impl: CFG-1 AC-1.3
-// @zen-impl: CFG-1 AC-1.4
-// @zen-impl: CFG-2 AC-2.1
-// @zen-impl: CFG-2 AC-2.2
-// @zen-impl: CFG-2 AC-2.3
-// @zen-impl: CFG-3 AC-3.1
-// @zen-impl: CFG-3 AC-3.2
-// @zen-impl: CFG-3 AC-3.3
-// @zen-impl: CFG-3 AC-3.4
-// @zen-impl: CFG-3 AC-3.5
-// @zen-impl: CFG-3 AC-3.6
-// @zen-impl: CFG-4 AC-4.1
-// @zen-impl: CFG-4 AC-4.2
-// @zen-impl: CFG-4 AC-4.3
-// @zen-impl: CFG-4 AC-4.4
-// @zen-impl: CFG-5 AC-5.1
-// @zen-impl: CFG-6 AC-6.1
-// @zen-impl: CFG-6 AC-6.2
-// @zen-impl: CLI-1 AC-1.4
-// @zen-impl: CLI-2 AC-2.2
-// @zen-impl: CLI-2 AC-2.3
-// @zen-impl: CLI-2 AC-2.4
-// @zen-impl: CLI-4 AC-4.3
-// @zen-impl: CLI-7 AC-7.2
+// @zen-component: CFG-ConfigLoader
+// @zen-impl: CFG-1_AC-1
+// @zen-impl: CFG-1_AC-2
+// @zen-impl: CFG-1_AC-3
+// @zen-impl: CFG-1_AC-4
+// @zen-impl: CFG-2_AC-1
+// @zen-impl: CFG-2_AC-2
+// @zen-impl: CFG-2_AC-3
+// @zen-impl: CFG-3_AC-1
+// @zen-impl: CFG-3_AC-2
+// @zen-impl: CFG-3_AC-3
+// @zen-impl: CFG-3_AC-4
+// @zen-impl: CFG-3_AC-5
+// @zen-impl: CFG-3_AC-6
+// @zen-impl: CFG-4_AC-1
+// @zen-impl: CFG-4_AC-2
+// @zen-impl: CFG-4_AC-3
+// @zen-impl: CFG-4_AC-4
+// @zen-impl: CFG-5_AC-1
+// @zen-impl: CFG-6_AC-1
+// @zen-impl: CFG-6_AC-2
+// @zen-impl: CLI-1_AC-4
+// @zen-impl: CLI-2_AC-2
+// @zen-impl: CLI-2_AC-3
+// @zen-impl: CLI-2_AC-4
+// @zen-impl: CLI-4_AC-3
+// @zen-impl: CLI-7_AC-2
 
 import { parse } from 'smol-toml';
 import {
@@ -40,7 +40,7 @@ import { logger } from '../utils/logger.js';
 const DEFAULT_CONFIG_PATH = '.zen.toml';
 
 export class ConfigLoader {
-  // @zen-impl: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4
+  // @zen-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
   async load(configPath: string | null): Promise<FileConfig | null> {
     const pathToLoad = configPath ?? DEFAULT_CONFIG_PATH;
 
@@ -238,16 +238,16 @@ export class ConfigLoader {
     }
   }
 
-  // @zen-impl: CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4
-  // @zen-impl: CLI-2 AC-2.2, CLI-2 AC-2.3, CLI-2 AC-2.4
+  // @zen-impl: CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4
+  // @zen-impl: CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4
   merge(cli: RawCliOptions, file: FileConfig | null): ResolvedOptions {
     // CLI arguments override file config values
     // Output can come from CLI (positional argument) or config file
 
-    // @zen-impl: CLI-2 AC-2.2, CLI-2 AC-2.3
+    // @zen-impl: CLI-2_AC-2, CLI-2_AC-3
     const output = cli.output ?? file?.output;
 
-    // @zen-impl: CLI-1 AC-1.4, CLI-2 AC-2.4
+    // @zen-impl: CLI-1_AC-4, CLI-2_AC-4
     if (!output) {
       throw new ConfigError(
         'Output directory is required. Provide it as a positional argument or in the config file.',

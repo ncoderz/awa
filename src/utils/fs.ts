@@ -1,4 +1,4 @@
-// @zen-component: FileSystemUtilities
+// @zen-component: Utils-FileSystem
 
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';

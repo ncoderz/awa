@@ -1,4 +1,4 @@
-// @zen-component: GenerateCommand
+// @zen-component: GEN-GenerateCommand
 
 import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';

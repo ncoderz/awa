@@ -1,4 +1,4 @@
-// @zen-component: FileSystemUtilities
+// @zen-component: Utils-FileSystem
 // @zen-test: P5, P7
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';

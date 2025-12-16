@@ -1,7 +1,7 @@
-// @zen-component: DiffCommand
-// @zen-impl: DIFF-5 AC-5.1
-// @zen-impl: DIFF-5 AC-5.2
-// @zen-impl: DIFF-5 AC-5.3
+// @zen-component: DIFF-DiffCommand
+// @zen-impl: DIFF-5_AC-1
+// @zen-impl: DIFF-5_AC-2
+// @zen-impl: DIFF-5_AC-3
 
 import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
@@ -95,7 +95,7 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
 
     outro('Diff complete!');
 
-    // @zen-impl: DIFF-5 AC-5.1, DIFF-5 AC-5.2
+    // @zen-impl: DIFF-5_AC-1, DIFF-5_AC-2
     return result.hasDifferences ? 1 : 0;
   } catch (error) {
     if (error instanceof Error) {
@@ -104,7 +104,7 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       logger.error(String(error));
     }
 
-    // @zen-impl: DIFF-5 AC-5.3
+    // @zen-impl: DIFF-5_AC-3
     return 2;
   }
 }

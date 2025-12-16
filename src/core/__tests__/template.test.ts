@@ -1,4 +1,4 @@
-// @zen-component: TemplateEngine
+// @zen-component: TPL-TemplateEngine
 // @zen-test: P3, P4
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';

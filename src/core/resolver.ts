@@ -1,27 +1,27 @@
-// @zen-component: ConflictResolver
-// @zen-impl: CLI-5 AC-5.2
-// @zen-impl: CLI-5 AC-5.3
-// @zen-impl: GEN-4 AC-4.1
-// @zen-impl: GEN-4 AC-4.2
-// @zen-impl: GEN-4 AC-4.3
-// @zen-impl: GEN-5 AC-5.1
-// @zen-impl: GEN-5 AC-5.2
-// @zen-impl: GEN-5 AC-5.3
-// @zen-impl: GEN-5 AC-5.4
-// @zen-impl: GEN-5 AC-5.5
-// @zen-impl: GEN-5 AC-5.6
-// @zen-impl: GEN-5 AC-5.7
-// @zen-impl: GEN-6 AC-6.3
-// @zen-impl: GEN-10 AC-10.3
+// @zen-component: GEN-ConflictResolver
+// @zen-impl: CLI-5_AC-2
+// @zen-impl: CLI-5_AC-3
+// @zen-impl: GEN-4_AC-1
+// @zen-impl: GEN-4_AC-2
+// @zen-impl: GEN-4_AC-3
+// @zen-impl: GEN-5_AC-1
+// @zen-impl: GEN-5_AC-2
+// @zen-impl: GEN-5_AC-3
+// @zen-impl: GEN-5_AC-4
+// @zen-impl: GEN-5_AC-5
+// @zen-impl: GEN-5_AC-6
+// @zen-impl: GEN-5_AC-7
+// @zen-impl: GEN-6_AC-3
+// @zen-impl: GEN-10_AC-3
 
 import { isCancel, multiselect } from '@clack/prompts';
 import type { BatchConflictResolution, ConflictItem } from '../types/index.js';
 
 export class ConflictResolver {
-  // @zen-impl: GEN-4 AC-4.1, GEN-4 AC-4.2, GEN-4 AC-4.3
-  // @zen-impl: GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.3, GEN-5 AC-5.4, GEN-5 AC-5.5, GEN-5 AC-5.6, GEN-5 AC-5.7
-  // @zen-impl: CLI-5 AC-5.2, CLI-5 AC-5.3
-  // @zen-impl: GEN-6 AC-6.3
+  // @zen-impl: GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3
+  // @zen-impl: GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7
+  // @zen-impl: CLI-5_AC-2, CLI-5_AC-3
+  // @zen-impl: GEN-6_AC-3
   async resolveBatch(
     conflicts: ConflictItem[],
     force: boolean,
@@ -54,7 +54,7 @@ export class ConflictResolver {
       };
     }
 
-    // @zen-impl: GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.5, GEN-5 AC-5.6
+    // @zen-impl: GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-5, GEN-5_AC-6
     // Prompt user with multi-select (all selected by default)
     const selected = await multiselect({
       message: 'The following files already exist. Select files to overwrite:',
@@ -66,7 +66,7 @@ export class ConflictResolver {
       required: false,
     });
 
-    // @zen-impl: GEN-10 AC-10.3
+    // @zen-impl: GEN-10_AC-3
     // Handle user cancellation (Ctrl+C)
     if (isCancel(selected)) {
       process.exit(1);

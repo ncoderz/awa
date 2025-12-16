@@ -1,4 +1,4 @@
-// @zen-component: FileGenerator
+// @zen-component: GEN-FileGenerator
 // @zen-test: P5, P6, P7
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';

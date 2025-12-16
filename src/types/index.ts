@@ -1,4 +1,4 @@
-// @zen-component: TypeDefinitions
+// @zen-component: Types-CoreDefinitions
 
 // Custom error classes for diff operations
 export class DiffError extends Error {

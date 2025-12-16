@@ -1,4 +1,4 @@
-// @zen-component: Logger
+// @zen-component: GEN-Logger
 // @zen-test: P7
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -113,7 +113,7 @@ describe('Logger', () => {
 
   describe('diffLine', () => {
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.3
+    // VALIDATES: DIFF-4_AC-3
     it('should log addition lines in green', () => {
       logger.diffLine('+added line', 'add');
       expect(consoleLogSpy).toHaveBeenCalledOnce();
@@ -123,7 +123,7 @@ describe('Logger', () => {
     });
 
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.3
+    // VALIDATES: DIFF-4_AC-3
     it('should log removal lines in red', () => {
       logger.diffLine('-removed line', 'remove');
       expect(consoleLogSpy).toHaveBeenCalledOnce();
@@ -133,7 +133,7 @@ describe('Logger', () => {
     });
 
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.3
+    // VALIDATES: DIFF-4_AC-3
     it('should log context lines in dim style', () => {
       logger.diffLine(' context line', 'context');
       expect(consoleLogSpy).toHaveBeenCalledOnce();
@@ -145,7 +145,7 @@ describe('Logger', () => {
 
   describe('diffSummary', () => {
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.4
+    // VALIDATES: DIFF-4_AC-4
     it('should display success message when no differences', () => {
       const result = {
         files: [],
@@ -168,7 +168,7 @@ describe('Logger', () => {
     });
 
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.5
+    // VALIDATES: DIFF-4_AC-5
     it('should display counts for each file status', () => {
       const result = {
         files: [],
@@ -190,7 +190,7 @@ describe('Logger', () => {
     });
 
     // @zen-test: P15
-    // VALIDATES: DIFF-4 AC-4.5
+    // VALIDATES: DIFF-4_AC-5
     it('should display summary with all categories', () => {
       const result = {
         files: [],

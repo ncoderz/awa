@@ -1,23 +1,23 @@
-// @zen-component: DiffEngine
-// @zen-impl: DIFF-1 AC-1.1
-// @zen-impl: DIFF-1 AC-1.2
-// @zen-impl: DIFF-1 AC-1.3
-// @zen-impl: DIFF-2 AC-2.1
-// @zen-impl: DIFF-2 AC-2.2
-// @zen-impl: DIFF-2 AC-2.3
-// @zen-impl: DIFF-2 AC-2.4
-// @zen-impl: DIFF-2 AC-2.5
-// @zen-impl: DIFF-3 AC-3.1
-// @zen-impl: DIFF-3 AC-3.2
-// @zen-impl: DIFF-3 AC-3.3
-// @zen-impl: DIFF-4 AC-4.1
-// @zen-impl: DIFF-4 AC-4.2
-// @zen-impl: DIFF-5 AC-5.1
-// @zen-impl: DIFF-5 AC-5.2
-// @zen-impl: DIFF-5 AC-5.3
-// @zen-impl: DIFF-6 AC-6.1
-// @zen-impl: DIFF-6 AC-6.2
-// @zen-impl: DIFF-6 AC-6.3
+// @zen-component: DIFF-DiffEngine
+// @zen-impl: DIFF-1_AC-1
+// @zen-impl: DIFF-1_AC-2
+// @zen-impl: DIFF-1_AC-3
+// @zen-impl: DIFF-2_AC-1
+// @zen-impl: DIFF-2_AC-2
+// @zen-impl: DIFF-2_AC-3
+// @zen-impl: DIFF-2_AC-4
+// @zen-impl: DIFF-2_AC-5
+// @zen-impl: DIFF-3_AC-1
+// @zen-impl: DIFF-3_AC-2
+// @zen-impl: DIFF-3_AC-3
+// @zen-impl: DIFF-4_AC-1
+// @zen-impl: DIFF-4_AC-2
+// @zen-impl: DIFF-5_AC-1
+// @zen-impl: DIFF-5_AC-2
+// @zen-impl: DIFF-5_AC-3
+// @zen-impl: DIFF-6_AC-1
+// @zen-impl: DIFF-6_AC-2
+// @zen-impl: DIFF-6_AC-3
 
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
@@ -28,16 +28,16 @@ import { ensureDir, pathExists, readBinaryFile, rmDir, walkDirectory } from '../
 import { fileGenerator } from './generator.js';
 
 export class DiffEngine {
-  // @zen-impl: DIFF-1 AC-1.1, DIFF-1 AC-1.2, DIFF-1 AC-1.3
-  // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5
-  // @zen-impl: DIFF-3 AC-3.1, DIFF-3 AC-3.2, DIFF-3 AC-3.3
-  // @zen-impl: DIFF-4 AC-4.1, DIFF-4 AC-4.2
-  // @zen-impl: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
-  // @zen-impl: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+  // @zen-impl: DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3
+  // @zen-impl: DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5
+  // @zen-impl: DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3
+  // @zen-impl: DIFF-4_AC-1, DIFF-4_AC-2
+  // @zen-impl: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+  // @zen-impl: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
   async diff(options: DiffOptions): Promise<DiffResult> {
     const { templatePath, targetPath, features, listUnknown } = options;
 
-    // @zen-impl: DIFF-1 AC-1.1, DIFF-1 AC-1.2
+    // @zen-impl: DIFF-1_AC-1, DIFF-1_AC-2
     const tempPath = await this.createTempDir();
 
     try {
@@ -80,11 +80,11 @@ export class DiffEngine {
         const targetFilePath = join(targetPath, relPath);
 
         if (targetFiles.has(relPath)) {
-          // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5
+          // @zen-impl: DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5
           const fileDiff = await this.compareFiles(generatedFilePath, targetFilePath, relPath);
           files.push(fileDiff);
         } else {
-          // @zen-impl: DIFF-3 AC-3.1
+          // @zen-impl: DIFF-3_AC-1
           files.push({
             relativePath: relPath,
             status: 'new',
@@ -98,7 +98,7 @@ export class DiffEngine {
             continue;
           }
 
-          // @zen-impl: DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4
+          // @zen-impl: DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4
           files.push({
             relativePath: relPath,
             status: 'extra',
@@ -125,12 +125,12 @@ export class DiffEngine {
         hasDifferences,
       };
     } finally {
-      // @zen-impl: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+      // @zen-impl: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
       await this.cleanupTempDir(tempPath);
     }
   }
 
-  // @zen-impl: DIFF-1 AC-1.1, DIFF-1 AC-1.2
+  // @zen-impl: DIFF-1_AC-1, DIFF-1_AC-2
   async createTempDir(): Promise<string> {
     const systemTemp = tmpdir();
     const timestamp = Date.now();
@@ -141,7 +141,7 @@ export class DiffEngine {
     return tempPath;
   }
 
-  // @zen-impl: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+  // @zen-impl: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
   async cleanupTempDir(tempPath: string): Promise<void> {
     try {
       if (await pathExists(tempPath)) {
@@ -153,7 +153,7 @@ export class DiffEngine {
     }
   }
 
-  // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5
+  // @zen-impl: DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5
   async compareFiles(
     generatedPath: string,
     targetPath: string,
@@ -163,7 +163,7 @@ export class DiffEngine {
     const generatedBytes = await readBinaryFile(generatedPath);
     const targetBytes = await readBinaryFile(targetPath);
 
-    // @zen-impl: DIFF-2 AC-2.1, DIFF-2 AC-2.3
+    // @zen-impl: DIFF-2_AC-1, DIFF-2_AC-3
     if (generatedBytes.equals(targetBytes)) {
       return {
         relativePath,
@@ -171,7 +171,7 @@ export class DiffEngine {
       };
     }
 
-    // @zen-impl: DIFF-2 AC-2.5
+    // @zen-impl: DIFF-2_AC-5
     // If either side is binary, do not attempt a text diff.
     const isBinaryGenerated = await this.isBinaryFile(generatedPath);
     const isBinaryTarget = await this.isBinaryFile(targetPath);
@@ -187,7 +187,7 @@ export class DiffEngine {
     const generatedContent = generatedBytes.toString('utf-8');
     const targetContent = targetBytes.toString('utf-8');
 
-    // @zen-impl: DIFF-2 AC-2.4
+    // @zen-impl: DIFF-2_AC-4
     // Generate unified diff
     const patch = structuredPatch(
       `a/${relativePath}`,
@@ -223,7 +223,7 @@ export class DiffEngine {
     };
   }
 
-  // @zen-impl: DIFF-2 AC-2.5
+  // @zen-impl: DIFF-2_AC-5
   async isBinaryFile(filePath: string): Promise<boolean> {
     try {
       return await detectBinaryFile(filePath);

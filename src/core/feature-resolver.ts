@@ -1,4 +1,4 @@
-// @zen-component: FeatureResolver
+// @zen-component: FP-FeatureResolver
 
 import { ConfigError, type PresetDefinitions } from '../types/index.js';
 

@@ -1,4 +1,4 @@
-// @zen-component: DiffCommand
+// @zen-component: DIFF-DiffCommand
 // @zen-test: P15
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -57,7 +57,7 @@ describe('diffCommand', () => {
   });
 
   // @zen-test: P15
-  // VALIDATES: DIFF-5 AC-5.1
+  // VALIDATES: DIFF-5_AC-1
   test('should use output from config when not provided in CLI', async () => {
     const mockResult: DiffResult = {
       files: [],
@@ -122,7 +122,7 @@ describe('diffCommand', () => {
   });
 
   // @zen-test: P15
-  // VALIDATES: DIFF-5 AC-5.2
+  // VALIDATES: DIFF-5_AC-2
   test('should return exit code 1 when files have differences', async () => {
     const mockResult: DiffResult = {
       files: [
@@ -156,7 +156,7 @@ describe('diffCommand', () => {
   });
 
   // @zen-test: P15
-  // VALIDATES: DIFF-5 AC-5.3
+  // VALIDATES: DIFF-5_AC-3
   test('should return exit code 2 on error', async () => {
     vi.mocked(pathExists).mockResolvedValue(false);
 
@@ -174,7 +174,7 @@ describe('diffCommand', () => {
     expect(logger.error).toHaveBeenCalled();
   });
 
-  // VALIDATES: DIFF-4 AC-4.3
+  // VALIDATES: DIFF-4_AC-3
   test('should display unified diff with colored output', async () => {
     const mockResult: DiffResult = {
       files: [
@@ -215,7 +215,7 @@ describe('diffCommand', () => {
     expect(hasAddition).toBe(true);
   });
 
-  // VALIDATES: DIFF-7 AC-7.1, DIFF-7 AC-7.2
+  // VALIDATES: DIFF-7_AC-1, DIFF-7_AC-2
   test('should resolve template from config if not provided', async () => {
     const mockResult: DiffResult = {
       files: [],
@@ -241,7 +241,7 @@ describe('diffCommand', () => {
     expect(templateResolver.resolve).toHaveBeenCalled();
   });
 
-  // VALIDATES: DIFF-7 AC-7.3
+  // VALIDATES: DIFF-7_AC-3
   test('should use features from options', async () => {
     const mockResult: DiffResult = {
       files: [],
@@ -281,7 +281,7 @@ describe('diffCommand', () => {
     );
   });
 
-  // VALIDATES: DIFF-7 AC-7.11
+  // VALIDATES: DIFF-7_AC-11
   test('should pass listUnknown flag to diff engine', async () => {
     const mockResult: DiffResult = {
       files: [],
@@ -321,7 +321,7 @@ describe('diffCommand', () => {
     );
   });
 
-  // VALIDATES: DIFF-4 AC-4.1, DIFF-4 AC-4.2
+  // VALIDATES: DIFF-4_AC-1, DIFF-4_AC-2
   test('should display diffs for new and extra files', async () => {
     const mockResult: DiffResult = {
       files: [

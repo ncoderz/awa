@@ -1,4 +1,4 @@
-// @zen-component: DiffEngine
+// @zen-component: DIFF-DiffEngine
 // @zen-test: P12, P13, P14, P15
 
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -25,7 +25,7 @@ describe('DiffEngine', () => {
 
   describe('createTempDir', () => {
     // @zen-test: P13
-    // VALIDATES: DIFF-1 AC-1.1, DIFF-1 AC-1.2
+    // VALIDATES: DIFF-1_AC-1, DIFF-1_AC-2
     test('should create unique temp directory', async () => {
       const tempPath1 = await diffEngine.createTempDir();
       const tempPath2 = await diffEngine.createTempDir();
@@ -41,7 +41,7 @@ describe('DiffEngine', () => {
 
   describe('cleanupTempDir', () => {
     // @zen-test: P13
-    // VALIDATES: DIFF-6 AC-6.1, DIFF-6 AC-6.2
+    // VALIDATES: DIFF-6_AC-1, DIFF-6_AC-2
     test('should delete temp directory', async () => {
       await mkdir(testTempDir, { recursive: true });
       await writeFile(join(testTempDir, 'test.txt'), 'content');
@@ -52,14 +52,14 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P13
-    // VALIDATES: DIFF-6 AC-6.3
+    // VALIDATES: DIFF-6_AC-3
     test('should not throw on non-existent directory', async () => {
       await expect(diffEngine.cleanupTempDir('/non/existent/path')).resolves.not.toThrow();
     });
   });
 
   describe('isBinaryFile', () => {
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should detect text files', async () => {
       await mkdir(testTempDir, { recursive: true });
       const textFile = join(testTempDir, 'text.txt');
@@ -70,7 +70,7 @@ describe('DiffEngine', () => {
       expect(isBinary).toBe(false);
     });
 
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should detect binary files', async () => {
       await mkdir(testTempDir, { recursive: true });
       const binaryFile = join(testTempDir, 'binary.bin');
@@ -82,7 +82,7 @@ describe('DiffEngine', () => {
       expect(isBinary).toBe(true);
     });
 
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should return false on error', async () => {
       const isBinary = await diffEngine.isBinaryFile('/non/existent/file');
 
@@ -92,7 +92,7 @@ describe('DiffEngine', () => {
 
   describe('compareFiles', () => {
     // @zen-test: P14
-    // VALIDATES: DIFF-2 AC-2.1
+    // VALIDATES: DIFF-2_AC-1
     test('should detect identical files', async () => {
       await mkdir(testTempDir, { recursive: true });
       const file1 = join(testTempDir, 'file1.txt');
@@ -107,7 +107,7 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P14
-    // VALIDATES: DIFF-2 AC-2.1, DIFF-2 AC-2.4
+    // VALIDATES: DIFF-2_AC-1, DIFF-2_AC-4
     test('should detect modified text files with unified diff', async () => {
       await mkdir(testTempDir, { recursive: true });
       const file1 = join(testTempDir, 'file1.txt');
@@ -123,7 +123,7 @@ describe('DiffEngine', () => {
       expect(result.unifiedDiff).toContain('+modified line 2');
     });
 
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should detect binary file differences', async () => {
       await mkdir(testTempDir, { recursive: true });
       const file1 = join(testTempDir, 'file1.bin');
@@ -137,7 +137,7 @@ describe('DiffEngine', () => {
       expect(result.unifiedDiff).toBeUndefined();
     });
 
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should detect identical binary files', async () => {
       await mkdir(testTempDir, { recursive: true });
       const file1 = join(testTempDir, 'file1.bin');
@@ -152,7 +152,7 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P14
-    // VALIDATES: DIFF-2 AC-2.1
+    // VALIDATES: DIFF-2_AC-1
     test('should be whitespace-sensitive', async () => {
       await mkdir(testTempDir, { recursive: true });
       const file1 = join(testTempDir, 'file1.txt');
@@ -178,7 +178,7 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P12
-    // VALIDATES: DIFF-1 AC-1.3
+    // VALIDATES: DIFF-1_AC-3
     test('should not modify target directory (read-only)', async () => {
       await writeFile(join(targetDir, 'existing.txt'), 'original');
       await writeFile(join(templateDir, 'template.txt'), 'template content');
@@ -195,7 +195,7 @@ describe('DiffEngine', () => {
       expect(targetContent).toBe(true);
     });
 
-    // VALIDATES: DIFF-2 AC-2.3, DIFF-4 AC-4.4
+    // VALIDATES: DIFF-2_AC-3, DIFF-4_AC-4
     test('should report identical files when all match', async () => {
       await writeFile(join(templateDir, 'file1.txt'), 'content');
       await writeFile(join(targetDir, 'file1.txt'), 'content');
@@ -215,7 +215,7 @@ describe('DiffEngine', () => {
       expect(result.hasDifferences).toBe(false);
     });
 
-    // VALIDATES: DIFF-2 AC-2.4, DIFF-4 AC-4.1, DIFF-4 AC-4.2
+    // VALIDATES: DIFF-2_AC-4, DIFF-4_AC-1, DIFF-4_AC-2
     test('should report modified files with unified diff', async () => {
       await writeFile(join(templateDir, 'file1.txt'), 'new content');
       await writeFile(join(targetDir, 'file1.txt'), 'old content');
@@ -234,7 +234,7 @@ describe('DiffEngine', () => {
       expect(modifiedFile?.unifiedDiff).toBeDefined();
     });
 
-    // VALIDATES: DIFF-3 AC-3.1
+    // VALIDATES: DIFF-3_AC-1
     test('should report new files in generated output', async () => {
       await writeFile(join(templateDir, 'new.txt'), 'content');
 
@@ -252,7 +252,7 @@ describe('DiffEngine', () => {
       expect(newFile?.relativePath).toBe('new.txt');
     });
 
-    // VALIDATES: DIFF-3 AC-3.2, DIFF-3 AC-3.3
+    // VALIDATES: DIFF-3_AC-2, DIFF-3_AC-3
     test('should report extra files in target when listUnknown is true', async () => {
       await writeFile(join(targetDir, 'extra.txt'), 'content');
 
@@ -270,7 +270,7 @@ describe('DiffEngine', () => {
       expect(extraFile?.relativePath).toBe('extra.txt');
     });
 
-    // VALIDATES: DIFF-3 AC-3.3, DIFF-3 AC-3.4
+    // VALIDATES: DIFF-3_AC-3, DIFF-3_AC-4
     test('should ignore target-only files when listUnknown is false', async () => {
       await writeFile(join(targetDir, 'extra.txt'), 'content');
 
@@ -286,7 +286,7 @@ describe('DiffEngine', () => {
       expect(result.hasDifferences).toBe(false);
     });
 
-    // VALIDATES: DIFF-2 AC-2.5
+    // VALIDATES: DIFF-2_AC-5
     test('should handle binary file differences', async () => {
       await writeFile(join(templateDir, 'file.bin'), Buffer.from([0x00, 0x01]));
       await writeFile(join(targetDir, 'file.bin'), Buffer.from([0x00, 0x02]));
@@ -305,7 +305,7 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P13
-    // VALIDATES: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
+    // VALIDATES: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
     test('should cleanup temp directory after success', async () => {
       await writeFile(join(templateDir, 'file.txt'), 'content');
 
@@ -322,7 +322,7 @@ describe('DiffEngine', () => {
     });
 
     // @zen-test: P13
-    // VALIDATES: DIFF-6 AC-6.2, DIFF-6 AC-6.3
+    // VALIDATES: DIFF-6_AC-2, DIFF-6_AC-3
     test('should handle non-existent target directory', async () => {
       // Non-existent target should report all files as "new"
       await writeFile(join(templateDir, 'file.txt'), 'content');
@@ -341,7 +341,7 @@ describe('DiffEngine', () => {
       expect(result.hasDifferences).toBe(true);
     });
 
-    // VALIDATES: DIFF-3 AC-3.3, DIFF-4 AC-4.5
+    // VALIDATES: DIFF-3_AC-3, DIFF-4_AC-5
     test('should provide complete diff summary', async () => {
       await writeFile(join(templateDir, 'same.txt'), 'content');
       await writeFile(join(targetDir, 'same.txt'), 'content');

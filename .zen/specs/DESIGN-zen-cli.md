@@ -1,10 +1,14 @@
 # Zen CLI Design
 
-> VERSION: 1.7.0 | STATUS: draft | UPDATED: 2025-12-15
+> VERSION: 2.1.0 | STATUS: draft | UPDATED: 2025-12-17
 
 ## Overview
 
 This document defines the technical design for Zen CLI, a TypeScript command-line tool that generates AI coding agent configuration files from templates. The design implements a pipeline architecture: CLI parses arguments, loads configuration, resolves template sources, renders templates with feature flags, and writes output files with conflict resolution.
+
+RELATED DOCUMENTS:
+- [DESIGN-ZEN-cli-properties.md](DESIGN-ZEN-cli-properties.md) - Correctness properties, error handling, testing strategy
+- [DESIGN-ZEN-cli-traceability.md](DESIGN-ZEN-cli-traceability.md) - Requirements traceability, library usage, change log
 
 ## Architecture
 
@@ -79,11 +83,11 @@ src/
 
 ## Components and Interfaces
 
-### ArgumentParser
+### CLI-ArgumentParser
 
 Parses CLI arguments using commander, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands with positional arguments displayed in help output.
 
-IMPLEMENTS: CLI-1 AC-1.1, CLI-1 AC-1.2, CLI-1 AC-1.3, CLI-1 AC-1.4, CLI-1 AC-1.5, CLI-2 AC-2.1, CLI-2 AC-2.2, CLI-2 AC-2.5, CLI-2 AC-2.6, CLI-3 AC-3.1, CLI-4 AC-4.1, CLI-4 AC-4.2, CLI-5 AC-5.1, CLI-6 AC-6.1, CLI-7 AC-7.1, CLI-8 AC-8.1, CLI-9 AC-9.1, CLI-9 AC-9.2, CLI-9 AC-9.3, CLI-10 AC-10.1, CLI-10 AC-10.2, CLI-11 AC-11.1, CLI-11 AC-11.2, CLI-11 AC-11.3, CFG-5 AC-5.2, DIFF-7 AC-7.1, DIFF-7 AC-7.2, DIFF-7 AC-7.3, DIFF-7 AC-7.4, DIFF-7 AC-7.5, DIFF-7 AC-7.6, DIFF-7 AC-7.7, DIFF-7 AC-7.8, DIFF-7 AC-7.9, DIFF-7 AC-7.10, FP-2 AC-2.1, FP-2 AC-2.2, FP-2 AC-2.4, FP-4 AC-4.1, FP-4 AC-4.2, FP-4 AC-4.3, FP-4 AC-4.5
+IMPLEMENTS: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CFG-5_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5
 
 ```typescript
 interface RawCliOptions {
@@ -103,11 +107,11 @@ interface ArgumentParser {
 }
 ```
 
-### ConfigLoader
+### CFG-ConfigLoader
 
 Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied. Parses the `[presets]` table for named feature bundles.
 
-IMPLEMENTS: CFG-1 AC-1.1, CFG-1 AC-1.2, CFG-1 AC-1.3, CFG-1 AC-1.4, CFG-2 AC-2.1, CFG-2 AC-2.2, CFG-2 AC-2.3, CFG-3 AC-3.1, CFG-3 AC-3.2, CFG-3 AC-3.3, CFG-3 AC-3.4, CFG-3 AC-3.5, CFG-3 AC-3.6, CFG-4 AC-4.1, CFG-4 AC-4.2, CFG-4 AC-4.3, CFG-4 AC-4.4, CFG-5 AC-5.1, CFG-6 AC-6.1, CFG-6 AC-6.2, CLI-2 AC-2.3, CLI-2 AC-2.4, CLI-4 AC-4.3, CLI-7 AC-7.2, FP-1 AC-1.1, FP-1 AC-1.2, FP-1 AC-1.3, FP-1 AC-1.4, FP-3 AC-3.1, FP-3 AC-3.2, FP-3 AC-3.3, FP-5 AC-5.1, FP-5 AC-5.2, FP-5 AC-5.3
+IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, FP-1_AC-1, FP-1_AC-2, FP-1_AC-3, FP-1_AC-4, FP-3_AC-1, FP-3_AC-2, FP-3_AC-3, FP-5_AC-1, FP-5_AC-2, FP-5_AC-3
 
 ```typescript
 interface PresetDefinitions {
@@ -144,11 +148,11 @@ interface ConfigLoader {
 }
 ```
 
-### FeatureResolver
+### FP-FeatureResolver
 
 Computes the final feature set from base features, activated presets, and removals. Validates that referenced preset names exist in the presets table.
 
-IMPLEMENTS: FP-2 AC-2.3, FP-6 AC-6.1, FP-6 AC-6.2, FP-6 AC-6.3, FP-6 AC-6.4, FP-6 AC-6.5, FP-7 AC-7.1, FP-7 AC-7.2, FP-4 AC-4.4
+IMPLEMENTS: FP-2_AC-3, FP-6_AC-1, FP-6_AC-2, FP-6_AC-3, FP-6_AC-4, FP-6_AC-5, FP-7_AC-1, FP-7_AC-2, FP-4_AC-4
 
 ```typescript
 interface FeatureResolutionInput {
@@ -164,11 +168,11 @@ interface FeatureResolver {
 }
 ```
 
-### TemplateResolver
+### TPL-TemplateResolver
 
 Detects template source type (local vs Git), fetches remote templates to cache, and returns a resolved local path.
 
-IMPLEMENTS: CLI-3 AC-3.2, CLI-3 AC-3.3, CLI-8 AC-8.2, TPL-1 AC-1.1, TPL-1 AC-1.2, TPL-1 AC-1.3, TPL-1 AC-1.4, TPL-2 AC-2.1, TPL-2 AC-2.2, TPL-2 AC-2.3, TPL-2 AC-2.4, TPL-2 AC-2.5, TPL-2 AC-2.6, TPL-3 AC-3.1, TPL-3 AC-3.2, TPL-3 AC-3.3, TPL-3 AC-3.4, TPL-10 AC-10.1, TPL-10 AC-10.2, TPL-10 AC-10.3
+IMPLEMENTS: CLI-3_AC-2, CLI-3_AC-3, CLI-8_AC-2, TPL-1_AC-1, TPL-1_AC-2, TPL-1_AC-3, TPL-1_AC-4, TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6, TPL-3_AC-1, TPL-3_AC-2, TPL-3_AC-3, TPL-3_AC-4, TPL-10_AC-1, TPL-10_AC-2, TPL-10_AC-3
 
 ```typescript
 type TemplateSourceType = 'local' | 'git' | 'bundled';
@@ -186,11 +190,11 @@ interface TemplateResolver {
 }
 ```
 
-### TemplateEngine
+### TPL-TemplateEngine
 
 Wraps Eta for template rendering. Loads templates, provides feature flag context, handles empty output detection, and supports partials.
 
-IMPLEMENTS: TPL-4 AC-4.1, TPL-4 AC-4.2, TPL-4 AC-4.3, TPL-4 AC-4.4, TPL-5 AC-5.1, TPL-5 AC-5.2, TPL-5 AC-5.3, TPL-6 AC-6.1, TPL-6 AC-6.2, TPL-7 AC-7.1, TPL-7 AC-7.2, TPL-8 AC-8.1, TPL-8 AC-8.2, TPL-8 AC-8.3, TPL-8 AC-8.4, TPL-11 AC-11.1, TPL-11 AC-11.2
+IMPLEMENTS: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4, TPL-5_AC-1, TPL-5_AC-2, TPL-5_AC-3, TPL-6_AC-1, TPL-6_AC-2, TPL-7_AC-1, TPL-7_AC-2, TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4, TPL-11_AC-1, TPL-11_AC-2
 
 ```typescript
 interface TemplateContext {
@@ -209,11 +213,11 @@ interface TemplateEngine {
 }
 ```
 
-### FileGenerator
+### GEN-FileGenerator
 
 Orchestrates the generation process: walks template directory, invokes template engine, manages output structure, and coordinates conflict resolution. When `dryRun` is true, it computes and reports actions without creating directories or writing files.
 
-IMPLEMENTS: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3, GEN-2 AC-2.1, GEN-2 AC-2.2, GEN-2 AC-2.3, GEN-3 AC-3.1, GEN-3 AC-3.2, GEN-3 AC-3.3, GEN-8 AC-8.1, GEN-8 AC-8.2, GEN-8 AC-8.3, GEN-11 AC-11.3, TPL-9 AC-9.1, TPL-9 AC-9.2, CLI-6 AC-6.2
+IMPLEMENTS: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3, GEN-11_AC-3, TPL-9_AC-1, TPL-9_AC-2, CLI-6_AC-2
 
 ```typescript
 interface GenerateOptions {
@@ -246,11 +250,11 @@ interface FileGenerator {
 }
 ```
 
-### ConflictResolver
+### GEN-ConflictResolver
 
 Handles file conflicts by comparing existing file content with new content, skipping identical files without prompting. For actual conflicts, prompts user with multi-select interface (all files checked by default) for action (overwrite/skip) unless force mode is enabled.
 
-IMPLEMENTS: CLI-5 AC-5.2, CLI-5 AC-5.3, GEN-4 AC-4.1, GEN-4 AC-4.2, GEN-4 AC-4.3, GEN-5 AC-5.1, GEN-5 AC-5.2, GEN-5 AC-5.3, GEN-5 AC-5.4, GEN-5 AC-5.5, GEN-5 AC-5.6, GEN-5 AC-5.7, GEN-6 AC-6.3, GEN-10 AC-10.3
+IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3
 
 ```typescript
 type ConflictChoice = 'overwrite' | 'skip';
@@ -272,11 +276,11 @@ interface ConflictResolver {
 }
 ```
 
-### Logger
+### GEN-Logger
 
 Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display. Displays warning when no files are created or overwritten. For diff output, colorizes additions (green), deletions (red), and displays summary.
 
-IMPLEMENTS: CLI-6 AC-6.3, GEN-6 AC-6.4, GEN-7 AC-7.1, GEN-7 AC-7.2, GEN-7 AC-7.3, GEN-7 AC-7.4, GEN-9 AC-9.1, GEN-9 AC-9.2, GEN-9 AC-9.3, GEN-9 AC-9.4, GEN-9 AC-9.5, GEN-9 AC-9.6, GEN-11 AC-11.1, GEN-11 AC-11.2, GEN-11 AC-11.4, TPL-7 AC-7.3, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5
+IMPLEMENTS: CLI-6_AC-3, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4, GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-11_AC-1, GEN-11_AC-2, GEN-11_AC-4, TPL-7_AC-3, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
 
 ```typescript
 interface Logger {
@@ -291,11 +295,11 @@ interface Logger {
 }
 ```
 
-### DiffEngine
+### DIFF-DiffEngine
 
 Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, produces unified diff output, and only includes target-only files when explicitly requested.
 
-IMPLEMENTS: DIFF-1 AC-1.1, DIFF-1 AC-1.2, DIFF-1 AC-1.3, DIFF-2 AC-2.1, DIFF-2 AC-2.2, DIFF-2 AC-2.3, DIFF-2 AC-2.4, DIFF-2 AC-2.5, DIFF-3 AC-3.1, DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4, DIFF-4 AC-4.1, DIFF-4 AC-4.2, DIFF-4 AC-4.3, DIFF-4 AC-4.4, DIFF-4 AC-4.5, DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3, DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3, DIFF-7 AC-7.11
+IMPLEMENTS: DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3, DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5, DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3, DIFF-7_AC-11
 
 ```typescript
 interface DiffOptions {
@@ -423,460 +427,3 @@ Represents a cached Git template.
 - LOCAL_PATH (string, required): Path in cache directory
 - FETCHED_AT (Date, required): When template was fetched
 - REF (string, optional): Git ref (branch/tag/commit) if specified
-
-## Correctness Properties
-
-- P1 [CLI Override]: CLI arguments always override config file values for the same option
-  VALIDATES: CFG-4 AC-4.1, CFG-4 AC-4.2
-
-- P2 [Features Replace]: Features from CLI completely replace config features (no merge)
-  VALIDATES: CFG-4 AC-4.4
-
-- P3 [Empty Skip]: Empty or whitespace-only template output results in no file creation
-  VALIDATES: TPL-7 AC-7.1
-
-- P4 [Empty Marker]: Template containing only `<!-- ZEN:EMPTY_FILE -->` creates an empty file
-  VALIDATES: TPL-7 AC-7.2
-
-- P5 [Underscore Exclusion]: Files/directories starting with `_` are never written to output
-  VALIDATES: GEN-8 AC-8.1, GEN-8 AC-8.2, TPL-9 AC-9.1, TPL-9 AC-9.2
-
-- P6 [Directory Mirror]: Output directory structure exactly mirrors template structure (excluding underscore paths)
-  VALIDATES: GEN-1 AC-1.1, GEN-1 AC-1.2
-
-- P7 [Dry Run Immutable]: Dry-run mode never modifies the file system
-  VALIDATES: GEN-6 AC-6.1, GEN-6 AC-6.2
-
-- P8 [Force No Prompt]: Force mode never prompts for conflict resolution
-  VALIDATES: GEN-4 AC-4.3, CLI-5 AC-5.2
-
-- P11 [Content Identity Skip]: When existing file content exactly matches new content, file is skipped without prompting
-  VALIDATES: GEN-5 AC-5.7
-
-- P9 [Local No Cache]: Local template paths are used directly without caching
-  VALIDATES: TPL-1 AC-1.4
-
-- P10 [Git Cache Reuse]: Git templates use cached version unless --refresh is specified
-  VALIDATES: TPL-3 AC-3.2
-
-- P12 [Diff Read-Only]: Diff command never modifies the target directory
-  VALIDATES: DIFF-1 AC-1.3
-
-- P13 [Temp Cleanup Guaranteed]: Temp directory is always deleted, even on error
-  VALIDATES: DIFF-6 AC-6.1, DIFF-6 AC-6.2, DIFF-6 AC-6.3
-
-- P14 [Exact Comparison]: File comparison is byte-for-byte exact (whitespace-sensitive)
-  VALIDATES: DIFF-2 AC-2.1
-
-- P15 [Exit Code Semantics]: Exit 0 means identical, exit 1 means differences, exit 2 means error
-  VALIDATES: DIFF-5 AC-5.1, DIFF-5 AC-5.2, DIFF-5 AC-5.3
-
-- P21 [Unknown Opt-In]: Target-only files are excluded unless `listUnknown` is true; when true, they are reported as extras without altering generation scope
-  VALIDATES: DIFF-3 AC-3.2, DIFF-3 AC-3.3, DIFF-3 AC-3.4, DIFF-7 AC-7.11
-
-- P16 [Preset Validation]: Referencing a non-existent preset name results in an error
-  VALIDATES: FP-2 AC-2.3
-
-- P17 [Feature Resolution Order]: Final features = (baseFeatures ∪ presetFeatures) \ removeFeatures
-  VALIDATES: FP-6 AC-6.1, FP-6 AC-6.2, FP-6 AC-6.3, FP-6 AC-6.4
-
-- P18 [Feature Deduplication]: Final feature set contains no duplicates
-  VALIDATES: FP-6 AC-6.5, FP-7 AC-7.2
-
-- P19 [Preset Union]: Multiple presets are merged via set union
-  VALIDATES: FP-7 AC-7.1
-
-- P20 [Silent Removal]: Removing a non-existent feature does not cause an error
-  VALIDATES: FP-4 AC-4.4
-
-## Error Handling
-
-### ConfigError
-
-Configuration loading and parsing errors.
-
-- FILE_NOT_FOUND: Specified config file does not exist (when --config provided)
-- PARSE_ERROR: TOML syntax error with line number
-- INVALID_TYPE: Config value has wrong type
-- INVALID_PRESET: Preset value is not an array of strings
-- UNKNOWN_PRESET: Referenced preset name does not exist in presets table
-
-### TemplateError
-
-Template resolution and rendering errors.
-
-- SOURCE_NOT_FOUND: Local template path does not exist
-- FETCH_FAILED: Git fetch failed (network, auth, repo not found)
-- RENDER_ERROR: Eta template syntax error with location
-
-### GenerationError
-
-File generation errors.
-
-- PERMISSION_DENIED: Cannot create directory or write file
-- DISK_FULL: Insufficient disk space
-
-### DiffError
-
-Diff operation errors.
-
-- TARGET_NOT_FOUND: Target directory does not exist
-- TARGET_NOT_READABLE: Cannot read target directory or files
-- TEMP_DIR_FAILED: Failed to create or write to temp directory
-
-### Error Strategy
-
-PRINCIPLES:
-- Fail fast on first error
-- Provide actionable error messages with file paths
-- Write errors to stderr
-- Exit with non-zero code on any error
-- Include suggestions for common errors (e.g., "Did you mean...?" for typos)
-
-## Testing Strategy
-
-### Property-Based Testing
-
-- FRAMEWORK: fast-check
-- MINIMUM_ITERATIONS: 100
-- TAG_FORMAT: @validates: P{n}
-
-```typescript
-// Validates: P1 (CLI Override)
-test.prop([fc.string(), fc.string()])('CLI overrides config', (cliValue, configValue) => {
-  const cli = { output: cliValue };
-  const config = { output: configValue };
-  const result = configLoader.merge(cli, config);
-  expect(result.output).toBe(cliValue);
-});
-
-// Validates: P5 (Underscore Exclusion)
-test.prop([fc.string().filter(s => s.startsWith('_'))])('underscore files excluded', (filename) => {
-  const actions = generator.processFile(filename);
-  expect(actions).toHaveLength(0);
-});
-
-// Validates: P11 (Content Identity Skip)
-test.prop([fc.string()])('identical content skipped without prompt', async (content) => {
-  const conflicts = [{ outputPath: 'test.txt', newContent: content, existingContent: content }];
-  const resolution = await resolver.resolveBatch(conflicts, false, false);
-  expect(resolution.skip).toContain('test.txt');
-  expect(resolution.overwrite).not.toContain('test.txt');
-});
-
-// Validates: P12 (Diff Read-Only)
-test.prop([fc.array(fc.string())])('diff never modifies target', async (files) => {
-  const targetDir = await createTempDir(files);
-  const checksumsBefore = await computeChecksums(targetDir);
-  await differ.diff({ templatePath: 'template', targetPath: targetDir, features: [] });
-  const checksumsAfter = await computeChecksums(targetDir);
-  expect(checksumsAfter).toEqual(checksumsBefore);
-});
-
-// Validates: P13 (Temp Cleanup Guaranteed)
-test.prop([fc.boolean()])('temp cleanup even on error', async (shouldError) => {
-  const tempDirsBefore = await listTempDirs();
-  try {
-    await differ.diff({ templatePath: shouldError ? 'invalid' : 'valid', targetPath: 'target', features: [] });
-  } catch (e) { /* expected */ }
-  const tempDirsAfter = await listTempDirs();
-  expect(tempDirsAfter).toEqual(tempDirsBefore);
-});
-
-// Validates: P14 (Exact Comparison)
-test.prop([fc.string(), fc.string()])('whitespace differences detected', async (text1, text2) => {
-  fc.pre(text1 !== text2);
-  const result = await differ.compareFiles(text1, text2);
-  expect(result.status).toBe('modified');
-});
-
-// Validates: P15 (Exit Code Semantics)
-test.prop([fc.constantFrom('identical', 'different', 'error')])('exit codes match semantics', async (scenario) => {
-  const result = await runDiff(scenario);
-  if (scenario === 'identical') expect(result.exitCode).toBe(0);
-  if (scenario === 'different') expect(result.exitCode).toBe(1);
-  if (scenario === 'error') expect(result.exitCode).toBe(2);
-});
-
-// Validates: P16 (Preset Validation)
-test.prop([fc.string(), fc.record({ presets: fc.dictionary(fc.string(), fc.array(fc.string())) })])(
-  'non-existent preset errors', (presetName, config) => {
-    fc.pre(!config.presets[presetName]);
-    expect(() => featureResolver.validatePresets([presetName], config.presets)).toThrow();
-  }
-);
-
-// Validates: P17 (Feature Resolution Order)
-test.prop([fc.array(fc.string()), fc.array(fc.string()), fc.array(fc.string())])(
-  'feature resolution order', (base, preset, remove) => {
-    const result = featureResolver.resolve({ baseFeatures: base, presetFeatures: preset, removeFeatures: remove, presetDefinitions: {} });
-    const expected = new Set([...base, ...preset]);
-    remove.forEach(f => expected.delete(f));
-    expect(new Set(result)).toEqual(expected);
-  }
-);
-
-// Validates: P18 (Feature Deduplication)
-test.prop([fc.array(fc.string())])('no duplicate features', (features) => {
-  const result = featureResolver.resolve({ baseFeatures: [...features, ...features], presetFeatures: [], removeFeatures: [], presetDefinitions: {} });
-  expect(result.length).toBe(new Set(result).size);
-});
-
-// Validates: P19 (Preset Union)
-test.prop([fc.dictionary(fc.string(), fc.array(fc.string())), fc.array(fc.string())])(
-  'preset union', (presetDefs, presetNames) => {
-    fc.pre(presetNames.every(n => presetDefs[n]));
-    const result = featureResolver.resolve({ baseFeatures: [], presetFeatures: [], removeFeatures: [], presetDefinitions: presetDefs });
-    const expected = new Set(presetNames.flatMap(n => presetDefs[n]));
-    expect(new Set(result)).toEqual(expected);
-  }
-);
-
-// Validates: P20 (Silent Removal)
-test.prop([fc.array(fc.string()), fc.string()])('removing non-existent feature no error', (features, nonExistent) => {
-  fc.pre(!features.includes(nonExistent));
-  expect(() => featureResolver.resolve({ baseFeatures: features, presetFeatures: [], removeFeatures: [nonExistent], presetDefinitions: {} })).not.toThrow();
-});
-```
-
-### Unit Testing
-
-- DESCRIPTION: Test individual components in isolation
-- AREAS: ConfigLoader merge logic, TemplateResolver type detection, TemplateEngine empty detection, ConflictResolver prompt logic
-
-### Integration Testing
-
-- DESCRIPTION: Test full generation pipeline with real templates
-- SCENARIOS: Local template generation, Git template caching, Conflict resolution flow, Dry-run output verification
-
-## Requirements Traceability
-
-SOURCE: .zen/specs/REQ-cli.md, .zen/specs/REQ-config.md, .zen/specs/REQ-templates.md, .zen/specs/REQ-generation.md, .zen/specs/REQ-diff.md, .zen/specs/REQ-feature-presets.md
-
-- CLI-1 AC-1.1 → ArgumentParser
-- CLI-1 AC-1.2 → ArgumentParser
-- CLI-1 AC-1.3 → ArgumentParser
-- CLI-1 AC-1.4 → ArgumentParser
-- CLI-1 AC-1.5 → ArgumentParser
-- CLI-2 AC-2.1 → ArgumentParser
-- CLI-2 AC-2.2 → ConfigLoader
-- CLI-2 AC-2.3 → ConfigLoader
-- CLI-2 AC-2.4 → ConfigLoader
-- CLI-2 AC-2.5 → ArgumentParser
-- CLI-2 AC-2.6 → ArgumentParser
-- CLI-3 AC-3.1 → ArgumentParser
-- CLI-3 AC-3.2 → TemplateResolver
-- CLI-3 AC-3.3 → TemplateResolver
-- CLI-4 AC-4.1 → ArgumentParser
-- CLI-4 AC-4.2 → ArgumentParser
-- CLI-4 AC-4.3 → ConfigLoader
-- CLI-5 AC-5.1 → ArgumentParser
-- CLI-5 AC-5.2 → ConflictResolver (P8)
-- CLI-5 AC-5.3 → ConflictResolver
-- CLI-6 AC-6.1 → ArgumentParser
-- CLI-6 AC-6.2 → FileGenerator (P7)
-- CLI-6 AC-6.3 → Logger
-- CLI-7 AC-7.1 → ArgumentParser
-- CLI-7 AC-7.2 → ConfigLoader
-- CLI-8 AC-8.1 → ArgumentParser
-- CLI-8 AC-8.2 → TemplateResolver (P10)
-- CLI-9 AC-9.1 → ArgumentParser
-- CLI-9 AC-9.2 → ArgumentParser
-- CLI-9 AC-9.3 → ArgumentParser
-- CLI-10 AC-10.1 → ArgumentParser
-- CLI-10 AC-10.2 → ArgumentParser
-- CLI-11 AC-11.1 → ArgumentParser
-- CLI-11 AC-11.2 → ArgumentParser
-- CLI-11 AC-11.3 → ArgumentParser
-- CFG-1 AC-1.1 → ConfigLoader
-- CFG-1 AC-1.2 → ConfigLoader
-- CFG-1 AC-1.3 → ConfigLoader
-- CFG-1 AC-1.4 → ConfigLoader
-- CFG-2 AC-2.1 → ConfigLoader
-- CFG-2 AC-2.2 → ConfigLoader
-- CFG-2 AC-2.3 → ConfigLoader
-- CFG-3 AC-3.1 → ConfigLoader
-- CFG-3 AC-3.2 → ConfigLoader
-- CFG-3 AC-3.3 → ConfigLoader
-- CFG-3 AC-3.4 → ConfigLoader
-- CFG-3 AC-3.5 → ConfigLoader
-- CFG-3 AC-3.6 → ConfigLoader
-- CFG-4 AC-4.1 → ConfigLoader (P1)
-- CFG-4 AC-4.2 → ConfigLoader (P1)
-- CFG-4 AC-4.3 → ConfigLoader
-- CFG-4 AC-4.4 → ConfigLoader (P2)
-- CFG-5 AC-5.1 → ConfigLoader
-- CFG-5 AC-5.2 → ArgumentParser
-- CFG-6 AC-6.1 → ConfigLoader
-- CFG-6 AC-6.2 → ConfigLoader
-- TPL-1 AC-1.1 → TemplateResolver
-- TPL-1 AC-1.2 → TemplateResolver
-- TPL-1 AC-1.3 → TemplateResolver
-- TPL-1 AC-1.4 → TemplateResolver (P9)
-- TPL-2 AC-2.1 → TemplateResolver
-- TPL-2 AC-2.2 → TemplateResolver
-- TPL-2 AC-2.3 → TemplateResolver
-- TPL-2 AC-2.4 → TemplateResolver
-- TPL-2 AC-2.5 → TemplateResolver
-- TPL-2 AC-2.6 → TemplateResolver
-- TPL-3 AC-3.1 → TemplateResolver
-- TPL-3 AC-3.2 → TemplateResolver (P10)
-- TPL-3 AC-3.3 → TemplateResolver
-- TPL-3 AC-3.4 → TemplateResolver
-- TPL-4 AC-4.1 → TemplateEngine
-- TPL-4 AC-4.2 → TemplateEngine
-- TPL-4 AC-4.3 → TemplateEngine
-- TPL-4 AC-4.4 → TemplateEngine
-- TPL-5 AC-5.1 → TemplateEngine
-- TPL-5 AC-5.2 → TemplateEngine
-- TPL-5 AC-5.3 → TemplateEngine
-- TPL-6 AC-6.1 → TemplateEngine
-- TPL-6 AC-6.2 → TemplateEngine
-- TPL-7 AC-7.1 → TemplateEngine (P3)
-- TPL-7 AC-7.2 → TemplateEngine (P4)
-- TPL-7 AC-7.3 → Logger
-- TPL-8 AC-8.1 → TemplateEngine
-- TPL-8 AC-8.2 → TemplateEngine
-- TPL-8 AC-8.3 → TemplateEngine
-- TPL-8 AC-8.4 → TemplateEngine
-- TPL-9 AC-9.1 → FileGenerator (P5)
-- TPL-9 AC-9.2 → FileGenerator (P5)
-- TPL-10 AC-10.1 → TemplateResolver
-- TPL-10 AC-10.2 → TemplateResolver
-- TPL-10 AC-10.3 → TemplateResolver
-- TPL-11 AC-11.1 → TemplateEngine
-- TPL-11 AC-11.2 → TemplateEngine
-- GEN-1 AC-1.1 → FileGenerator (P6)
-- GEN-1 AC-1.2 → FileGenerator (P6)
-- GEN-1 AC-1.3 → FileGenerator
-- GEN-2 AC-2.1 → FileGenerator
-- GEN-2 AC-2.2 → FileGenerator
-- GEN-2 AC-2.3 → FileGenerator
-- GEN-3 AC-3.1 → FileGenerator
-- GEN-3 AC-3.2 → FileGenerator
-- GEN-3 AC-3.3 → FileGenerator
-- GEN-4 AC-4.1 → ConflictResolver
-- GEN-4 AC-4.2 → ConflictResolver
-- GEN-4 AC-4.3 → ConflictResolver (P8)
-- GEN-5 AC-5.1 → ConflictResolver
-- GEN-5 AC-5.2 → ConflictResolver
-- GEN-5 AC-5.3 → ConflictResolver
-- GEN-5 AC-5.4 → ConflictResolver
-- GEN-5 AC-5.5 → ConflictResolver
-- GEN-5 AC-5.6 → ConflictResolver
-- GEN-5 AC-5.7 → ConflictResolver (P11)
-- GEN-6 AC-6.1 → FileGenerator (P7)
-- GEN-6 AC-6.2 → FileGenerator (P7)
-- GEN-6 AC-6.3 → ConflictResolver
-- GEN-6 AC-6.4 → Logger
-- GEN-7 AC-7.1 → Logger
-- GEN-7 AC-7.2 → Logger
-- GEN-7 AC-7.3 → Logger
-- GEN-7 AC-7.4 → Logger
-- GEN-8 AC-8.1 → FileGenerator (P5)
-- GEN-8 AC-8.2 → FileGenerator (P5)
-- GEN-8 AC-8.3 → FileGenerator (P5)
-- GEN-9 AC-9.1 → Logger
-- GEN-9 AC-9.2 → Logger
-- GEN-9 AC-9.3 → Logger
-- GEN-9 AC-9.4 → Logger
-- GEN-9 AC-9.5 → Logger
-- GEN-9 AC-9.6 → Logger
-- GEN-10 AC-10.1 → ArgumentParser
-- GEN-10 AC-10.2 → ArgumentParser
-- GEN-10 AC-10.3 → ConflictResolver
-- GEN-11 AC-11.1 → Logger
-- GEN-11 AC-11.2 → Logger
-- GEN-11 AC-11.3 → FileGenerator
-- GEN-11 AC-11.4 → Logger
-- DIFF-1 AC-1.1 → DiffEngine
-- DIFF-1 AC-1.2 → DiffEngine
-- DIFF-1 AC-1.3 → DiffEngine (P12)
-- DIFF-2 AC-2.1 → DiffEngine (P14)
-- DIFF-2 AC-2.2 → DiffEngine
-- DIFF-2 AC-2.3 → DiffEngine
-- DIFF-2 AC-2.4 → DiffEngine
-- DIFF-2 AC-2.5 → DiffEngine
-- DIFF-3 AC-3.1 → DiffEngine
-- DIFF-3 AC-3.2 → DiffEngine (P21)
-- DIFF-3 AC-3.3 → DiffEngine (P21)
-- DIFF-3 AC-3.4 → DiffEngine (P21)
-- DIFF-4 AC-4.1 → DiffEngine
-- DIFF-4 AC-4.2 → DiffEngine
-- DIFF-4 AC-4.3 → Logger
-- DIFF-4 AC-4.4 → Logger
-- DIFF-4 AC-4.5 → Logger
-- DIFF-5 AC-5.1 → DiffEngine (P15)
-- DIFF-5 AC-5.2 → DiffEngine (P15)
-- DIFF-5 AC-5.3 → DiffEngine (P15)
-- DIFF-6 AC-6.1 → DiffEngine (P13)
-- DIFF-6 AC-6.2 → DiffEngine (P13)
-- DIFF-6 AC-6.3 → DiffEngine (P13)
-- DIFF-7 AC-7.1 → ArgumentParser
-- DIFF-7 AC-7.2 → ArgumentParser
-- DIFF-7 AC-7.3 → ArgumentParser
-- DIFF-7 AC-7.4 → ArgumentParser
-- DIFF-7 AC-7.5 → ArgumentParser
-- DIFF-7 AC-7.6 → ArgumentParser
-- DIFF-7 AC-7.11 → ArgumentParser
-- FP-1 AC-1.1 → ConfigLoader
-- FP-1 AC-1.2 → ConfigLoader
-- FP-1 AC-1.3 → ConfigLoader
-- FP-1 AC-1.4 → ConfigLoader
-- FP-2 AC-2.1 → ArgumentParser
-- FP-2 AC-2.2 → ArgumentParser
-- FP-2 AC-2.3 → FeatureResolver (P16)
-- FP-2 AC-2.4 → ArgumentParser
-- FP-3 AC-3.1 → ConfigLoader
-- FP-3 AC-3.2 → ConfigLoader
-- FP-3 AC-3.3 → ConfigLoader
-- FP-4 AC-4.1 → ArgumentParser
-- FP-4 AC-4.2 → ArgumentParser
-- FP-4 AC-4.3 → ArgumentParser
-- FP-4 AC-4.4 → FeatureResolver (P20)
-- FP-4 AC-4.5 → ArgumentParser
-- FP-5 AC-5.1 → ConfigLoader
-- FP-5 AC-5.2 → ConfigLoader
-- FP-5 AC-5.3 → ConfigLoader
-- FP-6 AC-6.1 → FeatureResolver (P17)
-- FP-6 AC-6.2 → FeatureResolver (P17)
-- FP-6 AC-6.3 → FeatureResolver (P17)
-- FP-6 AC-6.4 → FeatureResolver (P17)
-- FP-6 AC-6.5 → FeatureResolver (P18)
-- FP-7 AC-7.1 → FeatureResolver (P19)
-- FP-7 AC-7.2 → FeatureResolver (P18)
-
-## Library Usage Strategy
-
-### Framework Features
-
-- COMMANDER: Command definition, argument parsing, help generation with positional args, version display
-- ETA: Template rendering, partial includes, context passing
-- SMOL_TOML: TOML parsing with error location
-- DEGIT: Shallow Git fetches, ref support, subdirectory extraction
-- CLACK_PROMPTS: Interactive select prompts for conflict resolution
-- CHALK: Styled terminal output (colors, bold, dim)
-
-### External Libraries
-
-- commander (latest): CLI framework — argument parsing, help with positional args, subcommands
-- eta (3.x): Template engine — fast, TypeScript-native, partials
-- smol-toml (1.x): TOML parser — lightweight, spec-compliant
-- degit (2.x): Git fetcher — shallow clones without .git
-- @clack/prompts (latest): Interactive prompts — styled, accessible
-- chalk (5.x): Terminal colors — ESM-native, no dependencies
-- fast-check (3.x): Property-based testing — generators, shrinking
-- diff (latest): Unified diff generation — cross-platform text comparison
-- isbinaryfile (latest): Binary file detection — null-byte heuristic, well-maintained
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial design based on requirements
-- 1.1.0 (2025-12-11): Updated ConflictResolver interface to match implementation, added missing data models
-- 1.2.0 (2025-12-11): Added GEN-9 AC-9.6 implementation to Logger for empty generation warning
-- 1.3.0 (2025-12-11): Added DiffEngine component, diff data models, correctness properties P12-P15, DiffError types, and DIFF-* traceability
-- 1.4.0 (2025-12-11): Added DIFF-4 AC-4.3, AC-4.4, AC-4.5 to Logger IMPLEMENTS; added diffLine method; added isbinaryfile library and BINARY DETECTION architectural decision
-- 1.5.0 (2025-12-12): Added FeatureResolver component, preset/remove-features support in ConfigLoader and ArgumentParser, correctness properties P16-P20, and FP-* traceability
-- 1.6.0 (2025-12-14): Replaced citty with commander to support positional argument display in help output (CLI-1 AC-1.5)
-- 1.7.0 (2025-12-15): Fixed alignment issues - added missing DIFF-7 AC-7.8, AC-7.9, AC-7.10 to ArgumentParser IMPLEMENTS; added property-based test examples for P11-P20; updated requirements traceability for CLI-1 AC-1.4
-- 1.8.0 (2025-12-16): Added opt-in target-only listing via `listUnknown`, updated DiffEngine/traceability, and new correctness property P21

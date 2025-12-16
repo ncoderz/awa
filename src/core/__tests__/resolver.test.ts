@@ -1,4 +1,4 @@
-// @zen-component: ConflictResolver
+// @zen-component: GEN-ConflictResolver
 // @zen-test: P7, P8
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

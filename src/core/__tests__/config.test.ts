@@ -1,4 +1,4 @@
-// @zen-component: ConfigLoader
+// @zen-component: CFG-ConfigLoader
 // @zen-test: P1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';

@@ -1,24 +1,24 @@
-// @zen-component: TemplateResolver
-// @zen-impl: CLI-3 AC-3.2
-// @zen-impl: CLI-3 AC-3.3
-// @zen-impl: CLI-8 AC-8.2
-// @zen-impl: TPL-1 AC-1.1
-// @zen-impl: TPL-1 AC-1.2
-// @zen-impl: TPL-1 AC-1.3
-// @zen-impl: TPL-1 AC-1.4
-// @zen-impl: TPL-2 AC-2.1
-// @zen-impl: TPL-2 AC-2.2
-// @zen-impl: TPL-2 AC-2.3
-// @zen-impl: TPL-2 AC-2.4
-// @zen-impl: TPL-2 AC-2.5
-// @zen-impl: TPL-2 AC-2.6
-// @zen-impl: TPL-3 AC-3.1
-// @zen-impl: TPL-3 AC-3.2
-// @zen-impl: TPL-3 AC-3.3
-// @zen-impl: TPL-3 AC-3.4
-// @zen-impl: TPL-10 AC-10.1
-// @zen-impl: TPL-10 AC-10.2
-// @zen-impl: TPL-10 AC-10.3
+// @zen-component: TPL-TemplateResolver
+// @zen-impl: CLI-3_AC-2
+// @zen-impl: CLI-3_AC-3
+// @zen-impl: CLI-8_AC-2
+// @zen-impl: TPL-1_AC-1
+// @zen-impl: TPL-1_AC-2
+// @zen-impl: TPL-1_AC-3
+// @zen-impl: TPL-1_AC-4
+// @zen-impl: TPL-2_AC-1
+// @zen-impl: TPL-2_AC-2
+// @zen-impl: TPL-2_AC-3
+// @zen-impl: TPL-2_AC-4
+// @zen-impl: TPL-2_AC-5
+// @zen-impl: TPL-2_AC-6
+// @zen-impl: TPL-3_AC-1
+// @zen-impl: TPL-3_AC-2
+// @zen-impl: TPL-3_AC-3
+// @zen-impl: TPL-3_AC-4
+// @zen-impl: TPL-10_AC-1
+// @zen-impl: TPL-10_AC-2
+// @zen-impl: TPL-10_AC-3
 
 import { createHash } from 'node:crypto';
 import { rm } from 'node:fs/promises';
@@ -29,7 +29,7 @@ import { ensureDir, getCacheDir, getTemplateDir, pathExists } from '../utils/fs.
 import { logger } from '../utils/logger.js';
 
 export class TemplateResolver {
-  // @zen-impl: CLI-3 AC-3.2, TPL-10 AC-10.1
+  // @zen-impl: CLI-3_AC-2, TPL-10_AC-1
   async resolve(source: string | null, refresh: boolean): Promise<ResolvedTemplate> {
     // If no source provided, use bundled templates
     if (!source) {
@@ -43,7 +43,7 @@ export class TemplateResolver {
 
     const type = this.detectType(source);
 
-    // @zen-impl: TPL-1 AC-1.1, TPL-1 AC-1.2, TPL-1 AC-1.3, TPL-1 AC-1.4
+    // @zen-impl: TPL-1_AC-1, TPL-1_AC-2, TPL-1_AC-3, TPL-1_AC-4
     if (type === 'local') {
       // Resolve relative/absolute paths
       const localPath = isAbsolute(source) ? source : resolve(process.cwd(), source);
@@ -65,11 +65,11 @@ export class TemplateResolver {
       };
     }
 
-    // @zen-impl: TPL-2 AC-2.1 through TPL-2 AC-2.6, TPL-3 AC-3.1 through TPL-3 AC-3.4
+    // @zen-impl: TPL-2_AC-1 through TPL-2_AC-6, TPL-3_AC-1 through TPL-3_AC-4
     if (type === 'git') {
       const cachePath = this.getCachePath(source);
 
-      // @zen-impl: CLI-8 AC-8.2, TPL-3 AC-3.2
+      // @zen-impl: CLI-8_AC-2, TPL-3_AC-2
       // Check if cached version exists
       const cacheExists = await pathExists(cachePath);
 
@@ -120,7 +120,7 @@ export class TemplateResolver {
     );
   }
 
-  // @zen-impl: TPL-2 AC-2.1 through TPL-2 AC-2.6
+  // @zen-impl: TPL-2_AC-1 through TPL-2_AC-6
   detectType(source: string): TemplateSourceType {
     // Check for local path indicators
     if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {
@@ -142,7 +142,7 @@ export class TemplateResolver {
     return 'git';
   }
 
-  // @zen-impl: TPL-3 AC-3.1
+  // @zen-impl: TPL-3_AC-1
   getCachePath(source: string): string {
     // Create a stable cache path based on source hash
     const hash = createHash('sha256').update(source).digest('hex').substring(0, 16);

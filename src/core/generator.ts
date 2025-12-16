@@ -1,19 +1,19 @@
-// @zen-component: FileGenerator
-// @zen-impl: GEN-1 AC-1.1
-// @zen-impl: GEN-1 AC-1.2
-// @zen-impl: GEN-1 AC-1.3
-// @zen-impl: GEN-2 AC-2.1
-// @zen-impl: GEN-2 AC-2.2
-// @zen-impl: GEN-2 AC-2.3
-// @zen-impl: GEN-3 AC-3.1
-// @zen-impl: GEN-3 AC-3.2
-// @zen-impl: GEN-3 AC-3.3
-// @zen-impl: GEN-8 AC-8.1
-// @zen-impl: GEN-8 AC-8.2
-// @zen-impl: GEN-8 AC-8.3
-// @zen-impl: GEN-11 AC-11.3
-// @zen-impl: TPL-9 AC-9.1
-// @zen-impl: TPL-9 AC-9.2
+// @zen-component: GEN-FileGenerator
+// @zen-impl: GEN-1_AC-1
+// @zen-impl: GEN-1_AC-2
+// @zen-impl: GEN-1_AC-3
+// @zen-impl: GEN-2_AC-1
+// @zen-impl: GEN-2_AC-2
+// @zen-impl: GEN-2_AC-3
+// @zen-impl: GEN-3_AC-1
+// @zen-impl: GEN-3_AC-2
+// @zen-impl: GEN-3_AC-3
+// @zen-impl: GEN-8_AC-1
+// @zen-impl: GEN-8_AC-2
+// @zen-impl: GEN-8_AC-3
+// @zen-impl: GEN-11_AC-3
+// @zen-impl: TPL-9_AC-1
+// @zen-impl: TPL-9_AC-2
 
 import { join, relative } from 'node:path';
 import {
@@ -29,9 +29,9 @@ import { conflictResolver } from './resolver.js';
 import { templateEngine } from './template.js';
 
 export class FileGenerator {
-  // @zen-impl: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3
-  // @zen-impl: GEN-2 AC-2.1, GEN-2 AC-2.2, GEN-2 AC-2.3
-  // @zen-impl: GEN-3 AC-3.1, GEN-3 AC-3.2, GEN-3 AC-3.3
+  // @zen-impl: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3
+  // @zen-impl: GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3
+  // @zen-impl: GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3
   async generate(options: GenerateOptions): Promise<GenerationResult> {
     const { templatePath, outputPath, features, force, dryRun } = options;
 
@@ -171,7 +171,7 @@ export class FileGenerator {
         skippedUser,
       };
     } catch (error) {
-      // @zen-impl: GEN-2 AC-2.3, GEN-11 AC-11.3
+      // @zen-impl: GEN-2_AC-3, GEN-11_AC-3
       if (error instanceof Error && 'code' in error) {
         const code = (error as NodeJS.ErrnoException).code;
         if (code === 'EACCES' || code === 'EPERM') {
@@ -185,14 +185,14 @@ export class FileGenerator {
     }
   }
 
-  // @zen-impl: GEN-8 AC-8.1, GEN-8 AC-8.2, GEN-8 AC-8.3
-  // @zen-impl: TPL-9 AC-9.1, TPL-9 AC-9.2
+  // @zen-impl: GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3
+  // @zen-impl: TPL-9_AC-1, TPL-9_AC-2
   async *walkTemplates(dir: string): AsyncIterable<string> {
     // Use utility function that already handles underscore exclusion
     yield* walkDirectory(dir);
   }
 
-  // @zen-impl: GEN-1 AC-1.1, GEN-1 AC-1.2, GEN-1 AC-1.3
+  // @zen-impl: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3
   computeOutputPath(templatePath: string, templateRoot: string, outputRoot: string): string {
     // Get relative path from template root
     const relativePath = relative(templateRoot, templatePath);

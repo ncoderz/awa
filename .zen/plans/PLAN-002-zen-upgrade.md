@@ -2,7 +2,7 @@
 
 STATUS: in-progress
 WORKFLOW: top-down
-TRACEABILITY: Requirements — [.zen/specs/REQ-cli.md](.zen/specs/REQ-cli.md), [.zen/specs/REQ-config.md](.zen/specs/REQ-config.md), [.zen/specs/REQ-diff.md](.zen/specs/REQ-diff.md), [.zen/specs/REQ-generation.md](.zen/specs/REQ-generation.md), [.zen/specs/REQ-templates.md](.zen/specs/REQ-templates.md), [.zen/specs/REQ-feature-presets.md](.zen/specs/REQ-feature-presets.md); Design — [.zen/specs/DESIGN-zen-cli.md](.zen/specs/DESIGN-zen-cli.md); Code — [.github/prompts](.github/prompts); Tests — [src/__tests__](src/__tests__)
+TRACEABILITY: Requirements — .zen/specs/REQ-CLI-cli.md, .zen/specs/REQ-CFG-config.md, .zen/specs/REQ-DIFF-diff.md, .zen/specs/REQ-GEN-generation.md, .zen/specs/REQ-TPL-templates.md, .zen/specs/REQ-FP-feature-presets.md; Design — .zen/specs/DESIGN-ZEN-cli.md; Code — .github/prompts; Tests — src/__tests__
 
 ## Objective
 Create a new prompt `zen.upgrade` that guides upgrading architecture, requirements, design, task, and plan specs to conform to their current schemas in [.zen/.agent/schemas](.zen/.agent/schemas), producing safe, repeatable upgrade instructions.

@@ -1,6 +1,8 @@
 # Zen Agent Templates Plan
 
-> VERSION: 1.0 | DATE: 2025-12-11 | AUTHOR: Zen
+STATUS: completed
+WORKFLOW: bottom-up
+TRACEABILITY: Templates — templates/zen/; Code — src/core/template.ts, src/core/generator.ts
 
 ## Objective
 
