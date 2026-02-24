@@ -1,7 +1,7 @@
 # awa
 
 [![CI](https://github.com/ncoderz/awa/actions/workflows/test.yaml/badge.svg)](https://github.com/ncoderz/awa/actions/workflows/test.yaml)
-[![npm version](https://img.shields.io/npm/v/awa.svg)](https://www.npmjs.com/package/awa)
+[![npm version](https://img.shields.io/npm/v/@ncoderz/awa.svg)](https://www.npmjs.com/package/@ncoderz/awa)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 `Supercharge your AI development.`
@@ -55,13 +55,13 @@ See [CLI Reference](docs/CLI.md) and [Template Engine](docs/TEMPLATE_ENGINE.md) 
 ### Install
 
 ```bash
-npm install -g awa
+npm install -g @ncoderz/awa
 ```
 
 Or use with npx:
 
 ```bash
-npx awa generate .
+npx @ncoderz/awa generate .
 ```
 
 ### Generate

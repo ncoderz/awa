@@ -1,5 +1,5 @@
 {
-  "name": "awa",
+  "name": "@ncoderz/awa",
   "version": "0.2.0",
   "description": "awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage agent workflow files using templates.",
   "license": "MIT",
@@ -31,7 +31,8 @@
     "clean": "node scripts/clean.mjs"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "files": [
     "dist",
