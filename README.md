@@ -168,6 +168,27 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 - [Maintainers](MAINTAINERS.md)
 - [Funding](.github/FUNDING.yml)
 
+## Alternatives
+
+Several tools address parts of the AI-assisted development workflow. Here's how they compare:
+
+| | awa | [Kiro](https://kiro.dev) | [Spec Kit](https://github.com/github/spec-kit) | [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) | [AI RPI Protocol](https://github.com/MiguelAxcar/ai-rpi-protocol) | Manual files |
+|---|---|---|---|---|---|---|
+| **What it is** | CLI that generates agent config from templates | IDE with built-in spec-driven development | Python CLI for Spec-Driven Development | Agile workflow with role-based AI skills | Markdown rules for AI behavior governance | Hand-written CLAUDE.md, .cursorrules, etc. |
+| **Structured workflow** | Architecture →</br> Features →</br> Requirements →</br> Design →</br> Tasks →</br> Code & Tests →</br> Docs | Requirements →</br> Design →</br> Tasks | Specify →</br> Plan →</br> Tasks →</br> Implement | Analysis →</br> Planning →</br> Solutioning →</br> Implementation | Research →</br> Plan →</br> Implement | Whatever you put in the file |
+| **Workflow flexibility** | ✅ Start at any stage, skip what's not needed | ⚠️ Two variants (Req-First or Design-First), always 3 phases | ⚠️ Optional clarify/analyze steps, otherwise fixed order | ⚠️ Project levels determine required phases | ⚠️ Hard gates between phases, escape commands to bypass | ✅ No workflow to constrain you |
+| **Traceability** | ✅ Requirement IDs →</br> design →</br> `@awa-impl` / `@awa-test` code markers | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Template engine** | ✅ Eta with conditionals, loops, partials | ❌ | ❌ Static templates copied on init | ❌ Static skill files | ❌ Static markdown | ❌ |
+| **Feature flags** | ✅ Enable/disable content per project | ❌ | ❌ | ❌ | ⚠️ Lite/Full modes | ❌ |
+| **Presets** | ✅ Named flag bundles | ❌ | ❌ | ⚠️ Complexity levels | ⚠️ Operation levels | ❌ |
+| **AI Instructions Drift detection** | ✅ `awa diff` shows what changed vs. templates | ❌ | ❌ | ❌ | ⚠️ Manual compliance checklist | ❌ |
+| **Re-generation** | ✅ Generates from templates on every run | ❌ Specs created per feature | ❌ One-time `specify init` | ❌ One-time install | ❌ One-time copy | ❌ One-time manual creation |
+| **Agent hooks** | ❌ | ✅ Event-driven agent triggers on file save | ❌ | ❌ | ❌ | ❌ |
+| **Built-in IDE** | ❌ | ✅ VS Code-compatible IDE | ❌ | ❌ | ❌ | ❌ |
+| **Runtime** | Node + CLI | Standalone IDE + CLI | Python 3.11+ / uv | Shell / Python / yq | None (markdown only) | None |
+| **Agent support** | Agent-agnostic (generate config for any agent) | Kiro only | 18+ agents | Codex-focused | Cursor, VS Code, Claude Code, Windsurf | One agent at a time |
+
+
 ## Development
 
 ### Prerequisites
@@ -199,26 +220,6 @@ npm run build
 | `npm run gen:awa` | Generate awa templates to `outputs/awa` |
 | `npm run gen:awa:this` | Generate awa templates to current directory |
 | `npm run diff:awa` | Diff awa templates against current directory |
-
-## Alternatives
-
-Several tools address parts of the AI-assisted development workflow. Here's how they compare:
-
-| | awa | [Kiro](https://kiro.dev) | [Spec Kit](https://github.com/github/spec-kit) | [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) | [AI RPI Protocol](https://github.com/MiguelAxcar/ai-rpi-protocol) | Manual files |
-|---|---|---|---|---|---|---|
-| **What it is** | CLI that generates agent config from templates | IDE with built-in spec-driven development | Python CLI for Spec-Driven Development | Agile workflow with role-based AI skills | Markdown rules for AI behavior governance | Hand-written CLAUDE.md, .cursorrules, etc. |
-| **Structured workflow** | Architecture →</br> Features →</br> Requirements →</br> Design →</br> Tasks →</br> Code & Tests →</br> Docs | Requirements →</br> Design →</br> Tasks | Specify →</br> Plan →</br> Tasks →</br> Implement | Analysis →</br> Planning →</br> Solutioning →</br> Implementation | Research →</br> Plan →</br> Implement | Whatever you put in the file |
-| **Workflow flexibility** | ✅ Start at any stage, skip what's not needed | ⚠️ Two variants (Req-First or Design-First), always 3 phases | ⚠️ Optional clarify/analyze steps, otherwise fixed order | ⚠️ Project levels determine required phases | ⚠️ Hard gates between phases, escape commands to bypass | ✅ No workflow to constrain you |
-| **Traceability** | ✅ Requirement IDs →</br> design →</br> `@awa-impl` / `@awa-test` code markers | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Template engine** | ✅ Eta with conditionals, loops, partials | ❌ | ❌ Static templates copied on init | ❌ Static skill files | ❌ Static markdown | ❌ |
-| **Feature flags** | ✅ Enable/disable content per project | ❌ | ❌ | ❌ | ⚠️ Lite/Full modes | ❌ |
-| **Presets** | ✅ Named flag bundles | ❌ | ❌ | ⚠️ Complexity levels | ⚠️ Operation levels | ❌ |
-| **AI Instructions Drift detection** | ✅ `awa diff` shows what changed vs. templates | ❌ | ❌ | ❌ | ⚠️ Manual compliance checklist | ❌ |
-| **Re-generation** | ✅ Generates from templates on every run | ❌ Specs created per feature | ❌ One-time `specify init` | ❌ One-time install | ❌ One-time copy | ❌ One-time manual creation |
-| **Agent hooks** | ❌ | ✅ Event-driven agent triggers on file save | ❌ | ❌ | ❌ | ❌ |
-| **Built-in IDE** | ❌ | ✅ VS Code-compatible IDE | ❌ | ❌ | ❌ | ❌ |
-| **Runtime** | Node + CLI | Standalone IDE + CLI | Python 3.11+ / uv | Shell / Python / yq | None (markdown only) | None |
-| **Agent support** | Agent-agnostic (generate config for any agent) | Kiro only | 18+ agents | Codex-focused | Cursor, VS Code, Claude Code, Windsurf | One agent at a time |
 
 
 
