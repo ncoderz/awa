@@ -1,0 +1,65 @@
+---
+title: awa — Agent Workflow for AIs
+description: Supercharge your AI development with structured workflows, full traceability, and powerful template generation.
+template: splash
+hero:
+  tagline: Supercharge your AI development.
+  image:
+    file: ../../assets/hero.svg
+  actions:
+    - text: Get Started
+      link: /awa/guides/quick-start/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/ncoderz/awa
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## What is awa?
+
+**awa** (Agent Workflow for AIs) is a CLI tool that generates AI coding agent configuration files via templates with feature flags. It enforces a structured development workflow with full traceability from requirements through to tests.
+
+<CardGrid stagger>
+  <Card title="Structured Workflow" icon="rocket">
+    Guide your AI through every stage: Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation.
+  </Card>
+  <Card title="Full Traceability" icon="approve-check-circle">
+    Every line of code traces back to the requirement that motivated it via `@awa-impl` and `@awa-test` markers.
+  </Card>
+  <Card title="Powerful Templates" icon="puzzle">
+    Use [Eta](https://eta.js.org/) templates with conditionals, loops, and partials. Enable or disable content with feature flags and presets.
+  </Card>
+  <Card title="Drift Detection" icon="magnifier">
+    `awa diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
+  </Card>
+  <Card title="Any Git Source" icon="open-book">
+    Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast re-runs.
+  </Card>
+  <Card title="Agent-Agnostic" icon="laptop">
+    Generate configuration for Copilot, Claude, Cursor, Windsurf, and more — all from a single template set.
+  </Card>
+</CardGrid>
+
+## The Problem: Divergence
+
+Developing with AI agents requires process. Configuration files that define this process get copy-pasted between projects, then diverge. Requirements live in one place, implementation in another, tests in a third — nothing connects them. They diverge too.
+
+Without structure, work drifts and nobody, including the AI, can trace what happened or why.
+
+## How awa Solves It
+
+awa generates agent configuration files from **templates** with **feature flags**. Every artifact traces back to its origin through explicit markers:
+
+```
+ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
+```
+
+<CardGrid>
+  <LinkCard title="Quick Start" description="Install awa and generate your first configuration." href="/awa/guides/quick-start/" />
+  <LinkCard title="Workflow Guide" description="Understand the awa workflow and traceability chain." href="/awa/guides/workflow/" />
+  <LinkCard title="CLI Reference" description="All commands and options documented." href="/awa/reference/cli/" />
+  <LinkCard title="Template Engine" description="Learn how to write powerful templates with Eta." href="/awa/reference/template-engine/" />
+</CardGrid>

@@ -1,0 +1,23 @@
+/* Custom CSS for awa website */
+
+:root {
+  --sl-color-accent-low: #1a2744;
+  --sl-color-accent: #3b82f6;
+  --sl-color-accent-high: #93c5fd;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #1e40af;
+}
+
+/* Hero section enhancements */
+.hero {
+  padding-block: 3rem;
+}
+
+/* Code block styling */
+.expressive-code {
+  border-radius: 0.5rem;
+}

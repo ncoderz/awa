@@ -1,0 +1,57 @@
+---
+title: Introduction
+description: What is awa and why does it exist?
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+# Introduction
+
+<Badge text="Open Source" variant="tip" /> <Badge text="MIT License" variant="note" />
+
+**awa** (Agent Workflow for AIs) is an open-source CLI tool that generates AI coding agent configuration files from templates with feature flags. It solves the problem of AI agent configuration drift and lack of traceability in AI-assisted development.
+
+## The Problem
+
+Developing with AI agents requires process. Configuration files that define this process get copy-pasted between projects, then diverge. Requirements live in one place, implementation in another, tests in a third — nothing connects them. They diverge too.
+
+Without structure, work drifts and nobody — including the AI — can trace what happened or why.
+
+## The Solution
+
+awa generates agent configuration files from **templates** with **feature flags**. The generated output includes a spec-driven development workflow with full traceability:
+
+```
+ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
+```
+
+Every artifact traces back to its origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
+
+## Key Features
+
+### Workflow & Traceability
+
+- Structured workflow from architecture through features, requirements, design, tasks, code, tests, and docs
+- Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
+- Every requirement has an ID; every line of code links back to it via `@awa-impl` and `@awa-test` markers
+- Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
+
+### CLI & Template Engine
+
+- [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
+- Feature flags and presets to turn content on/off per project
+- `awa diff` shows exactly what changed before you commit
+- Pull templates from GitHub, GitLab, Bitbucket, or use a local path
+- Optional `.awa.toml` config, or just use CLI flags
+
+## Philosophy
+
+> awa was written by awa — AI-assisted development using its own workflows. The workflows themselves are designed and crafted by a human who uses Copilot. If something is wrong, let's fix it together.
+
+awa is **agent-agnostic**: it generates configuration for GitHub Copilot, Claude, Cursor, Windsurf, and more — all from a single template set. It makes no assumptions about which AI tool you use or how you use it.
+
+## Next Steps
+
+- [Quick Start](/awa/guides/quick-start/) — install awa and generate your first configuration in minutes
+- [Workflow Guide](/awa/guides/workflow/) — understand the full workflow and traceability chain
+- [CLI Reference](/awa/reference/cli/) — all commands, options, and configuration

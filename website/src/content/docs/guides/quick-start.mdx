@@ -1,0 +1,125 @@
+---
+title: Quick Start
+description: Install awa and generate your first AI agent configuration in minutes.
+---
+
+import { Steps, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+
+# Quick Start
+
+Get up and running with awa in just a few minutes.
+
+## Install
+
+<Tabs>
+  <TabItem label="Global install">
+    ```bash
+    npm install -g @ncoderz/awa
+    ```
+  </TabItem>
+  <TabItem label="npx (no install)">
+    ```bash
+    npx @ncoderz/awa generate .
+    ```
+  </TabItem>
+</Tabs>
+
+## Generate Your First Configuration
+
+<Steps>
+
+1. **Navigate to your project**
+
+   ```bash
+   cd my-project
+   ```
+
+2. **Generate files using the default awa template**
+
+   ```bash
+   awa generate .
+   ```
+
+   This generates agent configuration files into the current directory using awa's bundled default template.
+
+3. **Generate with specific AI tool features**
+
+   ```bash
+   awa generate . --features copilot claude cursor
+   ```
+
+   Feature flags control which sections are included. Enable only what you need.
+
+4. **Preview before writing (dry run)**
+
+   ```bash
+   awa generate . --dry-run
+   ```
+
+5. **Check for drift later**
+
+   ```bash
+   awa diff .
+   ```
+
+   After templates are updated, use `awa diff` to see what would change in your project.
+
+</Steps>
+
+## Common Usage Patterns
+
+### Using a Preset
+
+```bash
+# Enable all supported AI tools
+awa generate . --preset full
+
+# Enable a subset
+awa generate . --preset full --remove-features roo agy
+```
+
+### Using a Custom Template
+
+```bash
+# From a local directory
+awa generate . --template ./my-templates
+
+# From a GitHub repository
+awa generate . --template owner/repo
+
+# From a specific branch or tag
+awa generate . --template owner/repo#v1.0.0
+```
+
+### Using a Config File
+
+Create `.awa.toml` in your project root:
+
+```toml
+output = ".github/agents"
+template = "owner/repo"
+features = ["copilot", "claude"]
+```
+
+Then simply run:
+
+```bash
+awa generate
+```
+
+## What Gets Generated
+
+By default, awa generates files into `.github/agents/` (configurable). These include:
+
+- Agent configuration files (e.g., `awa.agent.md`)
+- Prompt files in `.github/prompts/`
+- Workflow rules in `.awa/rules/`
+
+The exact output depends on your template and feature flags.
+
+## Next Steps
+
+- [Workflow Guide](/awa/guides/workflow/) — understand the awa workflow stages and traceability
+- [CLI Reference](/awa/reference/cli/) — all commands and options
+- [Template Engine](/awa/reference/template-engine/) — write your own templates
+- [Configuration](/awa/reference/configuration/) — `.awa.toml` reference
