@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage agent workflow files using templates.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ncoderz/awa"
+  },
   "author": "Richard Sewell <richard.sewell@ncoderz.com>",
   "type": "module",
   "bin": {
