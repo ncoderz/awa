@@ -1,0 +1,53 @@
+{
+  "editor.tabSize": 2,
+  "editor.rulers": [100],
+  "editor.wordWrapColumn": 100,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "files.eol": "\n",
+  "files.autoSave": "onFocusChange",
+  "files.trimTrailingWhitespace": true,
+  "eslint.format.enable": false,
+  "prettier.enable": false,
+  "eslint.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/dist": true
+  },
+  "mise.configureExtensionsUseSymLinks": true,
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "${workspaceFolder}/.vscode/mise-tools/node"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "/^npm (install|ci|run|build|test|view).*$/": true,
+    "/^npx (prettier|eslint).*$/": true,
+    "/^poetry (install|lock|run).*$/": true,
+    "/^RUST_LOG=(trace|warn|info|debug) cargo (build|run|test|clean|check|fmt|llvm-cov).*$/": true,
+    "/^RUST_BACKTRACE=1 cargo (build|run|test|clean|check|fmt|llvm-cov).*$/": true,
+    "/^task .*$/": true,
+    "/^docker (compose|inspect|exec|logs|ps).*$/": true
+  },
+  "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
+}

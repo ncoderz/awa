@@ -1,0 +1,11 @@
+# Build outputs
+dist
+coverage
+
+# Dependencies
+node_modules
+
+# Templates and generated files
+templates/**
+.github/**
+outputs/**

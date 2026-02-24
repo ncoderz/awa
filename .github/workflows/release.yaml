@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+env:
+  CI: true
+
+jobs:
+  verify-tests:
+    name: Ensure latest Tests workflow succeeded
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    steps:
+      - name: Check Tests workflow status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowFile = 'test.yaml';
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: workflowFile,
+              head_sha: context.sha,
+              per_page: 1,
+              status: 'completed'
+            });
+
+            const run = data.workflow_runs?.[0];
+            if (!run) {
+              core.setFailed(`No ${workflowFile} runs found for commit ${context.sha}.`);
+              return;
+            }
+
+            if (run.conclusion !== 'success') {
+              core.setFailed(`Latest ${workflowFile} run for ${context.sha} concluded with ${run.conclusion}.`);
+              return;
+            }
+
+            core.info(`Tests workflow run ${run.html_url} succeeded for ${context.sha}.`);
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    needs: verify-tests
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Validate tag matches package.json version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          pkg_version=$(node -p "require('./package.json').version")
+          release_tag="${RELEASE_TAG}"
+          expected_tag="v${pkg_version}"
+          if [ "$release_tag" != "$expected_tag" ]; then
+            echo "Release tag $release_tag does not match package.json version $expected_tag"
+            exit 1
+          fi
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Publish to npm
+        run: npm publish --access public --provenance
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: awa-dist
+          path: dist

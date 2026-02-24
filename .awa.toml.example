@@ -1,0 +1,32 @@
+# Example awa configuration
+# Copy this file to `.awa.toml` at the root of your project and adjust values for your project.
+# Then run `awa generate` to install your AI agent files
+
+# Output directory for generated files (required unless provided as CLI positional arg)
+output = "."
+
+# Template source: local path, owner/repo, or full git URL
+template = "ncoderz/awa"
+
+# Explicitly enabled feature flags
+features = ["copilot", "claude"]
+
+# Presets to expand into features
+preset = ["lite"]
+
+# Features to remove after combining `features` and `preset`
+remove-features = ["roo"]
+
+# Generate behavior flags
+force = false
+dry-run = false
+delete = false
+refresh = false
+
+# Diff behavior flag
+list-unknown = false
+
+# Define your own feature presets
+[presets]
+full = ["copilot", "claude", "cursor", "windsurf", "kilocode", "opencode", "gemini", "roo", "qwen", "codex", "agy", "agents-md"]
+lite = ["copilot", "claude"]

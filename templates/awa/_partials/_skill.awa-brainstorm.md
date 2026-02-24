@@ -1,0 +1,6 @@
+---
+name: awa-brainstorm
+description: Brainstorm ideas, explore solutions, and evaluate options. Use this when asked to brainstorm, explore ideas, or analyze trade-offs.
+---
+
+<%~ include('awa.brainstorm.md', it) %>
