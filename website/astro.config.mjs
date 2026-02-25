@@ -3,8 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ncoderz.github.io',
-  base: '/awa',
+  site: 'https://awa.ncoderz.com',
   integrations: [
     starlight({
       title: 'awa',

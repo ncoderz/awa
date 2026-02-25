@@ -106,5 +106,5 @@ Update README and docs to match current CLI options
 
 ## Next Steps
 
-- [Traceability](/awa/guides/traceability/) — how IDs and markers connect everything
-- [CLI Reference](/awa/reference/cli/) — `awa generate` and `awa diff` commands
+- [Traceability](/guides/traceability/) — how IDs and markers connect everything
+- [CLI Reference](/reference/cli/) — `awa generate` and `awa diff` commands
