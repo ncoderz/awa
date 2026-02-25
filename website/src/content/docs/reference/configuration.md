@@ -3,8 +3,6 @@ title: Configuration
 description: Configure awa using .awa.toml or CLI flags.
 ---
 
-# Configuration
-
 awa can be configured via a `.awa.toml` file, CLI flags, or both. **CLI arguments always override config file values.**
 
 ## `.awa.toml` Reference

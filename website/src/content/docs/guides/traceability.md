@@ -3,8 +3,6 @@ title: Traceability
 description: How IDs and markers connect requirements, design, code, and tests in awa.
 ---
 
-# Traceability
-
 awa's traceability system connects every artifact — from requirements to tests — through explicit IDs and code markers. Nothing is implied; every link is stated.
 
 ## The Traceability Chain

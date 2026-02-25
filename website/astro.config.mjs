@@ -1,5 +1,5 @@
-import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,10 +8,14 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'awa',
-      description: 'Agent Workflow for AIs — supercharge your AI development with structured workflows and full traceability.',
+      description:
+        'Agent Workflow for AIs — supercharge your AI development with structured workflows and full traceability.',
+      components: {
+        Footer: './src/components/Footer.astro',
+      },
       logo: {
-        light: './src/assets/logo-light.svg',
-        dark: './src/assets/logo-dark.svg',
+        light: './src/assets/logo-icon-light.svg',
+        dark: './src/assets/logo-icon-dark.svg',
         replacesTitle: false,
       },
       social: [

@@ -1,14 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
-  <rect width="400" height="300" rx="12" fill="#0f172a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" fill="none">
+  <rect width="480" height="300" rx="12" fill="#0f172a"/>
   <!-- Terminal window -->
-  <rect x="40" y="40" width="320" height="220" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <rect x="40" y="40" width="400" height="220" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
   <!-- Traffic lights -->
   <circle cx="64" cy="64" r="6" fill="#ef4444"/>
   <circle cx="84" cy="64" r="6" fill="#f59e0b"/>
   <circle cx="104" cy="64" r="6" fill="#22c55e"/>
   <!-- Terminal line 1 -->
   <text x="60" y="104" font-family="monospace" font-size="13" fill="#64748b">$ </text>
-  <text x="78" y="104" font-family="monospace" font-size="13" fill="#e2e8f0">awa generate . --features copilot claude</text>
+  <text x="78" y="104" font-family="monospace" font-size="13" fill="#e2e8f0">awa generate . --features copilot</text>
   <!-- Terminal line 2 -->
   <text x="60" y="128" font-family="monospace" font-size="13" fill="#22c55e">✓ Generated .github/agents/awa.agent.md</text>
   <!-- Terminal line 3 -->

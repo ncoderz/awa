@@ -1,0 +1,31 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: used in template below
+import Default from '@astrojs/starlight/components/Footer.astro';
+---
+
+<Default {...Astro.props}><slot /></Default>
+<div class="sl-footer-legal">
+  <p>
+    © 2025-26 ncoderz Ltd ·
+    <a href="/awa/legal/terms/">Terms</a> ·
+    <a href="/awa/legal/privacy/">Privacy</a> ·
+    <a href="https://github.com/ncoderz/awa/blob/main/LICENSE">MIT License</a>
+  </p>
+</div>
+
+<style>
+  .sl-footer-legal {
+    padding-block: 1rem;
+    text-align: center;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+  .sl-footer-legal a {
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+  }
+  .sl-footer-legal a:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -3,8 +3,6 @@ title: Workflow Overview
 description: Understand the awa development workflow and how each stage produces traceable artifacts.
 ---
 
-# Workflow Overview
-
 awa defines a structured development workflow. Each stage produces artifacts that trace forward and backward through the chain.
 
 ## Stages

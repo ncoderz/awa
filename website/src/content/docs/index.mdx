@@ -3,6 +3,7 @@ title: awa — Agent Workflow for AIs
 description: Supercharge your AI development with structured workflows, full traceability, and powerful template generation.
 template: splash
 hero:
+  title: '<img src="/awa/logo-wordmark.svg" alt="awa" style="height:1.5em;vertical-align:-0.15em;display:inline-block"><br>Agent Workflow for AIs'
   tagline: Supercharge your AI development.
   image:
     file: ../../assets/hero.svg
@@ -20,22 +21,23 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## What is awa?
 
-**awa** (Agent Workflow for AIs) is a CLI tool that generates AI coding agent configuration files via templates with feature flags. It enforces a structured development workflow with full traceability from requirements through to tests.
+**awa** (Agent Workflow for AIs) is a CLI tool that generates AI coding agent configuration files via templates with feature flags. It enforces a structured development workflow (awa's or yours) with full traceability from requirements through to tests.
 
-<CardGrid stagger>
+
+<CardGrid>
   <Card title="Structured Workflow" icon="rocket">
     Guide your AI through every stage: Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation.
   </Card>
   <Card title="Full Traceability" icon="approve-check-circle">
     Every line of code traces back to the requirement that motivated it via `@awa-impl` and `@awa-test` markers.
   </Card>
-  <Card title="Powerful Templates" icon="puzzle">
+  <Card title="Template AI Files" icon="puzzle">
     Use [Eta](https://eta.js.org/) templates with conditionals, loops, and partials. Enable or disable content with feature flags and presets.
   </Card>
   <Card title="Drift Detection" icon="magnifier">
     `awa diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
   </Card>
-  <Card title="Any Git Source" icon="open-book">
+  <Card title="Git or Local" icon="open-book">
     Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast re-runs.
   </Card>
   <Card title="Agent-Agnostic" icon="laptop">

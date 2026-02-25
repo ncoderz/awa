@@ -225,7 +225,7 @@ npm run build
 
 ## License
 
-[MIT](LICENSE)
+© 2025-26 ncoderz Ltd. Released under the [MIT License](LICENSE).
 
 ## Acknowledgments
 

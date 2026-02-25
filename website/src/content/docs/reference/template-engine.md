@@ -3,8 +3,6 @@ title: Template Engine
 description: Learn how to write awa templates using Eta — conditionals, loops, partials, and file handling.
 ---
 
-# Template Engine
-
 awa uses [Eta](https://eta.js.org/) as its template engine. Templates are plain files that can render conditionally based on feature flags, include partials, and declare stale files to delete.
 
 ## Quick Overview
