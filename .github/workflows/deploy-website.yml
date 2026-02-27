@@ -1,12 +1,12 @@
 name: Deploy Website to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'website/**'
-      - '.github/workflows/deploy-website.yml'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'website/**'
+  #     - '.github/workflows/deploy-website.yml'
   workflow_dispatch:
 
 permissions:
@@ -29,7 +29,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Set up npm cache
         uses: actions/cache@v4
