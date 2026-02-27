@@ -111,6 +111,6 @@ awa validate              # text output
 awa validate --format json # JSON output for CI
 ```
 
-It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, and validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs.
+It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs, and enforces structural rules defined in `*.rules.yaml` schema files.
 
 See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[validate]` config section.

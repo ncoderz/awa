@@ -76,6 +76,7 @@ The validate command checks:
 - **Broken cross-refs** — IMPLEMENTS/VALIDATES in design specs pointing to non-existent requirement IDs
 - **Invalid ID format** — marker IDs not matching the configured ID pattern
 - **Orphaned specs** — spec files with a feature code not referenced by any marker or cross-reference
+- **Schema validation** — spec file structure checked against declarative `*.rules.yaml` schema rules (see [SCHEMA_RULES.md](SCHEMA_RULES.md))
 
 ### Global Options
 
@@ -105,6 +106,8 @@ code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
 ignore = ["node_modules/**", "dist/**"]
 format = "text"
+schema-dir = ".awa/.agent/schemas"
+schema-enabled = true
 # id-pattern = custom regex for ID format validation
 # cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 ```

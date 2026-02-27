@@ -134,4 +134,180 @@ export function ghost() {}
     // With code dir ignored, no orphaned markers to find
     expect(exitCode).toBe(0);
   });
+
+  // --- Schema validation integration tests ---
+
+  // @awa-test: VAL-8_AC-1
+  test('schema validation: conforming Markdown produces no schema findings', async () => {
+    // Create schema rules directory and rule file
+    const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
+    await mkdir(schemaDir, { recursive: true });
+
+    await writeFile(
+      join(schemaDir, 'REQ.rules.yaml'),
+      `target-files: ".awa/specs/REQ-*.md"
+sections:
+  - heading: ".*"
+    level: 1
+    required: true
+  - heading: ".*"
+    level: 3
+    required: true
+    repeatable: true
+    contains:
+      - pattern: "ACCEPTANCE CRITERIA"
+        label: "AC section"
+`
+    );
+
+    // Create a conforming spec file
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `# Requirements
+
+### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+
+    // Also need code/tests to avoid orphan findings
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+
+    const exitCode = await validateCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
+  });
+
+  // @awa-test: VAL-8_AC-1
+  test('schema validation: non-conforming Markdown produces schema findings', async () => {
+    const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
+    await mkdir(schemaDir, { recursive: true });
+
+    await writeFile(
+      join(schemaDir, 'REQ.rules.yaml'),
+      `target-files: ".awa/specs/REQ-*.md"
+sections:
+  - heading: "Requirements"
+    level: 1
+    required: true
+    contains:
+      - pattern: "OVERVIEW"
+        label: "Overview subsection"
+`
+    );
+
+    // Create a non-conforming spec file (missing "Requirements" H1 and "OVERVIEW" text)
+    await writeFile(
+      join(specDir, 'REQ-Y-y.md'),
+      `# Something Else
+
+### Y-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] Y-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+
+    const exitCode = await validateCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+    });
+
+    // Should produce schema findings (error exit code 1)
+    expect(exitCode).toBe(1);
+
+    // Verify JSON output includes schema finding codes
+    const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      .map((c: unknown[]) => c[0])
+      .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+    expect(jsonOutput).toBeDefined();
+    const parsed = JSON.parse(jsonOutput as string);
+    const schemaCodes = parsed.findings
+      .map((f: { code: string }) => f.code)
+      .filter((c: string) => c.startsWith('schema-'));
+    expect(schemaCodes.length).toBeGreaterThan(0);
+  });
+
+  // @awa-test: VAL-8_AC-1
+  test('schema validation: schema-enabled = false skips schema checking', async () => {
+    const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
+    await mkdir(schemaDir, { recursive: true });
+
+    // Create a rule that would fail
+    await writeFile(
+      join(schemaDir, 'REQ.rules.yaml'),
+      `target-files: ".awa/specs/REQ-*.md"
+sections:
+  - heading: "Required Section"
+    level: 1
+    required: true
+`
+    );
+
+    // Create a spec file that does NOT conform (missing "Required Section")
+    await writeFile(join(specDir, 'REQ-Z-z.md'), '# Unrelated Title\n');
+
+    // Create config file with schema-enabled = false
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[validate]
+schema-enabled = false
+`
+    );
+
+    const exitCode = await validateCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    // Should pass — schema checking skipped entirely
+    expect(exitCode).toBe(0);
+
+    // Verify no schema findings in output
+    const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      .map((c: unknown[]) => c[0])
+      .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+    if (jsonOutput) {
+      const parsed = JSON.parse(jsonOutput as string);
+      const schemaCodes = parsed.findings
+        .map((f: { code: string }) => f.code)
+        .filter((c: string) => c.startsWith('schema-'));
+      expect(schemaCodes).toHaveLength(0);
+    }
+  });
 });

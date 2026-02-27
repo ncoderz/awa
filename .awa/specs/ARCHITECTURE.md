@@ -31,6 +31,9 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 | smol-toml | TOML parser (lightweight, spec-compliant) |
 | degit | Git repository template fetching (no full clone) |
 | diff | Cross-platform unified diff generation |
+| yaml | YAML parsing for schema rule files |
+| unified + remark-parse | Markdown → mdast AST parsing |
+| remark-gfm | GFM table support in remark pipeline |
 
 ## High-Level Architecture
 
@@ -103,7 +106,10 @@ awa/
 │   │       ├── spec-parser.ts     # Parses spec files for IDs
 │   │       ├── code-spec-checker.ts # Matches markers against spec IDs
 │   │       ├── spec-spec-checker.ts # Validates cross-references
-│   │       └── reporter.ts        # Text/JSON output formatting
+│   │       ├── reporter.ts        # Text/JSON output formatting
+│   │       ├── rule-types.ts      # Schema rule type definitions
+│   │       ├── rule-loader.ts     # YAML rule file loader/validator
+│   │       └── schema-checker.ts  # mdast-based structural validator
 │   ├── utils/             # Utility functions
 │   │   ├── fs.ts          # File system helpers
 │   │   └── logger.ts      # Console output helpers (uses chalk)
@@ -334,6 +340,10 @@ RESPONSIBILITIES
 - Report orphaned spec files (feature codes not referenced anywhere)
 - Validate ID format against configurable regex
 - Output findings as text (human-readable) or JSON (CI-friendly)
+- Load declarative schema rules from `*.rules.yaml` files
+- Parse Markdown into mdast AST and check against schema rules
+- Detect missing sections, wrong heading levels, missing content, bad table columns, prohibited patterns
+- Support `schema-enabled = false` to skip schema checking
 
 CONSTRAINTS
 
@@ -574,4 +584,5 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.0.0 (2025-12-19): Schema alignment update - removed Table of Contents, replaced bold with CAPITALS, added Change Log
 - 2.1.0 (2026-02-24): Added delete list (`_delete.txt`) convention, delete-listed diff reporting, skip-equal file action type
 - 2.2.0 (2026-02-24): Aligned with code — added feature-gated delete sections, `--delete` flag, `DeleteResolver`, interactive multi-tool selection, `delete`/`list-unknown` config options, fixed directory structure, updated developer commands
+- 2.4.0 (2026-07-14): Added schema validation — declarative YAML rules for Markdown structural checks via remark/mdast, rule-loader, schema-checker components
 - 2.3.0 (2026-07-14): Added Validate Engine component — traceability chain validation (`awa validate`), `[validate]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting

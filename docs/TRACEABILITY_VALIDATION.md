@@ -57,6 +57,8 @@ code-globs = ["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
 ignore = ["node_modules/**", "dist/**"]
 format = "text"
+schema-dir = ".awa/.agent/schemas"
+schema-enabled = true
 id-pattern = '([A-Z][A-Z0-9]*-\d+(?:\.\d+)?(?:_AC-\d+)?|[A-Z][A-Z0-9]*_P-\d+)'
 cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 ```
@@ -72,6 +74,28 @@ cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 | `format` | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | *(see above)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
+| `schema-dir` | `".awa/.agent/schemas"` | Directory containing `*.rules.yaml` schema rule files |
+| `schema-enabled` | `true` | Enable/disable schema structural validation |
+
+## Schema Validation
+
+In addition to marker and cross-reference checks, `awa validate` can enforce structural rules on spec files using declarative YAML rule files.
+
+Rule files (`*.rules.yaml`) in the schema directory define expected heading structure, required content, and prohibited formatting. Each rule file targets specific spec files via a glob pattern.
+
+### Schema Finding Codes
+
+| Check | Severity | Description |
+|-------|----------|-------------|
+| Missing required section | error | Expected heading not found in spec file |
+| Wrong heading level | warning | Section exists but at incorrect depth |
+| Missing content | error | Required pattern, list items, table, or code block not found |
+| Wrong table columns | error | Table columns don't match expected headers |
+| Prohibited formatting | warning | Disallowed text pattern found outside code blocks |
+
+Disable schema validation with `schema-enabled = false` in the `[validate]` config section.
+
+For the full rule file format, see [SCHEMA_RULES.md](SCHEMA_RULES.md).
 
 ## JSON Output Format
 

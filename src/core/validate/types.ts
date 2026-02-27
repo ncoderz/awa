@@ -9,6 +9,8 @@ export interface ValidateConfig {
   readonly idPattern: string;
   readonly crossRefPatterns: readonly string[];
   readonly format: 'text' | 'json';
+  readonly schemaDir: string;
+  readonly schemaEnabled: boolean;
 }
 
 export const DEFAULT_VALIDATE_CONFIG: ValidateConfig = {
@@ -19,6 +21,8 @@ export const DEFAULT_VALIDATE_CONFIG: ValidateConfig = {
   idPattern: '([A-Z][A-Z0-9]*-\\d+(?:\\.\\d+)?(?:_AC-\\d+)?|[A-Z][A-Z0-9]*_P-\\d+)',
   crossRefPatterns: ['IMPLEMENTS:', 'VALIDATES:'],
   format: 'text',
+  schemaDir: '.awa/.agent/schemas',
+  schemaEnabled: true,
 };
 
 export type FindingSeverity = 'error' | 'warning';
@@ -28,7 +32,13 @@ export type FindingCode =
   | 'uncovered-ac'
   | 'broken-cross-ref'
   | 'invalid-id-format'
-  | 'orphaned-spec';
+  | 'orphaned-spec'
+  | 'schema-missing-section'
+  | 'schema-wrong-level'
+  | 'schema-missing-content'
+  | 'schema-table-columns'
+  | 'schema-prohibited'
+  | 'schema-no-rule';
 
 export interface Finding {
   readonly severity: FindingSeverity;

@@ -6,6 +6,8 @@ import { configLoader } from '../core/config.js';
 import { checkCodeAgainstSpec } from '../core/validate/code-spec-checker.js';
 import { scanMarkers } from '../core/validate/marker-scanner.js';
 import { report } from '../core/validate/reporter.js';
+import { loadRules } from '../core/validate/rule-loader.js';
+import { checkSchemasAsync } from '../core/validate/schema-checker.js';
 import { parseSpecs } from '../core/validate/spec-parser.js';
 import { checkSpecAgainstSpec } from '../core/validate/spec-spec-checker.js';
 import type { RawValidateOptions, ValidateConfig } from '../core/validate/types.js';
@@ -22,15 +24,27 @@ export async function validateCommand(cliOptions: RawValidateOptions): Promise<n
     // Build validate config from file [validate] section + CLI overrides
     const config = buildValidateConfig(fileConfig, cliOptions);
 
-    // Scan code markers and parse specs in parallel
-    const [markers, specs] = await Promise.all([scanMarkers(config), parseSpecs(config)]);
+    // Scan code markers, parse specs, and load schema rules in parallel
+    const [markers, specs, ruleSets] = await Promise.all([
+      scanMarkers(config),
+      parseSpecs(config),
+      config.schemaEnabled ? loadRules(config.schemaDir) : Promise.resolve([]),
+    ]);
 
-    // Run checkers
+    // Run checkers (code-spec and spec-spec are synchronous; schema is async)
     const codeSpecResult = checkCodeAgainstSpec(markers, specs, config);
     const specSpecResult = checkSpecAgainstSpec(specs, markers, config);
+    const schemaResult =
+      config.schemaEnabled && ruleSets.length > 0
+        ? await checkSchemasAsync(specs.specFiles, ruleSets)
+        : { findings: [] as const };
 
     // Combine findings
-    const allFindings = [...codeSpecResult.findings, ...specSpecResult.findings];
+    const allFindings = [
+      ...codeSpecResult.findings,
+      ...specSpecResult.findings,
+      ...schemaResult.findings,
+    ];
 
     // Report results
     report(allFindings, config.format);
@@ -82,7 +96,27 @@ function buildValidateConfig(
         ? 'json'
         : DEFAULT_VALIDATE_CONFIG.format;
 
-  return { specGlobs, codeGlobs, ignore, markers, idPattern, crossRefPatterns, format };
+  const schemaDir =
+    typeof validate?.['schema-dir'] === 'string'
+      ? validate['schema-dir']
+      : DEFAULT_VALIDATE_CONFIG.schemaDir;
+
+  const schemaEnabled =
+    typeof validate?.['schema-enabled'] === 'boolean'
+      ? validate['schema-enabled']
+      : DEFAULT_VALIDATE_CONFIG.schemaEnabled;
+
+  return {
+    specGlobs,
+    codeGlobs,
+    ignore,
+    markers,
+    idPattern,
+    crossRefPatterns,
+    format,
+    schemaDir,
+    schemaEnabled,
+  };
 }
 
 function toStringArray(value: unknown): string[] | null {
