@@ -71,7 +71,7 @@ TEST CRITERIA: `awa check` loads rules, reports schema findings alongside marker
 
 - [x] T-CHK-160 Create schema rules format reference → docs/SCHEMA_RULES.md
 - [x] T-CHK-161 Update CLI reference with schema validation options → docs/CLI.md
-- [x] T-CHK-162 Update traceability validation guide with schema validation section → docs/TRACEABILITY_VALIDATION.md
+- [x] T-CHK-162 Update traceability validation guide with schema validation section → docs/TRACEABILITY_CHECK.md
 - [x] T-CHK-163 Update ARCHITECTURE.md with CHK-RuleLoader and CHK-SchemaChecker components → .awa/specs/ARCHITECTURE.md
 - [x] T-CHK-164 Update website CLI reference → website/src/content/docs/cli.mdx
 - [x] T-CHK-165 Update website configuration page → website/src/content/docs/configuration.md

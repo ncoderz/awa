@@ -100,7 +100,7 @@ Implement per tasks above.
 ### 6. DOCUMENTATION
 
 - Update `docs/CLI.md` with `awa check` reference
-- New doc: `docs/TRACEABILITY_VALIDATION.md` — what it checks, configuration options, how to customize for non-awa workflows
+- New doc: `docs/TRACEABILITY_CHECK.md` — what it checks, configuration options, how to customize for non-awa workflows
 - Update `README.md` features list
 - Website: Add validate to CLI reference, new guide page on traceability validation
 - Update ARCHITECTURE.md with Validate component

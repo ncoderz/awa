@@ -159,7 +159,7 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 | [Workflow](docs/WORKFLOW.md) | The awa workflow, `.awa/` structure, traceability chain, IDs and markers |
 | [CLI Reference](docs/CLI.md) | Commands, options, configuration, presets, and how it works |
 | [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
-| [Traceability Validation](docs/TRACEABILITY_VALIDATION.md) | The `awa check` command, checks, configuration, JSON output |
+| [Traceability Check](docs/TRACEABILITY_CHECK.md) | The `awa check` command, checks, configuration, JSON output |
 
 ## Community
 

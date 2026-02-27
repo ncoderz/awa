@@ -115,7 +115,7 @@ TEST CRITERIA: Updated skill/prompt partials instruct validate usage
 ## Phase 9: Documentation
 
 - [x] T-CHK-070 Update CLI reference with check command → docs/CLI.md
-- [x] T-CHK-071 Create traceability validation guide → docs/TRACEABILITY_VALIDATION.md
+- [x] T-CHK-071 Create traceability check guide → docs/TRACEABILITY_CHECK.md
 - [x] T-CHK-072 Update README.md features list → README.md
 - [x] T-CHK-073 Update ARCHITECTURE.md with Validate components → .awa/specs/ARCHITECTURE.md
 

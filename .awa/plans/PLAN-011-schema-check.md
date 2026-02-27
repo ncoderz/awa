@@ -2,7 +2,7 @@
 
 **Status:** in-progress
 **Workflow direction:** top-down
-**Traceability:** Extends VAL (validate) feature — PLAN-002, REQ-VAL, DESIGN-VAL
+**Traceability:** Extends CHK (check) feature — PLAN-002, REQ-CHK, DESIGN-CHK
 
 ## Problem
 
@@ -278,7 +278,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 ### Phase 4: Documentation
 
 1. Create `docs/SCHEMA_RULES.md` — rule file format reference
-2. Update `docs/CLI.md` and `docs/TRACEABILITY_VALIDATION.md`
+2. Update `docs/CLI.md` and `docs/TRACEABILITY_CHECK.md`
 3. Update website docs (CLI, configuration, traceability guide)
 4. Update ARCHITECTURE.md with new components
 
