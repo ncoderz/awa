@@ -48,11 +48,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 Upgrade the specified specs to conform to their schemas and traceability rules.
 
 1) ORIENT: Confirm which artifacts to upgrade; clarify missing targets.
-2) AUDIT: Compare each document to its schema; rely on the schema for section structure, required/optional fields, and prohibited patterns.
-3) ALIGN: Update IDs and code refs to match schema patterns and current agent/code context (requirements, criteria, properties, tasks, components, trace markers). Adjust content to satisfy schema expectations.
-4) TRACEABILITY: Preserve and update code ref markers and any trace matrices when IDs change.
-5) VALIDATE: Re-scan against schemas; avoid empty placeholders; keep files under 500 lines.
-6) REPORT: Summarize changes and remaining questions before finalizing.
+2) CHECK: Run `awa check` in the terminal to identify schema violations and traceability errors across all target files. Parse the output to build a list of findings to fix.
+3) FIX: For each reported error, edit the file to resolve the violation — fix section structure, heading levels, missing required content, prohibited patterns, and broken trace IDs.
+4) RECHECK: Run `awa check` again to verify all errors are resolved. Repeat FIX → RECHECK until the check passes cleanly (warnings and info findings are acceptable).
+5) REPORT: Summarize changes and remaining questions before finalizing.
 
 ## Outputs
 

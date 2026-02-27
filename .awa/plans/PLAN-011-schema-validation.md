@@ -1,8 +1,8 @@
 # PLAN-011: Schema Validation for `awa check`
 
-STATUS: in-progress
-DIRECTION: top-down
-TRACEABILITY: Extends CHK (check) feature — PLAN-002, REQ-CHK, DESIGN-CHK
+**Status:** in-progress
+**Workflow direction:** top-down
+**Traceability:** Extends VAL (validate) feature — PLAN-002, REQ-VAL, DESIGN-VAL
 
 ## Problem
 
@@ -14,7 +14,7 @@ The schemas exist (`.awa/.agent/schemas/*.schema.md`) but are only consumed by t
 
 Extend `awa check` to check Markdown files against configurable declarative rule files. Report structural violations (missing required sections, malformed IDs, incorrect heading levels, wrong table columns, missing list patterns) alongside the existing marker/cross-ref findings.
 
-OUT OF SCOPE: Creating the rule files for the existing awa schemas. This plan covers the validation engine and rule format only.
+**Out of scope:** Creating the rule files for the existing awa schemas. This plan covers the validation engine and rule format only.
 
 ## Approach
 
@@ -28,10 +28,10 @@ OUT OF SCOPE: Creating the rule files for the existing awa schemas. This plan co
 | JSON Schema | Validates JSON/YAML | Markdown isn't JSON |
 | Spectral | Declarative rules for API specs | Designed for OpenAPI JSON, not Markdown |
 
-CHOSEN APPROACH:
-1. remark/unified to parse Markdown into mdast (AST) — battle-tested, widely used, no custom parser
-2. Custom declarative rule files (YAML) for structural expectations — simple, human-readable, easy for users to author
-3. AST walker checks rules against the parsed tree
+**Chosen approach:**
+1. **remark/unified** to parse Markdown into mdast (AST) — battle-tested, widely used, no custom parser
+2. **Custom declarative rule files** (YAML) for structural expectations — simple, human-readable, easy for users to author
+3. **AST walker** checks rules against the parsed tree
 
 ### Rule File Format
 
@@ -185,7 +185,7 @@ The rule format supports these primitives:
 
 ### Markdown Parsing
 
-Use remark (unified ecosystem) to parse Markdown into mdast:
+Use **remark** (unified ecosystem) to parse Markdown into mdast:
 
 ```
 dependencies:
@@ -312,6 +312,6 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 
 ## Open Questions
 
-1. YAML parser choice — `yaml` (npm) is comprehensive but 200KB+. `smol-yaml`? Or is there a lighter option? Need to research.
-2. Info-level findings — should `schema-no-rule` (file matches no rule) be reported at all? Recommendation: off by default, opt-in via config.
-3. Rule file validation — should the loader validate rule files themselves (e.g. detect invalid regex in `pattern`)? Recommendation: yes, fail fast with clear errors.
+1. **YAML parser choice** — `yaml` (npm) is comprehensive but 200KB+. `smol-yaml`? Or is there a lighter option? Need to research.
+2. **Info-level findings** — should `schema-no-rule` (file matches no rule) be reported at all? Recommendation: off by default, opt-in via config.
+3. **Rule file validation** — should the loader validate rule files themselves (e.g. detect invalid regex in `pattern`)? Recommendation: yes, fail fast with clear errors.
