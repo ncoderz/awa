@@ -12,16 +12,16 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   .awa/
   ├── .agent/
   │   └── schemas/
-  │       ├── ARCHITECTURE.schema.md
-  │       ├── FEAT.schema.md
-  │       ├── EXAMPLES.schema.md
-  │       ├── REQ.schema.md
-  │       ├── DESIGN.schema.md
-  │       ├── API.schema.md
-  │       ├── TASK.schema.md
-  │       ├── PLAN.schema.md
-  │       ├── README.schema.md
-  │       └── ALIGN_REPORT.schema.md
+  │       ├── ARCHITECTURE.rules.yaml
+  │       ├── FEAT.rules.yaml
+  │       ├── EXAMPLES.rules.yaml
+  │       ├── REQ.rules.yaml
+  │       ├── DESIGN.rules.yaml
+  │       ├── API.rules.yaml
+  │       ├── TASK.rules.yaml
+  │       ├── PLAN.rules.yaml
+  │       ├── README.rules.yaml
+  │       └── ALIGN_REPORT.rules.yaml
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md

@@ -49,7 +49,8 @@
     "/^task .*$/": true,
     "/^docker (compose|inspect|exec|logs|ps).*$/": true,
     "npx tsc": true,
-    "npx tsx": true
+    "npx tsx": true,
+    "npx vitest": true
   },
   "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
 }

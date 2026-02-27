@@ -298,3 +298,15 @@ QWEN.md
 .agent/skills/awa-upgrade/SKILL.md
 .agent/skills/awa-validate-alignment/SKILL.md
 .agent/skills/awa-vibe/SKILL.md
+
+# Schema files replaced by .rules.yaml
+.awa/.agent/schemas/ARCHITECTURE.schema.md
+.awa/.agent/schemas/ALIGN_REPORT.schema.md
+.awa/.agent/schemas/API.schema.md
+.awa/.agent/schemas/DESIGN.schema.md
+.awa/.agent/schemas/EXAMPLES.schema.md
+.awa/.agent/schemas/FEAT.schema.md
+.awa/.agent/schemas/PLAN.schema.md
+.awa/.agent/schemas/README.schema.md
+.awa/.agent/schemas/REQ.schema.md
+.awa/.agent/schemas/TASK.schema.md

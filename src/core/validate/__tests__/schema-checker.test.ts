@@ -181,7 +181,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const tableIssues = result.findings.filter((f) => f.code === 'schema-table-columns');
     expect(tableIssues).toHaveLength(1);
-    expect(tableIssues[0]!.message).toContain('expected [AC, Task, Test]');
+    expect(tableIssues[0]!.message).toContain('has columns [AC, Task, Test]');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -472,6 +472,211 @@ interface Foo {}
     });
 
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    expect(result.findings).toHaveLength(0);
+  });
+
+  // --- Conditional (when) and prohibited tests ---
+
+  // @awa-test: VAL-SchemaChecker
+  test('when heading-matches: rule applies when heading matches condition', async () => {
+    const filePath = join(testDir, 'TASK.md');
+    await writeFile(
+      filePath,
+      `# Tasks
+
+## Phase 1: Config Loading [MUST]
+
+Some text but no GOAL line.
+`
+    );
+
+    const ruleSet = makeRuleSet({
+      'target-files': `${testDir}/*.md`,
+      sections: [
+        { heading: 'Tasks', level: 1, required: true },
+        {
+          heading: 'Phase \\d+:.*',
+          level: 2,
+          repeatable: true,
+          contains: [
+            {
+              pattern: '^GOAL:',
+              label: 'GOAL statement',
+              when: { 'heading-matches': '\\[(MUST|SHOULD|COULD)\\]' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    // Heading contains [MUST], condition matches, GOAL is missing → error
+    const missing = result.findings.filter(
+      (f: { code: string }) => f.code === 'schema-missing-content'
+    );
+    expect(missing).toHaveLength(1);
+    expect(missing[0]!.message).toContain('GOAL statement');
+  });
+
+  // @awa-test: VAL-SchemaChecker
+  test('when heading-matches: rule skipped when heading does not match condition', async () => {
+    const filePath = join(testDir, 'TASK.md');
+    await writeFile(
+      filePath,
+      `# Tasks
+
+## Phase 1: Setup
+
+- [ ] T-X-001 Some task → src/foo.ts
+`
+    );
+
+    const ruleSet = makeRuleSet({
+      'target-files': `${testDir}/*.md`,
+      sections: [
+        { heading: 'Tasks', level: 1, required: true },
+        {
+          heading: 'Phase \\d+:.*',
+          level: 2,
+          repeatable: true,
+          contains: [
+            {
+              pattern: '^GOAL:',
+              label: 'GOAL statement',
+              when: { 'heading-matches': '\\[(MUST|SHOULD|COULD)\\]' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    // Heading is "Phase 1: Setup" (no [MUST]), condition doesn't match → rule skipped
+    expect(result.findings).toHaveLength(0);
+  });
+
+  // @awa-test: VAL-SchemaChecker
+  test('prohibited pattern: error when pattern found in matching section', async () => {
+    const filePath = join(testDir, 'TASK.md');
+    await writeFile(
+      filePath,
+      `# Tasks
+
+## Phase 1: Setup
+
+- [ ] T-X-001 Some task → src/foo.ts
+  IMPLEMENTS: X-1_AC-1
+`
+    );
+
+    const ruleSet = makeRuleSet({
+      'target-files': `${testDir}/*.md`,
+      sections: [
+        { heading: 'Tasks', level: 1, required: true },
+        {
+          heading: 'Phase \\d+:.*',
+          level: 2,
+          repeatable: true,
+          contains: [
+            {
+              pattern: 'IMPLEMENTS:',
+              prohibited: true,
+              label: 'IMPLEMENTS trace line (not allowed in setup phases)',
+              when: { 'heading-not-matches': '\\[(MUST|SHOULD|COULD)\\]' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    // "Setup" heading doesn't have priority marker → when-not-matches activates
+    // IMPLEMENTS found → prohibited violation
+    const prohibited = result.findings.filter(
+      (f: { code: string }) => f.code === 'schema-prohibited'
+    );
+    expect(prohibited).toHaveLength(1);
+    expect(prohibited[0]!.message).toContain('IMPLEMENTS trace line');
+  });
+
+  // @awa-test: VAL-SchemaChecker
+  test('prohibited pattern: no error when pattern not found', async () => {
+    const filePath = join(testDir, 'TASK.md');
+    await writeFile(
+      filePath,
+      `# Tasks
+
+## Phase 1: Setup
+
+- [ ] T-X-001 Some task → src/foo.ts
+`
+    );
+
+    const ruleSet = makeRuleSet({
+      'target-files': `${testDir}/*.md`,
+      sections: [
+        { heading: 'Tasks', level: 1, required: true },
+        {
+          heading: 'Phase \\d+:.*',
+          level: 2,
+          repeatable: true,
+          contains: [
+            {
+              pattern: 'IMPLEMENTS:',
+              prohibited: true,
+              label: 'IMPLEMENTS trace line',
+              when: { 'heading-not-matches': '\\[(MUST|SHOULD|COULD)\\]' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    // Setup heading, no IMPLEMENTS found → no violation
+    expect(result.findings).toHaveLength(0);
+  });
+
+  // @awa-test: VAL-SchemaChecker
+  test('prohibited pattern skipped on requirement phases (when-not-matches does not activate)', async () => {
+    const filePath = join(testDir, 'TASK.md');
+    await writeFile(
+      filePath,
+      `# Tasks
+
+## Phase 3: Config Loading [MUST]
+
+GOAL: Load config
+TEST CRITERIA: Can load valid TOML
+
+- [ ] T-X-010 Implement load → src/loader.ts
+  IMPLEMENTS: X-1_AC-1
+`
+    );
+
+    const ruleSet = makeRuleSet({
+      'target-files': `${testDir}/*.md`,
+      sections: [
+        { heading: 'Tasks', level: 1, required: true },
+        {
+          heading: 'Phase \\d+:.*',
+          level: 2,
+          repeatable: true,
+          contains: [
+            {
+              pattern: 'IMPLEMENTS:',
+              prohibited: true,
+              label: 'IMPLEMENTS trace line',
+              when: { 'heading-not-matches': '\\[(MUST|SHOULD|COULD)\\]' },
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    // [MUST] in heading → when-not-matches condition fails → rule skipped
+    // IMPLEMENTS is allowed in requirement phases
     expect(result.findings).toHaveLength(0);
   });
 });

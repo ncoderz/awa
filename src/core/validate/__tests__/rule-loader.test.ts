@@ -247,4 +247,83 @@ sections-prohibited:
       expect(matchesTargetGlob('other/TASK-X.md', '.awa/tasks/TASK-*.md')).toBe(false);
     });
   });
+
+  // @awa-test: VAL-RuleLoader
+  test('loads rule with when condition and prohibited flag', async () => {
+    await writeFile(
+      join(testDir, 'task.rules.yaml'),
+      `target-files: ".awa/tasks/TASK-*.md"
+sections:
+  - heading: "Phase \\\\d+:.*"
+    level: 2
+    repeatable: true
+    contains:
+      - pattern: "^GOAL:"
+        label: "GOAL statement"
+        when:
+          heading-matches: "\\\\[(MUST|SHOULD|COULD)\\\\]"
+      - pattern: "IMPLEMENTS:"
+        prohibited: true
+        label: "IMPLEMENTS trace"
+        when:
+          heading-not-matches: "\\\\[(MUST|SHOULD|COULD)\\\\]"
+`
+    );
+
+    const rules = await loadRules(testDir);
+    expect(rules).toHaveLength(1);
+
+    const section = rules[0]!.ruleFile.sections[0]!;
+    expect(section.contains).toHaveLength(2);
+
+    const goalRule = section.contains![0]!;
+    expect('pattern' in goalRule).toBe(true);
+    if ('pattern' in goalRule) {
+      expect(goalRule.when).toEqual({ 'heading-matches': '\\[(MUST|SHOULD|COULD)\\]' });
+    }
+
+    const implRule = section.contains![1]!;
+    if ('pattern' in implRule) {
+      expect(implRule.prohibited).toBe(true);
+      expect(implRule.when).toEqual({ 'heading-not-matches': '\\[(MUST|SHOULD|COULD)\\]' });
+    }
+  });
+
+  // @awa-test: VAL-RuleLoader
+  test('rejects when condition with invalid regex', async () => {
+    await writeFile(
+      join(testDir, 'bad-when.rules.yaml'),
+      `target-files: "*.md"
+sections:
+  - heading: "Title"
+    level: 1
+    contains:
+      - pattern: "test"
+        when:
+          heading-matches: "[invalid("
+`
+    );
+
+    await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
+    await expect(loadRules(testDir)).rejects.toThrow('Invalid regex');
+  });
+
+  // @awa-test: VAL-RuleLoader
+  test('rejects when condition without heading-matches or heading-not-matches', async () => {
+    await writeFile(
+      join(testDir, 'bad-when.rules.yaml'),
+      `target-files: "*.md"
+sections:
+  - heading: "Title"
+    level: 1
+    contains:
+      - pattern: "test"
+        when:
+          foo: "bar"
+`
+    );
+
+    await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
+    await expect(loadRules(testDir)).rejects.toThrow("must have 'heading-matches'");
+  });
 });

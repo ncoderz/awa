@@ -1,4 +1,7 @@
-# Schema Rules
+---
+title: Schema Rules
+description: Define structural validation rules for Markdown spec files using declarative YAML.
+---
 
 Schema rules define the expected structure of Markdown spec files. The `awa validate` command loads `*.rules.yaml` files from the schema directory and checks spec files against them.
 
@@ -121,23 +124,6 @@ contains:
     required: true
 ```
 
-### `children`
-
-Nested section rules constrain headings that appear under a matched parent section. They follow the same format as top-level section rules.
-
-```yaml
-sections:
-  - heading: "Component Details"
-    level: 2
-    required: true
-    children:
-      - heading: ".*"
-        level: 3
-        repeatable: true
-        contains:
-          - pattern: "RESPONSIBILITIES"
-```
-
 ### `when` — Conditional Rules
 
 Any contains rule can include a `when` clause that gates the rule based on the matched section's heading text. The condition is a regex test against the heading.
@@ -178,6 +164,23 @@ contains:
     label: "TODO markers"
 ```
 
+### `children`
+
+Nested section rules constrain headings that appear under a matched parent section. They follow the same format as top-level section rules.
+
+```yaml
+sections:
+  - heading: "Component Details"
+    level: 2
+    required: true
+    children:
+      - heading: ".*"
+        level: 3
+        repeatable: true
+        contains:
+          - pattern: "RESPONSIBILITIES"
+```
+
 ### `sections-prohibited`
 
 An array of literal text patterns that should not appear anywhere in the file (outside code blocks). Findings are reported as warnings.
@@ -210,6 +213,8 @@ Schema validation is enabled by default. Configure in `.awa.toml`:
 schema-dir = ".awa/.agent/schemas"   # Directory containing *.rules.yaml files
 schema-enabled = true                 # Set to false to disable schema checking
 ```
+
+See [Configuration](/reference/configuration/) for the full `[validate]` options reference.
 
 ## Complete Example
 

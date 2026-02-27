@@ -15,6 +15,7 @@ import type {
   PatternContainsRule,
   SectionRule,
   TableContainsRule,
+  WhenCondition,
 } from './rule-types.js';
 import type { CheckResult, Finding, SpecFile } from './types.js';
 
@@ -220,6 +221,12 @@ function escapeRegex(str: string): string {
 // --- Contains rule dispatching ---
 
 function checkContainsRule(section: SectionNode, rule: ContainsRule, filePath: string): Finding[] {
+  // Evaluate 'when' condition gate — skip rule if condition not met
+  const when = 'when' in rule ? (rule as { when?: WhenCondition }).when : undefined;
+  if (when && !evaluateWhenCondition(when, section.headingText)) {
+    return [];
+  }
+
   if ('pattern' in rule && typeof rule.pattern === 'string') {
     return checkPatternContains(section, rule as PatternContainsRule, filePath);
   }
@@ -244,7 +251,26 @@ function checkPatternContains(
   filePath: string
 ): Finding[] {
   const text = getFullSectionText(section);
-  if (new RegExp(rule.pattern).test(text)) return [];
+  const found = new RegExp(rule.pattern, 'm').test(text);
+
+  // Prohibited mode: pattern must NOT appear
+  if (rule.prohibited) {
+    if (found) {
+      return [
+        {
+          severity: 'warning',
+          code: 'schema-prohibited',
+          message: `Section '${section.headingText}' contains prohibited content: ${rule.label ?? rule.pattern}`,
+          filePath,
+          line: section.heading.position?.start.line,
+        },
+      ];
+    }
+    return [];
+  }
+
+  // Normal mode: pattern must appear
+  if (found) return [];
 
   if (rule.required !== false) {
     return [
@@ -302,7 +328,12 @@ function checkTableContains(
     ];
   }
 
-  const findings: Finding[] = [];
+  // Find the first table whose columns match the rule. If none match, report
+  // the column mismatch for the first table. This avoids false positives when a
+  // section contains multiple tables with different column sets.
+  let matched: Table | undefined;
+  let firstMismatch: { table: Table; headers: string[] } | undefined;
+
   for (const table of tables) {
     const headerRow = table.children[0] as TableRow | undefined;
     if (!headerRow) continue;
@@ -311,27 +342,38 @@ function checkTableContains(
       extractText(cell.children as PhrasingContent[]).trim()
     );
 
-    if (!rule.table.columns.every((col) => headers.includes(col))) {
-      findings.push({
+    if (rule.table.columns.every((col) => headers.includes(col))) {
+      matched = table;
+      break;
+    }
+    if (!firstMismatch) {
+      firstMismatch = { table, headers };
+    }
+  }
+
+  if (!matched) {
+    const mm = firstMismatch;
+    return [
+      {
         severity: 'error',
         code: 'schema-table-columns',
-        message: `Table in '${section.headingText}' has columns [${headers.join(', ')}], expected [${rule.table.columns.join(', ')}]`,
+        message: `No table in '${section.headingText}' has columns [${rule.table.columns.join(', ')}]${mm ? `, found [${mm.headers.join(', ')}]` : ''}`,
         filePath,
-        line: table.position?.start.line,
-      });
-      continue;
-    }
+        line: mm?.table.position?.start.line ?? section.heading.position?.start.line,
+      },
+    ];
+  }
 
-    const dataRows = table.children.length - 1;
-    if (rule.table['min-rows'] !== undefined && dataRows < rule.table['min-rows']) {
-      findings.push({
-        severity: 'error',
-        code: 'schema-missing-content',
-        message: `Table in '${section.headingText}' has ${dataRows} data rows, expected at least ${rule.table['min-rows']}`,
-        filePath,
-        line: table.position?.start.line,
-      });
-    }
+  const findings: Finding[] = [];
+  const dataRows = matched.children.length - 1;
+  if (rule.table['min-rows'] !== undefined && dataRows < rule.table['min-rows']) {
+    findings.push({
+      severity: 'error',
+      code: 'schema-missing-content',
+      message: `Table in '${section.headingText}' has ${dataRows} data rows, expected at least ${rule.table['min-rows']}`,
+      filePath,
+      line: matched.position?.start.line,
+    });
   }
   return findings;
 }
@@ -376,6 +418,18 @@ function checkHeadingOrText(
     ];
   }
   return [];
+}
+
+// --- When condition evaluation ---
+
+function evaluateWhenCondition(when: WhenCondition, headingText: string): boolean {
+  if (when['heading-matches']) {
+    if (!new RegExp(when['heading-matches']).test(headingText)) return false;
+  }
+  if (when['heading-not-matches']) {
+    if (new RegExp(when['heading-not-matches']).test(headingText)) return false;
+  }
+  return true;
 }
 
 // --- Prohibited patterns ---
@@ -440,7 +494,18 @@ function extractListItems(nodes: Root['children']): string[] {
   for (const node of nodes) {
     if (node.type === 'list') {
       for (const item of (node as List).children) {
-        items.push(nodeToText(item as unknown as Root['children'][number]));
+        const raw = nodeToText(item as unknown as Root['children'][number]);
+        // remark-gfm stores checkbox state as a `checked` property on the listItem
+        // rather than preserving the literal [ ] / [x] text. Reconstruct it for
+        // rules that match checkbox syntax (e.g. \[ \] T-CODE-nnn).
+        const li = item as { checked?: boolean | null };
+        if (li.checked === true) {
+          items.push(`[x] ${raw}`);
+        } else if (li.checked === false) {
+          items.push(`[ ] ${raw}`);
+        } else {
+          items.push(raw);
+        }
       }
     }
   }

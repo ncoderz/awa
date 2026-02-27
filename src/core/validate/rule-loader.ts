@@ -14,6 +14,7 @@ import type {
   RuleFile,
   SectionRule,
   TableContainsRule,
+  WhenCondition,
 } from './rule-types.js';
 
 /**
@@ -94,8 +95,10 @@ function validateRuleFile(raw: Record<string, unknown>, filePath: string): RuleF
 
   return {
     'target-files': raw['target-files'] as string,
+    ...(typeof raw.description === 'string' ? { description: raw.description } : {}),
     sections,
     ...(sectionsProhibited ? { 'sections-prohibited': sectionsProhibited } : {}),
+    ...(typeof raw.example === 'string' ? { example: raw.example } : {}),
   };
 }
 
@@ -144,6 +147,7 @@ function validateSectionRule(raw: unknown, path: string, filePath: string): Sect
     level: section.level as number,
     ...(typeof section.required === 'boolean' ? { required: section.required } : {}),
     ...(typeof section.repeatable === 'boolean' ? { repeatable: section.repeatable } : {}),
+    ...(typeof section.description === 'string' ? { description: section.description } : {}),
     ...(contains ? { contains } : {}),
     ...(children ? { children } : {}),
   };
@@ -156,13 +160,22 @@ function validateContainsRule(raw: unknown, path: string, filePath: string): Con
 
   const rule = raw as Record<string, unknown>;
 
+  // Parse optional 'when' condition (applicable to all rule types)
+  const when =
+    rule.when !== undefined
+      ? validateWhenCondition(rule.when, `${path}.when`, filePath)
+      : undefined;
+
   // Pattern rule
   if (typeof rule.pattern === 'string') {
     validatePattern(rule.pattern, `${path}.pattern`, filePath);
     return {
       pattern: rule.pattern,
       ...(typeof rule.label === 'string' ? { label: rule.label } : {}),
+      ...(typeof rule.description === 'string' ? { description: rule.description } : {}),
       ...(typeof rule.required === 'boolean' ? { required: rule.required } : {}),
+      ...(typeof rule.prohibited === 'boolean' ? { prohibited: rule.prohibited } : {}),
+      ...(when ? { when } : {}),
     } satisfies PatternContainsRule;
   }
 
@@ -179,6 +192,8 @@ function validateContainsRule(raw: unknown, path: string, filePath: string): Con
         ...(typeof list.min === 'number' ? { min: list.min } : {}),
         ...(typeof list.label === 'string' ? { label: list.label } : {}),
       },
+      ...(typeof rule.description === 'string' ? { description: rule.description } : {}),
+      ...(when ? { when } : {}),
     } satisfies ListContainsRule;
   }
 
@@ -197,6 +212,8 @@ function validateContainsRule(raw: unknown, path: string, filePath: string): Con
         columns: table.columns as string[],
         ...(typeof table['min-rows'] === 'number' ? { 'min-rows': table['min-rows'] } : {}),
       },
+      ...(typeof rule.description === 'string' ? { description: rule.description } : {}),
+      ...(when ? { when } : {}),
     } satisfies TableContainsRule;
   }
 
@@ -205,6 +222,8 @@ function validateContainsRule(raw: unknown, path: string, filePath: string): Con
     return {
       'code-block': true,
       ...(typeof rule.label === 'string' ? { label: rule.label } : {}),
+      ...(typeof rule.description === 'string' ? { description: rule.description } : {}),
+      ...(when ? { when } : {}),
     } satisfies CodeBlockContainsRule;
   }
 
@@ -213,10 +232,39 @@ function validateContainsRule(raw: unknown, path: string, filePath: string): Con
     return {
       'heading-or-text': rule['heading-or-text'],
       ...(typeof rule.required === 'boolean' ? { required: rule.required } : {}),
+      ...(typeof rule.description === 'string' ? { description: rule.description } : {}),
+      ...(when ? { when } : {}),
     } satisfies HeadingOrTextContainsRule;
   }
 
   throw new RuleValidationError(`${path} has no recognized rule type in ${filePath}`);
+}
+
+function validateWhenCondition(raw: unknown, path: string, filePath: string): WhenCondition {
+  if (!raw || typeof raw !== 'object') {
+    throw new RuleValidationError(`${path} must be an object in ${filePath}`);
+  }
+
+  const condition = raw as Record<string, unknown>;
+  const result: Record<string, string> = {};
+
+  if (typeof condition['heading-matches'] === 'string') {
+    validatePattern(condition['heading-matches'], `${path}.heading-matches`, filePath);
+    result['heading-matches'] = condition['heading-matches'];
+  }
+
+  if (typeof condition['heading-not-matches'] === 'string') {
+    validatePattern(condition['heading-not-matches'], `${path}.heading-not-matches`, filePath);
+    result['heading-not-matches'] = condition['heading-not-matches'];
+  }
+
+  if (!result['heading-matches'] && !result['heading-not-matches']) {
+    throw new RuleValidationError(
+      `${path} must have 'heading-matches' or 'heading-not-matches' in ${filePath}`
+    );
+  }
+
+  return result as unknown as WhenCondition;
 }
 
 function validatePattern(pattern: string, path: string, filePath: string): void {
