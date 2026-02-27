@@ -32,7 +32,7 @@ Every artifact traces back to its origin through explicit markers (`@awa-impl`, 
 - Structured workflow from architecture through features, requirements, design, tasks, code, tests, and docs
 - Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
 - Every requirement has an ID; every line of code links back to it via `@awa-impl` and `@awa-test` markers
-- `awa validate` checks that all traceability markers resolve to real spec IDs and flags uncovered acceptance criteria
+- `awa check` checks that all traceability markers resolve to real spec IDs and flags uncovered acceptance criteria
 - Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
 
 ### CLI & Template Engine

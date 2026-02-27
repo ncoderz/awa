@@ -55,7 +55,7 @@ Each tool that supports Agent Skills receives the full set of 14 awa skills:
 | `awa-requirements` | Create or update requirements documents |
 | `awa-tasks` | Create or update task list documents |
 | `awa-upgrade` | Upgrade specs to match current schemas |
-| `awa-validate-alignment` | Validate alignment between artifacts |
+| `awa-align` | Validate alignment between artifacts |
 | `awa-vibe` | Full awa workflow from idea to completion |
 
 ## Partials

@@ -53,7 +53,7 @@ lite = ["copilot", "claude"]
 | `refresh` | boolean | `false` | Force re-fetch of cached remote templates |
 | `list-unknown` | boolean | `false` | Include target-only files in `awa diff` output |
 
-### `[validate]` Options
+### `[check]` Options
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -133,7 +133,7 @@ delete = true
 [presets]
 full = ["copilot", "claude", "cursor", "windsurf"]
 
-[validate]
+[check]
 spec-globs = [".awa/specs/**/*.md"]
 code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]

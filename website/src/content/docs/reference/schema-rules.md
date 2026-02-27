@@ -3,7 +3,7 @@ title: Schema Rules
 description: Define structural validation rules for Markdown spec files using declarative YAML.
 ---
 
-Schema rules define the expected structure of Markdown spec files. The `awa validate` command loads `*.rules.yaml` files from the schema directory and checks spec files against them.
+Schema rules define the expected structure of Markdown spec files. The `awa check` command loads `*.rules.yaml` files from the schema directory and checks spec files against them.
 
 ## Rule File Location
 
@@ -209,12 +209,12 @@ Code blocks (fenced with `` ``` ``) are excluded from prohibited pattern scannin
 Schema validation is enabled by default. Configure in `.awa.toml`:
 
 ```toml
-[validate]
+[check]
 schema-dir = ".awa/.agent/schemas"   # Directory containing *.rules.yaml files
 schema-enabled = true                 # Set to false to disable schema checking
 ```
 
-See [Configuration](/reference/configuration/) for the full `[validate]` options reference.
+See [Configuration](/reference/configuration/) for the full `[check]` options reference.
 
 ## Complete Example
 

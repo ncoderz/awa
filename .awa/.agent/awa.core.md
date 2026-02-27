@@ -108,6 +108,6 @@ All `awa` commands in these instructions assume this resolution.
 </cli_invocation>
 
 <validation>
-You SHALL run `awa validate` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and traceability integrity. Fix any errors before proceeding.
+You SHALL run `awa check` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and traceability integrity. Fix any errors before proceeding.
 </validation>
 </awa>

@@ -215,21 +215,21 @@ export class ConfigLoader {
         config['list-unknown'] = parsed['list-unknown'];
       }
 
-      // @awa-impl: VAL-16_AC-1
-      // Pass through [validate] table as-is for validate command to process
-      if (parsed.validate !== undefined) {
+      // @awa-impl: CHK-16_AC-1
+      // Pass through [check] table as-is for check command to process
+      if (parsed.check !== undefined) {
         if (
-          parsed.validate === null ||
-          typeof parsed.validate !== 'object' ||
-          Array.isArray(parsed.validate)
+          parsed.check === null ||
+          typeof parsed.check !== 'object' ||
+          Array.isArray(parsed.check)
         ) {
           throw new ConfigError(
-            `Invalid type for 'validate': expected table`,
+            `Invalid type for 'check': expected table`,
             'INVALID_TYPE',
             pathToLoad
           );
         }
-        config.validate = parsed.validate as Record<string, unknown>;
+        config.check = parsed.check as Record<string, unknown>;
       }
 
       // Warn about unknown options
@@ -245,7 +245,7 @@ export class ConfigLoader {
         'delete',
         'refresh',
         'list-unknown',
-        'validate',
+        'check',
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {

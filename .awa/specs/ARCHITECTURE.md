@@ -12,7 +12,7 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - **Template Engine**: Template loading, rendering with conditional logic
 - **File Generator**: Output file creation, directory management, conflict resolution
 - **Diff Engine**: Template comparison against target directory with diff reporting
-- **Validate Engine**: Traceability chain validation — scans code markers and spec IDs, reports findings
+- **Check Engine**: Traceability chain validation — scans code markers and spec IDs, reports findings
 
 ## Technology Stack
 
@@ -88,7 +88,7 @@ awa/
 │   ├── commands/          # Command implementations
 │   │   ├── generate.ts    # Generate command orchestration
 │   │   ├── diff.ts        # Diff command orchestration
-│   │   └── validate.ts    # Validate command orchestration
+│   │   └── check.ts    # Validate command orchestration
 │   ├── core/              # Core business logic
 │   │   ├── config.ts      # Configuration loader
 │   │   ├── delete-list.ts # Delete list parser (feature-gated)
@@ -100,7 +100,7 @@ awa/
 │   │   ├── template.ts    # Template engine wrapper
 │   │   └── validate/      # Traceability validation
 │   │       ├── types.ts           # Config, finding, marker types
-│   │       ├── errors.ts          # ValidateError class
+│   │       ├── errors.ts          # CheckError class
 │   │       ├── glob.ts            # Shared glob + ignore filtering
 │   │       ├── marker-scanner.ts  # Scans code for @awa-* markers
 │   │       ├── spec-parser.ts     # Parses spec files for IDs
@@ -143,7 +143,7 @@ RESPONSIBILITIES
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
-- Support `generate`, `diff`, and `validate` subcommands
+- Support `generate`, `diff`, and `check` subcommands
 
 CONSTRAINTS
 
@@ -172,7 +172,7 @@ CONSTRAINTS
 - Missing config file is not an error (all options have defaults or are CLI-provided)
 - CLI arguments always override config file values
 - Arrays (features, preset, remove-features) are replaced, not merged
-- Supports nested TOML tables (`[presets]`, `[validate]`)
+- Supports nested TOML tables (`[presets]`, `[check]`)
 
 ### Template Resolver
 
@@ -326,7 +326,7 @@ CONSTRAINTS
 - Exit code 0 = all files match, exit code 1 = differences found
 - No modifications to target directory (read-only comparison)
 
-### Validate Engine
+### Check Engine
 
 Checks traceability chain integrity between code markers and spec files.
 
@@ -348,7 +348,7 @@ RESPONSIBILITIES
 CONSTRAINTS
 
 - Uses Node.js 24 built-in `fs.glob` for file discovery (no external glob dependency)
-- All behavior configurable via `[validate]` section in `.awa.toml`
+- All behavior configurable via `[check]` section in `.awa.toml`
 - Default configuration matches the bundled awa workflow conventions
 - CLI `--ignore` patterns append to config ignore (not replace)
 - Orphaned markers and broken cross-refs are errors; uncovered ACs and orphaned specs are warnings
@@ -533,7 +533,7 @@ sequenceDiagram
   refresh = false
   list-unknown = false
 
-  [validate]
+  [check]
   spec-globs = [".awa/specs/**/*.md"]
   code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
   markers = ["@awa-impl", "@awa-test", "@awa-component"]
@@ -585,4 +585,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.1.0 (2026-02-24): Added delete list (`_delete.txt`) convention, delete-listed diff reporting, skip-equal file action type
 - 2.2.0 (2026-02-24): Aligned with code — added feature-gated delete sections, `--delete` flag, `DeleteResolver`, interactive multi-tool selection, `delete`/`list-unknown` config options, fixed directory structure, updated developer commands
 - 2.4.0 (2026-07-14): Added schema validation — declarative YAML rules for Markdown structural checks via remark/mdast, rule-loader, schema-checker components
-- 2.3.0 (2026-07-14): Added Validate Engine component — traceability chain validation (`awa validate`), `[validate]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting
+- 2.3.0 (2026-07-14): Added Check Engine component — traceability chain validation (`awa check`), `[check]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting

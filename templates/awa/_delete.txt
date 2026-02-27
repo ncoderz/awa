@@ -12,6 +12,18 @@
 .github/agents/awa-requirements.agent.md
 .github/agents/awa-vibe.agent.md
 
+# Schema files replaced by .rules.yaml
+.awa/.agent/schemas/ARCHITECTURE.schema.md
+.awa/.agent/schemas/ALIGN_REPORT.schema.md
+.awa/.agent/schemas/API.schema.md
+.awa/.agent/schemas/DESIGN.schema.md
+.awa/.agent/schemas/EXAMPLES.schema.md
+.awa/.agent/schemas/FEAT.schema.md
+.awa/.agent/schemas/PLAN.schema.md
+.awa/.agent/schemas/README.schema.md
+.awa/.agent/schemas/REQ.schema.md
+.awa/.agent/schemas/TASK.schema.md
+
 # @feature copilot
 .github/agents/awa.agent.md
 .github/prompts/awa.architecture.prompt.md
@@ -26,6 +38,7 @@
 .github/prompts/awa.requirements.prompt.md
 .github/prompts/awa.tasks.prompt.md
 .github/prompts/awa.upgrade.prompt.md
+.github/prompts/awa.align.prompt.md
 .github/prompts/awa.validate-alignment.prompt.md
 .github/prompts/awa.vibe.prompt.md
 .github/skills/awa-architecture/SKILL.md
@@ -40,6 +53,7 @@
 .github/skills/awa-requirements/SKILL.md
 .github/skills/awa-tasks/SKILL.md
 .github/skills/awa-upgrade/SKILL.md
+.github/skills/awa-align/SKILL.md
 .github/skills/awa-validate-alignment/SKILL.md
 .github/skills/awa-vibe/SKILL.md
 
@@ -58,6 +72,7 @@ CLAUDE.md
 .claude/skills/awa-requirements/SKILL.md
 .claude/skills/awa-tasks/SKILL.md
 .claude/skills/awa-upgrade/SKILL.md
+.claude/skills/awa-align/SKILL.md
 .claude/skills/awa-validate-alignment/SKILL.md
 .claude/skills/awa-vibe/SKILL.md
 
@@ -75,6 +90,7 @@ CLAUDE.md
 .cursor/rules/awa-requirements.md
 .cursor/rules/awa-tasks.md
 .cursor/rules/awa-upgrade.md
+.cursor/rules/awa-align.md
 .cursor/rules/awa-validate-alignment.md
 .cursor/rules/awa-vibe.md
 
@@ -92,6 +108,7 @@ CLAUDE.md
 .windsurf/skills/awa-requirements/SKILL.md
 .windsurf/skills/awa-tasks/SKILL.md
 .windsurf/skills/awa-upgrade/SKILL.md
+.windsurf/skills/awa-align/SKILL.md
 .windsurf/skills/awa-validate-alignment/SKILL.md
 .windsurf/skills/awa-vibe/SKILL.md
 
@@ -109,6 +126,7 @@ CLAUDE.md
 .kilocode/workflows/awa-requirements.md
 .kilocode/workflows/awa-tasks.md
 .kilocode/workflows/awa-upgrade.md
+.kilocode/workflows/awa-align.md
 .kilocode/workflows/awa-validate-alignment.md
 .kilocode/workflows/awa-vibe.md
 .kilocode/skills/awa-architecture/SKILL.md
@@ -123,6 +141,7 @@ CLAUDE.md
 .kilocode/skills/awa-requirements/SKILL.md
 .kilocode/skills/awa-tasks/SKILL.md
 .kilocode/skills/awa-upgrade/SKILL.md
+.kilocode/skills/awa-align/SKILL.md
 .kilocode/skills/awa-validate-alignment/SKILL.md
 .kilocode/skills/awa-vibe/SKILL.md
 
@@ -140,6 +159,7 @@ CLAUDE.md
 .opencode/commands/awa-requirements.md
 .opencode/commands/awa-tasks.md
 .opencode/commands/awa-upgrade.md
+.opencode/commands/awa-align.md
 .opencode/commands/awa-validate-alignment.md
 .opencode/commands/awa-vibe.md
 .opencode/skills/awa-architecture/SKILL.md
@@ -154,6 +174,7 @@ CLAUDE.md
 .opencode/skills/awa-requirements/SKILL.md
 .opencode/skills/awa-tasks/SKILL.md
 .opencode/skills/awa-upgrade/SKILL.md
+.opencode/skills/awa-align/SKILL.md
 .opencode/skills/awa-validate-alignment/SKILL.md
 .opencode/skills/awa-vibe/SKILL.md
 
@@ -174,6 +195,7 @@ GEMINI.md
 .gemini/commands/awa-requirements.md
 .gemini/commands/awa-tasks.md
 .gemini/commands/awa-upgrade.md
+.gemini/commands/awa-align.md
 .gemini/commands/awa-validate-alignment.md
 .gemini/commands/awa-vibe.md
 .gemini/skills/awa-architecture/SKILL.md
@@ -188,6 +210,7 @@ GEMINI.md
 .gemini/skills/awa-requirements/SKILL.md
 .gemini/skills/awa-tasks/SKILL.md
 .gemini/skills/awa-upgrade/SKILL.md
+.gemini/skills/awa-align/SKILL.md
 .gemini/skills/awa-validate-alignment/SKILL.md
 .gemini/skills/awa-vibe/SKILL.md
 
@@ -205,6 +228,7 @@ QWEN.md
 .qwen/commands/awa-requirements.md
 .qwen/commands/awa-tasks.md
 .qwen/commands/awa-upgrade.md
+.qwen/commands/awa-align.md
 .qwen/commands/awa-validate-alignment.md
 .qwen/commands/awa-vibe.md
 .qwen/skills/awa-architecture/SKILL.md
@@ -219,6 +243,7 @@ QWEN.md
 .qwen/skills/awa-requirements/SKILL.md
 .qwen/skills/awa-tasks/SKILL.md
 .qwen/skills/awa-upgrade/SKILL.md
+.qwen/skills/awa-align/SKILL.md
 .qwen/skills/awa-validate-alignment/SKILL.md
 .qwen/skills/awa-vibe/SKILL.md
 
@@ -236,6 +261,7 @@ QWEN.md
 .roo/skills/awa-requirements/SKILL.md
 .roo/skills/awa-tasks/SKILL.md
 .roo/skills/awa-upgrade/SKILL.md
+.roo/skills/awa-align/SKILL.md
 .roo/skills/awa-validate-alignment/SKILL.md
 .roo/skills/awa-vibe/SKILL.md
 
@@ -252,6 +278,7 @@ QWEN.md
 .codex/prompts/awa-requirements.md
 .codex/prompts/awa-tasks.md
 .codex/prompts/awa-upgrade.md
+.codex/prompts/awa-align.md
 .codex/prompts/awa-validate-alignment.md
 .codex/prompts/awa-vibe.md
 .agents/skills/awa-architecture/SKILL.md
@@ -266,6 +293,7 @@ QWEN.md
 .agents/skills/awa-requirements/SKILL.md
 .agents/skills/awa-tasks/SKILL.md
 .agents/skills/awa-upgrade/SKILL.md
+.agents/skills/awa-align/SKILL.md
 .agents/skills/awa-validate-alignment/SKILL.md
 .agents/skills/awa-vibe/SKILL.md
 
@@ -282,6 +310,7 @@ QWEN.md
 .agent/workflows/awa-requirements.md
 .agent/workflows/awa-tasks.md
 .agent/workflows/awa-upgrade.md
+.agent/workflows/awa-align.md
 .agent/workflows/awa-validate-alignment.md
 .agent/workflows/awa-vibe.md
 .agent/skills/awa-architecture/SKILL.md
@@ -296,17 +325,7 @@ QWEN.md
 .agent/skills/awa-requirements/SKILL.md
 .agent/skills/awa-tasks/SKILL.md
 .agent/skills/awa-upgrade/SKILL.md
+.agent/skills/awa-align/SKILL.md
 .agent/skills/awa-validate-alignment/SKILL.md
 .agent/skills/awa-vibe/SKILL.md
 
-# Schema files replaced by .rules.yaml
-.awa/.agent/schemas/ARCHITECTURE.schema.md
-.awa/.agent/schemas/ALIGN_REPORT.schema.md
-.awa/.agent/schemas/API.schema.md
-.awa/.agent/schemas/DESIGN.schema.md
-.awa/.agent/schemas/EXAMPLES.schema.md
-.awa/.agent/schemas/FEAT.schema.md
-.awa/.agent/schemas/PLAN.schema.md
-.awa/.agent/schemas/README.schema.md
-.awa/.agent/schemas/REQ.schema.md
-.awa/.agent/schemas/TASK.schema.md

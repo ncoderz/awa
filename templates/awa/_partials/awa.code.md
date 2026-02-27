@@ -163,6 +163,6 @@ You SHALL use any tools you need to help write and test code (e.g. MCP tools for
 You MUST add traceability markers (`@awa-component`, `@awa-impl`, `@awa-test`) to all code and tests.
 You MUST ensure every feature implementation traces to at least one acceptance criterion.
 You MUST ensure every test file traces to at least one design property.
-You MUST run `awa validate` after implementation to verify all traceability markers resolve to spec IDs and no acceptance criteria are left uncovered.
+You MUST run `awa check` after implementation to verify all traceability markers resolve to spec IDs and no acceptance criteria are left uncovered.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

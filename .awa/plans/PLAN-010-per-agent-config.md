@@ -76,7 +76,7 @@ Create `DESIGN-MULTI-multi-target.md`:
 - Create batch runner (iterate targets, invoke existing generate/diff with `nonInteractive: true`)
 - Add `nonInteractive` option to suppress multiselect prompt in generate command
 - Create per-target reporter (prefix log lines with `[target-name]`)
-- Restructure config loader to support nested TOML `[targets.*]` tables (current loader only handles flat keys — requires new nested-table parsing logic, not just adding `targets` to `knownKeys`; shared restructuring with PLAN-002's `[validate]` section)
+- Restructure config loader to support nested TOML `[targets.*]` tables (current loader only handles flat keys — requires new nested-table parsing logic, not just adding `targets` to `knownKeys`; shared restructuring with PLAN-002's `[check]` section)
 - Validate each target section (same type checks as root, minus boolean flags)
 - Template deduplication: resolve shared templates once across targets
 - Unit tests for target resolver, merge logic, unknown target error, no-targets error

@@ -1,4 +1,4 @@
-# PLAN-011: Schema Validation for `awa validate`
+# PLAN-011: Schema Validation for `awa check`
 
 **Status:** in-progress
 **Workflow direction:** top-down
@@ -6,13 +6,13 @@
 
 ## Problem
 
-`awa validate` currently checks traceability chain integrity (markers ↔ spec IDs, cross-references). It does not check whether spec files themselves conform to their schemas. A DESIGN file missing a required `## Correctness Properties` section, a REQ file with a table that has wrong columns, or a TASK file missing its trace summary — all pass validation silently.
+`awa check` currently checks traceability chain integrity (markers ↔ spec IDs, cross-references). It does not check whether spec files themselves conform to their schemas. A DESIGN file missing a required `## Correctness Properties` section, a REQ file with a table that has wrong columns, or a TASK file missing its trace summary — all pass validation silently.
 
 The schemas exist (`.awa/.agent/schemas/*.schema.md`) but are only consumed by the AI as authoring guides. Nothing enforces them programmatically.
 
 ## Goal
 
-Extend `awa validate` to check Markdown files against configurable declarative rule files. Report structural violations (missing required sections, malformed IDs, incorrect heading levels, wrong table columns, missing list patterns) alongside the existing marker/cross-ref findings.
+Extend `awa check` to check Markdown files against configurable declarative rule files. Report structural violations (missing required sections, malformed IDs, incorrect heading levels, wrong table columns, missing list patterns) alongside the existing marker/cross-ref findings.
 
 **Out of scope:** Creating the rule files for the existing awa schemas. This plan covers the validation engine and rule format only.
 
@@ -200,7 +200,7 @@ mdast provides typed nodes for headings, lists, tables, code blocks, etc. — no
 ### Configuration
 
 ```toml
-[validate]
+[check]
 # existing fields unchanged...
 
 # New: schema validation
@@ -215,8 +215,8 @@ Optional overrides not needed initially — the `target-files` in each rule file
 ### New Components
 
 ```
-VAL-RuleLoader      — reads *.rules.yaml files, parses into typed rule definitions
-VAL-SchemaChecker   — parses Markdown via remark, walks AST checking rules
+CHK-RuleLoader      — reads *.rules.yaml files, parses into typed rule definitions
+CHK-SchemaChecker   — parses Markdown via remark, walks AST checking rules
 ```
 
 ### Finding Codes
@@ -245,7 +245,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 ### Phase 1: Rule Loader
 
 1. Define TypeScript types for the YAML rule format (`RuleFile`, `SectionRule`, `ContainsRule`, etc.)
-2. Create `VAL-RuleLoader` component (`src/core/validate/rule-loader.ts`)
+2. Create `CHK-RuleLoader` component (`src/core/check/rule-loader.ts`)
 3. Glob `{schema-dir}/*.rules.yaml` files
 4. Parse YAML into typed rule definitions (use a YAML parser — check existing deps or add one)
 5. Resolve `target-files` patterns to determine which Markdown files each rule set applies to
@@ -254,7 +254,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 ### Phase 2: Schema Checker
 
 1. Add `remark-parse` + `unified` dependencies
-2. Create `VAL-SchemaChecker` component (`src/core/validate/schema-checker.ts`)
+2. Create `CHK-SchemaChecker` component (`src/core/check/schema-checker.ts`)
 3. Parse Markdown files into mdast via remark
 4. Walk AST to build heading tree with section content ranges
 5. For each matched file, check:
@@ -269,9 +269,9 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 
 ### Phase 3: Integration
 
-1. Add `schemaDir`, `schemaEnabled` to `ValidateConfig` type and defaults
-2. Add `[validate]` TOML parsing for new fields in config builder
-3. Wire rule loading + schema checking into validate command pipeline
+1. Add `schemaDir`, `schemaEnabled` to `CheckConfig` type and defaults
+2. Add `[check]` TOML parsing for new fields in config builder
+3. Wire rule loading + schema checking into check command pipeline
 4. Add new finding codes to `FindingCode` type and reporter (both text and JSON)
 5. Integration test: create sample `.rules.yaml` + matching/non-matching Markdown files
 
@@ -303,7 +303,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 ## Completion Criteria
 
 - Rule file format defined and documented
-- `awa validate` loads `*.rules.yaml` from configured schema directory
+- `awa check` loads `*.rules.yaml` from configured schema directory
 - Reports structural violations (missing sections, bad tables, missing patterns)
 - Schema checking is configurable (`schema-enabled = false` to disable)
 - Defaults match bundled awa workflow directory (`.awa/.agent/schemas/`)

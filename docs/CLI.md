@@ -51,17 +51,17 @@ awa diff . --list-unknown                 # include files not in template
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
 
-### `awa validate`
+### `awa check`
 
-Validate traceability chain integrity between code markers and spec files.
+Check traceability chain integrity between code markers and spec files.
 
 Exit code 0 = all markers resolve, 1 = errors found.
 
 ```bash
-awa validate                              # validate with defaults
-awa validate --format json                # JSON output for CI
-awa validate --ignore "test/**"           # ignore specific paths
-awa validate --config ./custom.toml       # custom config file
+awa check                              # check with defaults
+awa check --format json                # JSON output for CI
+awa check --ignore "test/**"           # ignore specific paths
+awa check --config ./custom.toml       # custom config file
 ```
 
 | Option | Description |
@@ -70,7 +70,7 @@ awa validate --config ./custom.toml       # custom config file
 | `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
 | `--format <format>` | Output format: `text` (default) or `json` |
 
-The validate command checks:
+The check command checks:
 - **Orphaned markers** — `@awa-impl`, `@awa-test`, `@awa-component` referencing IDs that don't exist in specs
 - **Uncovered ACs** — acceptance criteria in specs with no corresponding `@awa-test`
 - **Broken cross-refs** — IMPLEMENTS/VALIDATES in design specs pointing to non-existent requirement IDs
@@ -100,7 +100,7 @@ delete = false
 full = ["copilot", "claude", "cursor", "windsurf", "kilocode", "opencode", "gemini", "roo", "qwen", "codex", "agy", "agents-md"]
 lite = ["copilot", "claude"]
 
-[validate]
+[check]
 spec-globs = [".awa/specs/**/*.md"]
 code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
@@ -136,4 +136,4 @@ Presets expand into feature flags. `--remove-features` subtracts from the combin
 5. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
 6. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
 7. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
-8. **Validate** (for `awa validate`) — scan code for traceability markers, parse spec files, cross-check, report findings
+8. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings

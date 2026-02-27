@@ -176,7 +176,7 @@ Create an implementation plan for migrating cache layout; no code changes yet.
 ### Traceability and validation
 
 ```text
-Validate alignment of DESIGN-DIFF with REQ-DIFF and produce an alignment report.
+Align of DESIGN-DIFF with REQ-DIFF and produce an alignment report.
 ```
 
 ```text

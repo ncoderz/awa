@@ -104,13 +104,13 @@ test('produces unified diff for modified files', () => { ... });
 
 ## Validation
 
-Use `awa validate` to automatically check the integrity of the traceability chain:
+Use `awa check` to automatically check the integrity of the traceability chain:
 
 ```bash
-awa validate              # text output
-awa validate --format json # JSON output for CI
+awa check              # text output
+awa check --format json # JSON output for CI
 ```
 
 It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs, and enforces structural rules defined in `*.rules.yaml` schema files.
 
-See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[validate]` config section.
+See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[check]` config section.
