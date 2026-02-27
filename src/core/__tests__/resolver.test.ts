@@ -1,5 +1,5 @@
 // @awa-component: GEN-ConflictResolver
-// @awa-test: P7, P8
+// @awa-test: GEN_P-3, GEN_P-4
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ConflictItem } from '../../types/index.js';

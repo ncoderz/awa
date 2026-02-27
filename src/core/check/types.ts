@@ -32,6 +32,7 @@ export type FindingCode =
   | 'uncovered-ac'
   | 'broken-cross-ref'
   | 'invalid-id-format'
+  | 'marker-trailing-text'
   | 'orphaned-spec'
   | 'schema-missing-section'
   | 'schema-wrong-level'
@@ -65,6 +66,7 @@ export interface CodeMarker {
 
 export interface MarkerScanResult {
   readonly markers: readonly CodeMarker[];
+  readonly findings: readonly Finding[];
 }
 
 export interface CrossReference {

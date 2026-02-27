@@ -1,5 +1,5 @@
 // @awa-component: CHK-SchemaChecker
-// @awa-test: CHK-SchemaChecker
+// @awa-test: CHK-2_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -46,7 +46,7 @@ describe('SchemaChecker', () => {
     };
   }
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects missing required section', async () => {
     const filePath = join(testDir, 'REQ-TEST.md');
     await writeFile(filePath, '# Requirements Specification\n\n## Introduction\n\nSome text.\n');
@@ -66,7 +66,7 @@ describe('SchemaChecker', () => {
     expect(missing[0]?.message).toContain('Requirements');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects wrong heading level', async () => {
     const filePath = join(testDir, 'DOC.md');
     await writeFile(filePath, '# Title\n\n### Introduction\n\nText here.\n');
@@ -90,7 +90,7 @@ describe('SchemaChecker', () => {
     expect(issues.length).toBeGreaterThanOrEqual(1);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects missing contains.pattern', async () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
@@ -117,7 +117,7 @@ describe('SchemaChecker', () => {
     expect(missing[0]?.message).toContain('ACCEPTANCE CRITERIA');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects missing list items with min count', async () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(filePath, '# Spec\n\n## Tasks\n\nNo list items here.\n');
@@ -150,7 +150,7 @@ describe('SchemaChecker', () => {
     expect(missing[0]?.message).toContain('expected at least 1');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects table with wrong columns', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -184,7 +184,7 @@ describe('SchemaChecker', () => {
     expect(tableIssues[0]?.message).toContain('has columns [AC, Task, Test]');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects missing code block', async () => {
     const filePath = join(testDir, 'DESIGN.md');
     await writeFile(filePath, '# Design\n\n## Components\n\nNo code blocks here.\n');
@@ -208,7 +208,7 @@ describe('SchemaChecker', () => {
     expect(missing[0]?.message).toContain('interface definition');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('detects prohibited formatting', async () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
@@ -231,7 +231,7 @@ describe('SchemaChecker', () => {
     expect(prohibited[0]?.message).toContain('**');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('validates children and repeatable sections', async () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
@@ -278,7 +278,7 @@ More content.
     expect(issues).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('valid Markdown file produces no findings', async () => {
     const filePath = join(testDir, 'GOOD.md');
     await writeFile(
@@ -320,7 +320,7 @@ interface Foo {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('skips files not matching target glob', async () => {
     const filePath = join(testDir, 'OTHER.md');
     await writeFile(filePath, '# Nothing\n');
@@ -334,7 +334,7 @@ interface Foo {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('optional section missing produces no findings', async () => {
     const filePath = join(testDir, 'DOC.md');
     await writeFile(filePath, '# Title\n\n## Required Section\n\nContent.\n');
@@ -352,7 +352,7 @@ interface Foo {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('table with correct columns and enough rows passes', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -392,7 +392,7 @@ interface Foo {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('prohibited pattern inside code block is not flagged', async () => {
     const filePath = join(testDir, 'DOC.md');
     await writeFile(filePath, '# Title\n\n## Section\n\n```\nThis has **bold** in code\n```\n');
@@ -411,7 +411,7 @@ interface Foo {}
     expect(prohibited).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('list items with sufficient count passes', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -450,7 +450,7 @@ interface Foo {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('contains.pattern found in section passes', async () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
@@ -477,7 +477,7 @@ interface Foo {}
 
   // --- Conditional (when) and prohibited tests ---
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('when heading-matches: rule applies when heading matches condition', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -518,7 +518,7 @@ Some text but no GOAL line.
     expect(missing[0]?.message).toContain('GOAL statement');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('when heading-matches: rule skipped when heading does not match condition', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -555,7 +555,7 @@ Some text but no GOAL line.
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('prohibited pattern: error when pattern found in matching section', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -599,7 +599,7 @@ Some text but no GOAL line.
     expect(prohibited[0]?.message).toContain('IMPLEMENTS trace line');
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('prohibited pattern: no error when pattern not found', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
@@ -637,7 +637,7 @@ Some text but no GOAL line.
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-SchemaChecker
+  // @awa-test: CHK-2_AC-1
   test('prohibited pattern skipped on requirement phases (when-not-matches does not activate)', async () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(

@@ -1,5 +1,5 @@
-// @awa-component: Utils-FileSystem
-// @awa-test: P5, P7
+// @awa-component: GEN-FileSystem
+// @awa-test: GEN_P-1, GEN_P-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

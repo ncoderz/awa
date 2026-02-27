@@ -1,5 +1,5 @@
 // @awa-component: TPL-TemplateEngine
-// @awa-test: P3, P4
+// @awa-test: TPL_P-1, TPL_P-2
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

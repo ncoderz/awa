@@ -161,8 +161,8 @@ export function foo() {}
   // @awa-test: CHK-1_AC-1
   test('scans multiple files', async () => {
     await mkdir(join(testDir, 'sub'), { recursive: true });
-    await writeFile(join(testDir, 'a.ts'), `// @awa-impl: A-1_AC-1\n`);
-    await writeFile(join(testDir, 'sub', 'b.ts'), `// @awa-impl: B-1_AC-1\n`);
+    await writeFile(join(testDir, 'a.ts'), `// ${'@awa-impl'}: A-1_AC-1\n`);
+    await writeFile(join(testDir, 'sub', 'b.ts'), `// ${'@awa-impl'}: B-1_AC-1\n`);
 
     const result = await scanMarkers(makeConfig());
 

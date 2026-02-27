@@ -1,5 +1,5 @@
 // @awa-component: DIFF-DiffCommand
-// @awa-test: P15
+// @awa-test: DIFF_P-4
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DiffResult } from '../../types/index.js';
@@ -58,7 +58,7 @@ describe('diffCommand', () => {
     vi.clearAllMocks();
   });
 
-  // @awa-test: P15
+  // @awa-test: DIFF_P-4
   // VALIDATES: DIFF-5_AC-1
   test('should use output from config when not provided in CLI', async () => {
     const mockResult: DiffResult = {
@@ -126,7 +126,7 @@ describe('diffCommand', () => {
     expect(logger.diffSummary).toHaveBeenCalledWith(mockResult);
   });
 
-  // @awa-test: P15
+  // @awa-test: DIFF_P-4
   // VALIDATES: DIFF-5_AC-2
   test('should return exit code 1 when files have differences', async () => {
     const mockResult: DiffResult = {
@@ -161,7 +161,7 @@ describe('diffCommand', () => {
     expect(logger.diffLine).toHaveBeenCalled();
   });
 
-  // @awa-test: P15
+  // @awa-test: DIFF_P-4
   // VALIDATES: DIFF-5_AC-3
   test('should return exit code 2 on error', async () => {
     vi.mocked(pathExists).mockResolvedValue(false);

@@ -1,5 +1,5 @@
 // @awa-component: TPL-TemplateResolver
-// @awa-test: P9, P10
+// @awa-test: TPL_P-3, TPL_P-4
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

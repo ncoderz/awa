@@ -373,6 +373,26 @@ interface DiffEngine {
 }
 ```
 
+### DIFF-DiffCommand
+
+Orchestrates the diff pipeline: resolve config, resolve template, run DiffEngine, display results, set exit code.
+
+IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10
+
+### GEN-GenerateCommand
+
+Orchestrates the generation pipeline: resolve config, resolve template, generate files, handle conflicts, set exit code.
+
+IMPLEMENTS: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3
+
+### GEN-FileSystem
+
+Provides file system utilities: path existence, directory creation, file reading/writing, cache directory management.
+
+### GEN-CoreTypes
+
+Defines shared type definitions and error classes used across all command modules.
+
 ## Data Models
 
 ### Core Types

@@ -231,7 +231,7 @@ describe('Property-Based Tests', () => {
   });
 
   describe('P11: Content Identity Skip', () => {
-    // @awa-test: P11
+    // @awa-test: GEN_P-5
     it('Identical content is skipped without prompting', async () => {
       await fc.assert(
         fc.asyncProperty(fc.string(), async (content) => {

@@ -154,6 +154,27 @@ IMPLEMENTS: CHK-9_AC-1
 function report(findings: Finding[], format: 'text' | 'json'): void;
 ```
 
+### CHK-RuleLoader
+
+Loads and validates YAML rule files from the schema directory. Each rule file defines structural expectations for matching spec files.
+
+IMPLEMENTS: CHK-16_AC-1
+
+```typescript
+function loadRules(schemaDir: string): Promise<LoadedRule[]>;
+function matchesTargetGlob(filePath: string, glob: string): boolean;
+```
+
+### CHK-SchemaChecker
+
+Validates Markdown spec files against loaded YAML rules. Checks heading structure, required sections, content patterns, tables, and code blocks.
+
+IMPLEMENTS: CHK-2_AC-1
+
+```typescript
+function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[]>;
+```
+
 ### CHK-CheckCommand
 
 Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code.

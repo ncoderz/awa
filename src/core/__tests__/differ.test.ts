@@ -1,5 +1,5 @@
 // @awa-component: DIFF-DiffEngine
-// @awa-test: P12, P13, P14, P15
+// @awa-test: DIFF_P-1, DIFF_P-2, DIFF_P-3, DIFF_P-4
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -24,7 +24,7 @@ describe('DiffEngine', () => {
   });
 
   describe('createTempDir', () => {
-    // @awa-test: P13
+    // @awa-test: DIFF_P-2
     // VALIDATES: DIFF-1_AC-1, DIFF-1_AC-2
     test('should create unique temp directory', async () => {
       const tempPath1 = await diffEngine.createTempDir();
@@ -40,7 +40,7 @@ describe('DiffEngine', () => {
   });
 
   describe('cleanupTempDir', () => {
-    // @awa-test: P13
+    // @awa-test: DIFF_P-2
     // VALIDATES: DIFF-6_AC-1, DIFF-6_AC-2
     test('should delete temp directory', async () => {
       await mkdir(testTempDir, { recursive: true });
@@ -51,7 +51,7 @@ describe('DiffEngine', () => {
       expect(await pathExists(testTempDir)).toBe(false);
     });
 
-    // @awa-test: P13
+    // @awa-test: DIFF_P-2
     // VALIDATES: DIFF-6_AC-3
     test('should not throw on non-existent directory', async () => {
       await expect(diffEngine.cleanupTempDir('/non/existent/path')).resolves.not.toThrow();
@@ -91,7 +91,7 @@ describe('DiffEngine', () => {
   });
 
   describe('compareFiles', () => {
-    // @awa-test: P14
+    // @awa-test: DIFF_P-3
     // VALIDATES: DIFF-2_AC-1
     test('should detect identical files', async () => {
       await mkdir(testTempDir, { recursive: true });
@@ -106,7 +106,7 @@ describe('DiffEngine', () => {
       expect(result.unifiedDiff).toBeUndefined();
     });
 
-    // @awa-test: P14
+    // @awa-test: DIFF_P-3
     // VALIDATES: DIFF-2_AC-1, DIFF-2_AC-4
     test('should detect modified text files with unified diff', async () => {
       await mkdir(testTempDir, { recursive: true });
@@ -151,7 +151,7 @@ describe('DiffEngine', () => {
       expect(result.status).toBe('identical');
     });
 
-    // @awa-test: P14
+    // @awa-test: DIFF_P-3
     // VALIDATES: DIFF-2_AC-1
     test('should be whitespace-sensitive', async () => {
       await mkdir(testTempDir, { recursive: true });
@@ -177,7 +177,7 @@ describe('DiffEngine', () => {
       await mkdir(targetDir, { recursive: true });
     });
 
-    // @awa-test: P12
+    // @awa-test: DIFF_P-1
     // VALIDATES: DIFF-1_AC-3
     test('should not modify target directory (read-only)', async () => {
       await writeFile(join(targetDir, 'existing.txt'), 'original');
@@ -303,7 +303,7 @@ describe('DiffEngine', () => {
       expect(result.binaryDiffers).toBe(1);
     });
 
-    // @awa-test: P13
+    // @awa-test: DIFF_P-2
     // VALIDATES: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
     test('should cleanup temp directory after success', async () => {
       await writeFile(join(templateDir, 'file.txt'), 'content');
@@ -321,7 +321,7 @@ describe('DiffEngine', () => {
       expect(result).toBeDefined();
     });
 
-    // @awa-test: P13
+    // @awa-test: DIFF_P-2
     // VALIDATES: DIFF-6_AC-2, DIFF-6_AC-3
     test('should handle non-existent target directory', async () => {
       // Non-existent target should report all files as "new"

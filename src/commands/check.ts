@@ -41,6 +41,7 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
 
     // Combine findings
     const allFindings = [
+      ...markers.findings,
       ...codeSpecResult.findings,
       ...specSpecResult.findings,
       ...schemaResult.findings,

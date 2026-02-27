@@ -1,5 +1,5 @@
 // @awa-component: GEN-FileGenerator
-// @awa-test: P5, P6, P7
+// @awa-test: GEN_P-1, GEN_P-2, GEN_P-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

@@ -1,4 +1,4 @@
-// @awa-component: Types-CoreDefinitions
+// @awa-component: GEN-CoreTypes
 
 // Custom error classes for diff operations
 export class DiffError extends Error {

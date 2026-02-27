@@ -1,4 +1,4 @@
-// @awa-test: CHK-SchemaChecker
+// @awa-test: CHK-2_AC-1
 // Tests that validate real .rules.yaml schemas against fixture documents.
 
 import { readdir } from 'node:fs/promises';

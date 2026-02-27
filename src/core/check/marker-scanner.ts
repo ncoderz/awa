@@ -5,7 +5,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { collectFiles } from './glob.js';
-import type { CheckConfig, CodeMarker, MarkerScanResult, MarkerType } from './types.js';
+import type { CheckConfig, CodeMarker, Finding, MarkerScanResult, MarkerType } from './types.js';
 
 const MARKER_TYPE_MAP: Record<string, MarkerType> = {
   '@awa-impl': 'impl',
@@ -17,13 +17,15 @@ const MARKER_TYPE_MAP: Record<string, MarkerType> = {
 export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult> {
   const files = await collectCodeFiles(config.codeGlobs, config.ignore);
   const markers: CodeMarker[] = [];
+  const findings: Finding[] = [];
 
   for (const filePath of files) {
-    const fileMarkers = await scanFile(filePath, config.markers);
-    markers.push(...fileMarkers);
+    const result = await scanFile(filePath, config.markers);
+    markers.push(...result.markers);
+    findings.push(...result.findings);
   }
 
-  return { markers };
+  return { markers, findings };
 }
 
 // @awa-impl: CHK-11_AC-1
@@ -36,17 +38,21 @@ function buildMarkerRegex(markerNames: readonly string[]): RegExp {
 /** Pattern matching valid impl/test IDs and component names. */
 const ID_TOKEN_RE = /^([A-Z][A-Z0-9]*(?:[-_][A-Za-z0-9]+)*(?:\.\d+)?)/;
 
-async function scanFile(filePath: string, markerNames: readonly string[]): Promise<CodeMarker[]> {
+async function scanFile(
+  filePath: string,
+  markerNames: readonly string[]
+): Promise<{ markers: CodeMarker[]; findings: Finding[] }> {
   let content: string;
   try {
     content = await readFile(filePath, 'utf-8');
   } catch {
-    return [];
+    return { markers: [], findings: [] };
   }
 
   const regex = buildMarkerRegex(markerNames);
   const lines = content.split('\n');
   const markers: CodeMarker[] = [];
+  const findings: Finding[] = [];
 
   for (const [i, line] of lines.entries()) {
     regex.lastIndex = 0;
@@ -64,10 +70,22 @@ async function scanFile(filePath: string, markerNames: readonly string[]): Promi
         .filter(Boolean);
 
       for (const id of ids) {
-        // Extract only the leading ID token, ignoring trailing comments/text
+        // Extract only the leading ID token
         const tokenMatch = ID_TOKEN_RE.exec(id);
         const cleanId = tokenMatch ? tokenMatch[1].trim() : '';
         if (cleanId) {
+          // Check for trailing text after the ID (only whitespace allowed)
+          const remainder = id.slice(tokenMatch![0].length).trim();
+          if (remainder) {
+            findings.push({
+              severity: 'error',
+              code: 'marker-trailing-text',
+              message: `Marker has trailing text after ID '${cleanId}': '${remainder}' — use comma-separated IDs only`,
+              filePath,
+              line: i + 1,
+              id: cleanId,
+            });
+          }
           markers.push({ type, id: cleanId, filePath, line: i + 1 });
         }
       }
@@ -76,7 +94,7 @@ async function scanFile(filePath: string, markerNames: readonly string[]): Promi
     }
   }
 
-  return markers;
+  return { markers, findings };
 }
 
 function resolveMarkerType(markerName: string, configuredMarkers: readonly string[]): MarkerType {

@@ -1,5 +1,5 @@
 // @awa-component: GEN-Logger
-// @awa-test: P7
+// @awa-test: GEN_P-3
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Logger } from '../logger.js';
@@ -155,7 +155,7 @@ describe('Logger', () => {
   });
 
   describe('diffLine', () => {
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-3
     it('should log addition lines in green', () => {
       logger.diffLine('+added line', 'add');
@@ -165,7 +165,7 @@ describe('Logger', () => {
       expect(callArg).toContain('+added line');
     });
 
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-3
     it('should log removal lines in red', () => {
       logger.diffLine('-removed line', 'remove');
@@ -175,7 +175,7 @@ describe('Logger', () => {
       expect(callArg).toContain('-removed line');
     });
 
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-3
     it('should log context lines in dim style', () => {
       logger.diffLine(' context line', 'context');
@@ -187,7 +187,7 @@ describe('Logger', () => {
   });
 
   describe('diffSummary', () => {
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-4
     it('should display success message when no differences', () => {
       const result = {
@@ -211,7 +211,7 @@ describe('Logger', () => {
       expect(output).toContain('no differences');
     });
 
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-5
     it('should display counts for each file status', () => {
       const result = {
@@ -234,7 +234,7 @@ describe('Logger', () => {
       expect(output).toContain('1');
     });
 
-    // @awa-test: P15
+    // @awa-test: DIFF_P-4
     // VALIDATES: DIFF-4_AC-5
     it('should display summary with all categories', () => {
       const result = {

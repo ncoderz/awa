@@ -1,5 +1,5 @@
 // @awa-component: CFG-ConfigLoader
-// @awa-test: P1
+// @awa-test: CFG_P-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
