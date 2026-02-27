@@ -12,6 +12,7 @@ export interface CheckConfig {
   readonly format: 'text' | 'json';
   readonly schemaDir: string;
   readonly schemaEnabled: boolean;
+  readonly allowWarnings: boolean;
 }
 
 export const DEFAULT_CHECK_CONFIG: CheckConfig = {
@@ -25,6 +26,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
   format: 'text',
   schemaDir: '.awa/.agent/schemas',
   schemaEnabled: true,
+  allowWarnings: false,
 };
 
 export type FindingSeverity = 'error' | 'warning';
@@ -105,4 +107,5 @@ export interface RawCheckOptions {
   readonly ignore?: string[];
   readonly format?: string;
   readonly config?: string;
+  readonly allowWarnings?: boolean;
 }

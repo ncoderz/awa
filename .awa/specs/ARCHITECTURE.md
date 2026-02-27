@@ -352,7 +352,8 @@ CONSTRAINTS
 - Default configuration matches the bundled awa workflow conventions
 - CLI `--ignore` patterns append to config ignore (not replace)
 - Orphaned markers and broken cross-refs are errors; uncovered ACs and orphaned specs are warnings
-- Exit code 0 = clean (warnings only), 1 = errors found, 2 = internal error
+- Warnings are treated as errors by default (exit code 1); `--allow-warnings` or `[check].allow-warnings = true` restores previous behavior
+- Exit code 0 = clean, 1 = errors or warnings found (unless `--allow-warnings`), 2 = internal error
 - `ARCHITECTURE.md` is excluded from orphaned spec detection (has no feature code)
 - Markers support comma-separated IDs and partial annotations
 
@@ -450,3 +451,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.3.0 (2026-07-14): Added Check Engine component — traceability chain validation (`awa check`), `[check]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting
 - 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
 - 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit
+- 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag

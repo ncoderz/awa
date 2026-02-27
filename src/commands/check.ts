@@ -50,9 +50,10 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
     // Report results
     report(allFindings, config.format);
 
-    // Exit code: 0 = clean, 1 = errors found
+    // Exit code: 0 = clean, 1 = errors or warnings (unless --allow-warnings)
     const hasErrors = allFindings.some((f) => f.severity === 'error');
-    return hasErrors ? 1 : 0;
+    const hasWarnings = allFindings.some((f) => f.severity === 'warning');
+    return hasErrors || (!config.allowWarnings && hasWarnings) ? 1 : 0;
   } catch (error) {
     if (error instanceof Error) {
       logger.error(error.message);
@@ -104,6 +105,13 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
       ? section['schema-enabled']
       : DEFAULT_CHECK_CONFIG.schemaEnabled;
 
+  const allowWarnings =
+    cliOptions.allowWarnings === true
+      ? true
+      : typeof section?.['allow-warnings'] === 'boolean'
+        ? section['allow-warnings']
+        : DEFAULT_CHECK_CONFIG.allowWarnings;
+
   return {
     specGlobs,
     codeGlobs,
@@ -115,6 +123,7 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
     format,
     schemaDir,
     schemaEnabled,
+    allowWarnings,
   };
 }
 

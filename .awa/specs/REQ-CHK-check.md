@@ -88,9 +88,9 @@ AS A CI system, I WANT deterministic exit codes, SO THAT validation results can 
 
 ACCEPTANCE CRITERIA
 
-- [x] CHK-8_AC-1 [ubiquitous]: The system SHALL exit with code 0 when no errors are found and code 1 when errors are found
+- [x] CHK-8_AC-1 [ubiquitous]: The system SHALL exit with code 0 when no errors or warnings are found, exit with code 1 when errors or warnings are found, unless `--allow-warnings` is active
 
-DEPENDS ON: CHK-3
+DEPENDS ON: CHK-3, CHK-17
 
 ### CHK-9: JSON Output [SHOULD]
 
@@ -170,6 +170,18 @@ ACCEPTANCE CRITERIA
 
 DEPENDS ON: CHK-11, CHK-12, CHK-13, CHK-14, CHK-15
 
+### CHK-17: Allow Warnings Flag [SHOULD]
+
+AS A developer, I WANT an `--allow-warnings` flag, SO THAT I can opt into the previous behavior where warnings do not affect the exit code.
+
+ACCEPTANCE CRITERIA
+
+- [ ] CHK-17_AC-1 [conditional]: IF `--allow-warnings` is specified THEN the system SHALL exit with code 0 when only warnings are found
+- [ ] CHK-17_AC-2 [conditional]: IF `[check].allow-warnings` is set to `true` in config THEN the system SHALL treat it the same as `--allow-warnings`
+- [ ] CHK-17_AC-3 [ubiquitous]: The system SHALL default `allow-warnings` to `false` (warnings are errors by default)
+
+DEPENDS ON: CHK-8
+
 ## Assumptions
 
 - Spec files are Markdown with identifiable patterns for IDs
@@ -179,7 +191,7 @@ DEPENDS ON: CHK-11, CHK-12, CHK-13, CHK-14, CHK-15
 
 - Must run in CI environments (no interactive prompts)
 - Must handle large codebases efficiently (respect ignore patterns)
-- Warnings do not affect exit code; only errors do
+- Warnings affect exit code by default; use `--allow-warnings` to suppress
 
 ## Out of Scope
 
@@ -190,3 +202,4 @@ DEPENDS ON: CHK-11, CHK-12, CHK-13, CHK-14, CHK-15
 ## Change Log
 
 - 1.0.0 (2026-02-27): Initial requirements
+- 1.1.0 (2026-02-28): CHK-8 updated — warnings are now errors by default; added CHK-17 `--allow-warnings` flag

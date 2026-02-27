@@ -158,11 +158,17 @@ program
   .option('--ignore <pattern...>', 'Glob patterns for paths to exclude')
   // @awa-impl: CHK-9_AC-1
   .option('--format <format>', 'Output format (text or json)', 'text')
+  .option(
+    '--allow-warnings',
+    'Allow warnings without failing (default: warnings are errors)',
+    false
+  )
   .action(async (options) => {
     const cliOptions: RawCheckOptions = {
       config: options.config,
       ignore: options.ignore,
       format: options.format,
+      allowWarnings: options.allowWarnings,
     };
 
     const exitCode = await checkCommand(cliOptions);

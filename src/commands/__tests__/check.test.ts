@@ -301,6 +301,7 @@ schema-enabled = false
       config: join(testDir, '.awa.toml'),
       ignore: [],
       format: 'json',
+      allowWarnings: true,
     });
 
     // Should pass — schema checking skipped entirely
@@ -317,5 +318,57 @@ schema-enabled = false
         .filter((c: string) => c.startsWith('schema-'));
       expect(schemaCodes).toHaveLength(0);
     }
+  });
+
+  // --- allow-warnings tests ---
+
+  // @awa-test: CHK-17_AC-1, CHK-17_AC-3
+  test('returns exit code 1 when warnings exist and allow-warnings is false (default)', async () => {
+    // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
+    await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+    });
+
+    // Warnings are errors by default
+    expect(exitCode).toBe(1);
+  });
+
+  // @awa-test: CHK-17_AC-1
+  test('returns exit code 0 when only warnings exist and allow-warnings is true', async () => {
+    // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
+    await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+      allowWarnings: true,
+    });
+
+    // Warnings allowed, no errors → exit 0
+    expect(exitCode).toBe(0);
+  });
+
+  // @awa-test: CHK-17_AC-2
+  test('reads allow-warnings from config file', async () => {
+    await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[check]
+allow-warnings = true
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
   });
 });
