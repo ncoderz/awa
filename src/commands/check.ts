@@ -40,20 +40,26 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
         : { findings: [] as const };
 
     // Combine findings
-    const allFindings = [
+    const combinedFindings = [
       ...markers.findings,
       ...codeSpecResult.findings,
       ...specSpecResult.findings,
       ...schemaResult.findings,
     ];
 
+    // Unless --allow-warnings, promote warnings to errors
+    const allFindings = config.allowWarnings
+      ? combinedFindings
+      : combinedFindings.map((f) =>
+          f.severity === 'warning' ? { ...f, severity: 'error' as const } : f
+        );
+
     // Report results
     report(allFindings, config.format);
 
-    // Exit code: 0 = clean, 1 = errors or warnings (unless --allow-warnings)
+    // Exit code: 0 = clean, 1 = any errors present
     const hasErrors = allFindings.some((f) => f.severity === 'error');
-    const hasWarnings = allFindings.some((f) => f.severity === 'warning');
-    return hasErrors || (!config.allowWarnings && hasWarnings) ? 1 : 0;
+    return hasErrors ? 1 : 0;
   } catch (error) {
     if (error instanceof Error) {
       logger.error(error.message);
