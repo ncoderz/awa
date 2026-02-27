@@ -47,7 +47,9 @@
     "/^RUST_LOG=(trace|warn|info|debug) cargo (build|run|test|clean|check|fmt|llvm-cov).*$/": true,
     "/^RUST_BACKTRACE=1 cargo (build|run|test|clean|check|fmt|llvm-cov).*$/": true,
     "/^task .*$/": true,
-    "/^docker (compose|inspect|exec|logs|ps).*$/": true
+    "/^docker (compose|inspect|exec|logs|ps).*$/": true,
+    "npx tsc": true,
+    "npx tsx": true
   },
   "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
 }

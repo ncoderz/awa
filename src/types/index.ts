@@ -41,6 +41,7 @@ export interface FileConfig {
   refresh?: boolean;
   presets?: PresetDefinitions;
   'list-unknown'?: boolean;
+  validate?: Record<string, unknown>;
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied

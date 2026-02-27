@@ -12,6 +12,7 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - **Template Engine**: Template loading, rendering with conditional logic
 - **File Generator**: Output file creation, directory management, conflict resolution
 - **Diff Engine**: Template comparison against target directory with diff reporting
+- **Validate Engine**: Traceability chain validation — scans code markers and spec IDs, reports findings
 
 ## Technology Stack
 
@@ -83,7 +84,8 @@ awa/
 │   │   └── index.ts       # Main CLI entry
 │   ├── commands/          # Command implementations
 │   │   ├── generate.ts    # Generate command orchestration
-│   │   └── diff.ts        # Diff command orchestration
+│   │   ├── diff.ts        # Diff command orchestration
+│   │   └── validate.ts    # Validate command orchestration
 │   ├── core/              # Core business logic
 │   │   ├── config.ts      # Configuration loader
 │   │   ├── delete-list.ts # Delete list parser (feature-gated)
@@ -92,7 +94,16 @@ awa/
 │   │   ├── generator.ts   # File generation logic
 │   │   ├── resolver.ts    # Conflict and delete resolution
 │   │   ├── template-resolver.ts  # Template source resolver
-│   │   └── template.ts    # Template engine wrapper
+│   │   ├── template.ts    # Template engine wrapper
+│   │   └── validate/      # Traceability validation
+│   │       ├── types.ts           # Config, finding, marker types
+│   │       ├── errors.ts          # ValidateError class
+│   │       ├── glob.ts            # Shared glob + ignore filtering
+│   │       ├── marker-scanner.ts  # Scans code for @awa-* markers
+│   │       ├── spec-parser.ts     # Parses spec files for IDs
+│   │       ├── code-spec-checker.ts # Matches markers against spec IDs
+│   │       ├── spec-spec-checker.ts # Validates cross-references
+│   │       └── reporter.ts        # Text/JSON output formatting
 │   ├── utils/             # Utility functions
 │   │   ├── fs.ts          # File system helpers
 │   │   └── logger.ts      # Console output helpers (uses chalk)
@@ -126,7 +137,7 @@ RESPONSIBILITIES
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
-- Support `generate` and `diff` subcommands
+- Support `generate`, `diff`, and `validate` subcommands
 
 CONSTRAINTS
 
@@ -155,6 +166,7 @@ CONSTRAINTS
 - Missing config file is not an error (all options have defaults or are CLI-provided)
 - CLI arguments always override config file values
 - Arrays (features, preset, remove-features) are replaced, not merged
+- Supports nested TOML tables (`[presets]`, `[validate]`)
 
 ### Template Resolver
 
@@ -307,6 +319,32 @@ CONSTRAINTS
 - Binary files compared byte-for-byte
 - Exit code 0 = all files match, exit code 1 = differences found
 - No modifications to target directory (read-only comparison)
+
+### Validate Engine
+
+Checks traceability chain integrity between code markers and spec files.
+
+RESPONSIBILITIES
+
+- Scan source files for `@awa-impl`, `@awa-test`, `@awa-component` markers
+- Parse spec files to extract requirement IDs, AC IDs, property IDs, component names
+- Match code markers against spec IDs and report orphaned markers
+- Report acceptance criteria with no corresponding `@awa-test`
+- Validate IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs
+- Report orphaned spec files (feature codes not referenced anywhere)
+- Validate ID format against configurable regex
+- Output findings as text (human-readable) or JSON (CI-friendly)
+
+CONSTRAINTS
+
+- Uses Node.js 24 built-in `fs.glob` for file discovery (no external glob dependency)
+- All behavior configurable via `[validate]` section in `.awa.toml`
+- Default configuration matches the bundled awa workflow conventions
+- CLI `--ignore` patterns append to config ignore (not replace)
+- Orphaned markers and broken cross-refs are errors; uncovered ACs and orphaned specs are warnings
+- Exit code 0 = clean (warnings only), 1 = errors found, 2 = internal error
+- `ARCHITECTURE.md` is excluded from orphaned spec detection (has no feature code)
+- Markers support comma-separated IDs and partial annotations
 
 ## Component Interactions
 
@@ -484,6 +522,13 @@ sequenceDiagram
   delete = false
   refresh = false
   list-unknown = false
+
+  [validate]
+  spec-globs = [".awa/specs/**/*.md"]
+  code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
+  markers = ["@awa-impl", "@awa-test", "@awa-component"]
+  ignore = ["node_modules/**", "dist/**"]
+  format = "text"
   ```
 
 ### Template Sources
@@ -529,3 +574,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.0.0 (2025-12-19): Schema alignment update - removed Table of Contents, replaced bold with CAPITALS, added Change Log
 - 2.1.0 (2026-02-24): Added delete list (`_delete.txt`) convention, delete-listed diff reporting, skip-equal file action type
 - 2.2.0 (2026-02-24): Aligned with code — added feature-gated delete sections, `--delete` flag, `DeleteResolver`, interactive multi-tool selection, `delete`/`list-unknown` config options, fixed directory structure, updated developer commands
+- 2.3.0 (2026-07-14): Added Validate Engine component — traceability chain validation (`awa validate`), `[validate]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting

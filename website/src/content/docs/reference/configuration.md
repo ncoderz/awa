@@ -53,6 +53,18 @@ lite = ["copilot", "claude"]
 | `refresh` | boolean | `false` | Force re-fetch of cached remote templates |
 | `list-unknown` | boolean | `false` | Include target-only files in `awa diff` output |
 
+### `[validate]` Options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `spec-globs` | string[] | `[".awa/specs/**/*.md"]` | Glob patterns for spec files |
+| `code-globs` | string[] | `["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]` | Glob patterns for source files |
+| `markers` | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
+| `ignore` | string[] | `["node_modules/**", "dist/**"]` | Glob patterns to exclude |
+| `format` | string | `"text"` | Output format (`text` or `json`) |
+| `id-pattern` | string | *(regex)* | Regex for valid traceability IDs |
+| `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
+
 ## Presets
 
 Define named bundles of feature flags in `[presets]`:
@@ -118,4 +130,11 @@ delete = true
 
 [presets]
 full = ["copilot", "claude", "cursor", "windsurf"]
+
+[validate]
+spec-globs = [".awa/specs/**/*.md"]
+code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
+markers = ["@awa-impl", "@awa-test", "@awa-component"]
+ignore = ["node_modules/**", "dist/**"]
+format = "text"
 ```

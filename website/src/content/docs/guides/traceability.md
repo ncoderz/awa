@@ -104,4 +104,13 @@ test('produces unified diff for modified files', () => { ... });
 
 ## Validation
 
-Use the `awa validate-alignment` skill (in AI agent mode) to check that all acceptance criteria are covered by `@awa-impl` and `@awa-test` markers.
+Use `awa validate` to automatically check the integrity of the traceability chain:
+
+```bash
+awa validate              # text output
+awa validate --format json # JSON output for CI
+```
+
+It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, and validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs.
+
+See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[validate]` config section.

@@ -36,6 +36,7 @@ Every artifact traces back to its origin through explicit markers (`@awa-impl`, 
 - Structured workflow from architecture through features, requirements, design, tasks, code, tests, and docs
 - Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
 - Every requirement has an ID, every line of code links back to it via `@awa-impl` and `@awa-test` markers
+- `awa validate` checks that all traceability markers resolve to real spec IDs and flags uncovered acceptance criteria
 - Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
 
 See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
@@ -158,6 +159,7 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 | [Workflow](docs/WORKFLOW.md) | The awa workflow, `.awa/` structure, traceability chain, IDs and markers |
 | [CLI Reference](docs/CLI.md) | Commands, options, configuration, presets, and how it works |
 | [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
+| [Traceability Validation](docs/TRACEABILITY_VALIDATION.md) | The `awa validate` command, checks, configuration, JSON output |
 
 ## Community
 
@@ -177,7 +179,7 @@ Several tools address parts of the AI-assisted development workflow. Here's how 
 | **What it is** | CLI that generates agent config from templates | IDE with built-in spec-driven development | Python CLI for Spec-Driven Development | Agile workflow with role-based AI skills | Markdown rules for AI behavior governance | Hand-written CLAUDE.md, .cursorrules, etc. |
 | **Structured workflow** | Architecture →</br> Features →</br> Requirements →</br> Design →</br> Tasks →</br> Code & Tests →</br> Docs | Requirements →</br> Design →</br> Tasks | Specify →</br> Plan →</br> Tasks →</br> Implement | Analysis →</br> Planning →</br> Solutioning →</br> Implementation | Research →</br> Plan →</br> Implement | Whatever you put in the file |
 | **Workflow flexibility** | ✅ Start at any stage, skip what's not needed | ⚠️ Two variants (Req-First or Design-First), always 3 phases | ⚠️ Optional clarify/analyze steps, otherwise fixed order | ⚠️ Project levels determine required phases | ⚠️ Hard gates between phases, escape commands to bypass | ✅ No workflow to constrain you |
-| **Traceability** | ✅ Requirement IDs →</br> design →</br> `@awa-impl` / `@awa-test` code markers | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Traceability** | ✅ Requirement IDs →</br> design →</br> `@awa-impl` / `@awa-test` code markers</br> + `awa validate` | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Template engine** | ✅ Eta with conditionals, loops, partials | ❌ | ❌ Static templates copied on init | ❌ Static skill files | ❌ Static markdown | ❌ |
 | **Feature flags** | ✅ Enable/disable content per project | ❌ | ❌ | ❌ | ⚠️ Lite/Full modes | ❌ |
 | **Presets** | ✅ Named flag bundles | ❌ | ❌ | ⚠️ Complexity levels | ⚠️ Operation levels | ❌ |

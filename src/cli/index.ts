@@ -50,6 +50,8 @@ import { Command } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { diffCommand } from '../commands/diff.js';
 import { generateCommand } from '../commands/generate.js';
+import { validateCommand } from '../commands/validate.js';
+import type { RawValidateOptions } from '../core/validate/types.js';
 import type { RawCliOptions } from '../types/index.js';
 
 const version = PACKAGE_INFO.version;
@@ -143,6 +145,26 @@ program
     };
 
     const exitCode = await diffCommand(cliOptions);
+    process.exit(exitCode);
+  });
+
+// @awa-impl: VAL-8_AC-1, VAL-9_AC-1, VAL-10_AC-1
+program
+  .command('validate')
+  .description('Validate traceability chain between code markers and spec files')
+  .option('-c, --config <path>', 'Path to configuration file')
+  // @awa-impl: VAL-10_AC-1
+  .option('--ignore <pattern...>', 'Glob patterns for paths to exclude')
+  // @awa-impl: VAL-9_AC-1
+  .option('--format <format>', 'Output format (text or json)', 'text')
+  .action(async (options) => {
+    const cliOptions: RawValidateOptions = {
+      config: options.config,
+      ignore: options.ignore,
+      format: options.format,
+    };
+
+    const exitCode = await validateCommand(cliOptions);
     process.exit(exitCode);
   });
 
