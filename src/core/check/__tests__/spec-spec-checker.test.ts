@@ -22,17 +22,28 @@ function makeSpecs(
   const acIds = new Set<string>();
   const propertyIds = new Set<string>();
   const componentNames = new Set<string>();
+  const idLocations = new Map<string, { filePath: string; line: number }>();
 
   for (const sf of specFiles) {
     for (const id of sf.requirementIds) requirementIds.add(id);
     for (const id of sf.acIds) acIds.add(id);
     for (const id of sf.propertyIds) propertyIds.add(id);
     for (const name of sf.componentNames) componentNames.add(name);
+    for (const [id, loc] of sf.idLocations ?? []) idLocations.set(id, loc);
   }
 
   const allIds = new Set([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
 
-  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, ...overrides };
+  return {
+    requirementIds,
+    acIds,
+    propertyIds,
+    componentNames,
+    allIds,
+    specFiles,
+    idLocations,
+    ...overrides,
+  };
 }
 
 function makeMarkers(markers: CodeMarker[] = []): MarkerScanResult {

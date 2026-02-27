@@ -16,6 +16,7 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
   const acIds = new Set<string>();
   const propertyIds = new Set<string>();
   const componentNames = new Set<string>();
+  const idLocations = new Map<string, { filePath: string; line: number }>();
 
   for (const filePath of files) {
     const specFile = await parseSpecFile(filePath, config.crossRefPatterns);
@@ -25,12 +26,16 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
       for (const id of specFile.acIds) acIds.add(id);
       for (const id of specFile.propertyIds) propertyIds.add(id);
       for (const name of specFile.componentNames) componentNames.add(name);
+      // Merge id locations from parsed spec file
+      for (const [id, loc] of specFile.idLocations ?? []) {
+        idLocations.set(id, loc);
+      }
     }
   }
 
   const allIds = new Set<string>([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
 
-  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles };
+  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations };
 }
 
 async function parseSpecFile(
@@ -52,6 +57,7 @@ async function parseSpecFile(
   const propertyIds: string[] = [];
   const componentNames: string[] = [];
   const crossRefs: CrossReference[] = [];
+  const idLocations = new Map<string, { filePath: string; line: number }>();
 
   // Requirement ID: ### CODE-N: Title or ### CODE-N.P: Title
   const reqIdRegex = /^###\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)\s*:/;
@@ -63,22 +69,27 @@ async function parseSpecFile(
   const componentRegex = /^###\s+([A-Z][A-Z0-9]*-[A-Za-z][A-Za-z0-9]*(?:[A-Z][a-z0-9]*)*)\s*$/;
 
   for (const [i, line] of lines.entries()) {
+    const lineNum = i + 1;
+
     // Requirement IDs
     const reqMatch = reqIdRegex.exec(line);
     if (reqMatch?.[1]) {
       requirementIds.push(reqMatch[1]);
+      idLocations.set(reqMatch[1], { filePath, line: lineNum });
     }
 
     // AC IDs
     const acMatch = acIdRegex.exec(line);
     if (acMatch?.[1]) {
       acIds.push(acMatch[1]);
+      idLocations.set(acMatch[1], { filePath, line: lineNum });
     }
 
     // Property IDs
     const propMatch = propIdRegex.exec(line);
     if (propMatch?.[1]) {
       propertyIds.push(propMatch[1]);
+      idLocations.set(propMatch[1], { filePath, line: lineNum });
     }
 
     // Component names (from DESIGN files)
@@ -87,6 +98,7 @@ async function parseSpecFile(
       // Only count as component if it doesn't match requirement pattern
       if (!reqIdRegex.test(line)) {
         componentNames.push(compMatch[1]);
+        idLocations.set(compMatch[1], { filePath, line: lineNum });
       }
     }
 
@@ -104,7 +116,16 @@ async function parseSpecFile(
     }
   }
 
-  return { filePath, code, requirementIds, acIds, propertyIds, componentNames, crossRefs };
+  return {
+    filePath,
+    code,
+    requirementIds,
+    acIds,
+    propertyIds,
+    componentNames,
+    crossRefs,
+    idLocations,
+  };
 }
 
 function extractCodePrefix(filePath: string): string {

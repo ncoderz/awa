@@ -76,13 +76,15 @@ export function checkCodeAgainstSpec(
 
   for (const acId of specs.acIds) {
     if (!testedIds.has(acId)) {
-      // Find the spec file containing this AC for location info
-      const specFile = specs.specFiles.find((sf) => sf.acIds.includes(acId));
+      // Look up location from idLocations map, fall back to spec file path
+      const loc = specs.idLocations.get(acId);
+      const specFile = loc ? undefined : specs.specFiles.find((sf) => sf.acIds.includes(acId));
       findings.push({
         severity: 'warning',
         code: 'uncovered-ac',
         message: `Acceptance criterion '${acId}' has no @awa-test reference`,
-        filePath: specFile?.filePath,
+        filePath: loc?.filePath ?? specFile?.filePath,
+        line: loc?.line,
         id: acId,
       });
     }

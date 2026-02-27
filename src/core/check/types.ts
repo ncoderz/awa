@@ -88,6 +88,8 @@ export interface SpecFile {
   readonly propertyIds: readonly string[];
   readonly componentNames: readonly string[];
   readonly crossRefs: readonly CrossReference[];
+  /** Maps IDs parsed from this file to their line number. Populated by spec-parser. */
+  readonly idLocations?: ReadonlyMap<string, { filePath: string; line: number }>;
 }
 
 export interface SpecParseResult {
@@ -97,6 +99,8 @@ export interface SpecParseResult {
   readonly componentNames: Set<string>;
   readonly allIds: Set<string>;
   readonly specFiles: readonly SpecFile[];
+  /** Maps spec IDs (requirements, ACs, properties, components) to their source location. */
+  readonly idLocations: ReadonlyMap<string, { filePath: string; line: number }>;
 }
 
 export interface CheckResult {
