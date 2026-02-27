@@ -11,13 +11,14 @@ argument-hint: "[<upgrade-instructions>]"
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/ARCHITECTURE.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/FEAT.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/EXAMPLES.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/REQ.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/DESIGN.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/TASK.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/PLAN.schema.md" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/ARCHITECTURE.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/FEAT.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/EXAMPLES.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/REQ.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/DESIGN.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/TASK.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/PLAN.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/ALIGN_REPORT.rules.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input
@@ -38,6 +39,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 <file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if exists" />
 <file type="tasks" path=".awa/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" required="if exists" />
 <file type="plan" path=".awa/plans/PLAN-{nnn}-{plan-name}.md" required="if exists" />
+<file type="align_report" path=".awa/alignment/ALIGN-{x}-WITH-{y}-{nnn}.md" required="if exists" />
 <file type="code" required="if relevant" />
 
 
@@ -53,6 +55,10 @@ Upgrade the specified specs to conform to their schemas and traceability rules.
 6) REPORT: Summarize changes and remaining questions before finalizing.
 
 ## Outputs
+
+<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" />
+<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" />
+<file type="align_report" path=".awa/alignment/ALIGN-{x}-WITH-{y}-{nnn}.md" />
 
 - Updated spec(s) and supporting templates (as applicable)
 

@@ -11,7 +11,7 @@ description: Validate alignment of source with target. Use this when asked to va
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/ALIGN_REPORT.schema.md" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/ALIGN_REPORT.rules.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input

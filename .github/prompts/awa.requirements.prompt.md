@@ -11,7 +11,7 @@ argument-hint: "<requirements-instructions>"
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/REQ.schema.md" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/REQ.rules.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input
@@ -50,7 +50,7 @@ You SHALL consider edge cases, UX, technical constraints, success criteria.
 You SHALL ensure the 3-letter {CODE} used in the filename is unique within the project.
 You SHOULD focus on requirements which will later be turned into a design.
 You SHOULD keep requirements at a manageable level of detail.
-You SHALL ensure requirement IDs and AC IDs follow the format defined in the traceability chain (e.g. `{CODE}-{n}`, `{CODE}-{n}_AC-{m}`, `{CODE}-{n}.{p}_AC-{m}`). Run `awa validate` to verify ID format correctness.
+You SHALL ensure requirement IDs and AC IDs follow the format defined in the traceability chain (e.g. `{CODE}-{n}`, `{CODE}-{n}_AC-{m}`, `{CODE}-{n}.{p}_AC-{m}`).
 You SHALL support reverse workflow: deriving requirements from existing code when requested.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

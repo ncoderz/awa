@@ -11,8 +11,8 @@ argument-hint: "<design-instruction>"
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/DESIGN.schema.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/REQ.schema.md" optional="true" />
+ <read path=".awa/.agent/schemas/DESIGN.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/REQ.rules.yaml" optional="true" />
 </tool>
 
 ## User Input
@@ -55,7 +55,7 @@ You SHALL consider edge cases, UX, technical constraints, success criteria.
 You MUST identify areas where research is needed based on the feature requirements.
 You MUST conduct research and build up context in the conversation thread.
 You SHALL ensure the 3-letter {CODE} used in the filename is unique within the project.
-You SHALL ensure IMPLEMENTS and VALIDATES cross-references in design components resolve to real requirement IDs and AC IDs. Run `awa validate` to verify cross-reference integrity.
+You SHALL ensure IMPLEMENTS and VALIDATES cross-references in design components resolve to real requirement IDs and AC IDs.
 You SHALL support reverse workflow: deriving design from existing code when requested.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

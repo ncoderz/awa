@@ -1,5 +1,5 @@
 ---
-description: "awa 0.2.0"
+description: "awa 1.0.0"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
@@ -17,16 +17,16 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   .awa/
   ├── .agent/
   │   └── schemas/
-  │       ├── ARCHITECTURE.schema.md
-  │       ├── FEAT.schema.md
-  │       ├── EXAMPLES.schema.md
-  │       ├── REQ.schema.md
-  │       ├── DESIGN.schema.md
-  │       ├── API.schema.md
-  │       ├── TASK.schema.md
-  │       ├── PLAN.schema.md
-  │       ├── README.schema.md
-  │       └── ALIGN_REPORT.schema.md
+  │       ├── ARCHITECTURE.rules.yaml
+  │       ├── FEAT.rules.yaml
+  │       ├── EXAMPLES.rules.yaml
+  │       ├── REQ.rules.yaml
+  │       ├── DESIGN.rules.yaml
+  │       ├── API.rules.yaml
+  │       ├── TASK.rules.yaml
+  │       ├── PLAN.rules.yaml
+  │       ├── README.rules.yaml
+  │       └── ALIGN_REPORT.rules.yaml
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md
@@ -102,10 +102,23 @@ Any file exceeding 500 lines MUST be split logically into multiple files unless 
 - Reference, Don't Duplicate: Use IDs (e.g., `DIFF-1.1_AC-1`) or other references. Never restate content
 - Trace Everything: Explicit links between artifacts
 </core_principles>
+
+<cli_invocation>
+awa may be installed locally (devDependency) rather than globally. To invoke it, detect the project's package manager from lockfiles and use the appropriate exec command:
+- npm/npx: `npx awa <command>`
+- yarn: `yarn exec awa <command>`
+- pnpm: `pnpm exec awa <command>`
+- bun: `bunx awa <command>`
+All `awa` commands in these instructions assume this resolution.
+</cli_invocation>
+
+<validation>
+You SHALL run `awa validate` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and traceability integrity. Fix any errors before proceeding.
+</validation>
 </awa>
 
 <tool name="read_file">
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" />
- <read path=".awa/.agent/schemas/*.schema.md" required="before writing corresponding file type" />
+ <read path=".awa/.agent/schemas/*.rules.yaml" required="before writing corresponding file type" />
 </tool>

@@ -11,9 +11,9 @@ argument-hint: "<design> [<instructions>]"
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/DESIGN.schema.md" optional="true" />
- <read path=".awa/.agent/schemas/REQ.schema.md" optional="true" />
- <read path=".awa/.agent/schemas/TASK.schema.md" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/DESIGN.rules.yaml" optional="true" />
+ <read path=".awa/.agent/schemas/REQ.rules.yaml" optional="true" />
+ <read path=".awa/.agent/schemas/TASK.rules.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input

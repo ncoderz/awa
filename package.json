@@ -19,7 +19,7 @@
     "build": "npm run init && npm run lint && npm run typecheck:all && tsup",
     "gen:example": "tsx src/cli/index.ts generate ./outputs/example --template ./templates/example",
     "gen:awa": "tsx src/cli/index.ts generate ./outputs/awa --template ./templates/awa",
-    "gen:awa:this": "tsx src/cli/index.ts generate . --template ./templates/awa copilot",
+    "gen:awa:this": "tsx src/cli/index.ts generate . --template ./templates/awa --features copilot",
     "diff:awa:this": "tsx src/cli/index.ts diff . --template ./templates/awa --features copilot",
     "test": "vitest run",
     "test:watch": "vitest",
