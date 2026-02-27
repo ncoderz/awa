@@ -6,6 +6,7 @@ description: >
   Phases group tasks by execution order; requirement phases carry [MUST]/[SHOULD]/[COULD]
   priority markers and include GOAL, TEST CRITERIA, IMPLEMENTS, and TESTS lines.
   Setup/foundation/polish phases must NOT include IMPLEMENTS or TESTS.
+line-limit: 500
 
 sections:
   # Top-level heading: "Implementation Tasks"

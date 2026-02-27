@@ -28,6 +28,8 @@ function reportJson(findings: readonly Finding[]): void {
       ...(f.filePath ? { filePath: f.filePath } : {}),
       ...(f.line ? { line: f.line } : {}),
       ...(f.id ? { id: f.id } : {}),
+      ...(f.ruleSource ? { ruleSource: f.ruleSource } : {}),
+      ...(f.rule ? { rule: f.rule } : {}),
     })),
   };
 
@@ -43,6 +45,7 @@ function reportText(findings: readonly Finding[]): void {
     for (const f of errors) {
       const location = formatLocation(f.filePath, f.line);
       console.log(chalk.red('  ✖'), f.message, location ? chalk.dim(location) : '');
+      printRuleContext(f);
     }
   }
 
@@ -51,6 +54,7 @@ function reportText(findings: readonly Finding[]): void {
     for (const f of warnings) {
       const location = formatLocation(f.filePath, f.line);
       console.log(chalk.yellow('  ⚠'), f.message, location ? chalk.dim(location) : '');
+      printRuleContext(f);
     }
   }
 
@@ -68,4 +72,12 @@ function reportText(findings: readonly Finding[]): void {
 function formatLocation(filePath?: string, line?: number): string {
   if (!filePath) return '';
   return line ? `(${filePath}:${line})` : `(${filePath})`;
+}
+
+function printRuleContext(f: Finding): void {
+  if (!f.ruleSource && !f.rule) return;
+  const parts: string[] = [];
+  if (f.ruleSource) parts.push(f.ruleSource);
+  if (f.rule) parts.push(f.rule);
+  console.log(chalk.dim(`      rule: ${parts.join(' — ')}`));
 }

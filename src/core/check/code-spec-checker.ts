@@ -32,7 +32,7 @@ export function checkCodeAgainstSpec(
       findings.push({
         severity: 'error',
         code: 'invalid-id-format',
-        message: `Marker ID '${marker.id}' does not match expected pattern`,
+        message: `Marker ID '${marker.id}' does not match expected pattern: ${config.idPattern}`,
         filePath: marker.filePath,
         line: marker.line,
         id: marker.id,

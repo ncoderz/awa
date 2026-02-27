@@ -6,6 +6,7 @@ description: >
   Each requirement has an ID ({CODE}-{n}), a user story (AS A/I WANT/SO THAT),
   and acceptance criteria as checkbox items with INCOSE-compliant types.
   Subrequirements use dotted IDs ({CODE}-{n}.{p}).
+line-limit: 500
 
 sections:
   # Top-level heading: "Requirements Specification"

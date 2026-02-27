@@ -7,6 +7,7 @@ description: >
   organize sections as the plan demands. Plans should not contain significant
   code (short snippets for explanation are fine).
   Traceability links to REQ/DESIGN/code/tests are optional but encouraged.
+line-limit: 500
 
 sections:
   # H1 title with status/direction metadata

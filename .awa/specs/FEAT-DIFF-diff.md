@@ -8,19 +8,19 @@ This is especially important in CI pipelines, where an automated check can flag 
 
 ## Conceptual Model
 
-The `awa diff` command is a **read-only comparison** between what the templates would produce and what currently exists in the target directory. It works in three steps:
+The `awa diff` command is a read-only comparison between what the templates would produce and what currently exists in the target directory. It works in three steps:
 
-1. **Generate to temp** — templates are rendered into a system temporary directory using the same pipeline as `generate` (same features, same template, same config).
+1. GENERATE TO TEMP — templates are rendered into a system temporary directory using the same pipeline as `generate` (same features, same template, same config).
 
-2. **Compare** — each generated file is compared against its counterpart in the target directory:
-   - **identical**: content matches byte-for-byte.
-   - **modified**: content differs; a unified diff (git-style, with color) is displayed.
-   - **new**: file exists in generated output but not in target.
-   - **binary-differs**: binary files that differ (no textual diff).
-   - **extra**: file exists in target but not in generated output (only reported with `--list-unknown`).
-   - **delete-listed**: file exists in target and is listed in `_delete.txt` (respecting feature-gated sections).
+2. COMPARE — each generated file is compared against its counterpart in the target directory:
+   - IDENTICAL: content matches byte-for-byte.
+   - MODIFIED: content differs; a unified diff (git-style, with color) is displayed.
+   - NEW: file exists in generated output but not in target.
+   - BINARY-DIFFERS: binary files that differ (no textual diff).
+   - EXTRA: file exists in target but not in generated output (only reported with `--list-unknown`).
+   - DELETE-LISTED: file exists in target and is listed in `_delete.txt` (respecting feature-gated sections).
 
-3. **Clean up** — the temporary directory is always deleted, even if an error occurs mid-comparison.
+3. CLEAN UP — the temporary directory is always deleted, even if an error occurs mid-comparison.
 
 Exit codes convey the result: 0 means all files match (no drift), 1 means differences were found, 2 means an error occurred. This makes `awa diff` directly usable as a CI gate.
 
@@ -59,3 +59,4 @@ A template includes a binary asset. The asset in the target differs from the gen
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

@@ -10,11 +10,11 @@ Additionally, developers sometimes need to exclude a specific feature from an ot
 
 Feature presets introduce two complementary mechanisms:
 
-1. **Presets** — named bundles of features defined in the `[presets]` table of `.awa.toml`. Activating a preset adds all its features to the final set. Multiple presets can be activated simultaneously, and their features are merged via set union.
+1. PRESETS — named bundles of features defined in the `[presets]` table of `.awa.toml`. Activating a preset adds all its features to the final set. Multiple presets can be activated simultaneously, and their features are merged via set union.
 
-2. **Remove-features** — a subtraction mechanism that removes specific features from the final computed set, regardless of where they came from (base features, presets, or config).
+2. REMOVE-FEATURES — a subtraction mechanism that removes specific features from the final computed set, regardless of where they came from (base features, presets, or config).
 
-The **feature resolution order** is:
+The FEATURE RESOLUTION ORDER is:
 
 ```
 final features = (base features ∪ preset features) \ remove-features
@@ -77,3 +77,4 @@ A team sets `preset = ["tools"]` in `.awa.toml` so that the `tools` preset is al
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

@@ -97,6 +97,8 @@ export interface RuleFile {
   readonly 'target-files': string;
   /** Human/LLM-readable description of this document type's purpose. */
   readonly description?: string;
+  /** Maximum number of lines allowed in matching files (omit for no limit). */
+  readonly 'line-limit'?: number;
   readonly sections: readonly SectionRule[];
   readonly 'sections-prohibited'?: readonly string[];
   /** Complete conforming example document (used by LLMs as a reference). */

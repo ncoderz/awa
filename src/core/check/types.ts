@@ -38,7 +38,8 @@ export type FindingCode =
   | 'schema-missing-content'
   | 'schema-table-columns'
   | 'schema-prohibited'
-  | 'schema-no-rule';
+  | 'schema-no-rule'
+  | 'schema-line-limit';
 
 export interface Finding {
   readonly severity: FindingSeverity;
@@ -47,6 +48,10 @@ export interface Finding {
   readonly filePath?: string;
   readonly line?: number;
   readonly id?: string;
+  /** Path to the .rules.yaml file that defines the violated rule. */
+  readonly ruleSource?: string;
+  /** Concise representation of the violated rule. */
+  readonly rule?: string;
 }
 
 export type MarkerType = 'impl' | 'test' | 'component';

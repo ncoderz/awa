@@ -16,12 +16,13 @@ Rule files are discovered by globbing `{schema-dir}/*.rules.yaml`. The default s
 
 ## Rule File Format
 
-Each rule file is a YAML document with three top-level keys:
+Each rule file is a YAML document with these top-level keys:
 
 ```yaml
 target-files: ".awa/specs/REQ-*.md"   # Required: glob matching spec files
 sections: [...]                         # Required: section structure rules
 sections-prohibited: [...]              # Optional: formatting patterns to reject
+line-limit: 500                         # Optional: max lines per matching file
 ```
 
 ### `target-files`
@@ -190,6 +191,14 @@ sections-prohibited:
 
 Code blocks (fenced with `` ``` ``) are excluded from prohibited pattern scanning.
 
+### `line-limit`
+
+An optional maximum line count for matching files. When set, files exceeding this limit produce a warning. Omit to allow any length.
+
+```yaml
+line-limit: 500
+```
+
 ## Finding Codes
 
 | Code | Severity | Description |
@@ -199,6 +208,7 @@ Code blocks (fenced with `` ``` ``) are excluded from prohibited pattern scannin
 | `schema-missing-content` | error | Section missing required content (pattern/list/table/code-block) |
 | `schema-table-columns` | error | Table columns don't match expected headers |
 | `schema-prohibited` | warning | Prohibited formatting pattern found outside code blocks |
+| `schema-line-limit` | warning | File exceeds the line limit defined in the rule |
 | `schema-no-rule` | — | Reserved for files with no matching rule set |
 
 ## Configuration

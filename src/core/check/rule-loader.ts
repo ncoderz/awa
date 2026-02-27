@@ -100,6 +100,9 @@ function validateRuleFile(raw: Record<string, unknown>, filePath: string): RuleF
   return {
     'target-files': raw['target-files'] as string,
     ...(typeof raw.description === 'string' ? { description: raw.description } : {}),
+    ...(typeof raw['line-limit'] === 'number' && raw['line-limit'] > 0
+      ? { 'line-limit': raw['line-limit'] }
+      : {}),
     sections: sections ?? [],
     ...(sectionsProhibited ? { 'sections-prohibited': sectionsProhibited } : {}),
     ...(typeof raw.example === 'string' ? { example: raw.example } : {}),

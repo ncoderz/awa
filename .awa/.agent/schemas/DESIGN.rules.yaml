@@ -6,6 +6,7 @@ description: >
   Each component has a name ({CODE}-{ComponentName}), description, IMPLEMENTS
   trace, and interface code block. Correctness properties use {CODE}_P-{n} IDs
   and link back to requirements via VALIDATES.
+line-limit: 500
 
 sections:
   # Top-level heading: "Design Specification"

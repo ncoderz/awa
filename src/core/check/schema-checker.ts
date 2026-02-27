@@ -19,6 +19,47 @@ import type {
 } from './rule-types.js';
 import type { CheckResult, Finding, SpecFile } from './types.js';
 
+// --- Rule formatting helpers ---
+
+function formatSectionRule(rule: SectionRule): string {
+  const parts = [`section: heading="${rule.heading}" level=${rule.level}`];
+  if (rule.required) parts.push('required');
+  if (rule.repeatable) parts.push('repeatable');
+  return parts.join(' ');
+}
+
+function formatContainsRule(rule: ContainsRule): string {
+  if ('pattern' in rule && typeof rule.pattern === 'string') {
+    const r = rule as PatternContainsRule;
+    if (r.prohibited) return `contains: prohibited pattern="${r.pattern}"`;
+    return `contains: pattern="${r.pattern}"${r.required === false ? '' : ' required'}`;
+  }
+  if ('list' in rule) {
+    const r = rule as ListContainsRule;
+    return `contains: list pattern="${r.list.pattern}"${r.list.min !== undefined ? ` min=${r.list.min}` : ''}`;
+  }
+  if ('table' in rule) {
+    const r = rule as TableContainsRule;
+    return `contains: table columns=[${r.table.columns.join(', ')}]${r.table['min-rows'] !== undefined ? ` min-rows=${r.table['min-rows']}` : ''}`;
+  }
+  if ('code-block' in rule) {
+    return 'contains: code-block';
+  }
+  if ('heading-or-text' in rule) {
+    const r = rule as HeadingOrTextContainsRule;
+    return `contains: heading-or-text="${r['heading-or-text']}"`;
+  }
+  return 'contains: (unknown rule)';
+}
+
+function formatLineLimitRule(limit: number): string {
+  return `line-limit: ${limit}`;
+}
+
+function formatProhibitedRule(pattern: string): string {
+  return `sections-prohibited: "${pattern}"`;
+}
+
 /** A section with heading info and all AST nodes belonging to it. */
 interface SectionNode {
   readonly heading: Heading;
@@ -55,13 +96,40 @@ export async function checkSchemasAsync(
     const allSections = flattenSections(sectionTree);
 
     for (const ruleSet of matchingRules) {
+      const ruleSource = ruleSet.sourcePath;
+
+      // Check line limit if defined
+      if (ruleSet.ruleFile['line-limit'] !== undefined) {
+        const lineCount = content.split('\n').length;
+        if (lineCount > ruleSet.ruleFile['line-limit']) {
+          findings.push({
+            severity: 'warning',
+            code: 'schema-line-limit',
+            message: `File has ${lineCount} lines, exceeds limit of ${ruleSet.ruleFile['line-limit']}`,
+            filePath: spec.filePath,
+            ruleSource,
+            rule: formatLineLimitRule(ruleSet.ruleFile['line-limit']),
+          });
+        }
+      }
+
       findings.push(
-        ...checkRulesAgainstSections(allSections, ruleSet.ruleFile.sections, spec.filePath)
+        ...checkRulesAgainstSections(
+          allSections,
+          ruleSet.ruleFile.sections,
+          spec.filePath,
+          ruleSource
+        )
       );
 
       if (ruleSet.ruleFile['sections-prohibited']) {
         findings.push(
-          ...checkProhibited(content, ruleSet.ruleFile['sections-prohibited'], spec.filePath)
+          ...checkProhibited(
+            content,
+            ruleSet.ruleFile['sections-prohibited'],
+            spec.filePath,
+            ruleSource
+          )
         );
       }
     }
@@ -150,7 +218,8 @@ function extractText(children: PhrasingContent[]): string {
 function checkRulesAgainstSections(
   allSections: SectionNode[],
   rules: readonly SectionRule[],
-  filePath: string
+  filePath: string,
+  ruleSource: string
 ): Finding[] {
   const findings: Finding[] = [];
 
@@ -163,6 +232,8 @@ function checkRulesAgainstSections(
         code: 'schema-missing-section',
         message: `Missing required section: '${rule.heading}' (level ${rule.level})`,
         filePath,
+        ruleSource,
+        rule: formatSectionRule(rule),
       });
       continue;
     }
@@ -175,18 +246,20 @@ function checkRulesAgainstSections(
           message: `Section '${match.headingText}' is level ${match.level}, expected ${rule.level}`,
           filePath,
           line: match.heading.position?.start.line,
+          ruleSource,
+          rule: formatSectionRule(rule),
         });
       }
 
       if (rule.contains) {
         for (const cr of rule.contains) {
-          findings.push(...checkContainsRule(match, cr, filePath));
+          findings.push(...checkContainsRule(match, cr, filePath, ruleSource));
         }
       }
 
       if (rule.children) {
         const childFlat = flattenSections(match.children);
-        findings.push(...checkRulesAgainstSections(childFlat, rule.children, filePath));
+        findings.push(...checkRulesAgainstSections(childFlat, rule.children, filePath, ruleSource));
       }
     }
   }
@@ -221,27 +294,64 @@ function escapeRegex(str: string): string {
 
 // --- Contains rule dispatching ---
 
-function checkContainsRule(section: SectionNode, rule: ContainsRule, filePath: string): Finding[] {
+function checkContainsRule(
+  section: SectionNode,
+  rule: ContainsRule,
+  filePath: string,
+  ruleSource: string
+): Finding[] {
   // Evaluate 'when' condition gate — skip rule if condition not met
   const when = 'when' in rule ? (rule as { when?: WhenCondition }).when : undefined;
   if (when && !evaluateWhenCondition(when, section.headingText)) {
     return [];
   }
 
+  const formattedRule = formatContainsRule(rule);
+
   if ('pattern' in rule && typeof rule.pattern === 'string') {
-    return checkPatternContains(section, rule as PatternContainsRule, filePath);
+    return checkPatternContains(
+      section,
+      rule as PatternContainsRule,
+      filePath,
+      ruleSource,
+      formattedRule
+    );
   }
   if ('list' in rule) {
-    return checkListContains(section, rule as ListContainsRule, filePath);
+    return checkListContains(
+      section,
+      rule as ListContainsRule,
+      filePath,
+      ruleSource,
+      formattedRule
+    );
   }
   if ('table' in rule) {
-    return checkTableContains(section, rule as TableContainsRule, filePath);
+    return checkTableContains(
+      section,
+      rule as TableContainsRule,
+      filePath,
+      ruleSource,
+      formattedRule
+    );
   }
   if ('code-block' in rule) {
-    return checkCodeBlockContains(section, rule as CodeBlockContainsRule, filePath);
+    return checkCodeBlockContains(
+      section,
+      rule as CodeBlockContainsRule,
+      filePath,
+      ruleSource,
+      formattedRule
+    );
   }
   if ('heading-or-text' in rule) {
-    return checkHeadingOrText(section, rule as HeadingOrTextContainsRule, filePath);
+    return checkHeadingOrText(
+      section,
+      rule as HeadingOrTextContainsRule,
+      filePath,
+      ruleSource,
+      formattedRule
+    );
   }
   return [];
 }
@@ -249,7 +359,9 @@ function checkContainsRule(section: SectionNode, rule: ContainsRule, filePath: s
 function checkPatternContains(
   section: SectionNode,
   rule: PatternContainsRule,
-  filePath: string
+  filePath: string,
+  ruleSource: string,
+  formattedRule: string
 ): Finding[] {
   const text = getFullSectionText(section);
   const found = new RegExp(rule.pattern, 'm').test(text);
@@ -264,6 +376,8 @@ function checkPatternContains(
           message: `Section '${section.headingText}' contains prohibited content: ${rule.label ?? rule.pattern}`,
           filePath,
           line: section.heading.position?.start.line,
+          ruleSource,
+          rule: formattedRule,
         },
       ];
     }
@@ -281,6 +395,8 @@ function checkPatternContains(
         message: `Section '${section.headingText}' missing required content: ${rule.label ?? rule.pattern}`,
         filePath,
         line: section.heading.position?.start.line,
+        ruleSource,
+        rule: formattedRule,
       },
     ];
   }
@@ -290,7 +406,9 @@ function checkPatternContains(
 function checkListContains(
   section: SectionNode,
   rule: ListContainsRule,
-  filePath: string
+  filePath: string,
+  ruleSource: string,
+  formattedRule: string
 ): Finding[] {
   const items = collectAllListItems(section);
   const regex = new RegExp(rule.list.pattern);
@@ -304,6 +422,8 @@ function checkListContains(
         message: `Section '${section.headingText}' has ${count} matching ${rule.list.label ?? 'list items'}, expected at least ${rule.list.min}`,
         filePath,
         line: section.heading.position?.start.line,
+        ruleSource,
+        rule: formattedRule,
       },
     ];
   }
@@ -313,7 +433,9 @@ function checkListContains(
 function checkTableContains(
   section: SectionNode,
   rule: TableContainsRule,
-  filePath: string
+  filePath: string,
+  ruleSource: string,
+  formattedRule: string
 ): Finding[] {
   const tables = collectAllTables(section);
 
@@ -325,6 +447,8 @@ function checkTableContains(
         message: `Section '${section.headingText}' missing required table${rule.table.heading ? ` (${rule.table.heading})` : ''}`,
         filePath,
         line: section.heading.position?.start.line,
+        ruleSource,
+        rule: formattedRule,
       },
     ];
   }
@@ -361,6 +485,8 @@ function checkTableContains(
         message: `No table in '${section.headingText}' has columns [${rule.table.columns.join(', ')}]${mm ? `, found [${mm.headers.join(', ')}]` : ''}`,
         filePath,
         line: mm?.table.position?.start.line ?? section.heading.position?.start.line,
+        ruleSource,
+        rule: formattedRule,
       },
     ];
   }
@@ -374,6 +500,8 @@ function checkTableContains(
       message: `Table in '${section.headingText}' has ${dataRows} data rows, expected at least ${rule.table['min-rows']}`,
       filePath,
       line: matched.position?.start.line,
+      ruleSource,
+      rule: formattedRule,
     });
   }
   return findings;
@@ -382,7 +510,9 @@ function checkTableContains(
 function checkCodeBlockContains(
   section: SectionNode,
   rule: CodeBlockContainsRule,
-  filePath: string
+  filePath: string,
+  ruleSource: string,
+  formattedRule: string
 ): Finding[] {
   if (collectAllCodeBlocks(section).length > 0) return [];
 
@@ -393,6 +523,8 @@ function checkCodeBlockContains(
       message: `Section '${section.headingText}' missing required ${rule.label ?? 'code block'}`,
       filePath,
       line: section.heading.position?.start.line,
+      ruleSource,
+      rule: formattedRule,
     },
   ];
 }
@@ -400,7 +532,9 @@ function checkCodeBlockContains(
 function checkHeadingOrText(
   section: SectionNode,
   rule: HeadingOrTextContainsRule,
-  filePath: string
+  filePath: string,
+  ruleSource: string,
+  formattedRule: string
 ): Finding[] {
   const needle = rule['heading-or-text'].toUpperCase();
 
@@ -415,6 +549,8 @@ function checkHeadingOrText(
         message: `Section '${section.headingText}' missing required heading or text: '${rule['heading-or-text']}'`,
         filePath,
         line: section.heading.position?.start.line,
+        ruleSource,
+        rule: formattedRule,
       },
     ];
   }
@@ -438,7 +574,8 @@ function evaluateWhenCondition(when: WhenCondition, headingText: string): boolea
 function checkProhibited(
   content: string,
   prohibited: readonly string[],
-  filePath: string
+  filePath: string,
+  ruleSource: string
 ): Finding[] {
   const findings: Finding[] = [];
   const lines = content.split('\n');
@@ -461,6 +598,8 @@ function checkProhibited(
           message: `Prohibited formatting '${pattern}' found`,
           filePath,
           line: i + 1,
+          ruleSource,
+          rule: formatProhibitedRule(pattern),
         });
         break;
       }

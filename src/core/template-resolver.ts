@@ -65,7 +65,7 @@ export class TemplateResolver {
       };
     }
 
-    // @awa-impl: TPL-2_AC-1 through TPL-2_AC-6, TPL-3_AC-1 through TPL-3_AC-4
+    // @awa-impl: TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6, TPL-3_AC-1, TPL-3_AC-2, TPL-3_AC-3, TPL-3_AC-4
     if (type === 'git') {
       const cachePath = this.getCachePath(source);
 
@@ -120,7 +120,7 @@ export class TemplateResolver {
     );
   }
 
-  // @awa-impl: TPL-2_AC-1 through TPL-2_AC-6
+  // @awa-impl: TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6
   detectType(source: string): TemplateSourceType {
     // Check for local path indicators
     if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {

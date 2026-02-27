@@ -10,11 +10,11 @@ Additionally, templates may live in a local directory during development but in 
 
 The template system has three layers:
 
-1. **Template Resolution** — determines where templates come from (local path or Git repo), fetches remote sources, and provides a local directory to the engine.
-2. **Template Engine** — loads template files, renders them with context data (feature flags), and returns the rendered output as strings.
-3. **Partials** — reusable content blocks shared across templates, stored in `_partials/` and included via Eta's `include()` syntax.
+1. TEMPLATE RESOLUTION — determines where templates come from (local path or Git repo), fetches remote sources, and provides a local directory to the engine.
+2. TEMPLATE ENGINE — loads template files, renders them with context data (feature flags), and returns the rendered output as strings.
+3. PARTIALS — reusable content blocks shared across templates, stored in `_partials/` and included via Eta's `include()` syntax.
 
-Templates use **Eta** syntax for conditionals, loops, and composition:
+Templates use Eta syntax for conditionals, loops, and composition:
 - `<%= it.features %>` — output expressions
 - `<% if (it.features.includes('copilot')) { %>` — conditional blocks
 - `<%~ include('_partials/header', it) %>` — partial inclusion
@@ -22,10 +22,10 @@ Templates use **Eta** syntax for conditionals, loops, and composition:
 Feature flags are the primary mechanism for conditional content. The template receives `it.features` (an array of strings) and uses standard JavaScript expressions to decide what to include.
 
 Two special output conventions control file creation:
-- **Empty output** (after trimming): the file is not created at all. This lets a template produce nothing when no relevant features are active.
-- **`<!-- AWA:EMPTY_FILE -->` marker**: creates an intentionally empty file. This distinguishes "nothing to output" from "output an empty file."
+- EMPTY OUTPUT (after trimming): the file is not created at all. This lets a template produce nothing when no relevant features are active.
+- EMPTY FILE MARKER (`<!-- AWA:EMPTY_FILE -->`): creates an intentionally empty file. This distinguishes "nothing to output" from "output an empty file."
 
-Template **caching** works for Git sources: fetched repositories are stored in `~/.cache/awa/templates/` and reused on subsequent runs. The `--refresh` flag forces a re-fetch. Local paths are used directly with no caching.
+Template CACHING works for Git sources: fetched repositories are stored in `~/.cache/awa/templates/` and reused on subsequent runs. The `--refresh` flag forces a re-fetch. Local paths are used directly with no caching.
 
 ## Scenarios
 
@@ -70,3 +70,4 @@ A developer runs `awa generate . --template myorg/repo/templates#v2.0` to fetch 
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

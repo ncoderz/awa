@@ -10,15 +10,15 @@ Without a clear CLI, developers resort to manually copying files, leading to div
 
 awa provides two primary commands — `generate` and `diff` — with a shared set of options that control template selection, feature flags, and output behaviour.
 
-The **generate** command renders templates and writes output files. The **diff** command renders the same templates to a temporary directory and compares them against a target, showing what would change without modifying anything.
+The GENERATE command renders templates and writes output files. The DIFF command renders the same templates to a temporary directory and compares them against a target, showing what would change without modifying anything.
 
 Options fall into several categories:
 
-- **What to generate**: `--template` (source), `--features` / `--preset` / `--remove-features` (conditional content)
-- **Where to write**: positional output directory argument
-- **How to handle conflicts**: `--force` (auto-overwrite), `--dry-run` (preview only), `--delete` (enable deletions)
-- **Cache control**: `--refresh` (re-fetch remote templates)
-- **Configuration**: `--config` (alternate config file path)
+- WHAT TO GENERATE: `--template` (source), `--features` / `--preset` / `--remove-features` (conditional content)
+- WHERE TO WRITE: positional output directory argument
+- HOW TO HANDLE CONFLICTS: `--force` (auto-overwrite), `--dry-run` (preview only), `--delete` (enable deletions)
+- CACHE CONTROL: `--refresh` (re-fetch remote templates)
+- CONFIGURATION: `--config` (alternate config file path)
 
 Options may come from CLI arguments, from an `.awa.toml` configuration file, or from both — with CLI always winning on conflicts.
 
@@ -55,3 +55,4 @@ A template update removes support for an agent. The developer runs `awa generate
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

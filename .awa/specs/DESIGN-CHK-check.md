@@ -258,7 +258,7 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
-SOURCE: REQ-CHK-check.md
+### REQ-CHK-check.md
 
 - CHK-1_AC-1 → CHK-MarkerScanner
 - CHK-2_AC-1 → CHK-SpecParser
@@ -280,3 +280,4 @@ SOURCE: REQ-CHK-check.md
 ## Change Log
 
 - 1.0.0 (2026-02-27): Initial design
+- 1.1.0 (2026-02-27): Schema upgrade — added H3 heading under Requirements Traceability

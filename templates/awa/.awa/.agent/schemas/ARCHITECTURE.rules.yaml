@@ -6,6 +6,7 @@ description: >
   system layers, technology stack, architecture diagram, directory structure,
   component details with RESPONSIBILITIES, interactions, rules, and
   developer commands. One file per project.
+line-limit: 500
 
 sections:
   # Top-level heading

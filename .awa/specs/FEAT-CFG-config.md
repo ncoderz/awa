@@ -8,7 +8,7 @@ Without a persistent configuration mechanism, every invocation requires the full
 
 ## Conceptual Model
 
-awa loads configuration from a **TOML file** (`.awa.toml`) in the current working directory. Every CLI option has a corresponding config key using kebab-case naming. The configuration and CLI arguments are **merged** with a simple rule: CLI always wins.
+awa loads configuration from a TOML file (`.awa.toml`) in the current working directory. Every CLI option has a corresponding config key using kebab-case naming. The configuration and CLI arguments are merged with a simple rule: CLI always wins.
 
 The merge works as follows:
 
@@ -48,3 +48,4 @@ A developer has a typo in `.awa.toml` (e.g., unclosed string). The tool displays
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with plain text

@@ -1,14 +1,8 @@
-# awa CLI Design
-
-> VERSION: 2.2.0 | STATUS: draft | UPDATED: 2026-02-24
+# Design Specification
 
 ## Overview
 
 This document defines the technical design for awa CLI, a TypeScript command-line tool that generates AI coding agent configuration files from templates. The design implements a pipeline architecture: CLI parses arguments, loads configuration, resolves template sources, renders templates with feature flags, and writes output files with conflict resolution.
-
-RELATED DOCUMENTS:
-- [DESIGN-AWA-cli-properties.md](DESIGN-AWA-cli-properties.md) - Correctness properties, error handling, testing strategy
-- [DESIGN-AWA-cli-traceability.md](DESIGN-AWA-cli-traceability.md) - Requirements traceability, library usage, change log
 
 ## Architecture
 
@@ -490,3 +484,405 @@ Represents a cached Git template.
 - LOCAL_PATH (string, required): Path in cache directory
 - FETCHED_AT (Date, required): When template was fetched
 - REF (string, optional): Git ref (branch/tag/commit) if specified
+
+## Correctness Properties
+
+- CFG_P-1 [CLI Override]: CLI arguments always override config file values for the same option
+  VALIDATES: CFG-4_AC-1, CFG-4_AC-2
+
+- CFG_P-2 [Features Replace]: Features from CLI completely replace config features (no merge)
+  VALIDATES: CFG-4_AC-4
+
+- TPL_P-1 [Empty Skip]: Empty or whitespace-only template output results in no file creation
+  VALIDATES: TPL-7_AC-1
+
+- TPL_P-2 [Empty Marker]: Template containing only `<!-- AWA:EMPTY_FILE -->` creates an empty file
+  VALIDATES: TPL-7_AC-2
+
+- GEN_P-1 [Underscore Exclusion]: Files/directories starting with `_` are never written to output
+  VALIDATES: GEN-8_AC-1, GEN-8_AC-2, TPL-9_AC-1, TPL-9_AC-2
+
+- GEN_P-2 [Directory Mirror]: Output directory structure exactly mirrors template structure (excluding underscore paths)
+  VALIDATES: GEN-1_AC-1, GEN-1_AC-2
+
+- GEN_P-3 [Dry Run Immutable]: Dry-run mode never modifies the file system
+  VALIDATES: GEN-6_AC-1, GEN-6_AC-2
+
+- GEN_P-4 [Force No Prompt]: Force mode never prompts for conflict resolution
+  VALIDATES: GEN-4_AC-3, CLI-5_AC-2
+
+- GEN_P-5 [Content Identity Skip]: When existing file content exactly matches new content, file is skipped without prompting
+  VALIDATES: GEN-5_AC-7
+
+- TPL_P-3 [Local No Cache]: Local template paths are used directly without caching
+  VALIDATES: TPL-1_AC-4
+
+- TPL_P-4 [Git Cache Reuse]: Git templates use cached version unless --refresh is specified
+  VALIDATES: TPL-3_AC-2
+
+- DIFF_P-1 [Diff Read-Only]: Diff command never modifies the target directory
+  VALIDATES: DIFF-1_AC-3
+
+- DIFF_P-2 [Temp Cleanup Guaranteed]: Temp directory is always deleted, even on error
+  VALIDATES: DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3
+
+- DIFF_P-3 [Exact Comparison]: File comparison is byte-for-byte exact (whitespace-sensitive)
+  VALIDATES: DIFF-2_AC-1
+
+- DIFF_P-4 [Exit Code Semantics]: Exit 0 means identical, exit 1 means differences, exit 2 means error
+  VALIDATES: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+
+- DIFF_P-5 [Unknown Opt-In]: Target-only files are excluded unless `listUnknown` is true; when true, they are reported as extras without altering generation scope
+  VALIDATES: DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-7_AC-11
+
+- GEN_P-6 [Delete Feature Gating]: Delete list entries under a `# @feature <name>` section are deleted only when NONE of the listed features are active
+  VALIDATES: GEN-12_AC-8
+
+- DIFF_P-6 [Delete-Listed Priority]: Files appearing in both the delete list and the extra list are reported only as `delete-listed`, never duplicated as `extra`
+  VALIDATES: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-3
+
+- FP_P-1 [Preset Validation]: Referencing a non-existent preset name results in an error
+  VALIDATES: FP-2_AC-3
+
+- FP_P-2 [Feature Resolution Order]: Final features = (baseFeatures union presetFeatures) minus removeFeatures
+  VALIDATES: FP-6_AC-1, FP-6_AC-2, FP-6_AC-3, FP-6_AC-4
+
+- FP_P-3 [Feature Deduplication]: Final feature set contains no duplicates
+  VALIDATES: FP-6_AC-5, FP-7_AC-2
+
+- FP_P-4 [Preset Union]: Multiple presets are merged via set union
+  VALIDATES: FP-7_AC-1
+
+- FP_P-5 [Silent Removal]: Removing a non-existent feature does not cause an error
+  VALIDATES: FP-4_AC-4
+
+## Error Handling
+
+### ConfigError
+
+Configuration loading and parsing errors.
+
+- FILE_NOT_FOUND: Specified config file does not exist (when --config provided)
+- PARSE_ERROR: TOML syntax error with line number
+- INVALID_TYPE: Config value has wrong type
+- INVALID_PRESET: Preset value is not an array of strings
+- UNKNOWN_PRESET: Referenced preset name does not exist in presets table
+
+### TemplateError
+
+Template resolution and rendering errors.
+
+- SOURCE_NOT_FOUND: Local template path does not exist
+- FETCH_FAILED: Git fetch failed (network, auth, repo not found)
+- RENDER_ERROR: Eta template syntax error with location
+
+### GenerationError
+
+File generation errors.
+
+- PERMISSION_DENIED: Cannot create directory or write file
+- DISK_FULL: Insufficient disk space
+
+### DiffError
+
+Diff operation errors.
+
+- TARGET_NOT_FOUND: Target directory does not exist
+- TARGET_NOT_READABLE: Cannot read target directory or files
+- TEMP_DIR_FAILED: Failed to create or write to temp directory
+
+### Strategy
+
+PRINCIPLES:
+
+- Fail fast on first error
+- Provide actionable error messages with file paths
+- Write errors to stderr
+- Exit with non-zero code on any error
+- Include suggestions for common errors
+
+## Testing Strategy
+
+### Property-Based Testing
+
+- FRAMEWORK: fast-check
+- MINIMUM_ITERATIONS: 100
+- TAG_FORMAT: @awa-test: {CODE}_P-{n}
+
+### Unit Testing
+
+- AREAS: CFG-ConfigLoader merge logic, TPL-TemplateResolver type detection, TPL-TemplateEngine empty detection, GEN-ConflictResolver prompt logic, GEN-DeleteList parsing, GEN-DeleteResolver confirmation flow
+
+### Integration Testing
+
+- SCENARIOS: Local template generation, Git template caching, Conflict resolution flow, Dry-run output verification, Delete list processing with feature gating, Diff with delete-listed files
+
+## Requirements Traceability
+
+### REQ-CLI-cli.md
+
+- CLI-1_AC-1 → CLI-ArgumentParser
+- CLI-1_AC-2 → CLI-ArgumentParser
+- CLI-1_AC-3 → CLI-ArgumentParser
+- CLI-1_AC-4 → CLI-ArgumentParser
+- CLI-1_AC-5 → CLI-ArgumentParser
+- CLI-2_AC-1 → CLI-ArgumentParser
+- CLI-2_AC-2 → CFG-ConfigLoader
+- CLI-2_AC-3 → CFG-ConfigLoader
+- CLI-2_AC-4 → CFG-ConfigLoader
+- CLI-2_AC-5 → CLI-ArgumentParser
+- CLI-2_AC-6 → CLI-ArgumentParser
+- CLI-3_AC-1 → CLI-ArgumentParser
+- CLI-3_AC-2 → TPL-TemplateResolver
+- CLI-3_AC-3 → TPL-TemplateResolver
+- CLI-4_AC-1 → CLI-ArgumentParser
+- CLI-4_AC-2 → CLI-ArgumentParser
+- CLI-4_AC-3 → CFG-ConfigLoader
+- CLI-5_AC-1 → CLI-ArgumentParser
+- CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
+- CLI-5_AC-3 → GEN-ConflictResolver
+- CLI-6_AC-1 → CLI-ArgumentParser
+- CLI-6_AC-2 → GEN-FileGenerator (GEN_P-3)
+- CLI-6_AC-3 → GEN-Logger
+- CLI-7_AC-1 → CLI-ArgumentParser
+- CLI-7_AC-2 → CFG-ConfigLoader
+- CLI-8_AC-1 → CLI-ArgumentParser
+- CLI-8_AC-2 → TPL-TemplateResolver (TPL_P-4)
+- CLI-9_AC-1 → CLI-ArgumentParser
+- CLI-9_AC-2 → CLI-ArgumentParser
+- CLI-9_AC-3 → CLI-ArgumentParser
+- CLI-10_AC-1 → CLI-ArgumentParser
+- CLI-10_AC-2 → CLI-ArgumentParser
+- CLI-11_AC-1 → CLI-ArgumentParser
+- CLI-11_AC-2 → CLI-ArgumentParser
+- CLI-11_AC-3 → CLI-ArgumentParser
+- CLI-12_AC-1 → CLI-ArgumentParser
+- CLI-12_AC-2 → GEN-FileGenerator
+- CLI-12_AC-3 → GEN-DeleteResolver
+- CLI-13_AC-1 → CLI-ArgumentParser
+- CLI-13_AC-2 → CLI-ArgumentParser
+- CLI-14_AC-1 → CLI-ArgumentParser
+- CLI-14_AC-2 → CLI-ArgumentParser
+
+### REQ-CFG-config.md
+
+- CFG-1_AC-1 → CFG-ConfigLoader
+- CFG-1_AC-2 → CFG-ConfigLoader
+- CFG-1_AC-3 → CFG-ConfigLoader
+- CFG-1_AC-4 → CFG-ConfigLoader
+- CFG-2_AC-1 → CFG-ConfigLoader
+- CFG-2_AC-2 → CFG-ConfigLoader
+- CFG-2_AC-3 → CFG-ConfigLoader
+- CFG-3_AC-1 → CFG-ConfigLoader
+- CFG-3_AC-2 → CFG-ConfigLoader
+- CFG-3_AC-3 → CFG-ConfigLoader
+- CFG-3_AC-4 → CFG-ConfigLoader
+- CFG-3_AC-5 → CFG-ConfigLoader
+- CFG-3_AC-6 → CFG-ConfigLoader
+- CFG-3_AC-7 → CFG-ConfigLoader
+- CFG-3_AC-8 → CFG-ConfigLoader
+- CFG-3_AC-9 → CFG-ConfigLoader
+- CFG-3_AC-10 → CFG-ConfigLoader
+- CFG-4_AC-1 → CFG-ConfigLoader (CFG_P-1)
+- CFG-4_AC-2 → CFG-ConfigLoader (CFG_P-1)
+- CFG-4_AC-3 → CFG-ConfigLoader
+- CFG-4_AC-4 → CFG-ConfigLoader (CFG_P-2)
+- CFG-5_AC-1 → CFG-ConfigLoader
+- CFG-5_AC-2 → CLI-ArgumentParser
+- CFG-6_AC-1 → CFG-ConfigLoader
+- CFG-6_AC-2 → CFG-ConfigLoader
+
+### REQ-TPL-templates.md
+
+- TPL-1_AC-1 → TPL-TemplateResolver
+- TPL-1_AC-2 → TPL-TemplateResolver
+- TPL-1_AC-3 → TPL-TemplateResolver
+- TPL-1_AC-4 → TPL-TemplateResolver (TPL_P-3)
+- TPL-2_AC-1 → TPL-TemplateResolver
+- TPL-2_AC-2 → TPL-TemplateResolver
+- TPL-2_AC-3 → TPL-TemplateResolver
+- TPL-2_AC-4 → TPL-TemplateResolver
+- TPL-2_AC-5 → TPL-TemplateResolver
+- TPL-2_AC-6 → TPL-TemplateResolver
+- TPL-3_AC-1 → TPL-TemplateResolver
+- TPL-3_AC-2 → TPL-TemplateResolver (TPL_P-4)
+- TPL-3_AC-3 → TPL-TemplateResolver
+- TPL-3_AC-4 → TPL-TemplateResolver
+- TPL-4_AC-1 → TPL-TemplateEngine
+- TPL-4_AC-2 → TPL-TemplateEngine
+- TPL-4_AC-3 → TPL-TemplateEngine
+- TPL-4_AC-4 → TPL-TemplateEngine
+- TPL-5_AC-1 → TPL-TemplateEngine
+- TPL-5_AC-2 → TPL-TemplateEngine
+- TPL-5_AC-3 → TPL-TemplateEngine
+- TPL-6_AC-1 → TPL-TemplateEngine
+- TPL-6_AC-2 → TPL-TemplateEngine
+- TPL-7_AC-1 → TPL-TemplateEngine (TPL_P-1)
+- TPL-7_AC-2 → TPL-TemplateEngine (TPL_P-2)
+- TPL-7_AC-3 → GEN-Logger
+- TPL-8_AC-1 → TPL-TemplateEngine
+- TPL-8_AC-2 → TPL-TemplateEngine
+- TPL-8_AC-3 → TPL-TemplateEngine
+- TPL-8_AC-4 → TPL-TemplateEngine
+- TPL-9_AC-1 → GEN-FileGenerator (GEN_P-1)
+- TPL-9_AC-2 → GEN-FileGenerator (GEN_P-1)
+- TPL-10_AC-1 → TPL-TemplateResolver
+- TPL-10_AC-2 → TPL-TemplateResolver
+- TPL-10_AC-3 → TPL-TemplateResolver
+- TPL-11_AC-1 → TPL-TemplateEngine
+- TPL-11_AC-2 → TPL-TemplateEngine
+
+### REQ-GEN-generation.md
+
+- GEN-1_AC-1 → GEN-FileGenerator (GEN_P-2)
+- GEN-1_AC-2 → GEN-FileGenerator (GEN_P-2)
+- GEN-1_AC-3 → GEN-FileGenerator
+- GEN-2_AC-1 → GEN-FileGenerator
+- GEN-2_AC-2 → GEN-FileGenerator
+- GEN-2_AC-3 → GEN-FileGenerator
+- GEN-3_AC-1 → GEN-FileGenerator
+- GEN-3_AC-2 → GEN-FileGenerator
+- GEN-3_AC-3 → GEN-FileGenerator
+- GEN-4_AC-1 → GEN-ConflictResolver
+- GEN-4_AC-2 → GEN-ConflictResolver
+- GEN-4_AC-3 → GEN-ConflictResolver (GEN_P-4)
+- GEN-5_AC-1 → GEN-ConflictResolver
+- GEN-5_AC-2 → GEN-ConflictResolver
+- GEN-5_AC-3 → GEN-ConflictResolver
+- GEN-5_AC-4 → GEN-ConflictResolver
+- GEN-5_AC-5 → GEN-ConflictResolver
+- GEN-5_AC-6 → GEN-ConflictResolver
+- GEN-5_AC-7 → GEN-ConflictResolver (GEN_P-5)
+- GEN-6_AC-1 → GEN-FileGenerator (GEN_P-3)
+- GEN-6_AC-2 → GEN-FileGenerator (GEN_P-3)
+- GEN-6_AC-3 → GEN-ConflictResolver
+- GEN-6_AC-4 → GEN-Logger
+- GEN-7_AC-1 → GEN-Logger
+- GEN-7_AC-2 → GEN-Logger
+- GEN-7_AC-3 → GEN-Logger
+- GEN-7_AC-4 → GEN-Logger
+- GEN-8_AC-1 → GEN-FileGenerator (GEN_P-1)
+- GEN-8_AC-2 → GEN-FileGenerator (GEN_P-1)
+- GEN-8_AC-3 → GEN-FileGenerator (GEN_P-1)
+- GEN-9_AC-1 → GEN-Logger
+- GEN-9_AC-2 → GEN-Logger
+- GEN-9_AC-3 → GEN-Logger
+- GEN-9_AC-4 → GEN-Logger
+- GEN-9_AC-5 → GEN-Logger
+- GEN-9_AC-6 → GEN-Logger
+- GEN-9_AC-7 → GEN-Logger
+- GEN-9_AC-8 → GEN-Logger
+- GEN-10_AC-1 → CLI-ArgumentParser
+- GEN-10_AC-2 → CLI-ArgumentParser
+- GEN-10_AC-3 → GEN-ConflictResolver
+- GEN-11_AC-1 → GEN-Logger
+- GEN-11_AC-2 → GEN-Logger
+- GEN-11_AC-3 → GEN-FileGenerator
+- GEN-11_AC-4 → GEN-Logger
+- GEN-12_AC-1 → GEN-FileGenerator
+- GEN-12_AC-2 → GEN-FileGenerator
+- GEN-12_AC-3 → GEN-DeleteResolver
+- GEN-12_AC-4 → GEN-FileGenerator
+- GEN-12_AC-5 → GEN-FileGenerator
+- GEN-12_AC-6 → GEN-FileGenerator
+- GEN-12_AC-7 → GEN-FileGenerator
+- GEN-12_AC-8 → GEN-DeleteList (GEN_P-6)
+
+### REQ-DIFF-diff.md
+
+- DIFF-1_AC-1 → DIFF-DiffEngine
+- DIFF-1_AC-2 → DIFF-DiffEngine
+- DIFF-1_AC-3 → DIFF-DiffEngine (DIFF_P-1)
+- DIFF-2_AC-1 → DIFF-DiffEngine (DIFF_P-3)
+- DIFF-2_AC-2 → DIFF-DiffEngine
+- DIFF-2_AC-3 → DIFF-DiffEngine
+- DIFF-2_AC-4 → DIFF-DiffEngine
+- DIFF-2_AC-5 → DIFF-DiffEngine
+- DIFF-3_AC-1 → DIFF-DiffEngine
+- DIFF-3_AC-2 → DIFF-DiffEngine (DIFF_P-5)
+- DIFF-3_AC-3 → DIFF-DiffEngine (DIFF_P-5)
+- DIFF-3_AC-4 → DIFF-DiffEngine (DIFF_P-5)
+- DIFF-4_AC-1 → DIFF-DiffEngine
+- DIFF-4_AC-2 → DIFF-DiffEngine
+- DIFF-4_AC-3 → GEN-Logger
+- DIFF-4_AC-4 → GEN-Logger
+- DIFF-4_AC-5 → GEN-Logger
+- DIFF-5_AC-1 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-5_AC-2 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-5_AC-3 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-6_AC-1 → DIFF-DiffEngine (DIFF_P-2)
+- DIFF-6_AC-2 → DIFF-DiffEngine (DIFF_P-2)
+- DIFF-6_AC-3 → DIFF-DiffEngine (DIFF_P-2)
+- DIFF-7_AC-1 → CLI-ArgumentParser
+- DIFF-7_AC-2 → CLI-ArgumentParser
+- DIFF-7_AC-3 → CLI-ArgumentParser
+- DIFF-7_AC-4 → CLI-ArgumentParser
+- DIFF-7_AC-5 → CLI-ArgumentParser
+- DIFF-7_AC-6 → CLI-ArgumentParser
+- DIFF-7_AC-11 → CLI-ArgumentParser
+- DIFF-7_AC-12 → CLI-ArgumentParser
+- DIFF-7_AC-13 → CLI-ArgumentParser
+- DIFF-8_AC-1 → DIFF-DiffEngine (DIFF_P-6)
+- DIFF-8_AC-2 → DIFF-DiffEngine (DIFF_P-6)
+- DIFF-8_AC-3 → DIFF-DiffEngine (DIFF_P-6)
+- DIFF-8_AC-4 → DIFF-DiffEngine
+
+### REQ-FP-feature-presets.md
+
+- FP-1_AC-1 → CFG-ConfigLoader
+- FP-1_AC-2 → CFG-ConfigLoader
+- FP-1_AC-3 → CFG-ConfigLoader
+- FP-1_AC-4 → CFG-ConfigLoader
+- FP-2_AC-1 → CLI-ArgumentParser
+- FP-2_AC-2 → CLI-ArgumentParser
+- FP-2_AC-3 → FP-FeatureResolver (FP_P-1)
+- FP-2_AC-4 → CLI-ArgumentParser
+- FP-3_AC-1 → CFG-ConfigLoader
+- FP-3_AC-2 → CFG-ConfigLoader
+- FP-3_AC-3 → CFG-ConfigLoader
+- FP-4_AC-1 → CLI-ArgumentParser
+- FP-4_AC-2 → CLI-ArgumentParser
+- FP-4_AC-3 → CLI-ArgumentParser
+- FP-4_AC-4 → FP-FeatureResolver (FP_P-5)
+- FP-4_AC-5 → CLI-ArgumentParser
+- FP-5_AC-1 → CFG-ConfigLoader
+- FP-5_AC-2 → CFG-ConfigLoader
+- FP-5_AC-3 → CFG-ConfigLoader
+- FP-6_AC-1 → FP-FeatureResolver (FP_P-2)
+- FP-6_AC-2 → FP-FeatureResolver (FP_P-2)
+- FP-6_AC-3 → FP-FeatureResolver (FP_P-2)
+- FP-6_AC-4 → FP-FeatureResolver (FP_P-2)
+- FP-6_AC-5 → FP-FeatureResolver (FP_P-3)
+- FP-7_AC-1 → FP-FeatureResolver (FP_P-4)
+- FP-7_AC-2 → FP-FeatureResolver (FP_P-3)
+
+## Library Usage
+
+### Framework Features
+
+- COMMANDER: Command definition, argument parsing, help generation with positional args, version display
+- ETA: Template rendering, partial includes, context passing
+- SMOL_TOML: TOML parsing with error location
+- DEGIT: Shallow Git fetches, ref support, subdirectory extraction
+- CLACK_PROMPTS: Interactive select prompts for conflict resolution
+- CLACK_CORE: Custom multiselect prompts for destructive-styled delete confirmation (red checkboxes)
+- CHALK: Styled terminal output (colors, bold, dim)
+
+### External Libraries
+
+- commander (latest): CLI framework — argument parsing, help with positional args, subcommands
+- eta (3.x): Template engine — fast, TypeScript-native, partials
+- smol-toml (1.x): TOML parser — lightweight, spec-compliant
+- degit (2.x): Git fetcher — shallow clones without .git
+- @clack/prompts (latest): Interactive prompts — styled, accessible
+- @clack/core (latest): Custom prompt primitives — used for destructive-styled delete multiselect
+- chalk (5.x): Terminal colors — ESM-native, no dependencies
+- fast-check (3.x): Property-based testing — generators, shrinking
+- diff (latest): Unified diff generation — cross-platform text comparison
+- isbinaryfile (latest): Binary file detection — null-byte heuristic, well-maintained
+
+## Change Log
+
+- 1.0.0 (2025-12-11): Initial design based on requirements
+- 2.2.0 (2026-02-24): Added CLI-12/13/14 ACs, CFG-3_AC-7/8/9/10, GEN-12 and GEN-9_AC-7/8, DIFF-8 and DIFF-7_AC-12/13; added @clack/core library; added GEN_P-6, DIFF_P-6 properties
+- 3.0.0 (2026-02-27): Schema upgrade — consolidated properties, traceability, and library usage from split files; fixed H1 to Design Specification; fixed Strategy heading

@@ -10,20 +10,20 @@ Without a structured generation pipeline, developers face either losing changes 
 
 File generation is a pipeline with several stages:
 
-1. **Template walking** — the generator traverses the template directory, mirroring its structure in the output path. Files and directories starting with `_` (partials, helpers, delete lists) are excluded from output.
+1. TEMPLATE WALKING — the generator traverses the template directory, mirroring its structure in the output path. Files and directories starting with `_` (partials, helpers, delete lists) are excluded from output.
 
-2. **Rendering** — each template file is rendered through the template engine. Empty output means the file is skipped; the `AWA:EMPTY_FILE` marker creates an intentionally empty file.
+2. RENDERING — each template file is rendered through the template engine. Empty output means the file is skipped; the `AWA:EMPTY_FILE` marker creates an intentionally empty file.
 
-3. **Conflict resolution** — when an output file already exists, the system compares the new content against the existing content:
+3. CONFLICT RESOLUTION — when an output file already exists, the system compares the new content against the existing content:
    - Identical content → automatically skipped (no prompt).
    - Different content → user is prompted to choose overwrite or skip, unless `--force` (auto-overwrite) or `--dry-run` (simulate only) is active.
    - Conflicts are batched into a single interactive multiselect prompt rather than one-at-a-time.
 
-4. **Delete list processing** — after generation, if `_delete.txt` exists in the template root and `--delete` is provided, the system identifies files that are candidates for deletion. These are files that the template author has declared as obsolete. Feature-gated sections in `_delete.txt` allow conditional deletion: paths are deleted only when none of the listed features are active. Without `--delete`, the system warns about eligible files but does not delete them.
+4. DELETE LIST PROCESSING — after generation, if `_delete.txt` exists in the template root and `--delete` is provided, the system identifies files that are candidates for deletion. These are files that the template author has declared as obsolete. Feature-gated sections in `_delete.txt` allow conditional deletion: paths are deleted only when none of the listed features are active. Without `--delete`, the system warns about eligible files but does not delete them.
 
-5. **Summary** — a count of created, overwritten, skipped (user-declined, empty, identical), and deleted files is displayed.
+5. SUMMARY — a count of created, overwritten, skipped (user-declined, empty, identical), and deleted files is displayed.
 
-An important concept is the **interactive multi-tool selection**: when the `generate` command is run without any tool-related feature flags, the user is presented with an interactive multiselect prompt showing available tools (copilot, claude, cursor, windsurf, etc.). This makes first-run onboarding smoother.
+An important concept is the INTERACTIVE MULTI-TOOL SELECTION: when the `generate` command is run without any tool-related feature flags, the user is presented with an interactive multiselect prompt showing available tools (copilot, claude, cursor, windsurf, etc.). This makes first-run onboarding smoother.
 
 ## Scenarios
 
@@ -71,3 +71,4 @@ A developer runs `awa generate .` with no feature flags. The CLI presents a mult
 ## Change Log
 
 - 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
+- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

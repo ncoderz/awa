@@ -5,6 +5,7 @@ description: >
   /docs folder rather than including lengthy content inline. Required sections:
   title, description, installation, and usage. Keep it concise — the README
   is the front door, not the whole house.
+line-limit: 500
 
 sections:
   # Project title (H1)

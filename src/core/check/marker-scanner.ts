@@ -33,6 +33,9 @@ function buildMarkerRegex(markerNames: readonly string[]): RegExp {
   return new RegExp(`(${escaped.join('|')}):\\s*(.+)`, 'g');
 }
 
+/** Pattern matching valid impl/test IDs and component names. */
+const ID_TOKEN_RE = /^([A-Z][A-Z0-9]*(?:[-_][A-Za-z0-9]+)*(?:\.\d+)?)/;
+
 async function scanFile(filePath: string, markerNames: readonly string[]): Promise<CodeMarker[]> {
   let content: string;
   try {
@@ -61,8 +64,9 @@ async function scanFile(filePath: string, markerNames: readonly string[]): Promi
         .filter(Boolean);
 
       for (const id of ids) {
-        // Strip trailing comments like "(partial: reason)"
-        const cleanId = id.replace(/\s*\(.*\)\s*$/, '').trim();
+        // Extract only the leading ID token, ignoring trailing comments/text
+        const tokenMatch = ID_TOKEN_RE.exec(id);
+        const cleanId = tokenMatch ? tokenMatch[1].trim() : '';
         if (cleanId) {
           markers.push({ type, id: cleanId, filePath, line: i + 1 });
         }

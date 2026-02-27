@@ -7,6 +7,7 @@ description: >
   Each example must have a title, context, and code/demonstration block.
   Marked [INFORMATIVE]. Prohibited: normative language (SHALL/SHOULD/MAY),
   acceptance criteria, traceability IDs, design decisions.
+line-limit: 500
 
 sections:
   # Top-level heading with INFORMATIVE marker

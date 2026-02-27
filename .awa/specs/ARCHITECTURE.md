@@ -1,4 +1,4 @@
-# awa CLI Architecture
+# Architecture
 
 ## Project Purpose
 
@@ -6,13 +6,13 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 
 ## System Overview
 
-- **CLI Layer**: Command parsing, argument validation, user prompts
-- **Configuration Loader**: TOML config file parsing, CLI override merging
-- **Template Resolver**: Resolve template source (local path or Git repo)
-- **Template Engine**: Template loading, rendering with conditional logic
-- **File Generator**: Output file creation, directory management, conflict resolution
-- **Diff Engine**: Template comparison against target directory with diff reporting
-- **Check Engine**: Traceability chain validation — scans code markers and spec IDs, reports findings
+- CLI LAYER: Command parsing, argument validation, user prompts
+- CONFIGURATION LOADER: TOML config file parsing, CLI override merging
+- TEMPLATE RESOLVER: Resolve template source (local path or Git repo)
+- TEMPLATE ENGINE: Template loading, rendering with conditional logic
+- FILE GENERATOR: Output file creation, directory management, conflict resolution
+- DIFF ENGINE: Template comparison against target directory with diff reporting
+- CHECK ENGINE: Traceability chain validation — scans code markers and spec IDs, reports findings
 
 ## Technology Stack
 
@@ -586,3 +586,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.2.0 (2026-02-24): Aligned with code — added feature-gated delete sections, `--delete` flag, `DeleteResolver`, interactive multi-tool selection, `delete`/`list-unknown` config options, fixed directory structure, updated developer commands
 - 2.4.0 (2026-07-14): Added schema validation — declarative YAML rules for Markdown structural checks via remark/mdast, rule-loader, schema-checker components
 - 2.3.0 (2026-07-14): Added Check Engine component — traceability chain validation (`awa check`), `[check]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting
+- 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview

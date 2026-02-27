@@ -6,6 +6,7 @@ description: >
   (CERTAIN/LIKELY/UNCERTAIN), and type (MISSING/DIFFERENCE/CONFLICT/INCOMPLETE/
   UNTESTED/ORPHAN/SUPERSET). Findings are checkbox items with SOURCE, TARGET,
   ISSUE, and RESOLUTION fields. Summary section has severity counts and STATUS.
+line-limit: 500
 
 sections:
   # Top-level heading

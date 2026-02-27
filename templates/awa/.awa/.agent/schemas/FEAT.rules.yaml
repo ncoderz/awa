@@ -6,6 +6,7 @@ description: >
   to distinguish from normative REQ/DESIGN documents.
   Prohibited: normative language (SHALL/SHOULD/MAY), acceptance criteria,
   traceability IDs, design decisions, bold formatting.
+line-limit: 500
 
 sections:
   # Top-level heading with INFORMATIVE marker
