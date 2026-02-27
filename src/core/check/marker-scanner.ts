@@ -4,7 +4,7 @@
 // @awa-impl: CHK-13_AC-1
 
 import { readFile } from 'node:fs/promises';
-import { collectFiles } from './glob.js';
+import { collectFiles, matchSimpleGlob } from './glob.js';
 import type { CheckConfig, CodeMarker, Finding, MarkerScanResult, MarkerType } from './types.js';
 
 const MARKER_TYPE_MAP: Record<string, MarkerType> = {
@@ -13,6 +13,13 @@ const MARKER_TYPE_MAP: Record<string, MarkerType> = {
   '@awa-component': 'component',
 };
 
+/** Ignore directive patterns (similar to eslint-disable comments). */
+const IGNORE_FILE_RE = /@awa-ignore-file\b/;
+const IGNORE_NEXT_LINE_RE = /@awa-ignore-next-line\b/;
+const IGNORE_LINE_RE = /@awa-ignore\b/;
+const IGNORE_START_RE = /@awa-ignore-start\b/;
+const IGNORE_END_RE = /@awa-ignore-end\b/;
+
 // @awa-impl: CHK-1_AC-1
 export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult> {
   const files = await collectCodeFiles(config.codeGlobs, config.ignore);
@@ -20,6 +27,11 @@ export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult
   const findings: Finding[] = [];
 
   for (const filePath of files) {
+    // Skip files matching ignoreMarkers globs
+    if (config.ignoreMarkers.some((ig) => matchSimpleGlob(filePath, ig))) {
+      continue;
+    }
+
     const result = await scanFile(filePath, config.markers);
     markers.push(...result.markers);
     findings.push(...result.findings);
@@ -49,12 +61,49 @@ async function scanFile(
     return { markers: [], findings: [] };
   }
 
+  // Check for @awa-ignore-file directive anywhere in the file
+  if (IGNORE_FILE_RE.test(content)) {
+    return { markers: [], findings: [] };
+  }
+
   const regex = buildMarkerRegex(markerNames);
   const lines = content.split('\n');
   const markers: CodeMarker[] = [];
   const findings: Finding[] = [];
+  let ignoreNextLine = false;
+  let ignoreBlock = false;
 
   for (const [i, line] of lines.entries()) {
+    // Check for block ignore boundaries
+    if (IGNORE_START_RE.test(line)) {
+      ignoreBlock = true;
+      continue;
+    }
+    if (IGNORE_END_RE.test(line)) {
+      ignoreBlock = false;
+      continue;
+    }
+    if (ignoreBlock) {
+      continue;
+    }
+
+    // Check if previous line had @awa-ignore-next-line
+    if (ignoreNextLine) {
+      ignoreNextLine = false;
+      continue;
+    }
+
+    // Check if this line is an @awa-ignore-next-line directive
+    if (IGNORE_NEXT_LINE_RE.test(line)) {
+      ignoreNextLine = true;
+      continue;
+    }
+
+    // Check for inline @awa-ignore on this line (ignores markers on this line)
+    if (IGNORE_LINE_RE.test(line)) {
+      continue;
+    }
+
     regex.lastIndex = 0;
     let match = regex.exec(line);
 

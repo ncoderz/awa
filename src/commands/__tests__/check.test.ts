@@ -61,6 +61,7 @@ IMPLEMENTS: X-1_AC-1
   VALIDATES: X-1_AC-1
 `
     );
+    // @awa-ignore-start
     await writeFile(
       join(codeDir, 'loader.ts'),
       `// @awa-component: X-Loader
@@ -75,6 +76,7 @@ export function load() {}
 test('works', () => {});
 `
     );
+    // @awa-ignore-end
 
     const exitCode = await checkCommand({
       config: undefined,
@@ -89,12 +91,14 @@ test('works', () => {});
   // @awa-test: CHK_P-5
   // @awa-test: CHK-8_AC-1
   test('returns exit code 1 when orphaned markers exist', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(codeDir, 'broken.ts'),
       `// @awa-impl: GHOST-1_AC-1
 export function ghost() {}
 `
     );
+    // @awa-ignore-end
 
     const exitCode = await checkCommand({
       config: undefined,
@@ -118,12 +122,14 @@ export function ghost() {}
 
   // @awa-test: CHK-10_AC-1
   test('respects --ignore patterns', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(codeDir, 'ignored.ts'),
       `// @awa-impl: GHOST-1_AC-1
 export function ghost() {}
 `
     );
+    // @awa-ignore-end
 
     const exitCode = await checkCommand({
       config: undefined,
@@ -186,6 +192,7 @@ IMPLEMENTS: X-1_AC-1
   VALIDATES: X-1_AC-1
 `
     );
+    // @awa-ignore-start
     await writeFile(
       join(codeDir, 'loader.ts'),
       `// @awa-component: X-Loader
@@ -200,6 +207,7 @@ export function load() {}
 test('works', () => {});
 `
     );
+    // @awa-ignore-end
 
     const exitCode = await checkCommand({
       config: undefined,

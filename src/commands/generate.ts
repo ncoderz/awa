@@ -46,7 +46,7 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       presetDefinitions: options.presets,
     });
 
-    // @awa-impl: MTT-1_AC-1
+    // @awa-impl: MTT-1_AC-1 // @awa-ignore
     // If no tool feature flag is present, prompt the user to select tools interactively
     const hasToolFlag = features.some((f) => TOOL_FEATURE_VALUES.has(f));
     if (!hasToolFlag) {

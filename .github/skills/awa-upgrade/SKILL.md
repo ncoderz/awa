@@ -55,10 +55,6 @@ Upgrade the specified specs to conform to their schemas and traceability rules.
 
 ## Outputs
 
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" />
-<file type="align_report" path=".awa/alignment/ALIGN-{x}-WITH-{y}-{nnn}.md" />
-
 - Updated spec(s) and supporting templates (as applicable)
 
 ## Rules

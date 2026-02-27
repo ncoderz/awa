@@ -5,6 +5,7 @@ export interface CheckConfig {
   readonly specGlobs: readonly string[];
   readonly codeGlobs: readonly string[];
   readonly ignore: readonly string[];
+  readonly ignoreMarkers: readonly string[];
   readonly markers: readonly string[];
   readonly idPattern: string;
   readonly crossRefPatterns: readonly string[];
@@ -17,6 +18,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
   specGlobs: ['.awa/specs/**/*.md'],
   codeGlobs: ['src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}'],
   ignore: ['node_modules/**', 'dist/**'],
+  ignoreMarkers: [],
   markers: ['@awa-impl', '@awa-test', '@awa-component'],
   idPattern: '([A-Z][A-Z0-9]*-\\d+(?:\\.\\d+)?(?:_AC-\\d+)?|[A-Z][A-Z0-9]*_P-\\d+)',
   crossRefPatterns: ['IMPLEMENTS:', 'VALIDATES:'],

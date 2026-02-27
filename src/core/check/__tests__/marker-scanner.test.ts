@@ -33,6 +33,7 @@ describe('MarkerScanner', () => {
 
   // @awa-test: CHK-1_AC-1
   test('extracts @awa-impl markers from source files', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(testDir, 'example.ts'),
       `// @awa-component: CFG-ConfigLoader
@@ -43,6 +44,7 @@ export function load() {}
 export function merge() {}
 `
     );
+    // @awa-ignore-end
 
     const result = await scanMarkers(makeConfig());
 
@@ -69,6 +71,7 @@ export function merge() {}
 
   // @awa-test: CHK-1_AC-1
   test('extracts @awa-test markers', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(testDir, 'test.ts'),
       `// @awa-test: CFG_P-1
@@ -78,6 +81,7 @@ test('preserves defaults', () => {});
 test('loads config from path', () => {});
 `
     );
+    // @awa-ignore-end
 
     const result = await scanMarkers(makeConfig());
 
@@ -88,12 +92,14 @@ test('loads config from path', () => {});
 
   // @awa-test: CHK-1_AC-1
   test('handles multiple IDs on a single marker line', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(testDir, 'multi.ts'),
       `// @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3
 export function loadAndMerge() {}
 `
     );
+    // @awa-ignore-end
 
     const result = await scanMarkers(makeConfig());
 
@@ -103,12 +109,14 @@ export function loadAndMerge() {}
 
   // @awa-test: CHK-1_AC-1
   test('strips partial annotations from marker IDs', async () => {
+    // @awa-ignore-start
     await writeFile(
       join(testDir, 'partial.ts'),
       `// @awa-impl: CFG-1_AC-1 (partial: reason for incompleteness)
 export function partialImpl() {}
 `
     );
+    // @awa-ignore-end
 
     const result = await scanMarkers(makeConfig());
 
@@ -161,13 +169,105 @@ export function foo() {}
   // @awa-test: CHK-1_AC-1
   test('scans multiple files', async () => {
     await mkdir(join(testDir, 'sub'), { recursive: true });
-    await writeFile(join(testDir, 'a.ts'), `// ${'@awa-impl'}: A-1_AC-1\n`);
-    await writeFile(join(testDir, 'sub', 'b.ts'), `// ${'@awa-impl'}: B-1_AC-1\n`);
+    // @awa-ignore-start
+    await writeFile(join(testDir, 'a.ts'), `// @awa-impl: A-1_AC-1\n`);
+    await writeFile(join(testDir, 'sub', 'b.ts'), `// @awa-impl: B-1_AC-1\n`);
+    // @awa-ignore-end
 
     const result = await scanMarkers(makeConfig());
 
     expect(result.markers).toHaveLength(2);
     const ids = result.markers.map((m) => m.id).sort();
     expect(ids).toEqual(['A-1_AC-1', 'B-1_AC-1']);
+  });
+
+  // @awa-test: CHK-1_AC-1
+  describe('@awa-ignore directives', () => {
+    test('@awa-ignore-file skips the entire file', async () => {
+      // @awa-ignore-start
+      await writeFile(
+        join(testDir, 'ignored.ts'),
+        `// @awa-ignore-file
+// @awa-impl: CFG-1_AC-1
+export function load() {}
+`
+      );
+      // @awa-ignore-end
+
+      const result = await scanMarkers(makeConfig());
+
+      expect(result.markers).toHaveLength(0);
+    });
+
+    test('@awa-ignore-next-line skips markers on the following line', async () => {
+      // @awa-ignore-start
+      await writeFile(
+        join(testDir, 'partial-ignore.ts'),
+        `// @awa-impl: CFG-1_AC-1
+// @awa-ignore-next-line
+// @awa-impl: CFG-1_AC-2
+// @awa-impl: CFG-1_AC-3
+export function load() {}
+`
+      );
+      // @awa-ignore-end
+
+      const result = await scanMarkers(makeConfig());
+
+      expect(result.markers).toHaveLength(2);
+      expect(result.markers.map((m) => m.id)).toEqual(['CFG-1_AC-1', 'CFG-1_AC-3']);
+    });
+
+    test('inline @awa-ignore skips markers on the same line', async () => {
+      // @awa-ignore-start
+      await writeFile(
+        join(testDir, 'inline-ignore.ts'),
+        `// @awa-impl: CFG-1_AC-1
+// @awa-impl: CFG-1_AC-2 // @awa-ignore
+// @awa-impl: CFG-1_AC-3
+export function load() {}
+`
+      );
+      // @awa-ignore-end
+
+      const result = await scanMarkers(makeConfig());
+
+      expect(result.markers).toHaveLength(2);
+      expect(result.markers.map((m) => m.id)).toEqual(['CFG-1_AC-1', 'CFG-1_AC-3']);
+    });
+
+    test('@awa-ignore-start/end blocks skip enclosed markers', async () => {
+      // @awa-ignore-start
+      await writeFile(
+        join(testDir, 'block-ignore.ts'),
+        `// @awa-impl: CFG-1_AC-1
+// @awa-ignore-start
+// @awa-impl: CFG-1_AC-2
+// @awa-impl: CFG-1_AC-3
+// @awa-ignore-end
+// @awa-impl: CFG-1_AC-4
+export function load() {}
+`
+      );
+      // @awa-ignore-end
+
+      const result = await scanMarkers(makeConfig());
+
+      expect(result.markers).toHaveLength(2);
+      expect(result.markers.map((m) => m.id)).toEqual(['CFG-1_AC-1', 'CFG-1_AC-4']);
+    });
+
+    test('ignoreMarkers config skips files matching glob patterns', async () => {
+      await mkdir(join(testDir, 'tests'), { recursive: true });
+      // @awa-ignore-start
+      await writeFile(join(testDir, 'main.ts'), `// @awa-impl: CFG-1_AC-1\n`);
+      await writeFile(join(testDir, 'tests', 'main.test.ts'), `// @awa-test: CFG_P-1\n`);
+      // @awa-ignore-end
+
+      const result = await scanMarkers(makeConfig({ ignoreMarkers: [`${testDir}/tests/**`] }));
+
+      expect(result.markers).toHaveLength(1);
+      expect(result.markers[0]).toMatchObject({ type: 'impl', id: 'CFG-1_AC-1' });
+    });
   });
 });

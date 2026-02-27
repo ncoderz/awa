@@ -131,7 +131,8 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
-  // @awa-impl: DIFF-7_AC-10 - Note: --force and --dry-run are intentionally NOT accepted for diff command
+  // @awa-impl: DIFF-7_AC-10
+  // Note: --force and --dry-run are intentionally NOT accepted for diff command
   .action(async (target: string | undefined, options) => {
     const cliOptions: RawCliOptions = {
       output: target, // Use target as output for consistency

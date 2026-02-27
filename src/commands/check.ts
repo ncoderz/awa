@@ -83,6 +83,10 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
   const cliIgnore = cliOptions.ignore ?? [];
   const ignore = [...configIgnore, ...cliIgnore];
 
+  const ignoreMarkers = toStringArray(section?.['ignore-markers']) ?? [
+    ...DEFAULT_CHECK_CONFIG.ignoreMarkers,
+  ];
+
   const format: 'text' | 'json' =
     cliOptions.format === 'json'
       ? 'json'
@@ -104,6 +108,7 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
     specGlobs,
     codeGlobs,
     ignore,
+    ignoreMarkers,
     markers,
     idPattern,
     crossRefPatterns,

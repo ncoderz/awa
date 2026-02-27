@@ -39,12 +39,13 @@ npx awa generate . --template ./templates/awa --features agents-md
 
 ## Generated Skills
 
-Each tool that supports Agent Skills receives the full set of 14 awa skills:
+Each tool that supports Agent Skills receives the full set of 15 awa skills:
 
 | Skill | Description |
 |-------|-------------|
 | `awa-architecture` | Create or update ARCHITECTURE.md |
 | `awa-brainstorm` | Brainstorm ideas, explore solutions |
+| `awa-check` | Run traceability and schema checks, then fix errors |
 | `awa-code` | Implement code and tests |
 | `awa-design` | Create or update design documents |
 | `awa-documentation` | Create or update project documentation |
