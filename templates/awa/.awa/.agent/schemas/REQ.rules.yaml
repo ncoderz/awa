@@ -4,7 +4,7 @@ description: >
   Requirements specification using EARS (Easy Approach to Requirements Syntax).
   Succinct language. Do not overspecify. Omit irrelevant information.
   Each requirement has an ID ({CODE}-{n}), a user story (AS A/I WANT/SO THAT),
-  and acceptance criteria as checkbox items with INCOSE-compliant types.
+  and acceptance criteria with INCOSE-compliant types.
   Subrequirements use dotted IDs ({CODE}-{n}.{p}).
 line-limit: 500
 
@@ -51,7 +51,7 @@ sections:
           Individual requirement heading. Format: ### {CODE}-{n}: Title [{PRIORITY}]
           where PRIORITY is MUST, SHOULD, COULD, or WONT (optional).
           Contains a user story, optional rationale blockquote, ACCEPTANCE CRITERIA
-          heading, checkbox AC items, and optional DEPENDS ON line.
+          heading, AC items, and optional DEPENDS ON line.
         contains:
           # User story format
           - pattern: "AS A .*, I WANT .*, SO THAT"
@@ -63,14 +63,14 @@ sections:
           - pattern: "ACCEPTANCE CRITERIA"
             label: "AC heading"
             description: "Literal text ACCEPTANCE CRITERIA (no markdown heading, just text)."
-          # At least one AC checkbox item
+          # At least one AC item
           - list:
-              pattern: "\\[[ x]\\].*_AC-\\d+\\s*\\[(ubiquitous|event|state|conditional|optional|complex)\\]"
+              pattern: "_AC-\\d+\\s*\\[(ubiquitous|event|state|conditional|optional|complex)\\]"
               min: 1
               label: "acceptance criteria items"
             description: >
-              Checkbox items for acceptance criteria. Format:
-              - [ ] {CODE}-{n}_AC-{m} [{type}]: {statement} - {notes}
+              Acceptance criteria items. Format:
+              - {CODE}-{n}_AC-{m} [{type}]: {statement} - {notes}
               Types (EARS/INCOSE):
               - ubiquitous: always true, no trigger ("The system SHALL ...")
               - event: triggered by a stimulus ("WHEN x THEN system SHALL ...")
@@ -78,7 +78,6 @@ sections:
               - conditional: depends on a boolean condition ("IF x THEN system SHALL ...")
               - optional: feature activated by trigger ("WHERE x IS ENABLED THE system SHALL ...")
               - complex: combines multiple EARS patterns
-              Use [x] for verified criteria, [ ] otherwise.
 
   # Assumptions section (optional)
   - heading: "Assumptions"
@@ -130,9 +129,9 @@ example: |
 
   ACCEPTANCE CRITERIA
 
-  - [x] ENG-1_AC-1 [event]: WHEN engine initializes THEN system SHALL create context
-  - [ ] ENG-1_AC-2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging
-  - [ ] ENG-1_AC-3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
+  - ENG-1_AC-1 [event]: WHEN engine initializes THEN system SHALL create context
+  - ENG-1_AC-2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging
+  - ENG-1_AC-3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
 
   ### ENG-1.1: Subsystem Registration [SHOULD]
 
@@ -140,7 +139,7 @@ example: |
 
   ACCEPTANCE CRITERIA
 
-  - [ ] ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN it SHALL register with context
+  - ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN it SHALL register with context
 
   ### ENG-2: Resource Management [MUST]
 
@@ -148,8 +147,8 @@ example: |
 
   ACCEPTANCE CRITERIA
 
-  - [ ] ENG-2_AC-1 [event]: WHEN resource requested THEN system SHALL load asynchronously
-  - [ ] ENG-2_AC-2 [ubiquitous]: The system SHALL cache loaded resources
+  - ENG-2_AC-1 [event]: WHEN resource requested THEN system SHALL load asynchronously
+  - ENG-2_AC-2 [ubiquitous]: The system SHALL cache loaded resources
 
   DEPENDS ON: ENG-1
 

@@ -362,56 +362,22 @@ CONSTRAINTS
 sequenceDiagram
     participant User
     participant CLI
-    participant ConfigLoader
-    participant TemplateResolver
-    participant Generator
-    participant TemplateEngine
-    participant Resolver
-    participant FileSystem
+    participant Config as ConfigLoader
+    participant Resolver as TemplateResolver
+    participant Engine as TemplateEngine
+    participant Gen as FileGenerator
 
     User->>CLI: awa generate ./out --features a b c
-    CLI->>CLI: Parse arguments
-    CLI->>ConfigLoader: Load .awa.toml
-    ConfigLoader-->>CLI: Merged options (CLI overrides config)
-    CLI->>TemplateResolver: Resolve template source
-    alt Local path
-        TemplateResolver-->>CLI: Local path (as-is)
-    else Git repo
-        TemplateResolver->>FileSystem: Check cache
-        alt Not cached or --refresh
-            TemplateResolver->>TemplateResolver: degit fetch
-        end
-        TemplateResolver-->>CLI: Cached local path
-    end
-    CLI->>Generator: generate(options, templatePath)
-    Generator->>FileSystem: List template files
-
+    CLI->>Config: Load + merge .awa.toml
+    Config-->>CLI: ResolvedOptions
+    CLI->>Resolver: Resolve template source
+    Resolver-->>CLI: Local path
+    CLI->>Gen: generate(options, templatePath)
     loop For each template
-        Generator->>TemplateEngine: render(template, {features})
-        TemplateEngine-->>Generator: rendered content
-
-        alt Content is empty
-            Generator->>Generator: Skip file
-        else Content has EMPTY_FILE marker
-            Generator->>Generator: Create empty file
-        else Has content
-            Generator->>FileSystem: Check if output exists
-            alt File exists and not --force
-                Generator->>Resolver: promptOverwrite(path)
-                Resolver->>User: Overwrite? (select)
-                User-->>Resolver: choice
-                Resolver-->>Generator: overwrite/skip
-            end
-            alt --dry-run
-                Generator->>CLI: Log would create/skip
-            else Create file
-                Generator->>FileSystem: Write file
-            end
-        end
+        Gen->>Engine: render(template, {features})
+        Engine-->>Gen: content (or empty)
     end
-
-    Generator-->>CLI: Complete
-    CLI-->>User: Summary
+    Gen-->>User: Summary
 ```
 
 ### Diff Command Flow
@@ -420,137 +386,33 @@ sequenceDiagram
 sequenceDiagram
     participant User
     participant CLI
-    participant ConfigLoader
-    participant TemplateResolver
-    participant Generator
-    participant DiffEngine
-    participant TempDir
-    participant FileSystem
+    participant Gen as FileGenerator
+    participant Diff as DiffEngine
 
     User->>CLI: awa diff ./target --template ./templates
-    CLI->>CLI: Parse arguments
-    CLI->>ConfigLoader: Load .awa.toml
-    ConfigLoader-->>CLI: Merged options
-    CLI->>TemplateResolver: Resolve template source
-    TemplateResolver-->>CLI: Local template path
-
-    CLI->>TempDir: Create temp directory
-    TempDir-->>CLI: Temp path
-
-    CLI->>Generator: generate(options, templatePath, tempDir)
-    Generator-->>CLI: Generation complete
-
-    CLI->>DiffEngine: diff(tempDir, targetDir)
-
-    loop For each generated file
-        DiffEngine->>FileSystem: Read generated file
-        DiffEngine->>FileSystem: Read target file (if exists)
-        alt Target file missing
-            DiffEngine->>DiffEngine: Record as "new file"
-        else Files differ
-            DiffEngine->>DiffEngine: Compute unified diff
-            DiffEngine->>DiffEngine: Record difference
-        else Files match
-            DiffEngine->>DiffEngine: Record as matching
-        end
-    end
-
-    alt `--list-unknown` provided
-        loop For each target file not in generated
-            DiffEngine->>DiffEngine: Record as "extra file in target"
-        end
-    else Without flag
-        DiffEngine->>DiffEngine: Skip target-only files
-    end
-
-    DiffEngine-->>CLI: Diff results
-    CLI->>TempDir: Clean up temp directory
-    CLI->>User: Print diffs (if any)
-    CLI->>CLI: Exit 0 (match) or 1 (differences)
+    CLI->>Gen: generate to temp dir
+    Gen-->>CLI: Complete
+    CLI->>Diff: diff(tempDir, targetDir)
+    Diff-->>CLI: DiffResult
+    CLI-->>User: Print diffs, exit 0 or 1
 ```
 
 ## Architectural Rules
 
-### Performance
-- Template compilation cached per session
-- Parallel file operations where possible
-
-### Maintainability
-- Single responsibility per module
-- Maximum 200 lines per source file
-- Comprehensive JSDoc on public APIs
-
-### Security
+- Template compilation cached per session; parallel file operations where possible
+- Single responsibility per module; max 200 lines per source file
 - No eval or dynamic code execution outside template engine
 - Template sandbox prevents file system access from templates
-
-### Testing
-- Unit tests for core logic
-- Integration tests for CLI commands
-- Test coverage target: 80%
-
-### Code Quality
-- Biome for linting and formatting
-- Strict TypeScript (`strict: true`)
-- ESM-only output
-
-### Template Design
-- Empty output (after trim) = file not created
-- `<!-- AWA:EMPTY_FILE -->` marker = create empty file intentionally
-- Feature flags available as `it.features: string[]`
-- Conditional: `<% if (it.features.includes('x')) { %> ... <% } %>`
-- Partials in `_partials/` directory are shared content, not output as files
-- Include partial: `<%~ include('_partials/header', it) %>`
-- Partials receive same context (`it.features`) for conditional composition
-- `_delete.txt` in template root lists files to delete (one path per line, `#` comments, blank lines ignored)
-- Feature-gated delete sections: `# @feature <name>` marks subsequent paths as stale-tool output, deleted only when NONE of the listed features are active
-- Any other `#` comment resets to always-delete behaviour
-- Deletions require `--delete` flag; without it the system warns but does not delete
-
-### Diff
-- `awa diff` generates to temp directory, compares against target
-- Uses `diff` npm package for cross-platform unified diff
-- Exact byte-for-byte comparison (whitespace-sensitive)
-- Temp directory cleaned up after diff (even on error)
-- Exit code 0 = all files identical, exit code 1 = differences found
-- Diff output uses git-style unified format with color
-- Target-only files are ignored by default; `--list-unknown` includes them in results and summary
-- Files listed in `_delete.txt` that exist in target are reported as "delete-listed"
-
-### Configuration File
-- Default location: `.awa.toml` in current directory
-- Override with `--config <path>`
-- TOML format with same option names as CLI (kebab-case)
-- CLI arguments override config file values
-- Example `.awa.toml`:
-  ```toml
-  output = "."
-  template = "./my-templates"
-  features = ["architect", "code", "vibe"]
-  force = false
-  dry-run = false
-  delete = false
-  refresh = false
-  list-unknown = false
-
-  [check]
-  spec-globs = [".awa/specs/**/*.md"]
-  code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
-  markers = ["@awa-impl", "@awa-test", "@awa-component"]
-  ignore = ["node_modules/**", "dist/**"]
-  format = "text"
-  ```
-
-### Template Sources
-- Local path: `--template ./my-templates` or `--template /absolute/path`
-- GitHub shorthand: `--template owner/repo`
-- GitHub with subdirectory: `--template owner/repo/templates`
-- With branch/tag: `--template owner/repo#main` or `owner/repo#v1.0.0`
-- Full Git URL: `--template https://github.com/owner/repo`
-- GitLab/Bitbucket: `--template gitlab:owner/repo`
-- SSH: `--template git@github.com:owner/repo`
-- Cached templates stored in `~/.cache/awa/templates/`
-- Use `--refresh` to re-fetch cached remote templates
+- Unit tests for core logic, integration tests for CLI; coverage target 80%
+- Biome for linting/formatting; strict TypeScript; ESM-only output
+- Empty template output (after trim) = skip file; `<!-- AWA:EMPTY_FILE -->` = create empty file
+- Feature flags as `it.features: string[]`; partials in `_partials/` (not output)
+- `_delete.txt` lists files to delete; `# @feature <name>` for feature-gated sections
+- Deletions require `--delete` flag; `--force` skips prompts; `--dry-run` simulates
+- `awa diff` generates to temp dir, compares against target, cleans up on exit
+- Exit codes: 0 = clean/match, 1 = errors/differences, 2 = internal error
+- Configuration via `.awa.toml` with `[presets]` and `[check]` tables; CLI overrides config
+- Template sources: local path, GitHub shorthand (`owner/repo`), Git URL, SSH; cache in `~/.cache/awa/templates/`
 
 ## Developer Commands
 
@@ -587,3 +449,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.4.0 (2026-07-14): Added schema validation — declarative YAML rules for Markdown structural checks via remark/mdast, rule-loader, schema-checker components
 - 2.3.0 (2026-07-14): Added Check Engine component — traceability chain validation (`awa check`), `[check]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting
 - 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
+- 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit

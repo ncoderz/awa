@@ -3,9 +3,10 @@ target-files: ".awa/specs/ARCHITECTURE.md"
 description: >
   High-level architecture overview for the project. Succinct language.
   Do not overspecify or include implementation details. Covers project purpose,
-  system layers, technology stack, architecture diagram, directory structure,
+  system layers, technology stack, top-level architecture diagram, directory structure,
   component details with RESPONSIBILITIES, interactions, rules, and
-  developer commands. One file per project.
+  developer commands. Delegate to feature and design files where appropriate.
+  One file per project.
 line-limit: 500
 
 sections:
