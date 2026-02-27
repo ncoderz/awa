@@ -45,14 +45,13 @@ async function scanFile(filePath: string, markerNames: readonly string[]): Promi
   const lines = content.split('\n');
   const markers: CodeMarker[] = [];
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]!;
-    let match: RegExpExecArray | null;
+  for (const [i, line] of lines.entries()) {
     regex.lastIndex = 0;
+    let match = regex.exec(line);
 
-    while ((match = regex.exec(line)) !== null) {
-      const markerName = match[1]!;
-      const idsRaw = match[2]!;
+    while (match !== null) {
+      const markerName = match[1] ?? '';
+      const idsRaw = match[2] ?? '';
       const type = resolveMarkerType(markerName, markerNames);
 
       // Split by comma to support multiple IDs per marker line
@@ -68,6 +67,8 @@ async function scanFile(filePath: string, markerNames: readonly string[]): Promi
           markers.push({ type, id: cleanId, filePath, line: i + 1 });
         }
       }
+
+      match = regex.exec(line);
     }
   }
 

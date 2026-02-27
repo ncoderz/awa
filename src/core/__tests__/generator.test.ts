@@ -246,5 +246,22 @@ Feature 1
       expect(result.created).toBe(1);
       expect(await pathExists(join(outputDir, 'a', 'b', 'c', 'd', 'deep.md'))).toBe(true);
     });
+    it('should inject package version into templates', async () => {
+      await writeFile(join(templatesDir, 'version.txt'), 'v<%= it.version %>');
+
+      const result = await generator.generate({
+        templatePath: templatesDir,
+        outputPath: outputDir,
+        features: [],
+        force: false,
+        dryRun: false,
+        delete: false,
+      });
+
+      expect(result.created).toBe(1);
+      const content = await readTextFile(join(outputDir, 'version.txt'));
+      // Should contain the PACKAGE_INFO version (semver format)
+      expect(content).toMatch(/^v\d+\.\d+\.\d+/);
+    });
   });
 });

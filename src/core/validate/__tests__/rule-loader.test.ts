@@ -67,7 +67,7 @@ sections:
     expect(reqSection.required).toBe(true);
     expect(reqSection.children).toHaveLength(1);
 
-    const child = reqSection.children![0]!;
+    const child = reqSection.children?.[0]!;
     expect(child.repeatable).toBe(true);
     expect(child.contains).toHaveLength(2);
   });
@@ -120,15 +120,29 @@ sections:
   });
 
   // @awa-test: VAL-RuleLoader
-  test('rejects rule file missing sections', async () => {
+  test('accepts rule file with no sections (non-markdown targets)', async () => {
+    await writeFile(
+      join(testDir, 'api.rules.yaml'),
+      `target-files: ".awa/specs/API-*.tsp"
+`
+    );
+
+    const rules = await loadRules(testDir);
+    expect(rules).toHaveLength(1);
+    expect(rules[0]?.ruleFile.sections).toEqual([]);
+  });
+
+  // @awa-test: VAL-RuleLoader
+  test('rejects rule file with empty sections array', async () => {
     await writeFile(
       join(testDir, 'bad.rules.yaml'),
       `target-files: "*.md"
+sections: []
 `
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
-    await expect(loadRules(testDir)).rejects.toThrow("Missing or empty 'sections'");
+    await expect(loadRules(testDir)).rejects.toThrow("'sections' must be a non-empty array");
   });
 
   // @awa-test: VAL-RuleLoader
@@ -181,10 +195,10 @@ sections:
     );
 
     const rules = await loadRules(testDir);
-    const section = rules[0]!.ruleFile.sections[0]!;
+    const section = rules[0]?.ruleFile.sections[0]!;
     expect(section.contains).toHaveLength(1);
 
-    const tableRule = section.contains![0]!;
+    const tableRule = section.contains?.[0]!;
     expect('table' in tableRule).toBe(true);
     if ('table' in tableRule) {
       expect(tableRule.table.columns).toEqual(['AC', 'Task', 'Test']);
@@ -208,8 +222,8 @@ sections:
     );
 
     const rules = await loadRules(testDir);
-    const section = rules[0]!.ruleFile.sections[0]!;
-    const codeRule = section.contains![0]!;
+    const section = rules[0]?.ruleFile.sections[0]!;
+    const codeRule = section.contains?.[0]!;
     expect('code-block' in codeRule).toBe(true);
   });
 
@@ -229,7 +243,7 @@ sections-prohibited:
     );
 
     const rules = await loadRules(testDir);
-    expect(rules[0]!.ruleFile['sections-prohibited']).toEqual(['**', '*']);
+    expect(rules[0]?.ruleFile['sections-prohibited']).toEqual(['**', '*']);
   });
 
   describe('matchesTargetGlob', () => {
@@ -273,16 +287,16 @@ sections:
     const rules = await loadRules(testDir);
     expect(rules).toHaveLength(1);
 
-    const section = rules[0]!.ruleFile.sections[0]!;
+    const section = rules[0]?.ruleFile.sections[0]!;
     expect(section.contains).toHaveLength(2);
 
-    const goalRule = section.contains![0]!;
+    const goalRule = section.contains?.[0]!;
     expect('pattern' in goalRule).toBe(true);
     if ('pattern' in goalRule) {
       expect(goalRule.when).toEqual({ 'heading-matches': '\\[(MUST|SHOULD|COULD)\\]' });
     }
 
-    const implRule = section.contains![1]!;
+    const implRule = section.contains?.[1]!;
     if ('pattern' in implRule) {
       expect(implRule.prohibited).toBe(true);
       expect(implRule.when).toEqual({ 'heading-not-matches': '\\[(MUST|SHOULD|COULD)\\]' });

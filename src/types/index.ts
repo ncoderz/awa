@@ -72,6 +72,7 @@ export interface ResolvedTemplate {
 // TemplateContext - Context passed to template engine
 export interface TemplateContext {
   features: string[];
+  version?: string;
 }
 
 // RenderResult - Template rendering output

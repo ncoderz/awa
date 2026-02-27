@@ -72,14 +72,18 @@ function validateRuleFile(raw: Record<string, unknown>, filePath: string): RuleF
     throw new RuleValidationError(`Missing or empty 'target-files' in ${filePath}`);
   }
 
-  // sections is required
-  if (!Array.isArray(raw.sections) || raw.sections.length === 0) {
-    throw new RuleValidationError(`Missing or empty 'sections' in ${filePath}`);
+  // sections is optional (e.g., API rules target non-markdown files)
+  let sections: SectionRule[] | undefined;
+  if (raw.sections !== undefined) {
+    if (!Array.isArray(raw.sections) || raw.sections.length === 0) {
+      throw new RuleValidationError(
+        `'sections' must be a non-empty array if present in ${filePath}`
+      );
+    }
+    sections = raw.sections.map((s: unknown, i: number) =>
+      validateSectionRule(s, `sections[${i}]`, filePath)
+    );
   }
-
-  const sections = raw.sections.map((s: unknown, i: number) =>
-    validateSectionRule(s, `sections[${i}]`, filePath)
-  );
 
   // sections-prohibited is optional
   let sectionsProhibited: string[] | undefined;
@@ -96,7 +100,7 @@ function validateRuleFile(raw: Record<string, unknown>, filePath: string): RuleF
   return {
     'target-files': raw['target-files'] as string,
     ...(typeof raw.description === 'string' ? { description: raw.description } : {}),
-    sections,
+    sections: sections ?? [],
     ...(sectionsProhibited ? { 'sections-prohibited': sectionsProhibited } : {}),
     ...(typeof raw.example === 'string' ? { example: raw.example } : {}),
   };

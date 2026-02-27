@@ -16,6 +16,7 @@
 // @awa-impl: TPL-9_AC-2
 
 import { join, relative } from 'node:path';
+import { PACKAGE_INFO } from '../_generated/package_info.js';
 import {
   type ConflictItem,
   type FileAction,
@@ -66,7 +67,10 @@ export class FileGenerator {
         const outputFile = this.computeOutputPath(templateFile, templatePath, outputPath);
 
         // Render template
-        const result = await templateEngine.render(templateFile, { features });
+        const result = await templateEngine.render(templateFile, {
+          features,
+          version: PACKAGE_INFO.version,
+        });
 
         // Handle empty output
         if (result.isEmpty && !result.isEmptyFileMarker) {

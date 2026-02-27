@@ -8,13 +8,7 @@
 
 import { describe, expect, test } from 'vitest';
 import { checkCodeAgainstSpec } from '../code-spec-checker.js';
-import type {
-  CodeMarker,
-  MarkerScanResult,
-  SpecFile,
-  SpecParseResult,
-  ValidateConfig,
-} from '../types.js';
+import type { CodeMarker, MarkerScanResult, SpecParseResult, ValidateConfig } from '../types.js';
 import { DEFAULT_VALIDATE_CONFIG } from '../types.js';
 
 function makeSpecs(overrides: Partial<SpecParseResult> = {}): SpecParseResult {

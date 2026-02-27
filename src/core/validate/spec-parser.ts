@@ -62,9 +62,7 @@ async function parseSpecFile(
   // Component name: ### CODE-ComponentName
   const componentRegex = /^###\s+([A-Z][A-Z0-9]*-[A-Za-z][A-Za-z0-9]*(?:[A-Z][a-z0-9]*)*)\s*$/;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]!;
-
+  for (const [i, line] of lines.entries()) {
     // Requirement IDs
     const reqMatch = reqIdRegex.exec(line);
     if (reqMatch?.[1]) {
@@ -121,9 +119,10 @@ function extractCodePrefix(filePath: string): string {
 function extractIdsFromText(text: string): string[] {
   const idRegex = /[A-Z][A-Z0-9]*-\d+(?:\.\d+)?(?:_AC-\d+)?|[A-Z][A-Z0-9]*_P-\d+/g;
   const ids: string[] = [];
-  let match: RegExpExecArray | null;
-  while ((match = idRegex.exec(text)) !== null) {
+  let match = idRegex.exec(text);
+  while (match !== null) {
     ids.push(match[0]);
+    match = idRegex.exec(text);
   }
   return ids;
 }

@@ -85,7 +85,8 @@ function buildSectionsFromNodes(
   let i = start;
 
   while (i < nodes.length) {
-    const node = nodes[i]!;
+    const node = nodes[i];
+    if (!node) break;
     if (node.type === 'heading') {
       const h = node as Heading;
       if (parentLevel > 0 && h.depth <= parentLevel) break;
@@ -96,8 +97,8 @@ function buildSectionsFromNodes(
 
       // Collect content until next heading of same-or-higher level
       while (i < nodes.length) {
-        const next = nodes[i]!;
-        if (next.type === 'heading') break;
+        const next = nodes[i];
+        if (!next || next.type === 'heading') break;
         contentNodes.push(next);
         i++;
       }
@@ -198,7 +199,7 @@ function findMatchingSections(allSections: SectionNode[], rule: SectionRule): Se
   const matches = allSections.filter((s) => s.level === rule.level && regex.test(s.headingText));
 
   if (!rule.repeatable && matches.length > 1) {
-    return [matches[0]!];
+    return [matches[0] as SectionNode];
   }
   return matches;
 }
@@ -446,8 +447,7 @@ function checkProhibited(
     const regex = new RegExp(escapeRegex(pattern));
     let inCodeBlock = false;
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]!;
+    for (const [i, line] of lines.entries()) {
       if (line.startsWith('```')) {
         inCodeBlock = !inCodeBlock;
         continue;

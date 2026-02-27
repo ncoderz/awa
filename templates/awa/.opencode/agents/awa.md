@@ -1,7 +1,7 @@
 <% if (it.features.includes('opencode')) { %>
 ---
 name: awa
-description: "awa 0.2.0"
+description: "awa <%= it.version %>"
 ---
 
 <%~ include('_partials/awa.core.md', it) %>

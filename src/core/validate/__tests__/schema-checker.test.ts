@@ -63,7 +63,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const missing = result.findings.filter((f) => f.code === 'schema-missing-section');
     expect(missing).toHaveLength(1);
-    expect(missing[0]!.message).toContain('Requirements');
+    expect(missing[0]?.message).toContain('Requirements');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -114,7 +114,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const missing = result.findings.filter((f) => f.code === 'schema-missing-content');
     expect(missing).toHaveLength(1);
-    expect(missing[0]!.message).toContain('ACCEPTANCE CRITERIA');
+    expect(missing[0]?.message).toContain('ACCEPTANCE CRITERIA');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -146,8 +146,8 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const missing = result.findings.filter((f) => f.code === 'schema-missing-content');
     expect(missing).toHaveLength(1);
-    expect(missing[0]!.message).toContain('task checkbox');
-    expect(missing[0]!.message).toContain('expected at least 1');
+    expect(missing[0]?.message).toContain('task checkbox');
+    expect(missing[0]?.message).toContain('expected at least 1');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -181,7 +181,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const tableIssues = result.findings.filter((f) => f.code === 'schema-table-columns');
     expect(tableIssues).toHaveLength(1);
-    expect(tableIssues[0]!.message).toContain('has columns [AC, Task, Test]');
+    expect(tableIssues[0]?.message).toContain('has columns [AC, Task, Test]');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -205,7 +205,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const missing = result.findings.filter((f) => f.code === 'schema-missing-content');
     expect(missing).toHaveLength(1);
-    expect(missing[0]!.message).toContain('interface definition');
+    expect(missing[0]?.message).toContain('interface definition');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -228,7 +228,7 @@ describe('SchemaChecker', () => {
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     const prohibited = result.findings.filter((f) => f.code === 'schema-prohibited');
     expect(prohibited).toHaveLength(1);
-    expect(prohibited[0]!.message).toContain('**');
+    expect(prohibited[0]?.message).toContain('**');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -515,7 +515,7 @@ Some text but no GOAL line.
       (f: { code: string }) => f.code === 'schema-missing-content'
     );
     expect(missing).toHaveLength(1);
-    expect(missing[0]!.message).toContain('GOAL statement');
+    expect(missing[0]?.message).toContain('GOAL statement');
   });
 
   // @awa-test: VAL-SchemaChecker
@@ -596,7 +596,7 @@ Some text but no GOAL line.
       (f: { code: string }) => f.code === 'schema-prohibited'
     );
     expect(prohibited).toHaveLength(1);
-    expect(prohibited[0]!.message).toContain('IMPLEMENTS trace line');
+    expect(prohibited[0]?.message).toContain('IMPLEMENTS trace line');
   });
 
   // @awa-test: VAL-SchemaChecker

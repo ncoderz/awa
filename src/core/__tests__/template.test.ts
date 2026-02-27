@@ -210,6 +210,24 @@ Features:
       expect(result.content).toBe(templateContent);
     });
 
+    it('should render version when provided in context', async () => {
+      const templatePath = join(testDir, 'version.md');
+      await writeFile(templatePath, 'App version: <%= it.version %>');
+
+      const result = await engine.render(templatePath, { features: [], version: '2.3.4' });
+
+      expect(result.content).toBe('App version: 2.3.4');
+    });
+
+    it('should default version to empty string when not provided', async () => {
+      const templatePath = join(testDir, 'version-default.md');
+      await writeFile(templatePath, 'Version: [<%= it.version %>]');
+
+      const result = await engine.render(templatePath, { features: [] });
+
+      expect(result.content).toBe('Version: []');
+    });
+
     it('should not escape HTML by default', async () => {
       const templatePath = join(testDir, 'html.md');
       await writeFile(templatePath, '<div>HTML content</div>');

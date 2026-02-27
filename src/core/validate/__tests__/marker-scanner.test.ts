@@ -113,7 +113,7 @@ export function partialImpl() {}
     const result = await scanMarkers(makeConfig());
 
     expect(result.markers).toHaveLength(1);
-    expect(result.markers[0]!.id).toBe('CFG-1_AC-1');
+    expect(result.markers[0]?.id).toBe('CFG-1_AC-1');
   });
 
   // @awa-test: VAL-1_AC-1

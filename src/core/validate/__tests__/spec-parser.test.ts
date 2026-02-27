@@ -189,7 +189,7 @@ ACCEPTANCE CRITERIA
 
     const result = await parseSpecs(makeConfig());
 
-    expect(result.specFiles[0]!.code).toBe('VAL');
+    expect(result.specFiles[0]?.code).toBe('VAL');
   });
 
   // @awa-test: VAL-2_AC-1

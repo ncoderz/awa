@@ -63,6 +63,7 @@ export class TemplateEngine {
       // The context is available as 'it' in templates
       const rendered = await this.eta.renderStringAsync(templateContent, {
         features: context.features,
+        version: context.version ?? '',
       });
 
       // Check if output is empty or only whitespace

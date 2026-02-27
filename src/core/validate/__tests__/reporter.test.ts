@@ -38,7 +38,7 @@ describe('Reporter', () => {
     report(findings, 'json');
 
     expect(consoleSpy).toHaveBeenCalledTimes(1);
-    const output = consoleSpy.mock.calls[0]![0] as string;
+    const output = consoleSpy.mock.calls[0]?.[0] as string;
     const parsed = JSON.parse(output);
 
     expect(parsed.valid).toBe(false);
@@ -65,7 +65,7 @@ describe('Reporter', () => {
 
     report(findings, 'json');
 
-    const output = consoleSpy.mock.calls[0]![0] as string;
+    const output = consoleSpy.mock.calls[0]?.[0] as string;
     const parsed = JSON.parse(output);
     expect(parsed.valid).toBe(true);
     expect(parsed.errors).toBe(0);
@@ -76,7 +76,7 @@ describe('Reporter', () => {
   test('outputs valid JSON with empty findings', () => {
     report([], 'json');
 
-    const output = consoleSpy.mock.calls[0]![0] as string;
+    const output = consoleSpy.mock.calls[0]?.[0] as string;
     const parsed = JSON.parse(output);
     expect(parsed.valid).toBe(true);
     expect(parsed.errors).toBe(0);
@@ -105,7 +105,7 @@ describe('Reporter', () => {
   test('text format with no findings reports success', () => {
     report([], 'text');
 
-    const allOutput = consoleSpy.mock.calls.map((c) => String(c[0])).join('\n');
+    const allOutput = consoleSpy.mock.calls.map((c: unknown[]) => String(c[0])).join('\n');
     expect(allOutput).toContain('Validation passed');
   });
 });

@@ -66,7 +66,7 @@ describe('Schema fixture validation', () => {
 
     // Top-level description
     expect(taskRules.ruleFile.description).toBeDefined();
-    expect(taskRules.ruleFile.description!.length).toBeGreaterThan(20);
+    expect(taskRules.ruleFile.description?.length).toBeGreaterThan(20);
 
     // Example block
     expect(taskRules.ruleFile.example).toBeDefined();
