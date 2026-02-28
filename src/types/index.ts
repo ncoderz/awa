@@ -21,6 +21,7 @@ export interface RawCliOptions {
   config?: string;
   refresh?: boolean;
   listUnknown?: boolean;
+  watch?: boolean;
 }
 
 // PresetDefinitions - Named feature bundles

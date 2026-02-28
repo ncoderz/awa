@@ -38,6 +38,7 @@ Exit code 0 = files match, 1 = differences found.
 awa diff .                                # diff against current directory
 awa diff ./my-project --template ./tpl    # diff specific target and template
 awa diff . --list-unknown                 # include files not in template
+awa diff . --watch                        # watch template and re-diff on change
 ```
 
 | Option | Description |
@@ -50,6 +51,7 @@ awa diff . --list-unknown                 # include files not in template
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
+| `-w, --watch` | Watch template directory for changes and re-run diff |
 
 ### `awa check`
 

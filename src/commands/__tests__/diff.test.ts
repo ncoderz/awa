@@ -15,6 +15,7 @@ vi.mock('../../core/differ.js');
 vi.mock('../../core/template-resolver.js');
 vi.mock('../../utils/fs.js');
 vi.mock('../../utils/logger.js');
+vi.mock('../../utils/file-watcher.js');
 
 import { configLoader } from '../../core/config.js';
 import { diffEngine } from '../../core/differ.js';
@@ -393,5 +394,68 @@ describe('diffCommand', () => {
 
     expect(exitCode).toBe(1);
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('old-agent.md'));
+  });
+
+  test('should return exit code 2 when --watch is used with git template', async () => {
+    vi.mocked(templateResolver.resolve).mockResolvedValue({
+      type: 'git',
+      localPath: '/cached/template',
+      source: 'owner/repo',
+    });
+
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './target',
+      template: 'owner/repo',
+      features: [],
+      config: undefined,
+      refresh: false,
+      listUnknown: undefined,
+      watch: true,
+    });
+
+    expect(exitCode).toBe(2);
+    expect(logger.error).toHaveBeenCalledWith(
+      '--watch is only supported with local template sources'
+    );
+  });
+
+  test('should run normally without watch when --watch is not set', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './target',
+      template: './templates/awa',
+      features: [],
+      config: undefined,
+      refresh: false,
+      listUnknown: undefined,
+      watch: false,
+    });
+
+    expect(exitCode).toBe(0);
   });
 });

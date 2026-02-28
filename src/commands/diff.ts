@@ -9,6 +9,7 @@ import { diffEngine } from '../core/differ.js';
 import { featureResolver } from '../core/feature-resolver.js';
 import { templateResolver } from '../core/template-resolver.js';
 import { DiffError, type RawCliOptions } from '../types/index.js';
+import { FileWatcher } from '../utils/file-watcher.js';
 import { pathExists } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
@@ -32,6 +33,11 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     // Resolve template source
     const template = await templateResolver.resolve(options.template, options.refresh);
 
+    // Validate watch mode: only local templates are supported
+    if (cliOptions.watch && template.type !== 'local' && template.type !== 'bundled') {
+      throw new DiffError('--watch is only supported with local template sources');
+    }
+
     const features = featureResolver.resolve({
       baseFeatures: [...options.features],
       presetNames: [...options.preset],
@@ -39,13 +45,63 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       presetDefinitions: options.presets,
     });
 
-    // Perform diff
-    const result = await diffEngine.diff({
+    const diffOptions = {
       templatePath: template.localPath,
       targetPath,
       features,
       listUnknown: options.listUnknown,
+    };
+
+    // Run diff once
+    const result = await runDiff(diffOptions);
+
+    if (!cliOptions.watch) {
+      return result;
+    }
+
+    // Watch mode: re-run diff on template changes
+    logger.info(`Watching for changes in ${template.localPath}...`);
+
+    return new Promise<number>((resolve) => {
+      const watcher = new FileWatcher({
+        directory: template.localPath,
+        onChange: () => {
+          console.clear();
+          logger.info(`[${new Date().toLocaleTimeString()}] Change detected, re-running diff...`);
+          logger.info('---');
+          runDiff(diffOptions);
+        },
+      });
+
+      watcher.start();
+
+      process.on('SIGINT', () => {
+        watcher.stop();
+        logger.info('\nWatch mode stopped.');
+        resolve(0);
+      });
     });
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else {
+      logger.error(String(error));
+    }
+
+    // @awa-impl: DIFF-5_AC-3
+    return 2;
+  }
+}
+
+async function runDiff(diffOptions: {
+  templatePath: string;
+  targetPath: string;
+  features: string[];
+  listUnknown: boolean;
+}): Promise<number> {
+  try {
+    // Perform diff
+    const result = await diffEngine.diff(diffOptions);
 
     // Display diff output
     for (const file of result.files) {
@@ -106,8 +162,6 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     } else {
       logger.error(String(error));
     }
-
-    // @awa-impl: DIFF-5_AC-3
     return 2;
   }
 }
