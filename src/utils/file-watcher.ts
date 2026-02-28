@@ -1,4 +1,4 @@
-// @awa-component: WATCH-FileWatcher
+// @awa-component: DIFF-FileWatcher
 
 import { type FSWatcher, watch } from 'node:fs';
 import { Debouncer } from './debouncer.js';

@@ -1,4 +1,4 @@
-// @awa-component: WATCH-Debouncer
+// @awa-component: DIFF-Debouncer
 
 export class Debouncer {
   private timer: ReturnType<typeof setTimeout> | null = null;

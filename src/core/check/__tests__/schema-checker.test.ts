@@ -41,7 +41,7 @@ describe('SchemaChecker', () => {
   ): LoadedRuleSet {
     return {
       ruleFile: overrides,
-      sourcePath: 'test.rules.yaml',
+      sourcePath: 'test.schema.yaml',
       targetGlob: overrides['target-files'],
     };
   }

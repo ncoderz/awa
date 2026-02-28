@@ -1,5 +1,16 @@
 // @awa-component: GEN-FileGenerator
 // @awa-test: GEN_P-1, GEN_P-2, GEN_P-3
+// @awa-test: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3
+// @awa-test: GEN-2_AC-1, GEN-2_AC-2
+// @awa-test: GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3
+// @awa-test: GEN-6_AC-1, GEN-6_AC-2, GEN-6_AC-4
+// @awa-test: GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4
+// @awa-test: GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3
+// @awa-test: GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8
+// @awa-test: GEN-10_AC-1, GEN-10_AC-2
+// @awa-test: GEN-11_AC-3
+// @awa-test: GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6
+// @awa-test: TPL-9_AC-1, TPL-9_AC-2
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -28,6 +39,7 @@ describe('FileGenerator', () => {
   });
 
   describe('generate', () => {
+    // @awa-test: GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-2_AC-1
     it('should create files from templates', async () => {
       // Create template
       await writeFile(join(templatesDir, 'file1.md'), 'Content');
@@ -46,6 +58,7 @@ describe('FileGenerator', () => {
       expect(await readTextFile(join(outputDir, 'file1.md'))).toBe('Content');
     });
 
+    // @awa-test: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-2
     it('should preserve directory structure (P6)', async () => {
       // Create nested templates
       await mkdir(join(templatesDir, 'subdir'));
@@ -66,6 +79,7 @@ describe('FileGenerator', () => {
       expect(await pathExists(join(outputDir, 'subdir', 'nested.md'))).toBe(true);
     });
 
+    // @awa-test: GEN-8_AC-1, TPL-9_AC-2
     it('should exclude files starting with underscore (P5)', async () => {
       await writeFile(join(templatesDir, 'normal.md'), 'Normal');
       await writeFile(join(templatesDir, '_hidden.md'), 'Hidden');
@@ -84,6 +98,7 @@ describe('FileGenerator', () => {
       expect(await pathExists(join(outputDir, '_hidden.md'))).toBe(false);
     });
 
+    // @awa-test: GEN-8_AC-2, GEN-8_AC-3, TPL-9_AC-1
     it('should exclude directories starting with underscore (P5)', async () => {
       await mkdir(join(templatesDir, '_private'));
       await writeFile(join(templatesDir, '_private', 'secret.md'), 'Secret');
@@ -103,6 +118,7 @@ describe('FileGenerator', () => {
       expect(await pathExists(join(outputDir, '_private', 'secret.md'))).toBe(false);
     });
 
+    // @awa-test: GEN-7_AC-2, TPL-7_AC-1, TPL-7_AC-3
     it('should skip empty files (whitespace only) (P3)', async () => {
       await writeFile(join(templatesDir, 'empty.md'), '   \n\t   \n   ');
       await writeFile(join(templatesDir, 'content.md'), 'Content');
@@ -122,6 +138,7 @@ describe('FileGenerator', () => {
       expect(await pathExists(join(outputDir, 'content.md'))).toBe(true);
     });
 
+    // @awa-test: TPL-7_AC-2
     it('should create empty files with marker (P4)', async () => {
       await writeFile(join(templatesDir, 'empty-marker.md'), '<!-- AWA:EMPTY_FILE -->');
 
@@ -139,6 +156,7 @@ describe('FileGenerator', () => {
       expect(await readTextFile(join(outputDir, 'empty-marker.md'))).toBe('');
     });
 
+    // @awa-test: GEN-6_AC-1, GEN-6_AC-2, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-4
     it('should not write files in dry-run mode (P7)', async () => {
       await writeFile(join(templatesDir, 'file.md'), 'Content');
 
@@ -155,6 +173,7 @@ describe('FileGenerator', () => {
       expect(await pathExists(join(outputDir, 'file.md'))).toBe(false);
     });
 
+    // @awa-test: GEN-4_AC-3
     it('should overwrite files in force mode (P8)', async () => {
       await writeFile(join(templatesDir, 'file.md'), 'New content');
       await writeFile(join(outputDir, 'file.md'), 'Old content');
@@ -207,6 +226,7 @@ Feature 1
       expect(content).toContain('Feature 1');
     });
 
+    // @awa-test: GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-8
     it('should track all action types correctly', async () => {
       // Setup: mix of scenarios
       await writeFile(join(templatesDir, 'new.md'), 'New');
@@ -229,6 +249,7 @@ Feature 1
       expect(result.skippedUser).toBe(0);
     });
 
+    // @awa-test: GEN-1_AC-3
     it('should handle deep directory nesting (P6)', async () => {
       const deepPath = join(templatesDir, 'a', 'b', 'c', 'd');
       await mkdir(deepPath, { recursive: true });

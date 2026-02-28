@@ -52,6 +52,5 @@
     "npx tsx": true,
     "npx vitest": true,
     "npx biome": true
-  },
-  "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
+  }
 }

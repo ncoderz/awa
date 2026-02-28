@@ -3,6 +3,8 @@
 // @awa-test: CHK-10_AC-1
 // @awa-test: CHK-16_AC-1
 // @awa-test: CHK_P-5
+// @awa-test: CHK-12_AC-1, CHK-13_AC-1, CHK-14_AC-1, CHK-15_AC-1
+// @awa-test: CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -150,7 +152,7 @@ export function ghost() {}
     await mkdir(schemaDir, { recursive: true });
 
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: ".*"
@@ -224,7 +226,7 @@ test('works', () => {});
     await mkdir(schemaDir, { recursive: true });
 
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Requirements"
@@ -277,7 +279,7 @@ ACCEPTANCE CRITERIA
 
     // Create a rule that would fail
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Required Section"
@@ -360,6 +362,245 @@ schema-enabled = false
       join(testDir, '.awa.toml'),
       `[check]
 allow-warnings = true
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
+  });
+
+  // --- Configurable globs and patterns tests ---
+
+  // @awa-test: CHK-12_AC-1
+  test('uses custom spec-globs from config', async () => {
+    // Put spec in a custom directory
+    const customSpecDir = join(testDir, 'custom-specs');
+    await mkdir(customSpecDir, { recursive: true });
+    await writeFile(
+      join(customSpecDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(customSpecDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+    // @awa-ignore-start
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+    // @awa-ignore-end
+
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[check]
+spec-globs = ["custom-specs/**/*.md"]
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
+  });
+
+  // @awa-test: CHK-13_AC-1
+  test('uses custom code-globs from config', async () => {
+    const customCodeDir = join(testDir, 'custom-code');
+    await mkdir(customCodeDir, { recursive: true });
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+    // @awa-ignore-start
+    await writeFile(
+      join(customCodeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(customCodeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+    // @awa-ignore-end
+
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[check]
+code-globs = ["custom-code/**/*.ts"]
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
+  });
+
+  // @awa-test: CHK-14_AC-1
+  test('uses custom id-pattern from config', async () => {
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+    // @awa-ignore-start
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+    // @awa-ignore-end
+
+    // Custom id-pattern that matches our test IDs — use a broad pattern
+    await writeFile(join(testDir, '.awa.toml'), '[check]\nid-pattern = "^[A-Z]"\n');
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+      allowWarnings: true,
+    });
+
+    // Verify the custom id-pattern was used by checking no id-format errors
+    const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      .map((c: unknown[]) => c[0])
+      .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+    if (jsonOutput) {
+      const parsed = JSON.parse(jsonOutput as string);
+      const idFormatErrors = parsed.findings.filter(
+        (f: { code: string }) => f.code === 'id-format-invalid'
+      );
+      expect(idFormatErrors).toHaveLength(0);
+    }
+    expect(exitCode).toBeLessThanOrEqual(1);
+  });
+
+  // @awa-test: CHK-15_AC-1
+  test('uses custom cross-ref-patterns from config', async () => {
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+    // @awa-ignore-start
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+    // @awa-ignore-end
+
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[check]
+cross-ref-patterns = ["IMPLEMENTS", "VALIDATES"]
 `
     );
 

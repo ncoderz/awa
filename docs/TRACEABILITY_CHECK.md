@@ -74,14 +74,14 @@ cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 | `format` | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | *(see above)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
-| `schema-dir` | `".awa/.agent/schemas"` | Directory containing `*.rules.yaml` schema rule files |
+| `schema-dir` | `".awa/.agent/schemas"` | Directory containing `*.schema.yaml` schema rule files |
 | `schema-enabled` | `true` | Enable/disable schema structural validation |
 
 ## Schema Validation
 
 In addition to marker and cross-reference checks, `awa check` can enforce structural rules on spec files using declarative YAML rule files.
 
-Rule files (`*.rules.yaml`) in the schema directory define expected heading structure, required content, and prohibited formatting. Each rule file targets specific spec files via a glob pattern.
+Rule files (`*.schema.yaml`) in the schema directory define expected heading structure, required content, and prohibited formatting. Each rule file targets specific spec files via a glob pattern.
 
 ### Schema Finding Codes
 

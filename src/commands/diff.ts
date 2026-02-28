@@ -1,4 +1,5 @@
 // @awa-component: DIFF-DiffCommand
+// @awa-component: JSON-DiffCommand
 // @awa-impl: DIFF-5_AC-1
 // @awa-impl: DIFF-5_AC-2
 // @awa-impl: DIFF-5_AC-3
@@ -7,21 +8,30 @@ import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { diffEngine } from '../core/differ.js';
 import { featureResolver } from '../core/feature-resolver.js';
+import { formatDiffSummary, serializeDiffResult, writeJsonOutput } from '../core/json-output.js';
+import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
 import { DiffError, type RawCliOptions } from '../types/index.js';
 import { FileWatcher } from '../utils/file-watcher.js';
-import { pathExists } from '../utils/fs.js';
+import { pathExists, rmDir } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
 export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
+  let mergedDir: string | null = null;
   try {
-    intro('awa CLI - Template Diff');
-
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
     // Merge CLI and file config
     const options = configLoader.merge(cliOptions, fileConfig);
+
+    const silent = options.json || options.summary;
+
+    // @awa-impl: JSON-6_AC-1
+    // Suppress interactive output when --json or --summary is active
+    if (!silent) {
+      intro('awa CLI - Template Diff');
+    }
 
     // Validate target directory exists (now from options.output)
     if (!(await pathExists(options.output))) {
@@ -45,15 +55,24 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       presetDefinitions: options.presets,
     });
 
+    // @awa-impl: OVL-7_AC-1
+    // Build merged template dir if overlays are specified
+    let templatePath = template.localPath;
+    if (options.overlay.length > 0) {
+      const overlayDirs = await resolveOverlays([...options.overlay], options.refresh);
+      mergedDir = await buildMergedDir(template.localPath, overlayDirs);
+      templatePath = mergedDir;
+    }
+
     const diffOptions = {
-      templatePath: template.localPath,
+      templatePath,
       targetPath,
       features,
       listUnknown: options.listUnknown,
     };
 
     // Run diff once
-    const result = await runDiff(diffOptions);
+    const result = await runDiff(diffOptions, options, mergedDir);
 
     if (!cliOptions.watch) {
       return result;
@@ -74,7 +93,7 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
             console.clear();
             logger.info(`[${new Date().toLocaleTimeString()}] Change detected, re-running diff...`);
             logger.info('---');
-            await runDiff(diffOptions);
+            await runDiff(diffOptions, options, null);
           } finally {
             running = false;
           }
@@ -101,15 +120,32 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
   }
 }
 
-async function runDiff(diffOptions: {
-  templatePath: string;
-  targetPath: string;
-  features: string[];
-  listUnknown: boolean;
-}): Promise<number> {
+async function runDiff(
+  diffOptions: {
+    templatePath: string;
+    targetPath: string;
+    features: string[];
+    listUnknown: boolean;
+  },
+  options: { json: boolean; summary: boolean },
+  mergedDir: string | null
+): Promise<number> {
   try {
     // Perform diff
     const result = await diffEngine.diff(diffOptions);
+
+    // @awa-impl: JSON-2_AC-1, JSON-8_AC-1
+    if (options.json) {
+      writeJsonOutput(serializeDiffResult(result));
+      // @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2
+      return result.hasDifferences ? 1 : 0;
+    }
+
+    // @awa-impl: JSON-5_AC-1
+    if (options.summary) {
+      console.log(formatDiffSummary(result));
+      return result.hasDifferences ? 1 : 0;
+    }
 
     // Display diff output
     for (const file of result.files) {
@@ -171,5 +207,14 @@ async function runDiff(diffOptions: {
       logger.error(String(error));
     }
     return 2;
+  } finally {
+    // Clean up merged overlay temp directory
+    if (mergedDir) {
+      try {
+        await rmDir(mergedDir);
+      } catch {
+        // Swallow cleanup errors — temp dir will be cleaned by OS eventually
+      }
+    }
   }
 }

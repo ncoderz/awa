@@ -18,11 +18,11 @@ import type {
 } from './rule-types.js';
 
 /**
- * Discover and load all *.rules.yaml files from the given schema directory.
+ * Discover and load all *.schema.yaml files from the given schema directory.
  * Parses YAML, validates rule structure, and returns typed rule sets.
  */
 export async function loadRules(schemaDir: string): Promise<LoadedRuleSet[]> {
-  const pattern = join(schemaDir, '*.rules.yaml');
+  const pattern = join(schemaDir, '*.schema.yaml');
   const files = await collectFiles([pattern], []);
   const results: LoadedRuleSet[] = [];
 

@@ -232,6 +232,18 @@ export class ConfigLoader {
         config.check = parsed.check as Record<string, unknown>;
       }
 
+      // @awa-impl: OVL-8_AC-1
+      if (parsed.overlay !== undefined) {
+        if (!Array.isArray(parsed.overlay) || !parsed.overlay.every((o) => typeof o === 'string')) {
+          throw new ConfigError(
+            `Invalid type for 'overlay': expected array of strings`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+        config.overlay = parsed.overlay;
+      }
+
       // Warn about unknown options
       const knownKeys = new Set([
         'output',
@@ -246,6 +258,7 @@ export class ConfigLoader {
         'refresh',
         'list-unknown',
         'check',
+        'overlay',
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
@@ -300,6 +313,9 @@ export class ConfigLoader {
     const enableDelete = cli.delete ?? file?.delete ?? false;
     const refresh = cli.refresh ?? file?.refresh ?? false;
     const listUnknown = cli.listUnknown ?? file?.['list-unknown'] ?? false;
+    const overlay = cli.overlay ?? file?.overlay ?? [];
+    const json = cli.json ?? false;
+    const summary = cli.summary ?? false;
 
     return {
       output,
@@ -313,6 +329,9 @@ export class ConfigLoader {
       refresh,
       presets,
       listUnknown,
+      overlay,
+      json,
+      summary,
     };
   }
 }

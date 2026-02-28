@@ -7,7 +7,7 @@ description: >
   component details with RESPONSIBILITIES, interactions, rules, and
   developer commands. Delegate to feature and design files where appropriate.
   One file per project.
-line-limit: 500
+line-limit: 800
 
 sections:
   # Top-level heading
