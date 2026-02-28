@@ -86,6 +86,12 @@ describe('TemplateResolver', () => {
   describe('getCachePath', () => {
     // @awa-test: TPL-3_AC-1, TPL-3_AC-2
     it('should generate consistent paths for same source', () => {
+      const path1 = resolver.getCachePath('user/repo');
+      const path2 = resolver.getCachePath('user/repo');
+
+      expect(path1).toBe(path2);
+    });
+
     it('should generate different paths for different sources', () => {
       const path1 = resolver.getCachePath('user/repo1');
       const path2 = resolver.getCachePath('user/repo2');
