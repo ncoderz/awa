@@ -7,17 +7,23 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Commands
 
-### `awa generate [output]`
+### `awa generate [output]` / `awa init [output]`
 
-Generate configuration files from templates.
+Generate configuration files from templates. `init` and `generate` are aliases — identical behaviour, both equally valid.
 
 ```bash
 awa generate .                            # current directory, default template
+awa init .                                # same as above (alias)
 awa generate ./my-project                 # specific output directory
 awa generate . --features copilot claude  # with feature flags
 awa generate . --preset full              # with a preset
 awa generate . --dry-run                  # preview without writing
-awa generate . --delete                   # apply deletions from _delete.txt
+awa generate . --delete                   # apply deletions from template
+awa generate . --json                     # JSON output (implies --dry-run)
+awa generate . --summary                  # compact one-line summary
+awa generate . --overlay ./my-overrides   # layer custom files over base template
+awa generate --all                        # process all named targets from config
+awa generate --target claude              # process a specific named target
 ```
 
 | Option | Description |
@@ -29,9 +35,14 @@ awa generate . --delete                   # apply deletions from _delete.txt
 | `--remove-features <flag...>` | Feature flags to remove (repeatable) |
 | `--force` | Overwrite existing files without prompting |
 | `--dry-run` | Preview changes without modifying files |
-| `--delete` | Enable deletion of files listed in `_delete.txt` |
+| `--delete` | Enable deletion of files listed for deletion in the template |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
+| `--all` | Process all named targets from config |
+| `--target <name>` | Process a specific named target from config |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
+| `--json` | Output results as JSON to stdout (implies `--dry-run`) |
+| `--summary` | Output compact one-line counts summary |
 
 ### `awa diff [target]`
 
@@ -43,6 +54,12 @@ Exit code `0` = files match, `1` = differences found.
 awa diff .                                # diff against current directory
 awa diff ./my-project --template ./tpl    # diff specific target and template
 awa diff . --list-unknown                 # include files not in template
+awa diff . --watch                        # watch template and re-diff on change
+awa diff . --overlay ./my-overrides       # diff against merged template view
+awa diff . --json                         # JSON output for CI
+awa diff . --summary                      # compact one-line summary
+awa diff --all                            # diff all named targets from config
+awa diff --target copilot                 # diff a specific named target
 ```
 
 | Option | Description |
@@ -55,18 +72,26 @@ awa diff . --list-unknown                 # include files not in template
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
+| `--all` | Process all named targets from config |
+| `--target <name>` | Process a specific named target from config |
+| `-w, --watch` | Watch template directory for changes and re-run diff |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
+| `--json` | Output results as JSON to stdout |
+| `--summary` | Output compact one-line counts summary |
 
 ### `awa check`
 
-Check traceability chain integrity between code markers and spec files.
+Validate spec files against schemas and check traceability between code markers and specs.
 
-Exit code `0` = all markers resolve, `1` = errors found.
+Exit code `0` = all checks pass, `1` = errors found, `2` = internal error.
 
 ```bash
 awa check                              # check with defaults
 awa check --format json                # JSON output for CI
 awa check --code-ignore "test/**"      # ignore specific code paths
 awa check --config ./custom.toml       # custom config file
+awa check --allow-warnings             # warnings don't fail
+awa check --spec-only                  # skip code-to-spec traceability
 ```
 
 | Option | Description |
@@ -75,14 +100,124 @@ awa check --config ./custom.toml       # custom config file
 | `--spec-ignore <pattern...>` | Glob patterns to exclude from spec file scanning |
 | `--code-ignore <pattern...>` | Glob patterns to exclude from code file scanning |
 | `--format <format>` | Output format: `text` (default) or `json` |
+| `--allow-warnings` | Allow warnings without failing (default: warnings are treated as errors) |
+| `--spec-only` | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability |
 
-The check command checks:
+The check command validates:
 - **Orphaned markers** — `@awa-impl`, `@awa-test`, `@awa-component` referencing IDs that don't exist in specs
 - **Uncovered ACs** — acceptance criteria in specs with no corresponding `@awa-test`
 - **Broken cross-refs** — IMPLEMENTS/VALIDATES in design specs pointing to non-existent requirement IDs
 - **Invalid ID format** — marker IDs not matching the configured ID pattern
+- **Marker trailing text** — markers with trailing text after the ID(s)
 - **Orphaned specs** — spec files with a feature code not referenced by any marker or cross-reference
 - **Schema validation** — spec file structure checked against declarative `*.schema.yaml` schema rules
+
+By default, warnings are treated as errors (exit code `1`). Use `--allow-warnings` to only fail on errors.
+
+#### Finding Codes
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| `orphaned-marker` | error | `@awa-impl`, `@awa-test`, or `@awa-component` references an ID not in specs |
+| `uncovered-ac` | warning | Acceptance criterion has no corresponding `@awa-test` |
+| `broken-cross-ref` | error | IMPLEMENTS/VALIDATES points to non-existent requirement ID |
+| `invalid-id-format` | warning | Marker ID doesn't match the configured ID pattern |
+| `marker-trailing-text` | error | Marker contains trailing text after the ID(s) |
+| `orphaned-spec` | warning | Spec file's feature code not referenced by any marker or cross-ref |
+
+#### JSON Output Format
+
+When `--format json` is used, output is a JSON object:
+
+```json
+{
+  "valid": false,
+  "errors": 3,
+  "warnings": 2,
+  "findings": [
+    {
+      "severity": "error",
+      "code": "orphaned-marker",
+      "message": "@awa-impl references unknown ID 'FOO-1_AC-1'",
+      "filePath": "src/foo.ts",
+      "line": 5,
+      "id": "FOO-1_AC-1"
+    },
+    {
+      "severity": "warning",
+      "code": "uncovered-ac",
+      "message": "AC 'BAR-2_AC-1' has no @awa-test",
+      "id": "BAR-2_AC-1"
+    }
+  ]
+}
+```
+
+### `awa features`
+
+Discover feature flags available in a template.
+
+Exit code `0` = success, `1` = error.
+
+```bash
+awa features                              # discover flags in default template
+awa features --template ./templates/awa   # specific template
+awa features --json                       # JSON output
+```
+
+| Option | Description |
+|--------|-------------|
+| `-t, --template <source>` | Template source — local path or Git repo |
+| `-c, --config <path>` | Path to configuration file |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--json` | Output results as JSON |
+
+The features command:
+- Scans all template files (including partials) for `it.features.includes('name')` references
+- Lists each discovered feature flag and the files that reference it
+- Includes preset definitions from `.awa.toml` if available
+
+Example JSON output from `awa features --json`:
+
+```json
+{
+  "features": [
+    { "name": "copilot", "files": ["CLAUDE.md", "_partials/_header.md"] },
+    { "name": "claude", "files": ["CLAUDE.md"] }
+  ],
+  "presets": {
+    "full": ["copilot", "claude", "cursor"]
+  },
+  "filesScanned": 42
+}
+```
+
+### `awa test`
+
+Run template test fixtures to verify expected output.
+
+Exit code `0` = all pass, `1` = failures found, `2` = internal error.
+
+```bash
+awa test                                       # test default template
+awa test --template ./templates/awa            # test specific template
+awa test --update-snapshots                    # update stored snapshots
+```
+
+| Option | Description |
+|--------|-------------|
+| `-t, --template <source>` | Template source — local path or Git repo |
+| `-c, --config <path>` | Path to configuration file |
+| `--update-snapshots` | Update stored snapshots with current rendered output |
+
+The test command:
+- Discovers fixture files (`*.toml`) in the template's `_tests/` directory
+- Renders templates for each fixture with specified features, presets, and remove-features
+- Verifies expected files exist in the rendered output
+- Compares rendered output against stored snapshots (if snapshot directories exist)
+- Reports pass/fail per fixture with failure details
+
+See [Template Testing](/reference/template-testing/) for the full fixture format and CI setup.
 
 ### Global Options
 
@@ -90,6 +225,25 @@ The check command checks:
 |--------|-------------|
 | `-v, --version` | Display version number |
 | `-h, --help` | Display help information |
+
+### Update Check
+
+awa periodically checks the npm registry for newer versions and prints a warning after command output when an update is available. The check runs asynchronously and does not slow down CLI startup.
+
+The warning is automatically suppressed when:
+- `--json` or `--summary` flags are active
+- stdout is not a TTY (e.g. piped output)
+- `NO_UPDATE_NOTIFIER=1` environment variable is set
+
+Configure via `.awa.toml`:
+
+```toml
+[update-check]
+enabled = true    # set to false to disable update checks
+interval = 86400  # seconds between checks (default: 1 day)
+```
+
+Results are cached in `~/.cache/awa/update-check.json`. Network failures are silent — the CLI works identically when offline. See [Configuration](/reference/configuration/) for the full `[update-check]` reference.
 
 ## Template Sources
 
@@ -144,13 +298,118 @@ Features are resolved in this order:
 awa generate . --features copilot --preset full --remove-features roo agy
 ```
 
+## Multi-Target Configuration
+
+Define `[targets.<name>]` sections in `.awa.toml` to generate different agent configurations in a single command:
+
+```toml
+template = "./templates/awa"
+features = ["architect", "code"]
+
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+```
+
+Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config.
+
+```bash
+awa generate --all                   # process all targets
+awa generate --target claude         # process one target
+awa diff --all                       # diff all targets
+awa diff --target copilot            # diff one target
+```
+
+**Behavior notes:**
+
+- `--all` and `--target` suppress interactive tool-feature prompting (non-interactive batch mode)
+- `--all` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override the target's output
+- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all`
+- `--all` requires at least one `[targets.*]` section; errors with `NO_TARGETS` otherwise
+- `--target <name>` errors with `UNKNOWN_TARGET` if the name isn't defined
+- `diff --all` exit code: `0` if all targets match, `1` if any target has differences, `2` on error
+
+See [Configuration](/reference/configuration/) for the full `[targets]` reference.
+
+## CI Integration
+
+Use `--json` to get structured output for CI pipelines. JSON is written to stdout; errors to stderr.
+
+### Diff in CI
+
+```bash
+# Check for template drift — exit code 1 means differences found
+awa diff . --json > diff-result.json
+```
+
+Example JSON output from `awa diff . --json`:
+
+```json
+{
+  "diffs": [
+    { "path": "file.md", "status": "modified", "diff": "--- a/file.md\n+++ b/file.md\n..." },
+    { "path": "new-file.md", "status": "new" },
+    { "path": "same.md", "status": "identical" }
+  ],
+  "counts": {
+    "changed": 1,
+    "new": 1,
+    "matching": 1,
+    "deleted": 0
+  }
+}
+```
+
+### Generate Preview in CI
+
+```bash
+# Preview what would be generated — --json implies --dry-run
+awa generate . --json > generate-result.json
+```
+
+Example JSON output from `awa generate . --json`:
+
+```json
+{
+  "actions": [
+    { "type": "create", "path": ".github/agents/copilot.agent.md" },
+    { "type": "overwrite", "path": ".github/agents/shared.agent.md" },
+    { "type": "skip-equal", "path": ".github/agents/rules.agent.md" }
+  ],
+  "counts": {
+    "created": 1,
+    "overwritten": 1,
+    "skipped": 1,
+    "deleted": 0
+  }
+}
+```
+
+### Summary Output
+
+Use `--summary` for a compact one-line output in build logs:
+
+```bash
+awa diff . --summary
+# Output: changed: 2, new: 1, matching: 10, deleted: 0
+
+awa generate . --summary
+# Output: created: 3, overwritten: 1, skipped: 2, deleted: 0
+```
+
 ## How It Works
 
 1. **Load config** — read `.awa.toml` (if present), merge with CLI arguments
 2. **Resolve template** — local path used directly; Git repos fetched via degit and cached
-3. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
-4. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
-5. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
-6. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
-7. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
-8. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
+3. **Apply overlays** — if `--overlay` paths are given, each is resolved and merged on top of the base template (last wins)
+4. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
+5. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
+6. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
+7. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
+8. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
+9. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
+10. **Test** (for `awa test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots

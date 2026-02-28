@@ -226,7 +226,30 @@ allow-warnings = false           # set to true to allow warnings without failing
 spec-only = false                # set to true to skip code-to-spec traceability
 # id-pattern = custom regex for ID format validation
 # cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
+
+[update-check]
+enabled = true                   # set to false to disable update checks
+interval = 86400                 # seconds between checks (default: 1 day)
 ```
+
+### Update Check
+
+awa periodically checks the npm registry for newer versions and prints a warning after command output when an update is available. The check runs asynchronously and does not slow down CLI startup.
+
+The warning is automatically suppressed when:
+- `--json` or `--summary` flags are active
+- stdout is not a TTY (e.g. piped output)
+- `NO_UPDATE_NOTIFIER=1` environment variable is set
+
+Configure the check interval or disable it entirely in `.awa.toml`:
+
+```toml
+[update-check]
+enabled = true    # set to false to disable update checks
+interval = 86400  # seconds between checks (default: 1 day)
+```
+
+The check hits the network at most once per configured interval. Results are cached in `~/.cache/awa/update-check.json`. Network failures are silent — the CLI works identically when offline.
 
 ### Using Presets
 
