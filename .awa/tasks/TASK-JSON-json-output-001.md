@@ -62,10 +62,10 @@ TEST CRITERIA: --summary shows counts only on single line
 
 ## Phase 7: Documentation
 
-- [ ] T-JSON-040 Update CLI reference with --json and --summary options → docs/CLI.md
-- [ ] T-JSON-041 Add CI Integration section with JSON output examples → docs/CLI.md
-- [ ] T-JSON-042 Update README.md features list → README.md
-- [ ] T-JSON-043 Update ARCHITECTURE.md mentioning JSON output → .awa/specs/ARCHITECTURE.md
+- [x] T-JSON-040 Update CLI reference with --json and --summary options → docs/CLI.md
+- [x] T-JSON-041 Add CI Integration section with JSON output examples → docs/CLI.md
+- [x] T-JSON-042 Update README.md features list → README.md
+- [x] T-JSON-043 Update ARCHITECTURE.md mentioning JSON output → .awa/specs/ARCHITECTURE.md
 
 ---
 

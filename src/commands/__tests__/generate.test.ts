@@ -187,7 +187,9 @@ describe('generateCommand --summary', () => {
       source: 'local',
     });
     vi.mocked(fileGenerator.generate).mockResolvedValue(mockResult);
-    vi.mocked(formatGenerationSummary).mockReturnValue('created: 1, overwritten: 0, skipped: 0, deleted: 0');
+    vi.mocked(formatGenerationSummary).mockReturnValue(
+      'created: 1, overwritten: 0, skipped: 0, deleted: 0'
+    );
   });
 
   afterEach(() => {
