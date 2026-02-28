@@ -1,5 +1,6 @@
 // @awa-test: DISC_P-4
-// VALIDATES: DISC-4_AC-1, DISC-5_AC-1
+// @awa-test: DISC-4_AC-1
+// @awa-test: DISC-5_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 

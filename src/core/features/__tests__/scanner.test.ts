@@ -1,6 +1,8 @@
 // @awa-test: DISC_P-1
 // @awa-test: DISC_P-2
-// VALIDATES: DISC-1_AC-1, DISC-2_AC-1, DISC-3_AC-1
+// @awa-test: DISC-1_AC-1
+// @awa-test: DISC-2_AC-1
+// @awa-test: DISC-3_AC-1
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';

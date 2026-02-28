@@ -1,5 +1,6 @@
 // @awa-test: DISC_P-3
-// VALIDATES: DISC-6_AC-1, DISC-7_AC-1
+// @awa-test: DISC-6_AC-1
+// @awa-test: DISC-7_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { FeaturesReporter } from '../reporter.js';
