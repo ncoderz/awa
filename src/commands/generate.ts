@@ -1,10 +1,16 @@
 // @awa-component: GEN-GenerateCommand
+// @awa-component: JSON-GenerateCommand
 // @awa-impl: INIT-5_AC-1
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';
 import { fileGenerator } from '../core/generator.js';
+import {
+  formatGenerationSummary,
+  serializeGenerationResult,
+  writeJsonOutput,
+} from '../core/json-output.js';
 import { templateResolver } from '../core/template-resolver.js';
 import type { RawCliOptions } from '../types/index.js';
 import { logger } from '../utils/logger.js';
@@ -29,8 +35,6 @@ const TOOL_FEATURE_VALUES = new Set<string>(TOOL_FEATURES.map((t) => t.value));
 
 export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
   try {
-    intro('awa CLI - Template Generator');
-
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
@@ -42,6 +46,14 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
 
     // Merge CLI and file config
     const options = configLoader.merge(cliOptions, fileConfig);
+
+    const silent = options.json || options.summary;
+
+    // @awa-impl: JSON-6_AC-1
+    // Suppress interactive output when --json or --summary is active
+    if (!silent) {
+      intro('awa CLI - Template Generator');
+    }
 
     // Resolve template source
     const template = await templateResolver.resolve(options.template, options.refresh);
@@ -55,8 +67,9 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
 
     // @awa-impl: MTT-1_AC-1 // @awa-ignore
     // If no tool feature flag is present, prompt the user to select tools interactively
+    // @awa-impl: JSON-6_AC-1
     const hasToolFlag = features.some((f) => TOOL_FEATURE_VALUES.has(f));
-    if (!hasToolFlag) {
+    if (!hasToolFlag && !silent) {
       const selected = await multiselect({
         message: 'Select AI tools to generate for (space to toggle, enter to confirm):',
         options: TOOL_FEATURES.map((t) => ({ value: t.value, label: t.label })),
@@ -69,12 +82,18 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       features.push(...(selected as string[]));
     }
 
+    // @awa-impl: JSON-7_AC-1
+    // --json implies --dry-run for generate
+    const effectiveDryRun = options.json || options.dryRun;
+
     // Display mode indicators
-    if (options.dryRun) {
-      logger.info('Running in dry-run mode (no files will be modified)');
-    }
-    if (options.force) {
-      logger.info('Force mode enabled (existing files will be overwritten)');
+    if (!silent) {
+      if (effectiveDryRun) {
+        logger.info('Running in dry-run mode (no files will be modified)');
+      }
+      if (options.force) {
+        logger.info('Force mode enabled (existing files will be overwritten)');
+      }
     }
 
     // Generate files
@@ -83,16 +102,24 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       outputPath: options.output,
       features,
       force: options.force,
-      dryRun: options.dryRun,
+      dryRun: effectiveDryRun,
       delete: options.delete,
     });
 
-    // Display summary
-    logger.summary(result);
-
-    outro('Generation complete!');
+    // @awa-impl: JSON-1_AC-1, JSON-8_AC-1
+    if (options.json) {
+      writeJsonOutput(serializeGenerationResult(result));
+    } else if (options.summary) {
+      // @awa-impl: JSON-5_AC-1
+      console.log(formatGenerationSummary(result));
+    } else {
+      // Display summary
+      logger.summary(result);
+      outro('Generation complete!');
+    }
   } catch (error) {
-    // Error handling with proper exit codes
+    // @awa-impl: JSON-8_AC-1
+    // Error handling with proper exit codes — errors always go to stderr
     if (error instanceof Error) {
       logger.error(error.message);
     } else {

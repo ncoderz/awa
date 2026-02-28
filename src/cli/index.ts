@@ -98,6 +98,10 @@ program
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CLI-8_AC-1
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  // @awa-impl: JSON-1_AC-1
+  .option('--json', 'Output results as JSON (implies --dry-run)', false)
+  // @awa-impl: JSON-5_AC-1
+  .option('--summary', 'Output compact one-line summary', false)
   .action(async (output: string | undefined, options) => {
     // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
     const cliOptions: RawCliOptions = {
@@ -111,6 +115,8 @@ program
       delete: options.delete,
       config: options.config,
       refresh: options.refresh,
+      json: options.json,
+      summary: options.summary,
     };
 
     await generateCommand(cliOptions);
@@ -137,6 +143,10 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
+  // @awa-impl: JSON-2_AC-1
+  .option('--json', 'Output results as JSON', false)
+  // @awa-impl: JSON-5_AC-1
+  .option('--summary', 'Output compact one-line summary', false)
   // @awa-impl: DIFF-7_AC-10
   // Note: --force and --dry-run are intentionally NOT accepted for diff command
   .action(async (target: string | undefined, options) => {
@@ -149,6 +159,8 @@ program
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
+      json: options.json,
+      summary: options.summary,
     };
 
     const exitCode = await diffCommand(cliOptions);
