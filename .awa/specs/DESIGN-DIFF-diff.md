@@ -94,6 +94,40 @@ interface DiffCommand {
 }
 ```
 
+### DIFF-Debouncer
+
+General-purpose debouncer that coalesces rapid successive triggers into a single delayed callback invocation.
+
+IMPLEMENTS: DIFF-7_AC-10
+
+```typescript
+class Debouncer {
+  constructor(delayMs: number);
+  trigger(callback: () => void): void;
+  cancel(): void;
+}
+```
+
+### DIFF-FileWatcher
+
+Watches a directory recursively for file-system changes and invokes a debounced callback on each change event.
+
+IMPLEMENTS: DIFF-7_AC-10
+
+```typescript
+interface FileWatcherOptions {
+  directory: string;
+  debounceMs?: number;
+  onChange: () => void;
+}
+
+class FileWatcher {
+  constructor(options: FileWatcherOptions);
+  start(): void;
+  stop(): void;
+}
+```
+
 ## Data Models
 
 ### Diff Types

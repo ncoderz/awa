@@ -23,6 +23,10 @@ export interface RawCliOptions {
   listUnknown?: boolean;
   all?: boolean;
   target?: string;
+  watch?: boolean;
+  overlay?: string[];
+  json?: boolean;
+  summary?: boolean;
 }
 
 // PresetDefinitions - Named feature bundles
@@ -54,6 +58,7 @@ export interface FileConfig {
   'list-unknown'?: boolean;
   check?: Record<string, unknown>;
   targets?: Record<string, TargetConfig>;
+  overlay?: string[];
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
@@ -69,6 +74,9 @@ export interface ResolvedOptions {
   readonly refresh: boolean;
   readonly presets: PresetDefinitions;
   readonly listUnknown: boolean;
+  readonly overlay: readonly string[];
+  readonly json: boolean;
+  readonly summary: boolean;
 }
 
 // TemplateSourceType - Template source type detection
@@ -192,6 +200,40 @@ export interface CachedTemplate {
   localPath: string;
   fetchedAt: Date;
   ref?: string;
+}
+
+// JSON output types for --json flag
+// @awa-impl: JSON-3_AC-1
+export interface GenerationActionJSON {
+  type: string;
+  path: string;
+}
+
+export interface GenerationJSON {
+  actions: GenerationActionJSON[];
+  counts: {
+    created: number;
+    overwritten: number;
+    skipped: number;
+    deleted: number;
+  };
+}
+
+// @awa-impl: JSON-4_AC-1
+export interface DiffFileJSON {
+  path: string;
+  status: string;
+  diff?: string;
+}
+
+export interface DiffJSON {
+  diffs: DiffFileJSON[];
+  counts: {
+    changed: number;
+    new: number;
+    matching: number;
+    deleted: number;
+  };
 }
 
 // Custom error types

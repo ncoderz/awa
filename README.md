@@ -46,11 +46,15 @@ See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 - [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
 - Feature flags and presets to turn content on/off per project
 - Multi-target configuration — define `[targets.claude]`, `[targets.copilot]`, etc. in `.awa.toml` and generate all with `--all`
+- Template overlays (`--overlay`) to layer custom files over a base template without forking it
 - `awa diff` shows exactly what changed before you commit
+- `awa test` verifies templates produce expected output across feature combinations
+- `--json` flag for machine-readable output in CI pipelines
+- `--summary` flag for compact one-line counts output
 - Pull templates from GitHub, GitLab, Bitbucket, or use a local path
 - Optional `.awa.toml` config, or just use CLI flags
 
-See [CLI Reference](docs/CLI.md) and [Template Engine](docs/TEMPLATE_ENGINE.md) for details.
+See [CLI Reference](docs/CLI.md), [Template Engine](docs/TEMPLATE_ENGINE.md), and [Template Testing](docs/TEMPLATE_TESTING.md) for details.
 
 ## Quick Start
 
@@ -63,7 +67,7 @@ npm install -g @ncoderz/awa
 Or use with npx:
 
 ```bash
-npx @ncoderz/awa generate .
+npx @ncoderz/awa init .
 ```
 
 ### Generate
@@ -71,19 +75,19 @@ npx @ncoderz/awa generate .
 Generate files into the current directory using the bundled default template:
 
 ```bash
-awa generate .
+awa init .
 ```
 
 Generate with specific features enabled:
 
 ```bash
-awa generate . --features copilot claude cursor
+awa init . --features copilot claude cursor
 ```
 
 Generate to a specific output directory:
 
 ```bash
-awa generate ./my-project
+awa init ./my-project
 ```
 
 ### Preview Changes
@@ -97,7 +101,7 @@ awa diff .
 Apply any template configured file deletions (disabled by default):
 
 ```bash
-awa generate . --delete
+awa init . --delete
 ```
 
 ## The `.awa/` Directory
@@ -160,6 +164,7 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 | [Workflow](docs/WORKFLOW.md) | The awa workflow, `.awa/` structure, traceability chain, IDs and markers |
 | [CLI Reference](docs/CLI.md) | Commands, options, configuration, presets, and how it works |
 | [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
+| [Template Testing](docs/TEMPLATE_TESTING.md) | The `awa test` command, fixture format, snapshots, CI setup |
 | [Traceability Check](docs/TRACEABILITY_CHECK.md) | The `awa check` command, checks, configuration, JSON output |
 
 ## Community

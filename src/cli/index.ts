@@ -45,13 +45,20 @@
 // @awa-impl: FP-4_AC-5
 // @awa-impl: GEN-10_AC-1
 // @awa-impl: GEN-10_AC-2
+// @awa-impl: INIT-1_AC-1
+// @awa-impl: INIT-2_AC-1
+// @awa-impl: INIT-3_AC-1
+// @awa-impl: INIT-4_AC-1
 
 import { Command } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
 import { diffCommand } from '../commands/diff.js';
+import { featuresCommand } from '../commands/features.js';
 import { generateCommand } from '../commands/generate.js';
+import { testCommand } from '../commands/test.js';
 import type { RawCheckOptions } from '../core/check/types.js';
+import type { RawTestOptions } from '../core/template-test/types.js';
 import type { RawCliOptions } from '../types/index.js';
 
 const version = PACKAGE_INFO.version;
@@ -65,8 +72,10 @@ program
   .version(version, '-v, --version', 'Display version number');
 
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
+// @awa-impl: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
 program
   .command('generate')
+  .alias('init')
   .description('Generate AI agent configuration files from templates')
   // @awa-impl: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
   .argument('[output]', 'Output directory (optional if specified in config)')
@@ -94,6 +103,12 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   .option('--all', 'Process all named targets from config', false)
   .option('--target <name>', 'Process a specific named target from config')
+  // @awa-impl: OVL-1_AC-1
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
+  // @awa-impl: JSON-1_AC-1
+  .option('--json', 'Output results as JSON (implies --dry-run)', false)
+  // @awa-impl: JSON-5_AC-1
+  .option('--summary', 'Output compact one-line summary', false)
   .action(async (output: string | undefined, options) => {
     // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
     const cliOptions: RawCliOptions = {
@@ -109,6 +124,9 @@ program
       refresh: options.refresh,
       all: options.all,
       target: options.target,
+      overlay: options.overlay || [],
+      json: options.json,
+      summary: options.summary,
     };
 
     await generateCommand(cliOptions);
@@ -137,6 +155,13 @@ program
   .option('--list-unknown', 'Include target-only files in diff results', false)
   .option('--all', 'Process all named targets from config', false)
   .option('--target <name>', 'Process a specific named target from config')
+  .option('-w, --watch', 'Watch template directory for changes and re-run diff', false)
+  // @awa-impl: OVL-7_AC-1
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
+  // @awa-impl: JSON-2_AC-1
+  .option('--json', 'Output results as JSON', false)
+  // @awa-impl: JSON-5_AC-1
+  .option('--summary', 'Output compact one-line summary', false)
   // @awa-impl: DIFF-7_AC-10
   // Note: --force and --dry-run are intentionally NOT accepted for diff command
   .action(async (target: string | undefined, options) => {
@@ -151,6 +176,10 @@ program
       listUnknown: options.listUnknown,
       all: options.all,
       target: options.target,
+      watch: options.watch,
+      overlay: options.overlay || [],
+      json: options.json,
+      summary: options.summary,
     };
 
     const exitCode = await diffCommand(cliOptions);
@@ -180,6 +209,42 @@ program
     };
 
     const exitCode = await checkCommand(cliOptions);
+    process.exit(exitCode);
+  });
+
+// @awa-impl: DISC-4_AC-1, DISC-5_AC-1
+program
+  .command('features')
+  .description('Discover feature flags available in a template')
+  .option('-t, --template <source>', 'Template source (local path or Git repository)')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--json', 'Output results as JSON', false)
+  .action(async (options) => {
+    const exitCode = await featuresCommand({
+      template: options.template,
+      config: options.config,
+      refresh: options.refresh,
+      json: options.json,
+    });
+    process.exit(exitCode);
+  });
+
+// @awa-impl: TTST-7_AC-1, TTST-5_AC-1
+program
+  .command('test')
+  .description('Run template test fixtures to verify expected output')
+  .option('-t, --template <source>', 'Template source (local path or Git repository)')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--update-snapshots', 'Update stored snapshots with current rendered output', false)
+  .action(async (options) => {
+    const testOptions: RawTestOptions = {
+      template: options.template,
+      config: options.config,
+      updateSnapshots: options.updateSnapshots,
+    };
+
+    const exitCode = await testCommand(testOptions);
     process.exit(exitCode);
   });
 

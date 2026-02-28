@@ -1,5 +1,7 @@
 // @awa-component: MULTI-BatchRunner
 // @awa-test: MULTI_P-1
+// @awa-test: MULTI-3_AC-1, MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-5_AC-2
+// @awa-test: MULTI-9_AC-1, MULTI-11_AC-1
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigError, type FileConfig, type RawCliOptions } from '../../types/index.js';
@@ -47,12 +49,12 @@ describe('BatchRunner', () => {
       const results = runner.resolveTargets(cli, fileConfig, 'all');
 
       expect(results).toHaveLength(2);
-      expect(results[0].targetName).toBe('claude');
-      expect(results[0].options.output).toBe('./out-claude');
-      expect(results[0].options.features).toEqual(['claude', 'architect']);
-      expect(results[1].targetName).toBe('copilot');
-      expect(results[1].options.output).toBe('./out-copilot');
-      expect(results[1].options.features).toEqual(['copilot', 'code']);
+      expect(results[0]!.targetName).toBe('claude');
+      expect(results[0]!.options.output).toBe('./out-claude');
+      expect(results[0]!.options.features).toEqual(['claude', 'architect']);
+      expect(results[1]!.targetName).toBe('copilot');
+      expect(results[1]!.options.output).toBe('./out-copilot');
+      expect(results[1]!.options.features).toEqual(['copilot', 'code']);
     });
 
     // VALIDATES: MULTI-5_AC-1
@@ -75,8 +77,8 @@ describe('BatchRunner', () => {
       const results = runner.resolveTargets(cli, fileConfig, 'single', 'claude');
 
       expect(results).toHaveLength(1);
-      expect(results[0].targetName).toBe('claude');
-      expect(results[0].options.output).toBe('./out-claude');
+      expect(results[0]!.targetName).toBe('claude');
+      expect(results[0]!.options.output).toBe('./out-claude');
     });
 
     // VALIDATES: MULTI-3_AC-1
@@ -95,8 +97,8 @@ describe('BatchRunner', () => {
 
       const results = runner.resolveTargets(cli, fileConfig, 'single', 'claude');
 
-      expect(results[0].options.template).toBe('./templates/awa');
-      expect(results[0].options.features).toEqual(['architect', 'code']);
+      expect(results[0]!.options.template).toBe('./templates/awa');
+      expect(results[0]!.options.features).toEqual(['architect', 'code']);
     });
 
     // VALIDATES: MULTI-3_AC-1 (target overrides root)
@@ -115,7 +117,7 @@ describe('BatchRunner', () => {
 
       const results = runner.resolveTargets(cli, fileConfig, 'single', 'claude');
 
-      expect(results[0].options.features).toEqual(['claude', 'architect', 'code']);
+      expect(results[0]!.options.features).toEqual(['claude', 'architect', 'code']);
     });
 
     // VALIDATES: MULTI-4_AC-2
@@ -168,7 +170,7 @@ describe('BatchRunner', () => {
 
       const results = runner.resolveTargets(cli, fileConfig, 'all');
 
-      expect(results[0].options.output).toBe('./out-claude');
+      expect(results[0]!.options.output).toBe('./out-claude');
     });
 
     // VALIDATES: MULTI-11_AC-1
@@ -185,7 +187,7 @@ describe('BatchRunner', () => {
 
       const results = runner.resolveTargets(cli, fileConfig, 'single', 'claude');
 
-      expect(results[0].options.output).toBe('./cli-output');
+      expect(results[0]!.options.output).toBe('./cli-output');
     });
 
     // VALIDATES: MULTI-9_AC-1

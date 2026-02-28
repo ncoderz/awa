@@ -1,5 +1,14 @@
 // @awa-component: CFG-ConfigLoader
 // @awa-test: CFG_P-1
+// @awa-test: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
+// @awa-test: CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3
+// @awa-test: CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10
+// @awa-test: CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4
+// @awa-test: CFG-5_AC-1, CFG-5_AC-2
+// @awa-test: CFG-6_AC-1, CFG-6_AC-2
+// @awa-test: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1
+// @awa-test: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
+// @awa-test: FP-1_AC-1, FP-1_AC-4, FP-3_AC-1, FP-5_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -23,6 +32,8 @@ describe('ConfigLoader', () => {
   });
 
   describe('load', () => {
+    // @awa-test: CFG-1_AC-1, CFG-1_AC-3, CFG-2_AC-1, CFG-2_AC-3
+    // @awa-test: CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-8
     it('should parse valid TOML configuration', async () => {
       const configPath = join(testDir, '.awa.toml');
       const tomlContent = `
@@ -49,6 +60,7 @@ list-unknown = true
       });
     });
 
+    // @awa-test: CFG-1_AC-1, CFG-1_AC-2
     it('should return null if default config path does not exist', async () => {
       // Change to test directory where no .awa.toml exists
       const originalCwd = process.cwd();
@@ -62,6 +74,7 @@ list-unknown = true
       }
     });
 
+    // @awa-test: CFG-1_AC-4
     it('should throw error if explicit config path does not exist', async () => {
       const nonexistentPath = join(testDir, 'missing.toml');
 
@@ -71,6 +84,7 @@ list-unknown = true
       });
     });
 
+    // @awa-test: CFG-2_AC-2
     it('should throw error on invalid TOML syntax', async () => {
       const configPath = join(testDir, 'invalid.toml');
       await writeFile(configPath, 'this is [ not valid TOML');
@@ -134,6 +148,7 @@ list-unknown = true
   });
 
   describe('merge', () => {
+    // @awa-test: CFG-4_AC-1
     it('should use CLI value when both CLI and config provide same option (P1)', () => {
       const cliOptions = {
         output: './cli-output', // Required from CLI
@@ -148,6 +163,7 @@ list-unknown = true
       expect(resolved.output).toBe('./cli-output');
     });
 
+    // @awa-test: CFG-4_AC-2, CLI-2_AC-3
     it('should use config value when CLI option is not provided', () => {
       const cliOptions = {};
 
@@ -162,6 +178,7 @@ list-unknown = true
       expect(resolved.template).toBe('user/repo');
     });
 
+    // @awa-test: CLI-1_AC-4, CLI-2_AC-4
     it('should throw error when output not provided in CLI or config', () => {
       const cliOptions = {};
       const fileConfig = null;
@@ -169,6 +186,8 @@ list-unknown = true
       expect(() => loader.merge(cliOptions, fileConfig)).toThrow('Output directory is required');
     });
 
+    // @awa-test: CFG-4_AC-3, CLI-4_AC-3, FP-3_AC-1, FP-5_AC-1
+    // @awa-test: CFG-3_AC-9, CFG-3_AC-10
     it('should use default values for other options when not provided', () => {
       const cliOptions = {
         output: './output',
@@ -189,6 +208,7 @@ list-unknown = true
       expect(resolved.listUnknown).toBe(false);
     });
 
+    // @awa-test: CFG-4_AC-4
     it('should replace features array completely, not merge (P2)', () => {
       const cliOptions = {
         output: './output',
@@ -206,6 +226,7 @@ list-unknown = true
       expect(resolved.features).not.toContain('config-feature2');
     });
 
+    // @awa-test: CFG-3_AC-7, CFG-3_AC-8
     it('should handle all boolean flags correctly', () => {
       const cliOptions = {
         output: './output',
@@ -230,6 +251,7 @@ list-unknown = true
       expect(resolved.listUnknown).toBe(true);
     });
 
+    // @awa-test: CFG-5_AC-1, CFG-5_AC-2
     it('should map dry-run from config to dryRun in resolved options', () => {
       const cliOptions = {
         output: './output',
@@ -306,6 +328,90 @@ list-unknown = true
       const resolved = loader.merge(cliOptions, fileConfig);
 
       expect(resolved.removeFeatures).toEqual(['debug']);
+    });
+  });
+
+  // @awa-test: OVL-8_AC-1
+  describe('overlay config', () => {
+    it('should parse overlay array from TOML config', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      const tomlContent = `
+output = "./out"
+overlay = ["./overlay1", "./overlay2"]
+`;
+      await writeFile(configPath, tomlContent);
+
+      const config = await loader.load(configPath);
+
+      expect(config?.overlay).toEqual(['./overlay1', './overlay2']);
+    });
+
+    it('should merge overlay from CLI over config', async () => {
+      const cliOptions = {
+        output: './out',
+        overlay: ['./cli-overlay'],
+      };
+      const fileConfig = {
+        overlay: ['./config-overlay'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.overlay).toEqual(['./cli-overlay']);
+    });
+
+    it('should use config overlay when CLI overlay is not provided', async () => {
+      const cliOptions = {
+        output: './out',
+      };
+      const fileConfig = {
+        overlay: ['./config-overlay1', './config-overlay2'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.overlay).toEqual(['./config-overlay1', './config-overlay2']);
+    });
+
+    it('should default overlay to empty array when not provided', async () => {
+      const cliOptions = { output: './out' };
+      const resolved = loader.merge(cliOptions, null);
+      expect(resolved.overlay).toEqual([]);
+    });
+
+    it('should throw error if overlay is not an array of strings', async () => {
+      const configPath = join(testDir, 'invalid.toml');
+      await writeFile(configPath, 'overlay = "not-an-array"\n');
+
+      await expect(loader.load(configPath)).rejects.toMatchObject({
+        code: 'INVALID_TYPE',
+      });
+    });
+
+    // @awa-test: CFG-3_AC-7
+    it('should support delete as a boolean in config', () => {
+      const cliOptions = {
+        output: './output',
+      };
+
+      const fileConfig = {
+        delete: true,
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.delete).toBe(true);
+    });
+
+    // @awa-test: CFG-6_AC-1, CFG-6_AC-2
+    it('should continue execution with unknown config options', async () => {
+      const configPath = join(testDir, 'unknown.toml');
+      await writeFile(configPath, 'output = "./out"\nunknown_option = "value"\n');
+
+      // Should not throw - continues execution (CFG-6_AC-2)
+      const config = await loader.load(configPath);
+      expect(config).toBeDefined();
+      expect((config as Record<string, unknown>).output).toBe('./out');
     });
   });
 

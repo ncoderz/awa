@@ -1,5 +1,10 @@
 // @awa-component: DIFF-DiffCommand
 // @awa-test: DIFF_P-4
+// @awa-test: DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
+// @awa-test: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+// @awa-test: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-11
+// @awa-test: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
+// @awa-test: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-8_AC-1, MULTI-10_AC-1, MULTI-12_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DiffResult } from '../../types/index.js';
@@ -16,10 +21,13 @@ vi.mock('../../core/template-resolver.js');
 vi.mock('../../core/batch-runner.js');
 vi.mock('../../utils/fs.js');
 vi.mock('../../utils/logger.js');
+vi.mock('../../utils/file-watcher.js');
+vi.mock('../../core/overlay.js');
 
 import { batchRunner } from '../../core/batch-runner.js';
 import { configLoader } from '../../core/config.js';
 import { diffEngine } from '../../core/differ.js';
+import { buildMergedDir, resolveOverlays } from '../../core/overlay.js';
 import { templateResolver } from '../../core/template-resolver.js';
 import { pathExists } from '../../utils/fs.js';
 import { logger } from '../../utils/logger.js';
@@ -47,6 +55,9 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      overlay: [],
+      json: false,
+      summary: false,
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
@@ -87,6 +98,9 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      overlay: [],
+      json: false,
+      summary: false,
     });
 
     const exitCode = await diffCommand({
@@ -101,6 +115,7 @@ describe('diffCommand', () => {
     expect(pathExists).toHaveBeenCalledWith('./from-config');
   });
 
+  // @awa-test: DIFF-5_AC-1, DIFF-4_AC-4
   test('should return exit code 0 when files are identical', async () => {
     const mockResult: DiffResult = {
       files: [{ relativePath: 'file.txt', status: 'identical' }],
@@ -182,6 +197,7 @@ describe('diffCommand', () => {
     expect(logger.error).toHaveBeenCalled();
   });
 
+  // @awa-test: DIFF-4_AC-3
   // VALIDATES: DIFF-4_AC-3
   test('should display unified diff with colored output', async () => {
     const mockResult: DiffResult = {
@@ -224,6 +240,7 @@ describe('diffCommand', () => {
     expect(hasAddition).toBe(true);
   });
 
+  // @awa-test: DIFF-7_AC-1, DIFF-7_AC-2
   // VALIDATES: DIFF-7_AC-1, DIFF-7_AC-2
   test('should resolve template from config if not provided', async () => {
     const mockResult: DiffResult = {
@@ -251,6 +268,7 @@ describe('diffCommand', () => {
     expect(templateResolver.resolve).toHaveBeenCalled();
   });
 
+  // @awa-test: DIFF-7_AC-3
   // VALIDATES: DIFF-7_AC-3
   test('should use features from options', async () => {
     const mockResult: DiffResult = {
@@ -277,6 +295,9 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: false,
+      overlay: [],
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
@@ -295,6 +316,7 @@ describe('diffCommand', () => {
     );
   });
 
+  // @awa-test: DIFF-7_AC-11
   // VALIDATES: DIFF-7_AC-11
   test('should pass listUnknown flag to diff engine', async () => {
     const mockResult: DiffResult = {
@@ -321,6 +343,9 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: true,
+      overlay: [],
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
@@ -339,6 +364,7 @@ describe('diffCommand', () => {
     );
   });
 
+  // @awa-test: DIFF-4_AC-1, DIFF-4_AC-2
   // VALIDATES: DIFF-4_AC-1, DIFF-4_AC-2
   test('should display diffs for new and extra files', async () => {
     const mockResult: DiffResult = {
@@ -370,6 +396,7 @@ describe('diffCommand', () => {
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('extra-file.txt'));
   });
 
+  // @awa-test: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
   test('should display delete-listed files', async () => {
     const mockResult: DiffResult = {
       files: [{ relativePath: 'old-agent.md', status: 'delete-listed' }],
@@ -426,6 +453,9 @@ describe('diffCommand', () => {
             dryRun: false,
             delete: false,
             listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
           },
         },
       ]);
@@ -481,6 +511,9 @@ describe('diffCommand', () => {
             dryRun: false,
             delete: false,
             listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
           },
         },
         {
@@ -497,6 +530,9 @@ describe('diffCommand', () => {
             dryRun: false,
             delete: false,
             listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
           },
         },
       ]);
@@ -541,5 +577,114 @@ describe('diffCommand', () => {
       expect(exitCode).toBe(0);
       expect(batchRunner.resolveTargets).not.toHaveBeenCalled();
     });
+  });
+
+  test('should return exit code 2 when --watch is used with git template', async () => {
+    vi.mocked(templateResolver.resolve).mockResolvedValue({
+      type: 'git',
+      localPath: '/cached/template',
+      source: 'owner/repo',
+    });
+
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './target',
+      template: 'owner/repo',
+      features: [],
+      config: undefined,
+      refresh: false,
+      listUnknown: undefined,
+      watch: true,
+    });
+
+    expect(exitCode).toBe(2);
+    expect(logger.error).toHaveBeenCalledWith(
+      '--watch is only supported with local template sources'
+    );
+  });
+
+  test('should run normally without watch when --watch is not set', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 0,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './target',
+      template: './templates/awa',
+      features: [],
+      config: undefined,
+      refresh: false,
+      listUnknown: undefined,
+      watch: false,
+    });
+
+    expect(exitCode).toBe(0);
+  });
+
+  // @awa-test: OVL-7_AC-1
+  test('should use merged overlay dir for diff when overlays are configured', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 5,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(configLoader.merge).mockReturnValue({
+      template: './templates/awa',
+      output: './output',
+      features: [],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
+      refresh: false,
+      force: false,
+      dryRun: false,
+      delete: false,
+      listUnknown: false,
+      overlay: ['./my-overlay'],
+      json: false,
+      summary: false,
+    });
+    vi.mocked(resolveOverlays).mockResolvedValue(['./my-overlay-resolved']);
+    vi.mocked(buildMergedDir).mockResolvedValue('/tmp/awa-overlay-merged');
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './output',
+      overlay: ['./my-overlay'],
+    });
+
+    expect(resolveOverlays).toHaveBeenCalledWith(['./my-overlay'], false);
+    expect(buildMergedDir).toHaveBeenCalledWith('./templates/awa', ['./my-overlay-resolved']);
+    expect(diffEngine.diff).toHaveBeenCalledWith(
+      expect.objectContaining({ templatePath: '/tmp/awa-overlay-merged' })
+    );
+    expect(exitCode).toBe(0);
   });
 });

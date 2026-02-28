@@ -1,5 +1,9 @@
 // Property-Based Tests
 // Tests for correctness properties P1-P10 from design document
+// @awa-test: CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4
+// @awa-test: CLI-5_AC-2, CLI-5_AC-3, CLI-6_AC-2
+// @awa-test: GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-7, GEN-6_AC-3
+// @awa-test: TPL-1_AC-4, TPL-3_AC-1
 
 import * as fc from 'fast-check';
 import { describe, it } from 'vitest';
@@ -8,6 +12,7 @@ import { ConflictResolver } from '../core/resolver.js';
 import { TemplateResolver } from '../core/template-resolver.js';
 
 describe('Property-Based Tests', () => {
+  // @awa-test: CFG-4_AC-1, CFG-4_AC-2
   describe('P1: CLI Override', () => {
     it('CLI arguments always override config file values', () => {
       fc.assert(
@@ -60,6 +65,7 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  // @awa-test: CFG-4_AC-4
   describe('P2: Features Replace', () => {
     it('CLI features completely replace config features (no merge)', () => {
       fc.assert(
@@ -85,6 +91,7 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  // @awa-test: CLI-6_AC-2, GEN-6_AC-3
   describe('P7: Dry Run Immutable', () => {
     it('Dry run mode never prompts user', async () => {
       await fc.assert(
@@ -110,6 +117,7 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  // @awa-test: CLI-5_AC-2, GEN-4_AC-3
   describe('P8: Force No Prompt', () => {
     it('Force mode never prompts (but respects dry-run)', async () => {
       await fc.assert(
@@ -141,6 +149,7 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  // @awa-test: TPL-1_AC-4
   describe('P9: Local No Cache', () => {
     it('Local templates are never cached', () => {
       fc.assert(
@@ -164,6 +173,7 @@ describe('Property-Based Tests', () => {
     });
   });
 
+  // @awa-test: TPL-3_AC-1
   describe('P10: Git Cache Reuse', () => {
     it('Git sources generate consistent cache paths', () => {
       fc.assert(
