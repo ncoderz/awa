@@ -8,6 +8,7 @@
 // @awa-test: INIT-4_AC-1
 // @awa-test: INIT-5_AC-1
 // @awa-test: INIT_P-1
+// @awa-test: MULTI-5_AC-1, MULTI-10_AC-1
 // @awa-test: INIT_P-2
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';

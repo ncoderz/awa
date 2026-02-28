@@ -32,6 +32,8 @@ awa generate .                           # works identically
 | `--delete` | Enable deletion of files listed for deletion in the template |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
+| `--all` | Process all named targets from config |
+| `--target <name>` | Process a specific named target from config |
 | `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout (implies `--dry-run`) |
 | `--summary` | Output compact one-line counts summary |
@@ -62,6 +64,8 @@ awa diff . --summary                      # compact one-line summary
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
+| `--all` | Process all named targets from config |
+| `--target <name>` | Process a specific named target from config |
 | `-w, --watch` | Watch template directory for changes and re-run diff |
 | `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout |
@@ -140,6 +144,14 @@ overlay = ["./overlays/company", "./overlays/project"]
 refresh = false
 delete = false
 
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+
 [presets]
 full = ["copilot", "claude", "cursor", "windsurf", "kilocode", "opencode", "gemini", "roo", "qwen", "codex", "agy", "agents-md"]
 lite = ["copilot", "claude"]
@@ -164,6 +176,42 @@ awa generate . --preset full --remove-features agy roo
 ```
 
 Presets expand into feature flags. `--remove-features` subtracts from the combined set.
+
+### Multi-Target Configuration
+
+Define `[targets.<name>]` sections in `.awa.toml` to generate different agent configurations in a single command:
+
+```toml
+template = "./templates/awa"
+features = ["architect", "code"]
+
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+```
+
+Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config. Target `features` replaces root `features` entirely (same as CLI override behavior).
+
+```bash
+awa generate --all                   # process all targets
+awa generate --target claude         # process one target
+awa diff --all                       # diff all targets
+awa diff --target copilot            # diff one target
+```
+
+**Behavior notes:**
+
+- `--all` and `--target` suppress interactive tool-feature prompting (non-interactive batch mode)
+- `--all` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override the target's output
+- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all`
+- `--all` requires at least one `[targets.*]` section; errors with `NO_TARGETS` otherwise
+- `--target <name>` errors with `UNKNOWN_TARGET` if the name isn't defined
+- `diff --all` exit code: `0` if all targets match, `1` if any target has differences, `2` on error
+- Boolean flags (`force`, `dry-run`, `delete`, `refresh`) are NOT per-target — they apply globally from root/CLI
 
 ### Feature Resolution Order
 

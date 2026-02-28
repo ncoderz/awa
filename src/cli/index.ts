@@ -101,6 +101,8 @@ program
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CLI-8_AC-1
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--all', 'Process all named targets from config', false)
+  .option('--target <name>', 'Process a specific named target from config')
   // @awa-impl: OVL-1_AC-1
   .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   // @awa-impl: JSON-1_AC-1
@@ -112,14 +114,16 @@ program
     const cliOptions: RawCliOptions = {
       output,
       template: options.template,
-      features: options.features || [],
-      preset: options.preset || [],
-      removeFeatures: options.removeFeatures || [],
+      features: options.features,
+      preset: options.preset,
+      removeFeatures: options.removeFeatures,
       force: options.force,
       dryRun: options.dryRun,
       delete: options.delete,
       config: options.config,
       refresh: options.refresh,
+      all: options.all,
+      target: options.target,
       overlay: options.overlay || [],
       json: options.json,
       summary: options.summary,
@@ -149,6 +153,8 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
+  .option('--all', 'Process all named targets from config', false)
+  .option('--target <name>', 'Process a specific named target from config')
   .option('-w, --watch', 'Watch template directory for changes and re-run diff', false)
   // @awa-impl: OVL-7_AC-1
   .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
@@ -162,12 +168,14 @@ program
     const cliOptions: RawCliOptions = {
       output: target, // Use target as output for consistency
       template: options.template,
-      features: options.features || [],
-      preset: options.preset || [],
-      removeFeatures: options.removeFeatures || [],
+      features: options.features,
+      preset: options.preset,
+      removeFeatures: options.removeFeatures,
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
+      all: options.all,
+      target: options.target,
       watch: options.watch,
       overlay: options.overlay || [],
       json: options.json,

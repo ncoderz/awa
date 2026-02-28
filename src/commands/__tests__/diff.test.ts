@@ -4,6 +4,7 @@
 // @awa-test: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
 // @awa-test: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-11
 // @awa-test: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
+// @awa-test: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-8_AC-1, MULTI-10_AC-1, MULTI-12_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DiffResult } from '../../types/index.js';
@@ -17,11 +18,13 @@ vi.mock('@clack/prompts', () => ({
 vi.mock('../../core/config.js');
 vi.mock('../../core/differ.js');
 vi.mock('../../core/template-resolver.js');
+vi.mock('../../core/batch-runner.js');
 vi.mock('../../utils/fs.js');
 vi.mock('../../utils/logger.js');
 vi.mock('../../utils/file-watcher.js');
 vi.mock('../../core/overlay.js');
 
+import { batchRunner } from '../../core/batch-runner.js';
 import { configLoader } from '../../core/config.js';
 import { diffEngine } from '../../core/differ.js';
 import { buildMergedDir, resolveOverlays } from '../../core/overlay.js';
@@ -419,6 +422,161 @@ describe('diffCommand', () => {
 
     expect(exitCode).toBe(1);
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('old-agent.md'));
+  });
+
+  // VALIDATES: MULTI-6_AC-1
+  describe('batch mode', () => {
+    test('should use batch runner when --all is set', async () => {
+      const mockResult: DiffResult = {
+        files: [],
+        identical: 1,
+        modified: 0,
+        newFiles: 0,
+        extraFiles: 0,
+        binaryDiffers: 0,
+        deleteListed: 0,
+        hasDifferences: false,
+      };
+
+      vi.mocked(batchRunner.resolveTargets).mockReturnValue([
+        {
+          targetName: 'claude',
+          options: {
+            template: './templates/awa',
+            output: './out-claude',
+            features: ['claude'],
+            preset: [],
+            removeFeatures: [],
+            presets: {},
+            refresh: false,
+            force: false,
+            dryRun: false,
+            delete: false,
+            listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
+          },
+        },
+      ]);
+      vi.mocked(pathExists).mockResolvedValue(true);
+      vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+      const exitCode = await diffCommand({
+        all: true,
+        config: undefined,
+        refresh: false,
+      });
+
+      expect(exitCode).toBe(0);
+      expect(batchRunner.resolveTargets).toHaveBeenCalled();
+      expect(batchRunner.logForTarget).toHaveBeenCalledWith('claude', 'Starting diff...');
+    });
+
+    // VALIDATES: MULTI-12_AC-1
+    test('should return exit code 1 if any target has differences', async () => {
+      const identicalResult: DiffResult = {
+        files: [],
+        identical: 1,
+        modified: 0,
+        newFiles: 0,
+        extraFiles: 0,
+        binaryDiffers: 0,
+        deleteListed: 0,
+        hasDifferences: false,
+      };
+      const modifiedResult: DiffResult = {
+        files: [{ relativePath: 'file.txt', status: 'modified' }],
+        identical: 0,
+        modified: 1,
+        newFiles: 0,
+        extraFiles: 0,
+        binaryDiffers: 0,
+        deleteListed: 0,
+        hasDifferences: true,
+      };
+
+      vi.mocked(batchRunner.resolveTargets).mockReturnValue([
+        {
+          targetName: 'claude',
+          options: {
+            template: './templates/awa',
+            output: './out-claude',
+            features: ['claude'],
+            preset: [],
+            removeFeatures: [],
+            presets: {},
+            refresh: false,
+            force: false,
+            dryRun: false,
+            delete: false,
+            listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
+          },
+        },
+        {
+          targetName: 'copilot',
+          options: {
+            template: './templates/awa',
+            output: './out-copilot',
+            features: ['copilot'],
+            preset: [],
+            removeFeatures: [],
+            presets: {},
+            refresh: false,
+            force: false,
+            dryRun: false,
+            delete: false,
+            listUnknown: false,
+            overlay: [],
+            json: false,
+            summary: false,
+          },
+        },
+      ]);
+      vi.mocked(pathExists).mockResolvedValue(true);
+      vi.mocked(diffEngine.diff)
+        .mockResolvedValueOnce(identicalResult)
+        .mockResolvedValueOnce(modifiedResult);
+
+      const exitCode = await diffCommand({
+        all: true,
+        config: undefined,
+        refresh: false,
+      });
+
+      expect(exitCode).toBe(1);
+    });
+
+    // VALIDATES: MULTI-7_AC-1
+    test('should use standard mode without --all or --target (backward compatible)', async () => {
+      const mockResult: DiffResult = {
+        files: [],
+        identical: 1,
+        modified: 0,
+        newFiles: 0,
+        extraFiles: 0,
+        binaryDiffers: 0,
+        deleteListed: 0,
+        hasDifferences: false,
+      };
+
+      vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+      const exitCode = await diffCommand({
+        output: './target',
+        template: './templates/awa',
+        features: [],
+        config: undefined,
+        refresh: false,
+        listUnknown: undefined,
+      });
+
+      expect(exitCode).toBe(0);
+      expect(batchRunner.resolveTargets).not.toHaveBeenCalled();
+    });
   });
 
   test('should return exit code 2 when --watch is used with git template', async () => {

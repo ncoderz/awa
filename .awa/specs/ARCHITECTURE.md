@@ -93,6 +93,7 @@ awa/
 │   │   ├── check.ts    # Validate command orchestration
 │   │   └── test.ts     # Template test command orchestration
 │   ├── core/              # Core business logic
+│   │   ├── batch-runner.ts # Multi-target batch processing
 │   │   ├── config.ts      # Configuration loader
 │   │   ├── delete-list.ts # Delete list parser (feature-gated)
 │   │   ├── differ.ts      # Diff-based comparison
@@ -187,7 +188,43 @@ CONSTRAINTS
 - Missing config file is not an error (all options have defaults or are CLI-provided)
 - CLI arguments always override config file values
 - Arrays (features, preset, remove-features) are replaced, not merged
-- Supports nested TOML tables (`[presets]`, `[check]`)
+- Supports nested TOML tables (`[presets]`, `[check]`, `[targets.*]`)
+- `[targets.*]` sections define per-agent configurations with generation-related fields only
+
+### Target Resolver
+
+Resolves per-agent target configurations by merging with root config.
+
+RESPONSIBILITIES
+
+- Parse `[targets.*]` sections from config into TargetConfig map
+- Merge target config with root config using nullish coalescing (target overrides root)
+- Validate target names and error on unknown targets
+- Error when `--all` is used with no targets defined
+
+CONSTRAINTS
+
+- Target fields limited to generation-related options: output, template, features, preset, remove-features
+- Boolean flags (force, dry-run, delete, refresh) are NOT per-target — they apply globally
+- Target features replace root features entirely (no deep merge)
+
+### Batch Runner
+
+Processes multiple targets in a single command invocation.
+
+RESPONSIBILITIES
+
+- Iterate targets, invoke generate/diff for each
+- Suppress interactive prompting in batch mode (non-interactive)
+- Prefix log lines with `[target-name]` for per-target reporting
+- Handle CLI positional output override logic (`--all` ignores, `--target` allows override)
+- Aggregate exit codes for diff batch mode (0/1/2)
+
+CONSTRAINTS
+
+- `--all` processes all named targets; `--target` processes one
+- First error short-circuits in diff batch mode (exit code 2)
+- Template deduplication: shared templates resolved once across targets
 
 ### Template Resolver
 

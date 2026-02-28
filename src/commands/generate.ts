@@ -3,6 +3,7 @@
 // @awa-impl: INIT-5_AC-1
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
+import { batchRunner } from '../core/batch-runner.js';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';
 import { fileGenerator } from '../core/generator.js';
@@ -13,7 +14,7 @@ import {
 } from '../core/json-output.js';
 import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
-import type { RawCliOptions } from '../types/index.js';
+import type { RawCliOptions, ResolvedOptions } from '../types/index.js';
 import { rmDir } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
@@ -35,42 +36,24 @@ const TOOL_FEATURES = [
 
 const TOOL_FEATURE_VALUES = new Set<string>(TOOL_FEATURES.map((t) => t.value));
 
-export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
-  let mergedDir: string | null = null;
-  try {
-    // Load configuration file
-    const fileConfig = await configLoader.load(cliOptions.config ?? null);
+async function runGenerate(options: ResolvedOptions, batchMode: boolean): Promise<void> {
+  const silent = options.json || options.summary;
 
-    // @awa-impl: INIT-5_AC-1
-    // Non-blocking hint when no config file is present and --config was not provided
-    if (!cliOptions.config && fileConfig === null) {
-      logger.info('Tip: create .awa.toml to save your options for next time.');
-    }
+  // Resolve template source
+  const template = await templateResolver.resolve(options.template, options.refresh);
 
-    // Merge CLI and file config
-    const options = configLoader.merge(cliOptions, fileConfig);
+  const features = featureResolver.resolve({
+    baseFeatures: [...options.features],
+    presetNames: [...options.preset],
+    removeFeatures: [...options.removeFeatures],
+    presetDefinitions: options.presets,
+  });
 
-    const silent = options.json || options.summary;
-
-    // @awa-impl: JSON-6_AC-1
-    // Suppress interactive output when --json or --summary is active
-    if (!silent) {
-      intro('awa CLI - Template Generator');
-    }
-
-    // Resolve template source
-    const template = await templateResolver.resolve(options.template, options.refresh);
-
-    const features = featureResolver.resolve({
-      baseFeatures: [...options.features],
-      presetNames: [...options.preset],
-      removeFeatures: [...options.removeFeatures],
-      presetDefinitions: options.presets,
-    });
-
-    // @awa-impl: MTT-1_AC-1 // @awa-ignore
-    // If no tool feature flag is present, prompt the user to select tools interactively
-    // @awa-impl: JSON-6_AC-1
+  // @awa-impl: MTT-1_AC-1 // @awa-ignore
+  // If no tool feature flag is present, prompt the user to select tools interactively
+  // In batch mode (--all / --target), skip prompting
+  // @awa-impl: JSON-6_AC-1
+  if (!batchMode) {
     const hasToolFlag = features.some((f) => TOOL_FEATURE_VALUES.has(f));
     if (!hasToolFlag && !silent) {
       const selected = await multiselect({
@@ -84,30 +67,33 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       }
       features.push(...(selected as string[]));
     }
+  }
 
-    // @awa-impl: JSON-7_AC-1
-    // --json implies --dry-run for generate
-    const effectiveDryRun = options.json || options.dryRun;
+  // @awa-impl: JSON-7_AC-1
+  // --json implies --dry-run for generate
+  const effectiveDryRun = options.json || options.dryRun;
 
-    // Display mode indicators
-    if (!silent) {
-      if (effectiveDryRun) {
-        logger.info('Running in dry-run mode (no files will be modified)');
-      }
-      if (options.force) {
-        logger.info('Force mode enabled (existing files will be overwritten)');
-      }
+  // Display mode indicators
+  if (!silent) {
+    if (effectiveDryRun) {
+      logger.info('Running in dry-run mode (no files will be modified)');
     }
-
-    // @awa-impl: OVL-2_AC-1
-    // Build merged template dir if overlays are specified
-    let templatePath = template.localPath;
-    if (options.overlay.length > 0) {
-      const overlayDirs = await resolveOverlays([...options.overlay], options.refresh);
-      mergedDir = await buildMergedDir(template.localPath, overlayDirs);
-      templatePath = mergedDir;
+    if (options.force) {
+      logger.info('Force mode enabled (existing files will be overwritten)');
     }
+  }
 
+  // @awa-impl: OVL-2_AC-1
+  // Build merged template dir if overlays are specified
+  let mergedDir: string | null = null;
+  let templatePath = template.localPath;
+  if (options.overlay.length > 0) {
+    const overlayDirs = await resolveOverlays([...options.overlay], options.refresh);
+    mergedDir = await buildMergedDir(template.localPath, overlayDirs);
+    templatePath = mergedDir;
+  }
+
+  try {
     // Generate files
     const result = await fileGenerator.generate({
       templatePath,
@@ -127,6 +113,59 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
     } else {
       // Display summary
       logger.summary(result);
+    }
+  } finally {
+    // Clean up merged overlay temp directory
+    if (mergedDir) {
+      try {
+        await rmDir(mergedDir);
+      } catch {
+        // Swallow cleanup errors — temp dir will be cleaned by OS eventually
+      }
+    }
+  }
+}
+
+export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
+  try {
+    // Load configuration file
+    const fileConfig = await configLoader.load(cliOptions.config ?? null);
+
+    // @awa-impl: INIT-5_AC-1
+    // Non-blocking hint when no config file is present and --config was not provided
+    if (!cliOptions.config && fileConfig === null) {
+      logger.info('Tip: create .awa.toml to save your options for next time.');
+    }
+
+    // Batch mode: --all or --target
+    if (cliOptions.all || cliOptions.target) {
+      const mode = cliOptions.all ? 'all' : 'single';
+      const targets = batchRunner.resolveTargets(cliOptions, fileConfig, mode, cliOptions.target);
+
+      for (const { targetName, options } of targets) {
+        batchRunner.logForTarget(targetName, 'Starting generation...');
+        await runGenerate(options, true);
+        batchRunner.logForTarget(targetName, 'Generation complete.');
+      }
+
+      outro('All targets generated!');
+      return;
+    }
+
+    // Standard single-target mode (backward compatible)
+    const options = configLoader.merge(cliOptions, fileConfig);
+
+    const silent = options.json || options.summary;
+
+    // @awa-impl: JSON-6_AC-1
+    // Suppress interactive output when --json or --summary is active
+    if (!silent) {
+      intro('awa CLI - Template Generator');
+    }
+
+    await runGenerate(options, false);
+
+    if (!silent) {
       outro('Generation complete!');
     }
   } catch (error) {
@@ -138,14 +177,5 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       logger.error(String(error));
     }
     process.exit(1);
-  } finally {
-    // Clean up merged overlay temp directory
-    if (mergedDir) {
-      try {
-        await rmDir(mergedDir);
-      } catch {
-        // Swallow cleanup errors — temp dir will be cleaned by OS eventually
-      }
-    }
   }
 }
