@@ -1,5 +1,8 @@
 // @awa-component: GEN-FileSystem
 // @awa-test: GEN_P-1, GEN_P-3
+// @awa-test: GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3
+// @awa-test: GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3
+// @awa-test: TPL-2_AC-5
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -29,18 +32,21 @@ describe('FileSystemUtilities', () => {
   });
 
   describe('ensureDir', () => {
+    // @awa-test: GEN-2_AC-1
     it('should create a directory if it does not exist', async () => {
       const dirPath = join(testDir, 'new-dir');
       await ensureDir(dirPath);
       expect(await pathExists(dirPath)).toBe(true);
     });
 
+    // @awa-test: GEN-2_AC-2
     it('should create nested directories recursively', async () => {
       const nestedPath = join(testDir, 'a', 'b', 'c');
       await ensureDir(nestedPath);
       expect(await pathExists(nestedPath)).toBe(true);
     });
 
+    // @awa-test: GEN-2_AC-3
     it('should not throw if directory already exists', async () => {
       const dirPath = join(testDir, 'existing');
       await mkdir(dirPath);
@@ -130,6 +136,7 @@ describe('FileSystemUtilities', () => {
       await writeFile(join(testDir, '_private', 'secret.txt'), 'secret');
     });
 
+    // @awa-test: GEN-3_AC-1
     it('should yield all non-underscore files recursively', async () => {
       const files: string[] = [];
       for await (const file of walkDirectory(testDir)) {
@@ -141,6 +148,7 @@ describe('FileSystemUtilities', () => {
       expect(files).toContain(join(testDir, 'subdir', 'file2.txt'));
     });
 
+    // @awa-test: GEN-3_AC-2, GEN-3_AC-3
     it('should exclude files starting with underscore (P5)', async () => {
       const files: string[] = [];
       for await (const file of walkDirectory(testDir)) {
@@ -150,6 +158,7 @@ describe('FileSystemUtilities', () => {
       expect(files.every((f) => !f.includes('_hidden.txt'))).toBe(true);
     });
 
+    // @awa-test: GEN-3_AC-2, GEN-3_AC-3
     it('should exclude directories starting with underscore (P5)', async () => {
       const files: string[] = [];
       for await (const file of walkDirectory(testDir)) {
@@ -174,6 +183,7 @@ describe('FileSystemUtilities', () => {
   });
 
   describe('getCacheDir', () => {
+    // @awa-test: TPL-2_AC-5
     it('should return path in user home directory', () => {
       const cacheDir = getCacheDir();
       expect(cacheDir).toContain('.cache');

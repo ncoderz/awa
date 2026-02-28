@@ -1,5 +1,12 @@
 // @awa-component: TPL-TemplateEngine
 // @awa-test: TPL_P-1, TPL_P-2
+// @awa-test: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4
+// @awa-test: TPL-5_AC-1, TPL-5_AC-2, TPL-5_AC-3
+// @awa-test: TPL-6_AC-1, TPL-6_AC-2
+// @awa-test: TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3
+// @awa-test: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
+// @awa-test: TPL-11_AC-1, TPL-11_AC-2
+// @awa-test: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -58,6 +65,7 @@ describe('TemplateEngine', () => {
       );
     });
 
+    // @awa-test: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3
     it('should render simple template', async () => {
       const templatePath = join(testDir, 'simple.md');
       await writeFile(templatePath, 'Hello, World!');
@@ -69,6 +77,7 @@ describe('TemplateEngine', () => {
       expect(result.isEmptyFileMarker).toBe(false);
     });
 
+    // @awa-test: TPL-5_AC-1, TPL-5_AC-2, TPL-6_AC-1, TPL-6_AC-2
     it('should render template with feature flags', async () => {
       const templatePath = join(testDir, 'features.md');
       const templateContent = `
@@ -87,6 +96,7 @@ Feature 2 is enabled
       expect(result.content).not.toContain('Feature 2 is enabled');
     });
 
+    // @awa-test: TPL-7_AC-1, TPL-7_AC-3
     it('should detect empty content (whitespace only) as empty (P3)', async () => {
       const templatePath = join(testDir, 'whitespace.md');
       await writeFile(templatePath, '   \n\t   \n   ');
@@ -96,6 +106,7 @@ Feature 2 is enabled
       expect(result.isEmpty).toBe(true);
     });
 
+    // @awa-test: TPL-7_AC-2
     it('should detect empty file marker (P4)', async () => {
       const templatePath = join(testDir, 'marker.md');
       await writeFile(templatePath, '<!-- AWA:EMPTY_FILE -->');
@@ -125,6 +136,7 @@ Feature 2 is enabled
       expect(result.isEmpty).toBe(false);
     });
 
+    // @awa-test: TPL-5_AC-3
     it('should handle conditional empty file marker', async () => {
       const templatePath = join(testDir, 'conditional-empty.md');
       const templateContent = `
@@ -146,6 +158,7 @@ Features: <%= it.features.join(', ') %>
       expect(result2.content).toContain('test');
     });
 
+    // @awa-test: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
     it('should support partials via include', async () => {
       // Create partial directory
       const partialsDir = join(testDir, '_partials');
@@ -168,6 +181,7 @@ Features: <%= it.features.join(', ') %>
       expect(result.content).toContain('Content here');
     });
 
+    // @awa-test: TPL-5_AC-1, TPL-5_AC-2, TPL-4_AC-3
     it('should handle arrays in feature context', async () => {
       const templatePath = join(testDir, 'array.md');
       const templateContent = `
@@ -228,6 +242,7 @@ Features:
       expect(result.content).toBe('Version: []');
     });
 
+    // @awa-test: TPL-4_AC-4
     it('should not escape HTML by default', async () => {
       const templatePath = join(testDir, 'html.md');
       await writeFile(templatePath, '<div>HTML content</div>');

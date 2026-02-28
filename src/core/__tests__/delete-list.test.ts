@@ -1,4 +1,7 @@
 // @awa-component: GEN-DeleteList
+// @awa-test: GEN-12_AC-1, GEN-12_AC-7, GEN-12_AC-8
+// @awa-test: CLI-12_AC-1, CLI-12_AC-2, CLI-12_AC-3
+// @awa-test: DIFF-8_AC-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -7,35 +10,42 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { loadDeleteList, parseDeleteList, resolveDeleteList } from '../delete-list.js';
 
 describe('parseDeleteList', () => {
+  // @awa-test: GEN-12_AC-2
   it('should parse paths from content', () => {
     const content = 'file1.md\nfile2.md\n';
     expect(parseDeleteList(content)).toEqual([{ path: 'file1.md' }, { path: 'file2.md' }]);
   });
 
+  // @awa-test: GEN-12_AC-3
   it('should ignore blank lines', () => {
     const content = 'file1.md\n\n\nfile2.md\n';
     expect(parseDeleteList(content)).toEqual([{ path: 'file1.md' }, { path: 'file2.md' }]);
   });
 
+  // @awa-test: GEN-12_AC-3
   it('should ignore plain comment lines', () => {
     const content = '# This is a comment\nfile1.md\n# Another comment\nfile2.md\n';
     expect(parseDeleteList(content)).toEqual([{ path: 'file1.md' }, { path: 'file2.md' }]);
   });
 
+  // @awa-test: GEN-12_AC-2
   it('should trim whitespace from lines', () => {
     const content = '  file1.md  \n\tfile2.md\t\n';
     expect(parseDeleteList(content)).toEqual([{ path: 'file1.md' }, { path: 'file2.md' }]);
   });
 
+  // @awa-test: GEN-12_AC-4
   it('should return empty array for empty content', () => {
     expect(parseDeleteList('')).toEqual([]);
   });
 
+  // @awa-test: GEN-12_AC-4
   it('should return empty array for comments-only content', () => {
     const content = '# comment\n# another\n';
     expect(parseDeleteList(content)).toEqual([]);
   });
 
+  // @awa-test: GEN-12_AC-2
   it('should handle paths with directories', () => {
     const content = '.github/agents/old.md\nsome/deep/path/file.txt\n';
     expect(parseDeleteList(content)).toEqual([
@@ -44,6 +54,7 @@ describe('parseDeleteList', () => {
     ]);
   });
 
+  // @awa-test: GEN-12_AC-8, CLI-12_AC-3
   it('should attach single feature to paths under @feature section', () => {
     const content = '# @feature copilot\nfile1.md\nfile2.md\n';
     expect(parseDeleteList(content)).toEqual([
@@ -52,6 +63,7 @@ describe('parseDeleteList', () => {
     ]);
   });
 
+  // @awa-test: GEN-12_AC-8, CLI-12_AC-3
   it('should attach multiple features to paths under @feature section', () => {
     const content = '# @feature roo codex agy\nAGENTS.md\n';
     expect(parseDeleteList(content)).toEqual([
@@ -59,6 +71,7 @@ describe('parseDeleteList', () => {
     ]);
   });
 
+  // @awa-test: GEN-12_AC-8
   it('should reset feature section after a plain comment', () => {
     const content = '# @feature claude\nCLAUDE.md\n# plain comment resets\nlegacy.md\n';
     expect(parseDeleteList(content)).toEqual([
@@ -67,6 +80,7 @@ describe('parseDeleteList', () => {
     ]);
   });
 
+  // @awa-test: GEN-12_AC-8
   it('should switch feature section at each @feature header', () => {
     const content = '# @feature copilot\na.md\n# @feature claude\nb.md\n';
     expect(parseDeleteList(content)).toEqual([
@@ -75,6 +89,7 @@ describe('parseDeleteList', () => {
     ]);
   });
 
+  // @awa-test: GEN-12_AC-5, GEN-12_AC-8
   it('should treat paths before any @feature header as always-delete', () => {
     const content = 'legacy.md\n# @feature copilot\nguarded.md\n';
     expect(parseDeleteList(content)).toEqual([
@@ -85,23 +100,27 @@ describe('parseDeleteList', () => {
 });
 
 describe('resolveDeleteList', () => {
+  // @awa-test: GEN-12_AC-5, CLI-12_AC-1
   it('should include entries without features (legacy always-delete)', () => {
     const entries = [{ path: 'old.md' }];
     expect(resolveDeleteList(entries, [])).toEqual(['old.md']);
     expect(resolveDeleteList(entries, ['copilot'])).toEqual(['old.md']);
   });
 
+  // @awa-test: GEN-12_AC-6, CLI-12_AC-3
   it('should exclude feature-gated entry when that feature is active', () => {
     const entries = [{ path: 'CLAUDE.md', features: ['claude'] }];
     expect(resolveDeleteList(entries, ['claude'])).toEqual([]);
   });
 
+  // @awa-test: GEN-12_AC-7, CLI-12_AC-2
   it('should include feature-gated entry when that feature is not active', () => {
     const entries = [{ path: 'CLAUDE.md', features: ['claude'] }];
     expect(resolveDeleteList(entries, ['copilot'])).toEqual(['CLAUDE.md']);
     expect(resolveDeleteList(entries, [])).toEqual(['CLAUDE.md']);
   });
 
+  // @awa-test: GEN-12_AC-6
   it('should exclude entry when any of its features are active (multi-feature)', () => {
     const entries = [{ path: 'AGENTS.md', features: ['roo', 'codex', 'agy'] }];
     expect(resolveDeleteList(entries, ['roo'])).toEqual([]);
@@ -110,12 +129,14 @@ describe('resolveDeleteList', () => {
     expect(resolveDeleteList(entries, ['roo', 'codex'])).toEqual([]);
   });
 
+  // @awa-test: GEN-12_AC-7
   it('should include multi-feature entry when none of its features are active', () => {
     const entries = [{ path: 'AGENTS.md', features: ['roo', 'codex', 'agy'] }];
     expect(resolveDeleteList(entries, ['copilot', 'claude'])).toEqual(['AGENTS.md']);
     expect(resolveDeleteList(entries, [])).toEqual(['AGENTS.md']);
   });
 
+  // @awa-test: GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7
   it('should handle mixed legacy and feature-gated entries', () => {
     const entries = [
       { path: 'legacy.md' },
@@ -140,11 +161,13 @@ describe('loadDeleteList', () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
+  // @awa-test: GEN-12_AC-4
   it('should return empty array when _delete.txt does not exist', async () => {
     const result = await loadDeleteList(testDir);
     expect(result).toEqual([]);
   });
 
+  // @awa-test: GEN-12_AC-1, CLI-12_AC-1
   it('should load and parse _delete.txt from template directory', async () => {
     await writeFile(
       join(testDir, '_delete.txt'),
@@ -155,6 +178,7 @@ describe('loadDeleteList', () => {
     expect(result).toEqual([{ path: 'old-file.md' }, { path: '.github/agents/deprecated.md' }]);
   });
 
+  // @awa-test: GEN-12_AC-1, GEN-12_AC-8, CLI-12_AC-3
   it('should load and parse feature-gated entries', async () => {
     await writeFile(
       join(testDir, '_delete.txt'),

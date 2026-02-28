@@ -1,5 +1,9 @@
 // @awa-component: GEN-Logger
 // @awa-test: GEN_P-3
+// @awa-test: GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8
+// @awa-test: GEN-11_AC-1, GEN-11_AC-2, GEN-11_AC-4
+// @awa-test: DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
+// @awa-test: DIFF-8_AC-2
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Logger } from '../logger.js';
@@ -56,27 +60,32 @@ describe('Logger', () => {
   });
 
   describe('fileAction', () => {
+    // @awa-test: GEN-9_AC-1
     it('should log created file actions', () => {
       logger.fileAction({ type: 'create', sourcePath: 'source.md', outputPath: 'test.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.anything(), expect.anything());
     });
 
+    // @awa-test: GEN-9_AC-2
     it('should log skipped file actions', () => {
       logger.fileAction({ type: 'skip-user', sourcePath: 'source.md', outputPath: 'existing.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
+    // @awa-test: GEN-9_AC-3
     it('should log overwritten file actions', () => {
       logger.fileAction({ type: 'overwrite', sourcePath: 'source.md', outputPath: 'replaced.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
+    // @awa-test: GEN-9_AC-4
     it('should log empty file actions', () => {
       logger.fileAction({ type: 'skip-empty', sourcePath: 'source.md', outputPath: 'blank.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
+    // @awa-test: GEN-9_AC-8
     it('should log skip-equal file actions', () => {
       logger.fileAction({
         type: 'skip-equal',
@@ -86,6 +95,7 @@ describe('Logger', () => {
       expect(consoleLogSpy).toHaveBeenCalledOnce();
     });
 
+    // @awa-test: GEN-11_AC-4
     it('should log delete file actions', () => {
       logger.fileAction({ type: 'delete', outputPath: 'old-file.md' });
       expect(consoleLogSpy).toHaveBeenCalledOnce();
@@ -93,6 +103,7 @@ describe('Logger', () => {
   });
 
   describe('summary', () => {
+    // @awa-test: GEN-11_AC-1, GEN-11_AC-2
     it('should display counts for all action types', () => {
       const result = {
         actions: [],
@@ -115,6 +126,7 @@ describe('Logger', () => {
       expect(output).toContain('3');
     });
 
+    // @awa-test: GEN-9_AC-5, GEN-9_AC-6
     it('should handle zero counts gracefully', () => {
       const result = {
         actions: [],
@@ -132,6 +144,7 @@ describe('Logger', () => {
       expect(consoleLogSpy).toHaveBeenCalled();
     });
 
+    // @awa-test: GEN-9_AC-7, GEN-11_AC-4
     it('should display deleted and skippedEqual counts when present', () => {
       const result = {
         actions: [],
@@ -260,6 +273,7 @@ describe('Logger', () => {
       expect(output).toContain('1');
     });
 
+    // @awa-test: DIFF-8_AC-2
     it('should display delete-listed count when present', () => {
       const result = {
         files: [],
