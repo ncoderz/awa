@@ -225,6 +225,25 @@ See [Template Testing](/reference/template-testing/) for the full fixture format
 | `-v, --version` | Display version number |
 | `-h, --help` | Display help information |
 
+### Update Check
+
+awa periodically checks the npm registry for newer versions and prints a warning after command output when an update is available. The check runs asynchronously and does not slow down CLI startup.
+
+The warning is automatically suppressed when:
+- `--json` or `--summary` flags are active
+- stdout is not a TTY (e.g. piped output)
+- `NO_UPDATE_NOTIFIER=1` environment variable is set
+
+Configure via `.awa.toml`:
+
+```toml
+[update-check]
+enabled = true    # set to false to disable update checks
+interval = 86400  # seconds between checks (default: 1 day)
+```
+
+Results are cached in `~/.cache/awa/update-check.json`. Network failures are silent — the CLI works identically when offline. See [Configuration](/reference/configuration/) for the full `[update-check]` reference.
+
 ## Template Sources
 
 <Tabs>
