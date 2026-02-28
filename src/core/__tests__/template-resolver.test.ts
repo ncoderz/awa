@@ -1,5 +1,11 @@
 // @awa-component: TPL-TemplateResolver
 // @awa-test: TPL_P-3, TPL_P-4
+// @awa-test: TPL-1_AC-1, TPL-1_AC-2, TPL-1_AC-3, TPL-1_AC-4
+// @awa-test: TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6
+// @awa-test: TPL-3_AC-1, TPL-3_AC-2, TPL-3_AC-3, TPL-3_AC-4
+// @awa-test: TPL-9_AC-1, TPL-9_AC-2
+// @awa-test: TPL-10_AC-1, TPL-10_AC-2, TPL-10_AC-3
+// @awa-test: CLI-3_AC-1, CLI-3_AC-2, CLI-3_AC-3, CLI-8_AC-2
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -23,6 +29,7 @@ describe('TemplateResolver', () => {
   });
 
   describe('detectType', () => {
+    // @awa-test: TPL-1_AC-1, TPL-1_AC-2
     it('should detect local paths starting with dot', () => {
       expect(resolver.detectType('./templates')).toBe('local');
       expect(resolver.detectType('../templates')).toBe('local');
@@ -38,31 +45,37 @@ describe('TemplateResolver', () => {
       expect(resolver.detectType('D:/templates')).toBe('local');
     });
 
+    // @awa-test: TPL-2_AC-1, CLI-3_AC-3
     it('should detect GitHub shorthand as git', () => {
       expect(resolver.detectType('user/repo')).toBe('git');
     });
 
+    // @awa-test: TPL-2_AC-2
     it('should detect prefixed git URLs', () => {
       expect(resolver.detectType('github:user/repo')).toBe('git');
       expect(resolver.detectType('gitlab:user/repo')).toBe('git');
       expect(resolver.detectType('bitbucket:user/repo')).toBe('git');
     });
 
+    // @awa-test: TPL-2_AC-3
     it('should detect HTTPS git URLs', () => {
       expect(resolver.detectType('https://github.com/user/repo')).toBe('git');
       expect(resolver.detectType('https://gitlab.com/user/repo.git')).toBe('git');
     });
 
+    // @awa-test: TPL-2_AC-4
     it('should detect SSH git URLs', () => {
       expect(resolver.detectType('git@github.com:user/repo')).toBe('git');
       expect(resolver.detectType('git@gitlab.com:user/repo.git')).toBe('git');
     });
 
+    // @awa-test: TPL-2_AC-5
     it('should detect git sources with subdirectories', () => {
       expect(resolver.detectType('user/repo/templates')).toBe('git');
       expect(resolver.detectType('user/repo/path/to/templates')).toBe('git');
     });
 
+    // @awa-test: TPL-2_AC-6
     it('should detect git sources with refs', () => {
       expect(resolver.detectType('user/repo#main')).toBe('git');
       expect(resolver.detectType('user/repo#v1.0.0')).toBe('git');
@@ -71,10 +84,10 @@ describe('TemplateResolver', () => {
   });
 
   describe('getCachePath', () => {
+    // @awa-test: TPL-3_AC-1, TPL-3_AC-2
     it('should generate consistent paths for same source', () => {
-      const source = 'user/repo';
-      const path1 = resolver.getCachePath(source);
-      const path2 = resolver.getCachePath(source);
+      const path1 = resolver.getCachePath('user/repo');
+      const path2 = resolver.getCachePath('user/repo');
 
       expect(path1).toBe(path2);
     });
@@ -106,6 +119,7 @@ describe('TemplateResolver', () => {
   });
 
   describe('resolve', () => {
+    // @awa-test: TPL-10_AC-1, CLI-3_AC-2
     it('should return bundled template when source is null', async () => {
       const resolved = await resolver.resolve(null, false);
 
@@ -114,6 +128,7 @@ describe('TemplateResolver', () => {
       expect(resolved.localPath).toMatch(/templates[/\\]awa$/);
     });
 
+    // @awa-test: TPL-1_AC-2
     it('should resolve local template with absolute path (P9)', async () => {
       const templateDir = join(testDir, 'my-templates');
       await mkdir(templateDir);
@@ -126,6 +141,7 @@ describe('TemplateResolver', () => {
       expect(resolved.source).toBe(templateDir);
     });
 
+    // @awa-test: TPL-1_AC-1
     it('should resolve local template with relative path (P9)', async () => {
       const originalCwd = process.cwd();
       const templateDir = join(testDir, 'templates');
@@ -144,6 +160,7 @@ describe('TemplateResolver', () => {
       }
     });
 
+    // @awa-test: TPL-1_AC-3
     it('should throw error for non-existent local path', async () => {
       const nonexistentPath = join(testDir, 'nonexistent');
 
@@ -153,6 +170,7 @@ describe('TemplateResolver', () => {
       });
     });
 
+    // @awa-test: TPL-1_AC-4, TPL-9_AC-1, TPL-9_AC-2
     it('should not cache local templates (P9)', async () => {
       const templateDir = join(testDir, 'local-template');
       await mkdir(templateDir);
