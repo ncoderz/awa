@@ -47,6 +47,8 @@ See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 - Feature flags and presets to turn content on/off per project
 - `awa diff` shows exactly what changed before you commit
 - `awa test` verifies templates produce expected output across feature combinations
+- `--json` flag for machine-readable output in CI pipelines
+- `--summary` flag for compact one-line counts output
 - Pull templates from GitHub, GitLab, Bitbucket, or use a local path
 - Optional `.awa.toml` config, or just use CLI flags
 

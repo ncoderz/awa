@@ -97,6 +97,7 @@ awa/
 │   │   ├── differ.ts      # Diff-based comparison
 │   │   ├── feature-resolver.ts # Feature resolution (presets, removals)
 │   │   ├── generator.ts   # File generation logic
+│   │   ├── json-output.ts # JSON serialization for --json/--summary output
 │   │   ├── resolver.ts    # Conflict and delete resolution
 │   │   ├── template-resolver.ts  # Template source resolver
 │   │   ├── template.ts    # Template engine wrapper
@@ -148,7 +149,7 @@ Entry point and argument parsing.
 
 RESPONSIBILITIES
 
-- Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--delete`, `--config`, `--refresh`, `--features`, `--preset`, `--remove-features`)
+- Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--delete`, `--config`, `--refresh`, `--features`, `--preset`, `--remove-features`, `--json`, `--summary`)
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
@@ -163,6 +164,8 @@ CONSTRAINTS
 - `--config` specifies alternate config file path
 - `diff` command shares options with `generate` (except `--force`, `--dry-run`, `--delete`)
 - `diff` command adds `--list-unknown` option
+- `--json` outputs structured JSON to stdout; suppresses interactive output; implies `--dry-run` for generate
+- `--summary` outputs compact one-line counts
 - Help output displays positional argument syntax
 
 ### Configuration Loader

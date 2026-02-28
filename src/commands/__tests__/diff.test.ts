@@ -49,6 +49,8 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
@@ -89,6 +91,8 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
 
     const exitCode = await diffCommand({
@@ -283,6 +287,8 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
@@ -328,6 +334,8 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: true,
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
