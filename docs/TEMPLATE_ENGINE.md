@@ -231,3 +231,41 @@ my-templates/
 - Keep `_delete.txt` focused on stale output paths and document intent with comments
 - Test template changes with `awa diff . --template <path>` before writing changes
 - Use `--dry-run` and `--delete` together when validating cleanup behavior
+
+## Template Overlays
+
+An overlay is a directory of template files that layers on top of a base template.
+Use overlays to customize a shared template without forking it.
+
+```bash
+# Override one partial while keeping the rest from the base
+awa generate . --overlay ./my-overrides
+
+# Stack multiple overlays (last overlay wins on conflict)
+awa generate . --overlay ./company --overlay ./project-x
+
+# Use a Git repository as the overlay source
+awa generate . --overlay company/awa-overlay
+
+# Diff against the merged view
+awa diff . --overlay ./my-overrides
+```
+
+Overlay merging rules:
+
+- An overlay file at relative path `P` replaces the base template file at path `P`
+- Base files not present in any overlay pass through unchanged
+- Overlay files not present in the base are added to the output
+- When multiple overlays are stacked, the last one wins on any conflict
+- Merging is whole-file only (no line-level patching)
+- All file types, including `_partials/` and `_delete.txt`, can be overridden
+
+### Overlay Config
+
+Declare overlays in `.awa.toml` to avoid repeating them on every command:
+
+```toml
+overlay = ["./overlays/company", "./overlays/project"]
+```
+
+CLI `--overlay` options override the config array entirely.

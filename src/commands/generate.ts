@@ -4,8 +4,10 @@ import { intro, isCancel, multiselect, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';
 import { fileGenerator } from '../core/generator.js';
+import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
 import type { RawCliOptions } from '../types/index.js';
+import { rmDir } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
 /** Known AI tool feature flags for interactive selection. */
@@ -27,6 +29,7 @@ const TOOL_FEATURES = [
 const TOOL_FEATURE_VALUES = new Set<string>(TOOL_FEATURES.map((t) => t.value));
 
 export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
+  let mergedDir: string | null = null;
   try {
     intro('awa CLI - Template Generator');
 
@@ -70,9 +73,18 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       logger.info('Force mode enabled (existing files will be overwritten)');
     }
 
+    // @awa-impl: OVL-2_AC-1
+    // Build merged template dir if overlays are specified
+    let templatePath = template.localPath;
+    if (options.overlay.length > 0) {
+      const overlayDirs = await resolveOverlays([...options.overlay], options.refresh);
+      mergedDir = await buildMergedDir(template.localPath, overlayDirs);
+      templatePath = mergedDir;
+    }
+
     // Generate files
     const result = await fileGenerator.generate({
-      templatePath: template.localPath,
+      templatePath,
       outputPath: options.output,
       features,
       force: options.force,
@@ -92,5 +104,14 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       logger.error(String(error));
     }
     process.exit(1);
+  } finally {
+    // Clean up merged overlay temp directory
+    if (mergedDir) {
+      try {
+        await rmDir(mergedDir);
+      } catch {
+        // Swallow cleanup errors — temp dir will be cleaned by OS eventually
+      }
+    }
   }
 }

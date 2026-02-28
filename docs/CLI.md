@@ -13,6 +13,8 @@ awa generate . --features copilot claude  # with feature flags
 awa generate . --preset full              # with a preset
 awa generate . --dry-run                  # preview without writing
 awa generate . --delete                   # apply deletions from _delete.txt
+awa generate . --overlay ./my-overrides   # layer custom files over base template
+awa generate . --overlay ./ov1 --overlay ./ov2  # stack multiple overlays
 ```
 
 | Option | Description |
@@ -27,6 +29,7 @@ awa generate . --delete                   # apply deletions from _delete.txt
 | `--delete` | Enable deletion of files listed in `_delete.txt` |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 
 ### `awa diff [target]`
 
@@ -38,6 +41,7 @@ Exit code 0 = files match, 1 = differences found.
 awa diff .                                # diff against current directory
 awa diff ./my-project --template ./tpl    # diff specific target and template
 awa diff . --list-unknown                 # include files not in template
+awa diff . --overlay ./my-overrides       # diff against merged template view
 ```
 
 | Option | Description |
@@ -50,6 +54,7 @@ awa diff . --list-unknown                 # include files not in template
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 
 ### `awa check`
 
@@ -93,6 +98,7 @@ Create a `.awa.toml` in your project root. CLI arguments always override config 
 output = ".github/agents"
 template = "owner/repo"
 features = ["copilot", "claude"]
+overlay = ["./overlays/company", "./overlays/project"]
 refresh = false
 delete = false
 
@@ -131,9 +137,10 @@ Presets expand into feature flags. `--remove-features` subtracts from the combin
 
 1. **Load config** — read `.awa.toml` (if present), merge with CLI arguments
 2. **Resolve template** — local path used directly; Git repos fetched via [degit](https://github.com/Rich-Harris/degit) and cached
-3. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
-4. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
-5. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
-6. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
-7. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
-8. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
+3. **Apply overlays** — if `--overlay` paths are given, each is resolved and merged on top of the base template (last wins); the merged temp directory is passed to the engine instead of the base template
+4. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
+5. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
+6. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
+7. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
+8. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
+9. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
