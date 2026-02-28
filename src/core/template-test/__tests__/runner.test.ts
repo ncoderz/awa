@@ -47,7 +47,7 @@ describe('runFixture', () => {
     expect(result.passed).toBe(true);
     expect(result.name).toBe('basic');
     expect(result.fileResults).toHaveLength(1);
-    expect(result.fileResults[0].found).toBe(true);
+    expect(result.fileResults[0]?.found).toBe(true);
   });
 
   // @awa-test: TTST-4_AC-1
@@ -71,7 +71,7 @@ describe('runFixture', () => {
 
     expect(result.passed).toBe(false);
     expect(result.fileResults).toHaveLength(1);
-    expect(result.fileResults[0].found).toBe(false);
+    expect(result.fileResults[0]?.found).toBe(false);
   });
 
   // @awa-test: TTST-8_AC-1

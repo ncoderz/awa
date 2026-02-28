@@ -55,7 +55,7 @@ describe('discoverFixtures', () => {
     const fixtures = await discoverFixtures(testDir);
 
     expect(fixtures).toHaveLength(1);
-    expect(fixtures[0].name).toBe('valid');
+    expect(fixtures[0]?.name).toBe('valid');
   });
 
   // @awa-test: TTST-1_AC-1

@@ -34,8 +34,8 @@ describe('compareSnapshots', () => {
     const results = await compareSnapshots(renderedDir, snapshotDir);
 
     expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('match');
-    expect(results[0].path).toBe('file.md');
+    expect(results[0]?.status).toBe('match');
+    expect(results[0]?.path).toBe('file.md');
   });
 
   // @awa-test: TTST-5_AC-1
@@ -46,7 +46,7 @@ describe('compareSnapshots', () => {
     const results = await compareSnapshots(renderedDir, snapshotDir);
 
     expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('mismatch');
+    expect(results[0]?.status).toBe('mismatch');
   });
 
   // @awa-test: TTST-5_AC-1
@@ -56,8 +56,8 @@ describe('compareSnapshots', () => {
     const results = await compareSnapshots(renderedDir, snapshotDir);
 
     expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('missing-snapshot');
-    expect(results[0].path).toBe('new-file.md');
+    expect(results[0]?.status).toBe('missing-snapshot');
+    expect(results[0]?.path).toBe('new-file.md');
   });
 
   // @awa-test: TTST-5_AC-1
@@ -67,8 +67,8 @@ describe('compareSnapshots', () => {
     const results = await compareSnapshots(renderedDir, snapshotDir);
 
     expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('extra-snapshot');
-    expect(results[0].path).toBe('old-file.md');
+    expect(results[0]?.status).toBe('extra-snapshot');
+    expect(results[0]?.path).toBe('old-file.md');
   });
 
   // @awa-test: TTST-5_AC-1
@@ -81,8 +81,8 @@ describe('compareSnapshots', () => {
     const results = await compareSnapshots(renderedDir, snapshotDir);
 
     expect(results).toHaveLength(1);
-    expect(results[0].status).toBe('match');
-    expect(results[0].path).toBe('sub/nested.md');
+    expect(results[0]?.status).toBe('match');
+    expect(results[0]?.path).toBe('sub/nested.md');
   });
 });
 
