@@ -34,6 +34,7 @@ import {
   type RawCliOptions,
   type ResolvedOptions,
   type TargetConfig,
+  type UpdateCheckConfig,
 } from '../types/index.js';
 import { pathExists, readTextFile } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
@@ -245,6 +246,47 @@ export class ConfigLoader {
         config.overlay = parsed.overlay;
       }
 
+      if (parsed['update-check'] !== undefined) {
+        if (
+          parsed['update-check'] === null ||
+          typeof parsed['update-check'] !== 'object' ||
+          Array.isArray(parsed['update-check'])
+        ) {
+          throw new ConfigError(
+            `Invalid type for 'update-check': expected table`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+
+        const raw = parsed['update-check'] as Record<string, unknown>;
+        const updateCheckConfig: UpdateCheckConfig = {};
+
+        if (raw.enabled !== undefined) {
+          if (typeof raw.enabled !== 'boolean') {
+            throw new ConfigError(
+              `Invalid type for 'update-check.enabled': expected boolean, got ${typeof raw.enabled}`,
+              'INVALID_TYPE',
+              pathToLoad
+            );
+          }
+          updateCheckConfig.enabled = raw.enabled;
+        }
+
+        if (raw.interval !== undefined) {
+          if (typeof raw.interval !== 'number') {
+            throw new ConfigError(
+              `Invalid type for 'update-check.interval': expected number, got ${typeof raw.interval}`,
+              'INVALID_TYPE',
+              pathToLoad
+            );
+          }
+          updateCheckConfig.interval = raw.interval;
+        }
+
+        config['update-check'] = updateCheckConfig;
+      }
+
       // Parse [targets.*] sections
       if (parsed.targets !== undefined) {
         if (
@@ -299,6 +341,7 @@ export class ConfigLoader {
         'check',
         'targets',
         'overlay',
+        'update-check',
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
