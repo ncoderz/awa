@@ -60,22 +60,30 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     }
 
     // Watch mode: re-run diff on template changes
+    // Resolves only on SIGINT (Ctrl+C) — this is intentional for watch mode
     logger.info(`Watching for changes in ${template.localPath}...`);
 
     return new Promise<number>((resolve) => {
+      let running = false;
       const watcher = new FileWatcher({
         directory: template.localPath,
-        onChange: () => {
-          console.clear();
-          logger.info(`[${new Date().toLocaleTimeString()}] Change detected, re-running diff...`);
-          logger.info('---');
-          runDiff(diffOptions);
+        onChange: async () => {
+          if (running) return;
+          running = true;
+          try {
+            console.clear();
+            logger.info(`[${new Date().toLocaleTimeString()}] Change detected, re-running diff...`);
+            logger.info('---');
+            await runDiff(diffOptions);
+          } finally {
+            running = false;
+          }
         },
       });
 
       watcher.start();
 
-      process.on('SIGINT', () => {
+      process.once('SIGINT', () => {
         watcher.stop();
         logger.info('\nWatch mode stopped.');
         resolve(0);
