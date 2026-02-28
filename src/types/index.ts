@@ -21,6 +21,7 @@ export interface RawCliOptions {
   config?: string;
   refresh?: boolean;
   listUnknown?: boolean;
+  watch?: boolean;
   overlay?: string[];
   json?: boolean;
   summary?: boolean;

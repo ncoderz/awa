@@ -149,6 +149,7 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
+  .option('-w, --watch', 'Watch template directory for changes and re-run diff', false)
   // @awa-impl: OVL-7_AC-1
   .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   // @awa-impl: JSON-2_AC-1
@@ -167,6 +168,7 @@ program
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
+      watch: options.watch,
       overlay: options.overlay || [],
       json: options.json,
       summary: options.summary,

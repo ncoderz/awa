@@ -12,6 +12,7 @@ import { formatDiffSummary, serializeDiffResult, writeJsonOutput } from '../core
 import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
 import { DiffError, type RawCliOptions } from '../types/index.js';
+import { FileWatcher } from '../utils/file-watcher.js';
 import { pathExists, rmDir } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
@@ -42,6 +43,11 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     // Resolve template source
     const template = await templateResolver.resolve(options.template, options.refresh);
 
+    // Validate watch mode: only local templates are supported
+    if (cliOptions.watch && template.type !== 'local' && template.type !== 'bundled') {
+      throw new DiffError('--watch is only supported with local template sources');
+    }
+
     const features = featureResolver.resolve({
       baseFeatures: [...options.features],
       presetNames: [...options.preset],
@@ -58,13 +64,75 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       templatePath = mergedDir;
     }
 
-    // Perform diff
-    const result = await diffEngine.diff({
+    const diffOptions = {
       templatePath,
       targetPath,
       features,
       listUnknown: options.listUnknown,
+    };
+
+    // Run diff once
+    const result = await runDiff(diffOptions, options, mergedDir);
+
+    if (!cliOptions.watch) {
+      return result;
+    }
+
+    // Watch mode: re-run diff on template changes
+    // Resolves only on SIGINT (Ctrl+C) — this is intentional for watch mode
+    logger.info(`Watching for changes in ${template.localPath}...`);
+
+    return new Promise<number>((resolve) => {
+      let running = false;
+      const watcher = new FileWatcher({
+        directory: template.localPath,
+        onChange: async () => {
+          if (running) return;
+          running = true;
+          try {
+            console.clear();
+            logger.info(`[${new Date().toLocaleTimeString()}] Change detected, re-running diff...`);
+            logger.info('---');
+            await runDiff(diffOptions, options, null);
+          } finally {
+            running = false;
+          }
+        },
+      });
+
+      watcher.start();
+
+      process.once('SIGINT', () => {
+        watcher.stop();
+        logger.info('\nWatch mode stopped.');
+        resolve(0);
+      });
     });
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else {
+      logger.error(String(error));
+    }
+
+    // @awa-impl: DIFF-5_AC-3
+    return 2;
+  }
+}
+
+async function runDiff(
+  diffOptions: {
+    templatePath: string;
+    targetPath: string;
+    features: string[];
+    listUnknown: boolean;
+  },
+  options: { json: boolean; summary: boolean },
+  mergedDir: string | null
+): Promise<number> {
+  try {
+    // Perform diff
+    const result = await diffEngine.diff(diffOptions);
 
     // @awa-impl: JSON-2_AC-1, JSON-8_AC-1
     if (options.json) {
@@ -138,8 +206,6 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     } else {
       logger.error(String(error));
     }
-
-    // @awa-impl: DIFF-5_AC-3
     return 2;
   } finally {
     // Clean up merged overlay temp directory
