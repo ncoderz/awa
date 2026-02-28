@@ -122,7 +122,7 @@ async function scanFile(
         // Extract only the leading ID token
         const tokenMatch = ID_TOKEN_RE.exec(id);
         const cleanId = tokenMatch?.[1]?.trim() ?? '';
-        if (tokenMatch && cleanId) {
+        if (cleanId && tokenMatch) {
           // Check for trailing text after the ID (only whitespace allowed)
           const remainder = id.slice(tokenMatch[0].length).trim();
           if (remainder) {

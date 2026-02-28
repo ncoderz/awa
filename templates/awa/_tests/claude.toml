@@ -1,0 +1,7 @@
+features = ["claude"]
+expected-files = [
+  "CLAUDE.md",
+  ".claude/agents/awa.md",
+  ".claude/skills/awa-code/SKILL.md",
+  ".awa/.agent/awa.core.md",
+]

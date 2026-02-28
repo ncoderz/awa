@@ -300,6 +300,8 @@ export class ConfigLoader {
     const enableDelete = cli.delete ?? file?.delete ?? false;
     const refresh = cli.refresh ?? file?.refresh ?? false;
     const listUnknown = cli.listUnknown ?? file?.['list-unknown'] ?? false;
+    const json = cli.json ?? false;
+    const summary = cli.summary ?? false;
 
     return {
       output,
@@ -313,6 +315,8 @@ export class ConfigLoader {
       refresh,
       presets,
       listUnknown,
+      json,
+      summary,
     };
   }
 }

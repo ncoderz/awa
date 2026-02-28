@@ -13,6 +13,7 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - FILE GENERATOR: Output file creation, directory management, conflict resolution
 - DIFF ENGINE: Template comparison against target directory with diff reporting
 - CHECK ENGINE: Traceability chain validation — scans code markers and spec IDs, reports findings
+- TEST RUNNER: Template testing — fixture discovery, rendering per fixture, file existence assertion, snapshot comparison
 
 ## Technology Stack
 
@@ -88,16 +89,24 @@ awa/
 │   ├── commands/          # Command implementations
 │   │   ├── generate.ts    # Generate command orchestration
 │   │   ├── diff.ts        # Diff command orchestration
-│   │   └── check.ts    # Validate command orchestration
+│   │   ├── check.ts    # Validate command orchestration
+│   │   └── test.ts     # Template test command orchestration
 │   ├── core/              # Core business logic
 │   │   ├── config.ts      # Configuration loader
 │   │   ├── delete-list.ts # Delete list parser (feature-gated)
 │   │   ├── differ.ts      # Diff-based comparison
 │   │   ├── feature-resolver.ts # Feature resolution (presets, removals)
 │   │   ├── generator.ts   # File generation logic
+│   │   ├── json-output.ts # JSON serialization for --json/--summary output
 │   │   ├── resolver.ts    # Conflict and delete resolution
 │   │   ├── template-resolver.ts  # Template source resolver
 │   │   ├── template.ts    # Template engine wrapper
+│   │   ├── template-test/ # Template testing
+│   │   │   ├── types.ts           # Fixture and result types
+│   │   │   ├── fixture-loader.ts  # Discovers and parses _tests/*.toml
+│   │   │   ├── runner.ts          # Renders per fixture, checks assertions
+│   │   │   ├── reporter.ts        # Pass/fail summary output
+│   │   │   └── snapshot.ts        # Snapshot comparison and update
 │   │   └── validate/      # Traceability validation
 │   │       ├── types.ts           # Config, finding, marker types
 │   │       ├── errors.ts          # CheckError class
@@ -119,6 +128,7 @@ awa/
 │       └── package_info.ts
 ├── templates/             # Default template files (bundled)
 │   ├── awa/               # Default awa agent templates
+│   │   ├── _tests/        # Test fixtures for awa test
 │   │   ├── _delete.txt    # Delete list with feature-gated sections
 │   │   ├── _partials/     # Shared content blocks (not output directly)
 │   │   └── *.md           # Agent configuration templates
@@ -139,11 +149,12 @@ Entry point and argument parsing.
 
 RESPONSIBILITIES
 
-- Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--delete`, `--config`, `--refresh`, `--features`, `--preset`, `--remove-features`)
+- Parse command-line arguments (positional output directory, `--template`, `--force`, `--dry-run`, `--delete`, `--config`, `--refresh`, `--features`, `--preset`, `--remove-features`, `--json`, `--summary`)
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
-- Support `generate`, `diff`, and `check` subcommands
+- Support `init`, `diff`, `check`, and `test` subcommands
+
 
 CONSTRAINTS
 
@@ -153,6 +164,8 @@ CONSTRAINTS
 - `--config` specifies alternate config file path
 - `diff` command shares options with `generate` (except `--force`, `--dry-run`, `--delete`)
 - `diff` command adds `--list-unknown` option
+- `--json` outputs structured JSON to stdout; suppresses interactive output; implies `--dry-run` for generate
+- `--summary` outputs compact one-line counts
 - Help output displays positional argument syntax
 
 ### Configuration Loader
@@ -340,7 +353,7 @@ RESPONSIBILITIES
 - Report orphaned spec files (feature codes not referenced anywhere)
 - Validate ID format against configurable regex
 - Output findings as text (human-readable) or JSON (CI-friendly)
-- Load declarative schema rules from `*.rules.yaml` files
+- Load declarative schema rules from `*.schema.yaml` files
 - Parse Markdown into mdast AST and check against schema rules
 - Detect missing sections, wrong heading levels, missing content, bad table columns, prohibited patterns
 - Support `schema-enabled = false` to skip schema checking
@@ -356,6 +369,28 @@ CONSTRAINTS
 - Exit code 0 = clean, 1 = errors or warnings found (unless `--allow-warnings`), 2 = internal error
 - `ARCHITECTURE.md` is excluded from orphaned spec detection (has no feature code)
 - Markers support comma-separated IDs and partial annotations
+
+### Test Runner
+
+Runs template test fixtures to verify expected output across feature combinations.
+
+RESPONSIBILITIES
+
+- Discover fixture files (`*.toml`) in the template's `_tests/` directory
+- Parse fixture TOML: features, presets, remove-features, expected-files
+- Render templates per fixture to temp directory using existing generator
+- Verify expected files exist in rendered output
+- Compare rendered output against stored snapshots
+- Report pass/fail per fixture with failure details
+
+CONSTRAINTS
+
+- Fixtures are TOML files in `_tests/` directory
+- Feature resolution uses the same pipeline as `awa generate` (presets, remove-features)
+- Temp directories cleaned up after each fixture
+- Snapshot directories stored at `_tests/{fixture-name}/`
+- `--update-snapshots` replaces snapshot directories with current output
+- Exit code 0 = all pass, 1 = failures, 2 = internal error
 
 ## Component Interactions
 
@@ -452,3 +487,5 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
 - 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit
 - 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag
+- 2.8.0 (2026-02-28): Added Test Runner component — `awa test` command, fixture discovery, template rendering per fixture, file
+- 2.9.0 (2026-02-28): CLI Layer — `generate` command gains `init` alias; added config-not-found hint in generate handler

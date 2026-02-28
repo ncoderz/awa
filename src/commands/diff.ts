@@ -1,4 +1,5 @@
 // @awa-component: DIFF-DiffCommand
+// @awa-component: JSON-DiffCommand
 // @awa-impl: DIFF-5_AC-1
 // @awa-impl: DIFF-5_AC-2
 // @awa-impl: DIFF-5_AC-3
@@ -7,6 +8,7 @@ import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { diffEngine } from '../core/differ.js';
 import { featureResolver } from '../core/feature-resolver.js';
+import { formatDiffSummary, serializeDiffResult, writeJsonOutput } from '../core/json-output.js';
 import { templateResolver } from '../core/template-resolver.js';
 import { DiffError, type RawCliOptions } from '../types/index.js';
 import { pathExists } from '../utils/fs.js';
@@ -14,13 +16,19 @@ import { logger } from '../utils/logger.js';
 
 export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
   try {
-    intro('awa CLI - Template Diff');
-
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
     // Merge CLI and file config
     const options = configLoader.merge(cliOptions, fileConfig);
+
+    const silent = options.json || options.summary;
+
+    // @awa-impl: JSON-6_AC-1
+    // Suppress interactive output when --json or --summary is active
+    if (!silent) {
+      intro('awa CLI - Template Diff');
+    }
 
     // Validate target directory exists (now from options.output)
     if (!(await pathExists(options.output))) {
@@ -46,6 +54,19 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
       features,
       listUnknown: options.listUnknown,
     });
+
+    // @awa-impl: JSON-2_AC-1, JSON-8_AC-1
+    if (options.json) {
+      writeJsonOutput(serializeDiffResult(result));
+      // @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2
+      return result.hasDifferences ? 1 : 0;
+    }
+
+    // @awa-impl: JSON-5_AC-1
+    if (options.summary) {
+      console.log(formatDiffSummary(result));
+      return result.hasDifferences ? 1 : 0;
+    }
 
     // Display diff output
     for (const file of result.files) {

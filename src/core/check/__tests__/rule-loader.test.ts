@@ -22,7 +22,7 @@ describe('RuleLoader', () => {
   // @awa-test: CHK-16_AC-1
   test('loads a valid rule file', async () => {
     await writeFile(
-      join(testDir, 'REQ.rules.yaml'),
+      join(testDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 
 sections:
@@ -75,7 +75,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('loads multiple rule files from directory', async () => {
     await writeFile(
-      join(testDir, 'REQ.rules.yaml'),
+      join(testDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Requirements"
@@ -84,7 +84,7 @@ sections:
 `
     );
     await writeFile(
-      join(testDir, 'DESIGN.rules.yaml'),
+      join(testDir, 'DESIGN.schema.yaml'),
       `target-files: ".awa/specs/DESIGN-*.md"
 sections:
   - heading: "Design"
@@ -108,7 +108,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('rejects rule file missing target-files', async () => {
     await writeFile(
-      join(testDir, 'bad.rules.yaml'),
+      join(testDir, 'bad.schema.yaml'),
       `sections:
   - heading: "Title"
     level: 1
@@ -122,7 +122,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('accepts rule file with no sections (non-markdown targets)', async () => {
     await writeFile(
-      join(testDir, 'api.rules.yaml'),
+      join(testDir, 'api.schema.yaml'),
       `target-files: ".awa/specs/API-*.tsp"
 `
     );
@@ -135,7 +135,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('rejects rule file with empty sections array', async () => {
     await writeFile(
-      join(testDir, 'bad.rules.yaml'),
+      join(testDir, 'bad.schema.yaml'),
       `target-files: "*.md"
 sections: []
 `
@@ -148,7 +148,7 @@ sections: []
   // @awa-test: CHK-16_AC-1
   test('rejects section with invalid heading level', async () => {
     await writeFile(
-      join(testDir, 'bad.rules.yaml'),
+      join(testDir, 'bad.schema.yaml'),
       `target-files: "*.md"
 sections:
   - heading: "Title"
@@ -163,7 +163,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('rejects invalid regex in pattern field', async () => {
     await writeFile(
-      join(testDir, 'bad.rules.yaml'),
+      join(testDir, 'bad.schema.yaml'),
       `target-files: "*.md"
 sections:
   - heading: "Title"
@@ -180,7 +180,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('loads rule with table contains', async () => {
     await writeFile(
-      join(testDir, 'table.rules.yaml'),
+      join(testDir, 'table.schema.yaml'),
       `target-files: ".awa/tasks/TASK-*.md"
 sections:
   - heading: "Trace Summary"
@@ -209,7 +209,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('loads rule with code-block contains', async () => {
     await writeFile(
-      join(testDir, 'design.rules.yaml'),
+      join(testDir, 'design.schema.yaml'),
       `target-files: ".awa/specs/DESIGN-*.md"
 sections:
   - heading: "Components"
@@ -230,7 +230,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('loads sections-prohibited', async () => {
     await writeFile(
-      join(testDir, 'req.rules.yaml'),
+      join(testDir, 'req.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Title"
@@ -265,7 +265,7 @@ sections-prohibited:
   // @awa-test: CHK-16_AC-1
   test('loads rule with when condition and prohibited flag', async () => {
     await writeFile(
-      join(testDir, 'task.rules.yaml'),
+      join(testDir, 'task.schema.yaml'),
       `target-files: ".awa/tasks/TASK-*.md"
 sections:
   - heading: "Phase \\\\d+:.*"
@@ -306,7 +306,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('rejects when condition with invalid regex', async () => {
     await writeFile(
-      join(testDir, 'bad-when.rules.yaml'),
+      join(testDir, 'bad-when.schema.yaml'),
       `target-files: "*.md"
 sections:
   - heading: "Title"
@@ -325,7 +325,7 @@ sections:
   // @awa-test: CHK-16_AC-1
   test('rejects when condition without heading-matches or heading-not-matches', async () => {
     await writeFile(
-      join(testDir, 'bad-when.rules.yaml'),
+      join(testDir, 'bad-when.schema.yaml'),
       `target-files: "*.md"
 sections:
   - heading: "Title"

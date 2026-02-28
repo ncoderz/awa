@@ -183,11 +183,11 @@ export function foo() {}
 
   // @awa-test: CHK-1_AC-1
   describe('@awa-ignore directives', () => {
-    test('@awa-ignore-file skips the entire file', async () => {
+    test(`@${'awa-ignore-file'} skips the entire file`, async () => {
       // @awa-ignore-start
       await writeFile(
         join(testDir, 'ignored.ts'),
-        `// @awa-ignore-file
+        `// @${'awa-ignore-file'}
 // @awa-impl: CFG-1_AC-1
 export function load() {}
 `

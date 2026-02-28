@@ -1,5 +1,9 @@
 // @awa-component: DIFF-DiffCommand
 // @awa-test: DIFF_P-4
+// @awa-test: DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
+// @awa-test: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+// @awa-test: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-11
+// @awa-test: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DiffResult } from '../../types/index.js';
@@ -45,6 +49,8 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
     vi.mocked(pathExists).mockResolvedValue(true);
     vi.mocked(templateResolver.resolve).mockResolvedValue({
@@ -85,6 +91,8 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
 
     const exitCode = await diffCommand({
@@ -99,6 +107,7 @@ describe('diffCommand', () => {
     expect(pathExists).toHaveBeenCalledWith('./from-config');
   });
 
+  // @awa-test: DIFF-5_AC-1, DIFF-4_AC-4
   test('should return exit code 0 when files are identical', async () => {
     const mockResult: DiffResult = {
       files: [{ relativePath: 'file.txt', status: 'identical' }],
@@ -180,6 +189,7 @@ describe('diffCommand', () => {
     expect(logger.error).toHaveBeenCalled();
   });
 
+  // @awa-test: DIFF-4_AC-3
   // VALIDATES: DIFF-4_AC-3
   test('should display unified diff with colored output', async () => {
     const mockResult: DiffResult = {
@@ -222,6 +232,7 @@ describe('diffCommand', () => {
     expect(hasAddition).toBe(true);
   });
 
+  // @awa-test: DIFF-7_AC-1, DIFF-7_AC-2
   // VALIDATES: DIFF-7_AC-1, DIFF-7_AC-2
   test('should resolve template from config if not provided', async () => {
     const mockResult: DiffResult = {
@@ -249,6 +260,7 @@ describe('diffCommand', () => {
     expect(templateResolver.resolve).toHaveBeenCalled();
   });
 
+  // @awa-test: DIFF-7_AC-3
   // VALIDATES: DIFF-7_AC-3
   test('should use features from options', async () => {
     const mockResult: DiffResult = {
@@ -275,6 +287,8 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: false,
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
@@ -293,6 +307,7 @@ describe('diffCommand', () => {
     );
   });
 
+  // @awa-test: DIFF-7_AC-11
   // VALIDATES: DIFF-7_AC-11
   test('should pass listUnknown flag to diff engine', async () => {
     const mockResult: DiffResult = {
@@ -319,6 +334,8 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: true,
+      json: false,
+      summary: false,
     });
 
     await diffCommand({
@@ -337,6 +354,7 @@ describe('diffCommand', () => {
     );
   });
 
+  // @awa-test: DIFF-4_AC-1, DIFF-4_AC-2
   // VALIDATES: DIFF-4_AC-1, DIFF-4_AC-2
   test('should display diffs for new and extra files', async () => {
     const mockResult: DiffResult = {
@@ -368,6 +386,7 @@ describe('diffCommand', () => {
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('extra-file.txt'));
   });
 
+  // @awa-test: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
   test('should display delete-listed files', async () => {
     const mockResult: DiffResult = {
       files: [{ relativePath: 'old-agent.md', status: 'delete-listed' }],

@@ -1,5 +1,10 @@
 // @awa-component: GEN-ConflictResolver
 // @awa-test: GEN_P-3, GEN_P-4
+// @awa-test: GEN-4_AC-1, GEN-4_AC-2
+// @awa-test: GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7
+// @awa-test: GEN-6_AC-3
+// @awa-test: GEN-10_AC-3
+// @awa-test: CLI-5_AC-2, CLI-5_AC-3
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ConflictItem } from '../../types/index.js';
@@ -57,6 +62,7 @@ describe('ConflictResolver', () => {
       },
     ];
 
+    // @awa-test: GEN-4_AC-3, CLI-5_AC-2
     it('should return all overwrite in force mode without prompting (P8)', async () => {
       const resolution = await resolver.resolveBatch(conflicts, true, false);
 
@@ -66,6 +72,7 @@ describe('ConflictResolver', () => {
       expect(mockMultiselect).not.toHaveBeenCalled();
     });
 
+    // @awa-test: GEN-6_AC-3
     it('should return all skip in dry-run mode without prompting (P7)', async () => {
       const resolution = await resolver.resolveBatch(conflicts, false, true);
 
@@ -75,6 +82,7 @@ describe('ConflictResolver', () => {
       expect(mockMultiselect).not.toHaveBeenCalled();
     });
 
+    // @awa-test: GEN-5_AC-7
     it('should skip files with identical content without prompting', async () => {
       const conflictsWithIdentical: ConflictItem[] = [
         {
@@ -108,6 +116,7 @@ describe('ConflictResolver', () => {
       });
     });
 
+    // @awa-test: GEN-4_AC-2, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-5, GEN-5_AC-6, CLI-5_AC-3
     it('should prompt user with multiselect when neither force nor dry-run is enabled', async () => {
       mockMultiselect.mockResolvedValue(['/path/to/file1.md']);
       mockIsCancel.mockReturnValue(false);
@@ -129,6 +138,7 @@ describe('ConflictResolver', () => {
       expect(resolution.equal).toEqual([]);
     });
 
+    // @awa-test: GEN-5_AC-3, GEN-5_AC-4
     it('should return user selections from prompt', async () => {
       mockMultiselect.mockResolvedValue([]);
       mockIsCancel.mockReturnValue(false);
@@ -140,6 +150,7 @@ describe('ConflictResolver', () => {
       expect(resolution.equal).toEqual([]);
     });
 
+    // @awa-test: GEN-10_AC-3
     it('should exit process when user cancels prompt', async () => {
       mockMultiselect.mockResolvedValue(Symbol('CANCEL'));
       mockIsCancel.mockReturnValue(true);
@@ -166,6 +177,7 @@ describe('ConflictResolver', () => {
       expect(mockMultiselect).not.toHaveBeenCalled();
     });
 
+    // @awa-test: GEN-4_AC-1
     it('should skip all when all files have identical content', async () => {
       const identicalConflicts: ConflictItem[] = [
         {
