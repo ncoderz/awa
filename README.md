@@ -45,6 +45,7 @@ See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 
 - [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
 - Feature flags and presets to turn content on/off per project
+- Multi-target configuration — define `[targets.claude]`, `[targets.copilot]`, etc. in `.awa.toml` and generate all with `--all`
 - `awa diff` shows exactly what changed before you commit
 - Pull templates from GitHub, GitLab, Bitbucket, or use a local path
 - Optional `.awa.toml` config, or just use CLI flags

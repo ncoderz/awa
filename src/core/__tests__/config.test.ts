@@ -5,7 +5,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { ConfigError } from '../../types/index.js';
+import { ConfigError, type FileConfig } from '../../types/index.js';
 import { ConfigLoader } from '../config.js';
 
 describe('ConfigLoader', () => {
@@ -258,6 +258,233 @@ list-unknown = true
       expect(resolved.preset).toEqual([]);
       expect(resolved.removeFeatures).toEqual([]);
       expect(resolved.presets).toEqual({});
+    });
+
+    // VALIDATES: T-MULTI-005 — regression test for || [] bug fix
+    it('should use config features when CLI features are undefined (not empty array)', () => {
+      const cliOptions = {
+        output: './output',
+        // features is undefined — should NOT become []
+      };
+
+      const fileConfig = {
+        features: ['copilot', 'architect'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.features).toEqual(['copilot', 'architect']);
+    });
+
+    // VALIDATES: T-MULTI-005 — regression test for || [] bug fix
+    it('should use config preset when CLI preset is undefined', () => {
+      const cliOptions = {
+        output: './output',
+        // preset is undefined
+      };
+
+      const fileConfig = {
+        preset: ['full'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.preset).toEqual(['full']);
+    });
+
+    // VALIDATES: T-MULTI-005 — regression test for || [] bug fix
+    it('should use config remove-features when CLI removeFeatures is undefined', () => {
+      const cliOptions = {
+        output: './output',
+        // removeFeatures is undefined
+      };
+
+      const fileConfig = {
+        'remove-features': ['debug'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.removeFeatures).toEqual(['debug']);
+    });
+  });
+
+  // VALIDATES: MULTI-1_AC-1
+  describe('load with [targets.*] sections', () => {
+    it('should parse targets from TOML configuration', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      const tomlContent = `
+template = "./templates/awa"
+features = ["architect", "code"]
+
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+`;
+      await writeFile(configPath, tomlContent);
+
+      const config = await loader.load(configPath);
+
+      expect(config?.targets).toBeDefined();
+      expect(config?.targets?.claude).toEqual({
+        output: '.',
+        features: ['claude', 'architect', 'code'],
+      });
+      expect(config?.targets?.copilot).toEqual({
+        output: '.',
+        features: ['copilot', 'code', 'vibe'],
+      });
+    });
+
+    it('should handle targets with partial fields', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      const tomlContent = `
+template = "./templates/awa"
+
+[targets.claude]
+output = "."
+`;
+      await writeFile(configPath, tomlContent);
+
+      const config = await loader.load(configPath);
+
+      expect(config?.targets?.claude).toEqual({
+        output: '.',
+      });
+    });
+
+    it('should throw error for invalid target section type', async () => {
+      const configPath = join(testDir, 'bad-target.toml');
+      await writeFile(
+        configPath,
+        `
+[targets]
+claude = "invalid"
+`
+      );
+
+      await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
+    });
+
+    it('should throw error for invalid target field types', async () => {
+      const configPath = join(testDir, 'bad-target-output.toml');
+      await writeFile(
+        configPath,
+        `
+[targets.claude]
+output = 123
+`
+      );
+
+      await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
+    });
+
+    it('should parse target with all supported fields', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      const tomlContent = `
+[targets.full]
+output = "./out"
+template = "./custom-template"
+features = ["a", "b"]
+preset = ["full"]
+remove-features = ["debug"]
+`;
+      await writeFile(configPath, tomlContent);
+
+      const config = await loader.load(configPath);
+
+      expect(config?.targets?.full).toEqual({
+        output: './out',
+        template: './custom-template',
+        features: ['a', 'b'],
+        preset: ['full'],
+        'remove-features': ['debug'],
+      });
+    });
+  });
+
+  // VALIDATES: MULTI-3_AC-1
+  describe('resolveTarget', () => {
+    it('should merge target with root config', () => {
+      const fileConfig: FileConfig = {
+        template: './templates/awa',
+        features: ['architect', 'code'],
+        output: './default-out',
+        targets: {
+          claude: {
+            output: './claude-out',
+            features: ['claude', 'architect'],
+          },
+        },
+      };
+
+      const resolved = loader.resolveTarget('claude', fileConfig);
+
+      expect(resolved.output).toBe('./claude-out');
+      expect(resolved.features).toEqual(['claude', 'architect']);
+      expect(resolved.template).toBe('./templates/awa');
+      expect(resolved.targets).toBeUndefined();
+    });
+
+    it('should inherit root values when target field is undefined', () => {
+      const fileConfig: FileConfig = {
+        template: './templates/awa',
+        features: ['architect'],
+        output: './default-out',
+        targets: {
+          minimal: {
+            output: './minimal-out',
+          },
+        },
+      };
+
+      const resolved = loader.resolveTarget('minimal', fileConfig);
+
+      expect(resolved.output).toBe('./minimal-out');
+      expect(resolved.features).toEqual(['architect']);
+      expect(resolved.template).toBe('./templates/awa');
+    });
+
+    it('should throw UNKNOWN_TARGET for nonexistent target', () => {
+      const fileConfig: FileConfig = {
+        targets: {
+          claude: { output: '.' },
+        },
+      };
+
+      expect(() => loader.resolveTarget('nonexistent', fileConfig)).toThrow(ConfigError);
+      expect(() => loader.resolveTarget('nonexistent', fileConfig)).toThrow(/Unknown target/);
+    });
+
+    it('should throw NO_TARGETS when no targets defined', () => {
+      const fileConfig: FileConfig = {
+        output: '.',
+      };
+
+      expect(() => loader.resolveTarget('anything', fileConfig)).toThrow(ConfigError);
+      expect(() => loader.resolveTarget('anything', fileConfig)).toThrow(/No targets defined/);
+    });
+  });
+
+  describe('getTargetNames', () => {
+    it('should return target names from config', () => {
+      const fileConfig: FileConfig = {
+        targets: {
+          claude: { output: '.' },
+          copilot: { output: '.' },
+        },
+      };
+
+      expect(loader.getTargetNames(fileConfig)).toEqual(['claude', 'copilot']);
+    });
+
+    it('should return empty array when no targets', () => {
+      expect(loader.getTargetNames(null)).toEqual([]);
+      expect(loader.getTargetNames({})).toEqual([]);
     });
   });
 });

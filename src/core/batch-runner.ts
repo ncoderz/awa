@@ -4,9 +4,14 @@
 // @awa-impl: MULTI-8_AC-1
 // @awa-impl: MULTI-9_AC-1
 
-import { ConfigError, type FileConfig, type RawCliOptions, type ResolvedOptions } from '../types/index.js';
-import { configLoader } from './config.js';
+import {
+  ConfigError,
+  type FileConfig,
+  type RawCliOptions,
+  type ResolvedOptions,
+} from '../types/index.js';
 import { logger } from '../utils/logger.js';
+import { configLoader } from './config.js';
 
 export interface BatchTargetResult {
   targetName: string;
@@ -39,9 +44,7 @@ export class BatchRunner {
       );
     }
 
-    const namesToProcess = mode === 'all'
-      ? targetNames
-      : [targetName!];
+    const namesToProcess = mode === 'all' ? targetNames : [targetName as string];
 
     const results: BatchTargetResult[] = [];
     const resolvedTemplates = new Map<string, string>();
@@ -57,15 +60,19 @@ export class BatchRunner {
         output: mode === 'all' ? undefined : cli.output,
       };
 
-      const options = configLoader.merge(targetCli, resolved);
-
-      // Validate output is present, with target-specific error message
-      if (!options.output) {
-        throw new ConfigError(
-          `Target '${name}' has no output directory. Specify 'output' in [targets.${name}] or in the root config.`,
-          'MISSING_OUTPUT',
-          null
-        );
+      let options: ResolvedOptions;
+      try {
+        options = configLoader.merge(targetCli, resolved);
+      } catch (error) {
+        // Re-throw MISSING_OUTPUT with target-specific message
+        if (error instanceof ConfigError && error.code === 'MISSING_OUTPUT') {
+          throw new ConfigError(
+            `Target '${name}' has no output directory. Specify 'output' in [targets.${name}] or in the root config.`,
+            'MISSING_OUTPUT',
+            null
+          );
+        }
+        throw error;
       }
 
       // Track template for deduplication logging

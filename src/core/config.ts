@@ -408,10 +408,7 @@ export class ConfigLoader {
     }
 
     if (section.preset !== undefined) {
-      if (
-        !Array.isArray(section.preset) ||
-        !section.preset.every((p) => typeof p === 'string')
-      ) {
+      if (!Array.isArray(section.preset) || !section.preset.every((p) => typeof p === 'string')) {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.preset': expected array of strings`,
           'INVALID_TYPE',
