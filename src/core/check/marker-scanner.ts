@@ -135,6 +135,7 @@ async function scanFile(
               id: cleanId,
             });
           }
+          markers.push({ type, id: cleanId, filePath, line: i + 1 });
         }
       }
 

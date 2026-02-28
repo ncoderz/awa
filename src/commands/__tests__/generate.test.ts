@@ -60,9 +60,13 @@ describe('generateCommand', () => {
     });
     vi.mocked(featureResolver.resolve).mockReturnValue(['copilot']);
     vi.mocked(fileGenerator.generate).mockResolvedValue({
+      actions: [],
       created: 1,
       overwritten: 0,
       skipped: 0,
+      skippedEmpty: 0,
+      skippedUser: 0,
+      skippedEqual: 0,
       deleted: 0,
     });
   });
