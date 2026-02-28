@@ -1,5 +1,3 @@
-// @awa-component: CLI-UpdateCheck
-
 import chalk from 'chalk';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import type { Logger } from './logger.js';

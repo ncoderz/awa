@@ -1,5 +1,3 @@
-// @awa-component: CLI-UpdateCheckCache
-
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';

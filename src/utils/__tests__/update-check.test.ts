@@ -1,5 +1,3 @@
-// @awa-component: CLI-UpdateCheck
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Logger } from '../logger.js';
 import {
