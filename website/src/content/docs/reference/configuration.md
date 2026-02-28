@@ -19,6 +19,9 @@ template = "owner/repo"
 # Feature flags to enable
 features = ["copilot", "claude"]
 
+# Overlay directory paths applied over base template
+overlay = ["./overlays/company", "./overlays/project"]
+
 # Overwrite existing files without prompting
 force = false
 
@@ -47,6 +50,7 @@ lite = ["copilot", "claude"]
 | `output` | string | — | Output directory for generated files |
 | `template` | string | bundled default | Template source — local path or Git repo |
 | `features` | string[] | `[]` | Feature flags to enable |
+| `overlay` | string[] | `[]` | Overlay directory paths applied over base template |
 | `force` | boolean | `false` | Overwrite existing files without prompting |
 | `dry-run` | boolean | `false` | Preview changes without writing files |
 | `delete` | boolean | `false` | Apply deletions from `_delete.txt` |
@@ -61,11 +65,14 @@ lite = ["copilot", "claude"]
 | `code-globs` | string[] | `["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]` | Glob patterns for source files |
 | `markers` | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
 | `ignore` | string[] | `["node_modules/**", "dist/**"]` | Glob patterns to exclude |
+| `ignore-markers` | string[] | `[]` | Marker IDs to exclude from orphan checks |
 | `format` | string | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | string | *(regex)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
 | `schema-dir` | string | `".awa/.agent/schemas"` | Directory containing `*.schema.yaml` schema rule files |
 | `schema-enabled` | boolean | `true` | Enable/disable schema structural validation |
+| `allow-warnings` | boolean | `false` | Allow warnings without failing (when `false`, warnings are promoted to errors) |
+| `spec-only` | boolean | `false` | Run only spec-level checks; skip code-to-spec traceability |
 
 ## Presets
 
@@ -95,6 +102,39 @@ awa generate . --force
 # Even if .awa.toml has features = ["copilot"], this replaces it
 awa generate . --features claude cursor
 ```
+
+## Multi-Target Configuration
+
+Define `[targets.<name>]` sections to generate different agent configurations in a single command:
+
+```toml
+template = "./templates/awa"
+features = ["architect", "code"]
+
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+```
+
+Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config. Target `features` replaces root `features` entirely (same as CLI override behavior).
+
+```bash
+awa generate --all                   # process all targets
+awa generate --target claude         # process one target
+awa diff --all                       # diff all targets
+awa diff --target copilot            # diff one target
+```
+
+**Behavior notes:**
+
+- `--all` and `--target` suppress interactive prompting (non-interactive batch mode)
+- `--all` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override
+- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all`
+- Boolean flags (`force`, `dry-run`, `delete`, `refresh`) are NOT per-target — they apply globally from root/CLI
 
 ## Config File Location
 
@@ -138,7 +178,37 @@ spec-globs = [".awa/specs/**/*.md"]
 code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
 ignore = ["node_modules/**", "dist/**"]
+ignore-markers = []
 format = "text"
 schema-dir = ".awa/.agent/schemas"
 schema-enabled = true
+allow-warnings = false
+spec-only = false
+```
+
+### With Overlays
+
+```toml
+output = ".github/agents"
+template = "myorg/awa-templates"
+overlay = ["./overlays/company", "./overlays/project"]
+features = ["copilot", "claude"]
+```
+
+### With Multi-Target
+
+```toml
+template = "./templates/awa"
+features = ["architect", "code"]
+
+[targets.claude]
+output = "."
+features = ["claude", "architect", "code"]
+
+[targets.copilot]
+output = "."
+features = ["copilot", "code", "vibe"]
+
+[presets]
+full = ["copilot", "claude", "cursor", "windsurf"]
 ```

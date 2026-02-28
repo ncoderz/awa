@@ -104,7 +104,31 @@ Update README and docs to match current CLI options
 (--delete, --list-unknown) without changing code.
 ```
 
+```text
+Refactor src/core/template-resolver.ts for readability.
+```
+
+### Traceability and Validation
+
+```text
+Align of DESIGN-DIFF with REQ-DIFF and produce an alignment report.
+```
+
+```text
+Check whether @awa-impl and @awa-test markers fully cover DIFF-7 acceptance criteria. List any gaps.
+```
+
+### Feature Discovery
+
+```text
+List all available feature flags in the awa template.
+```
+
+```text
+Run awa features --json and explain what each flag controls.
+```
+
 ## Next Steps
 
 - [Traceability](/guides/traceability/) — how IDs and markers connect everything
-- [CLI Reference](/reference/cli/) — `awa generate` and `awa diff` commands
+- [CLI Reference](/reference/cli/) — all commands, including `awa generate`, `awa diff`, `awa check`, `awa features`, and `awa test`

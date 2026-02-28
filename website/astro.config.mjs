@@ -41,6 +41,7 @@ export default defineConfig({
           items: [
             { label: 'CLI', slug: 'reference/cli' },
             { label: 'Template Engine', slug: 'reference/template-engine' },
+            { label: 'Template Testing', slug: 'reference/template-testing' },
             { label: 'Schema Rules', slug: 'reference/schema-rules' },
             { label: 'Configuration', slug: 'reference/configuration' },
           ],
