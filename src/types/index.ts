@@ -21,11 +21,22 @@ export interface RawCliOptions {
   config?: string;
   refresh?: boolean;
   listUnknown?: boolean;
+  all?: boolean;
+  target?: string;
 }
 
 // PresetDefinitions - Named feature bundles
 export interface PresetDefinitions {
   [presetName: string]: string[];
+}
+
+// TargetConfig - Per-target configuration (generation-related fields only, no boolean flags)
+export interface TargetConfig {
+  output?: string;
+  template?: string;
+  features?: string[];
+  preset?: string[];
+  'remove-features'?: string[];
 }
 
 // FileConfig - TOML configuration file structure
@@ -42,6 +53,7 @@ export interface FileConfig {
   presets?: PresetDefinitions;
   'list-unknown'?: boolean;
   check?: Record<string, unknown>;
+  targets?: Record<string, TargetConfig>;
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
@@ -192,7 +204,9 @@ export class ConfigError extends Error {
       | 'INVALID_TYPE'
       | 'MISSING_OUTPUT'
       | 'INVALID_PRESET'
-      | 'UNKNOWN_PRESET',
+      | 'UNKNOWN_PRESET'
+      | 'UNKNOWN_TARGET'
+      | 'NO_TARGETS',
     public filePath?: string | null
   ) {
     super(message);

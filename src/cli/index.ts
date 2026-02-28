@@ -92,19 +92,23 @@ program
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CLI-8_AC-1
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--all', 'Process all named targets from config', false)
+  .option('--target <name>', 'Process a specific named target from config')
   .action(async (output: string | undefined, options) => {
     // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
     const cliOptions: RawCliOptions = {
       output,
       template: options.template,
-      features: options.features || [],
-      preset: options.preset || [],
-      removeFeatures: options.removeFeatures || [],
+      features: options.features,
+      preset: options.preset,
+      removeFeatures: options.removeFeatures,
       force: options.force,
       dryRun: options.dryRun,
       delete: options.delete,
       config: options.config,
       refresh: options.refresh,
+      all: options.all,
+      target: options.target,
     };
 
     await generateCommand(cliOptions);
@@ -131,18 +135,22 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
+  .option('--all', 'Process all named targets from config', false)
+  .option('--target <name>', 'Process a specific named target from config')
   // @awa-impl: DIFF-7_AC-10
   // Note: --force and --dry-run are intentionally NOT accepted for diff command
   .action(async (target: string | undefined, options) => {
     const cliOptions: RawCliOptions = {
       output: target, // Use target as output for consistency
       template: options.template,
-      features: options.features || [],
-      preset: options.preset || [],
-      removeFeatures: options.removeFeatures || [],
+      features: options.features,
+      preset: options.preset,
+      removeFeatures: options.removeFeatures,
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
+      all: options.all,
+      target: options.target,
     };
 
     const exitCode = await diffCommand(cliOptions);

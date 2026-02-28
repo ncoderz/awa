@@ -1,11 +1,12 @@
 // @awa-component: GEN-GenerateCommand
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
+import { batchRunner } from '../core/batch-runner.js';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';
 import { fileGenerator } from '../core/generator.js';
 import { templateResolver } from '../core/template-resolver.js';
-import type { RawCliOptions } from '../types/index.js';
+import type { RawCliOptions, ResolvedOptions } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
 /** Known AI tool feature flags for interactive selection. */
@@ -26,28 +27,21 @@ const TOOL_FEATURES = [
 
 const TOOL_FEATURE_VALUES = new Set<string>(TOOL_FEATURES.map((t) => t.value));
 
-export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
-  try {
-    intro('awa CLI - Template Generator');
+async function runGenerate(options: ResolvedOptions, nonInteractive: boolean): Promise<void> {
+  // Resolve template source
+  const template = await templateResolver.resolve(options.template, options.refresh);
 
-    // Load configuration file
-    const fileConfig = await configLoader.load(cliOptions.config ?? null);
+  const features = featureResolver.resolve({
+    baseFeatures: [...options.features],
+    presetNames: [...options.preset],
+    removeFeatures: [...options.removeFeatures],
+    presetDefinitions: options.presets,
+  });
 
-    // Merge CLI and file config
-    const options = configLoader.merge(cliOptions, fileConfig);
-
-    // Resolve template source
-    const template = await templateResolver.resolve(options.template, options.refresh);
-
-    const features = featureResolver.resolve({
-      baseFeatures: [...options.features],
-      presetNames: [...options.preset],
-      removeFeatures: [...options.removeFeatures],
-      presetDefinitions: options.presets,
-    });
-
-    // @awa-impl: MTT-1_AC-1 // @awa-ignore
-    // If no tool feature flag is present, prompt the user to select tools interactively
+  // @awa-impl: MTT-1_AC-1 // @awa-ignore
+  // If no tool feature flag is present, prompt the user to select tools interactively
+  // In batch mode (--all / --target), skip prompting
+  if (!nonInteractive) {
     const hasToolFlag = features.some((f) => TOOL_FEATURE_VALUES.has(f));
     if (!hasToolFlag) {
       const selected = await multiselect({
@@ -61,27 +55,55 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
       }
       features.push(...(selected as string[]));
     }
+  }
 
-    // Display mode indicators
-    if (options.dryRun) {
-      logger.info('Running in dry-run mode (no files will be modified)');
+  // Display mode indicators
+  if (options.dryRun) {
+    logger.info('Running in dry-run mode (no files will be modified)');
+  }
+  if (options.force) {
+    logger.info('Force mode enabled (existing files will be overwritten)');
+  }
+
+  // Generate files
+  const result = await fileGenerator.generate({
+    templatePath: template.localPath,
+    outputPath: options.output,
+    features,
+    force: options.force,
+    dryRun: options.dryRun,
+    delete: options.delete,
+  });
+
+  // Display summary
+  logger.summary(result);
+}
+
+export async function generateCommand(cliOptions: RawCliOptions): Promise<void> {
+  try {
+    intro('awa CLI - Template Generator');
+
+    // Load configuration file
+    const fileConfig = await configLoader.load(cliOptions.config ?? null);
+
+    // Batch mode: --all or --target
+    if (cliOptions.all || cliOptions.target) {
+      const mode = cliOptions.all ? 'all' : 'single';
+      const targets = batchRunner.resolveTargets(cliOptions, fileConfig, mode, cliOptions.target);
+
+      for (const { targetName, options } of targets) {
+        batchRunner.logForTarget(targetName, 'Starting generation...');
+        await runGenerate(options, true);
+        batchRunner.logForTarget(targetName, 'Generation complete.');
+      }
+
+      outro('All targets generated!');
+      return;
     }
-    if (options.force) {
-      logger.info('Force mode enabled (existing files will be overwritten)');
-    }
 
-    // Generate files
-    const result = await fileGenerator.generate({
-      templatePath: template.localPath,
-      outputPath: options.output,
-      features,
-      force: options.force,
-      dryRun: options.dryRun,
-      delete: options.delete,
-    });
-
-    // Display summary
-    logger.summary(result);
+    // Standard single-target mode (backward compatible)
+    const options = configLoader.merge(cliOptions, fileConfig);
+    await runGenerate(options, false);
 
     outro('Generation complete!');
   } catch (error) {

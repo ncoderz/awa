@@ -33,6 +33,7 @@ import {
   type PresetDefinitions,
   type RawCliOptions,
   type ResolvedOptions,
+  type TargetConfig,
 } from '../types/index.js';
 import { pathExists, readTextFile } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
@@ -232,6 +233,44 @@ export class ConfigLoader {
         config.check = parsed.check as Record<string, unknown>;
       }
 
+      // Parse [targets.*] sections
+      if (parsed.targets !== undefined) {
+        if (
+          parsed.targets === null ||
+          typeof parsed.targets !== 'object' ||
+          Array.isArray(parsed.targets)
+        ) {
+          throw new ConfigError(
+            `Invalid type for 'targets': expected table of target sections`,
+            'INVALID_TYPE',
+            pathToLoad
+          );
+        }
+
+        const targets: Record<string, TargetConfig> = {};
+        for (const [targetName, targetValue] of Object.entries(
+          parsed.targets as Record<string, unknown>
+        )) {
+          if (
+            targetValue === null ||
+            typeof targetValue !== 'object' ||
+            Array.isArray(targetValue)
+          ) {
+            throw new ConfigError(
+              `Invalid target '${targetName}': expected table`,
+              'INVALID_TYPE',
+              pathToLoad
+            );
+          }
+          targets[targetName] = this.parseTargetSection(
+            targetValue as Record<string, unknown>,
+            targetName,
+            pathToLoad
+          );
+        }
+        config.targets = targets;
+      }
+
       // Warn about unknown options
       const knownKeys = new Set([
         'output',
@@ -246,6 +285,7 @@ export class ConfigLoader {
         'refresh',
         'list-unknown',
         'check',
+        'targets',
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
@@ -314,6 +354,128 @@ export class ConfigLoader {
       presets,
       listUnknown,
     };
+  }
+
+  // Parse a [targets.<name>] section, validating allowed keys and types
+  private parseTargetSection(
+    section: Record<string, unknown>,
+    targetName: string,
+    configPath: string
+  ): TargetConfig {
+    const target: TargetConfig = {};
+    const allowedKeys = new Set(['output', 'template', 'features', 'preset', 'remove-features']);
+
+    for (const key of Object.keys(section)) {
+      if (!allowedKeys.has(key)) {
+        logger.warn(`Unknown option in target '${targetName}': '${key}'`);
+      }
+    }
+
+    if (section.output !== undefined) {
+      if (typeof section.output !== 'string') {
+        throw new ConfigError(
+          `Invalid type for 'targets.${targetName}.output': expected string, got ${typeof section.output}`,
+          'INVALID_TYPE',
+          configPath
+        );
+      }
+      target.output = section.output;
+    }
+
+    if (section.template !== undefined) {
+      if (typeof section.template !== 'string') {
+        throw new ConfigError(
+          `Invalid type for 'targets.${targetName}.template': expected string, got ${typeof section.template}`,
+          'INVALID_TYPE',
+          configPath
+        );
+      }
+      target.template = section.template;
+    }
+
+    if (section.features !== undefined) {
+      if (
+        !Array.isArray(section.features) ||
+        !section.features.every((f) => typeof f === 'string')
+      ) {
+        throw new ConfigError(
+          `Invalid type for 'targets.${targetName}.features': expected array of strings`,
+          'INVALID_TYPE',
+          configPath
+        );
+      }
+      target.features = section.features;
+    }
+
+    if (section.preset !== undefined) {
+      if (
+        !Array.isArray(section.preset) ||
+        !section.preset.every((p) => typeof p === 'string')
+      ) {
+        throw new ConfigError(
+          `Invalid type for 'targets.${targetName}.preset': expected array of strings`,
+          'INVALID_TYPE',
+          configPath
+        );
+      }
+      target.preset = section.preset;
+    }
+
+    if (section['remove-features'] !== undefined) {
+      if (
+        !Array.isArray(section['remove-features']) ||
+        !section['remove-features'].every((f) => typeof f === 'string')
+      ) {
+        throw new ConfigError(
+          `Invalid type for 'targets.${targetName}.remove-features': expected array of strings`,
+          'INVALID_TYPE',
+          configPath
+        );
+      }
+      target['remove-features'] = section['remove-features'];
+    }
+
+    return target;
+  }
+
+  // Resolve a target by merging target config with root config (target overrides root via nullish coalescing)
+  resolveTarget(targetName: string, fileConfig: FileConfig): FileConfig {
+    const targets = fileConfig.targets;
+    if (!targets || Object.keys(targets).length === 0) {
+      throw new ConfigError(
+        'No targets defined in configuration. Add [targets.<name>] sections to .awa.toml.',
+        'NO_TARGETS',
+        null
+      );
+    }
+
+    const target = targets[targetName];
+    if (!target) {
+      throw new ConfigError(
+        `Unknown target: '${targetName}'. Available targets: ${Object.keys(targets).join(', ')}`,
+        'UNKNOWN_TARGET',
+        null
+      );
+    }
+
+    // Merge: target fields override root (nullish coalescing — target value ?? root value)
+    return {
+      ...fileConfig,
+      output: target.output ?? fileConfig.output,
+      template: target.template ?? fileConfig.template,
+      features: target.features ?? fileConfig.features,
+      preset: target.preset ?? fileConfig.preset,
+      'remove-features': target['remove-features'] ?? fileConfig['remove-features'],
+      targets: undefined, // Don't propagate targets into resolved config
+    };
+  }
+
+  // Get all target names from config
+  getTargetNames(fileConfig: FileConfig | null): string[] {
+    if (!fileConfig?.targets) {
+      return [];
+    }
+    return Object.keys(fileConfig.targets);
   }
 }
 
