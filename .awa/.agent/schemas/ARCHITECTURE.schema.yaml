@@ -12,7 +12,7 @@ line-limit: 800
 sections:
   # Top-level heading
   - heading: "Architecture"
-    level: 1
+    level: 1,
     required: true
     description: "Document title. No metadata in this section."
 

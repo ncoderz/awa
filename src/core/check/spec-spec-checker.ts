@@ -15,7 +15,7 @@ import type {
 export function checkSpecAgainstSpec(
   specs: SpecParseResult,
   markers: MarkerScanResult,
-  _config: CheckConfig
+  config: CheckConfig
 ): CheckResult {
   const findings: Finding[] = [];
 
@@ -40,38 +40,41 @@ export function checkSpecAgainstSpec(
 
   // @awa-impl: CHK-7_AC-1
   // Check for orphaned spec files (CODE not referenced by any other spec or code)
-  const referencedCodes = new Set<string>();
+  // Skip when specOnly — orphaned-spec detection depends on code markers to be meaningful
+  if (!config.specOnly) {
+    const referencedCodes = new Set<string>();
 
-  // Collect codes referenced in code markers
-  for (const marker of markers.markers) {
-    const codeMatch = /^([A-Z][A-Z0-9]*)[-_]/.exec(marker.id);
-    if (codeMatch?.[1]) {
-      referencedCodes.add(codeMatch[1]);
+    // Collect codes referenced in code markers
+    for (const marker of markers.markers) {
+      const codeMatch = /^([A-Z][A-Z0-9]*)[-_]/.exec(marker.id);
+      if (codeMatch?.[1]) {
+        referencedCodes.add(codeMatch[1]);
+      }
     }
-  }
 
-  // Collect codes referenced in cross-references
-  for (const specFile of specs.specFiles) {
-    for (const crossRef of specFile.crossRefs) {
-      for (const refId of crossRef.ids) {
-        const codeMatch = /^([A-Z][A-Z0-9]*)[-_]/.exec(refId);
-        if (codeMatch?.[1]) {
-          referencedCodes.add(codeMatch[1]);
+    // Collect codes referenced in cross-references
+    for (const specFile of specs.specFiles) {
+      for (const crossRef of specFile.crossRefs) {
+        for (const refId of crossRef.ids) {
+          const codeMatch = /^([A-Z][A-Z0-9]*)[-_]/.exec(refId);
+          if (codeMatch?.[1]) {
+            referencedCodes.add(codeMatch[1]);
+          }
         }
       }
     }
-  }
 
-  for (const specFile of specs.specFiles) {
-    if (!specFile.code) continue; // Skip ARCHITECTURE.md etc.
-    if (!referencedCodes.has(specFile.code)) {
-      findings.push({
-        severity: 'warning',
-        code: 'orphaned-spec',
-        message: `Spec file code '${specFile.code}' is not referenced by any other spec or code marker`,
-        filePath: specFile.filePath,
-        id: specFile.code,
-      });
+    for (const specFile of specs.specFiles) {
+      if (!specFile.code) continue; // Skip ARCHITECTURE.md etc.
+      if (!referencedCodes.has(specFile.code)) {
+        findings.push({
+          severity: 'warning',
+          code: 'orphaned-spec',
+          message: `Spec file code '${specFile.code}' is not referenced by any other spec or code marker`,
+          filePath: specFile.filePath,
+          id: specFile.code,
+        });
+      }
     }
   }
 

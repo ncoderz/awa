@@ -612,4 +612,103 @@ cross-ref-patterns = ["IMPLEMENTS", "VALIDATES"]
 
     expect(exitCode).toBe(0);
   });
+
+  // --- spec-only tests ---
+
+  test('--spec-only skips code-to-spec checks (uncovered ACs do not fail)', async () => {
+    // Create spec with ACs but NO code or tests — normally would fail
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+      specOnly: true,
+    });
+
+    // With --spec-only, no uncovered-ac or orphaned-marker errors
+    expect(exitCode).toBe(0);
+  });
+
+  test('--spec-only still catches broken cross-refs', async () => {
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: GHOST-99_AC-1
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+      specOnly: true,
+    });
+
+    // Broken cross-ref is a spec-to-spec error — still reported
+    expect(exitCode).toBe(1);
+  });
+
+  test('--spec-only skips orphaned-spec warnings', async () => {
+    // A standalone REQ with no DESIGN and no code — normally an orphaned-spec warning
+    await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      ignore: [],
+      format: 'json',
+      specOnly: true,
+    });
+
+    // With --spec-only, orphaned-spec is skipped entirely
+    expect(exitCode).toBe(0);
+  });
+
+  test('reads spec-only from config file', async () => {
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(testDir, '.awa.toml'),
+      `[check]
+spec-only = true
+`
+    );
+
+    const exitCode = await checkCommand({
+      config: join(testDir, '.awa.toml'),
+      ignore: [],
+      format: 'json',
+    });
+
+    // Config-driven spec-only should skip code checks
+    expect(exitCode).toBe(0);
+  });
 });

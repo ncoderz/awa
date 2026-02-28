@@ -202,12 +202,18 @@ program
     'Allow warnings without failing (default: warnings are errors)',
     false
   )
+  .option(
+    '--spec-only',
+    'Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability',
+    false
+  )
   .action(async (options) => {
     const cliOptions: RawCheckOptions = {
       config: options.config,
       ignore: options.ignore,
       format: options.format,
       allowWarnings: options.allowWarnings,
+      specOnly: options.specOnly,
     };
 
     const exitCode = await checkCommand(cliOptions);

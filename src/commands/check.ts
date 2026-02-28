@@ -24,15 +24,22 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
     // Build check config from file [check] section + CLI overrides
     const config = buildCheckConfig(fileConfig, cliOptions);
 
-    // Scan code markers, parse specs, and load schema rules in parallel
+    // Scan code markers (skip when --spec-only), parse specs, and load schema rules in parallel
+    const emptyMarkers: import('../core/check/types.js').MarkerScanResult = {
+      markers: [],
+      findings: [],
+    };
     const [markers, specs, ruleSets] = await Promise.all([
-      scanMarkers(config),
+      config.specOnly ? Promise.resolve(emptyMarkers) : scanMarkers(config),
       parseSpecs(config),
       config.schemaEnabled ? loadRules(config.schemaDir) : Promise.resolve([]),
     ]);
 
     // Run checkers (code-spec and spec-spec are synchronous; schema is async)
-    const codeSpecResult = checkCodeAgainstSpec(markers, specs, config);
+    // When --spec-only, skip code-to-spec traceability checks entirely
+    const codeSpecResult = config.specOnly
+      ? { findings: [] as const }
+      : checkCodeAgainstSpec(markers, specs, config);
     const specSpecResult = checkSpecAgainstSpec(specs, markers, config);
     const schemaResult =
       config.schemaEnabled && ruleSets.length > 0
@@ -118,6 +125,13 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
         ? section['allow-warnings']
         : DEFAULT_CHECK_CONFIG.allowWarnings;
 
+  const specOnly =
+    cliOptions.specOnly === true
+      ? true
+      : typeof section?.['spec-only'] === 'boolean'
+        ? section['spec-only']
+        : DEFAULT_CHECK_CONFIG.specOnly;
+
   return {
     specGlobs,
     codeGlobs,
@@ -130,6 +144,7 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
     schemaDir,
     schemaEnabled,
     allowWarnings,
+    specOnly,
   };
 }
 
