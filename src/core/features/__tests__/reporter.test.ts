@@ -31,8 +31,8 @@ describe('FeaturesReporter', () => {
 
       const output = reporter.buildJsonOutput(scanResult);
       expect(output.features).toHaveLength(2);
-      expect(output.features[0].name).toBe('copilot');
-      expect(output.features[0].files).toEqual(['a.md', 'b.md']);
+      expect(output.features[0]!.name).toBe('copilot');
+      expect(output.features[0]!.files).toEqual(['a.md', 'b.md']);
       expect(output.filesScanned).toBe(10);
       expect(output.presets).toBeUndefined();
     });
@@ -70,7 +70,7 @@ describe('FeaturesReporter', () => {
 
       reporter.report({ scanResult, json: true });
 
-      const calls = consoleSpy.mock.calls.map((c) => c[0]).join('');
+      const calls = consoleSpy.mock.calls.map((c: unknown[]) => c[0]).join('');
       const parsed = JSON.parse(calls);
       expect(parsed.features).toHaveLength(1);
       expect(parsed.features[0].name).toBe('copilot');
@@ -95,7 +95,7 @@ describe('FeaturesReporter', () => {
 
       reporter.report({ scanResult, json: false });
 
-      const output = consoleSpy.mock.calls.map((c) => String(c[0])).join('\n');
+      const output = consoleSpy.mock.calls.map((c: unknown[]) => String(c[0])).join('\n');
       expect(output).toContain('No feature flags found');
     });
   });

@@ -116,8 +116,8 @@ describe('FeatureScanner', () => {
       await writeFile(join(TEST_DIR, 'a.md'), `<% if (it.features.includes('alpha')) { %><% } %>`);
 
       const result = await scanner.scan(TEST_DIR);
-      expect(result.features[0].name).toBe('alpha');
-      expect(result.features[1].name).toBe('zebra');
+      expect(result.features[0]!.name).toBe('alpha');
+      expect(result.features[1]!.name).toBe('zebra');
     });
 
     test('should scan subdirectories recursively', async () => {

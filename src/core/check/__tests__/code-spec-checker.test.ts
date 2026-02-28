@@ -25,7 +25,7 @@ function makeSpecs(overrides: Partial<SpecParseResult> = {}): SpecParseResult {
 }
 
 function makeMarkers(markers: CodeMarker[]): MarkerScanResult {
-  return { markers };
+  return { markers, findings: [] };
 }
 
 function makeConfig(overrides: Partial<CheckConfig> = {}): CheckConfig {
