@@ -121,22 +121,19 @@ async function scanFile(
       for (const id of ids) {
         // Extract only the leading ID token
         const tokenMatch = ID_TOKEN_RE.exec(id);
-        if (tokenMatch) {
-          const cleanId = tokenMatch[1]?.trim() ?? '';
-          if (cleanId) {
-            // Check for trailing text after the ID (only whitespace allowed)
-            const remainder = id.slice(tokenMatch[0].length).trim();
-            if (remainder) {
-              findings.push({
-                severity: 'error',
-                code: 'marker-trailing-text',
-                message: `Marker has trailing text after ID '${cleanId}': '${remainder}' — use comma-separated IDs only`,
-                filePath,
-                line: i + 1,
-                id: cleanId,
-              });
-            }
-            markers.push({ type, id: cleanId, filePath, line: i + 1 });
+        const cleanId = tokenMatch?.[1]?.trim() ?? '';
+        if (cleanId) {
+          // Check for trailing text after the ID (only whitespace allowed)
+          const remainder = id.slice(tokenMatch?.[0].length).trim();
+          if (remainder) {
+            findings.push({
+              severity: 'error',
+              code: 'marker-trailing-text',
+              message: `Marker has trailing text after ID '${cleanId}': '${remainder}' — use comma-separated IDs only`,
+              filePath,
+              line: i + 1,
+              id: cleanId,
+            });
           }
         }
       }
