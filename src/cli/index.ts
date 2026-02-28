@@ -189,7 +189,9 @@ program
 // @awa-impl: CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1
 program
   .command('check')
-  .description('Check traceability chain between code markers and spec files')
+  .description(
+    'Validate spec files against schemas and check traceability between code markers and specs'
+  )
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CHK-10_AC-1
   .option('--ignore <pattern...>', 'Glob patterns for paths to exclude')
