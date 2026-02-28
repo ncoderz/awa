@@ -51,6 +51,7 @@
     "npx tsc": true,
     "npx tsx": true,
     "npx vitest": true,
-    "npx biome": true
+    "npx biome": true,
+    "npx awa": true
   }
 }
