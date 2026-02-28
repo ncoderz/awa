@@ -59,8 +59,8 @@ Different agents accept prompts differently. Three modes:
 
 ```toml
 [loop]
-agent = "claude -p --dangerously-skip-permissions"
-prompt-mode = "arg"  # "stdin" | "arg" | "file"
+agent = "claude"             # preset name or custom command
+prompt-mode = "arg"            # override prompt mode (optional — presets set this automatically)
 ```
 
 ### Prompt assembly
@@ -124,8 +124,11 @@ check-strict = false     # true = stop loop on check failure
 
 ### Phase 6: CLI Integration
 
-- [ ] Add `awa loop` command to CLI with options: `--task`, `--agent`, `--max`, `--prompt-mode`, `--check`, `--check-strict`
-- [ ] Add `[loop]` section to config loader for `.awa.toml` defaults
+- [ ] Add `awa loop` command to CLI with options: `--task`, `--agent`, `--max`, `--prompt-mode`, `--check`, `--check-strict`, `--yes`
+- [ ] Implement safety warning with 5-second countdown (skippable with `--yes`)
+- [ ] Embed built-in agent presets (claude, copilot, codex, gemini, kilo, opencode, aider, goose)
+- [ ] Implement preset resolution: config override → built-in → literal command
+- [ ] Add `[loop]` and `[loop.agents.*]` sections to config loader
 - [ ] Create CLI tests
 
 ### Phase 7: Reporting
@@ -144,11 +147,12 @@ check-strict = false     # true = stop loop on check failure
 
 ## Risks
 
-- **Agent CLI instability**: Agent CLIs are third-party and change frequently. Mitigated by not abstracting over them — the user provides the exact command.
+- **Agent CLI instability**: Agent CLIs are third-party and change frequently. Mitigated by thin presets (just command + prompt-mode) that users can override in config. Preset updates ship with AWA releases.
 - **Prompt too large**: If specs are big, the assembled prompt may exceed agent context limits. Mitigation: truncation strategy, or let user curate what's included via config.
 - **Stall loops**: Agent may fail the same task repeatedly. Mitigation: stall detection (no progress after N iterations → stop), max-iterations hard limit.
 - **Platform differences**: `child_process.spawn` behavior varies (shell escaping, signal handling). Mitigation: use `spawn` with `shell: true` and test on macOS/Linux.
-- **Cost**: Each iteration costs API credits. Loop should display clear warnings and require explicit opt-in (no accidental runaway loops).
+- **Cost**: Each iteration costs API credits. Mitigated by: safety warning before first iteration, max-iterations hard limit, stall detection.
+- **Autonomous execution risk**: Agents run with no permission controls. Mitigated by: mandatory safety warning with countdown, `--yes` required for unattended use, clear documentation that AWA takes no responsibility for agent actions.
 
 ## Dependencies
 
@@ -157,7 +161,12 @@ check-strict = false     # true = stop loop on check failure
 
 ## Completion Criteria
 
-- [ ] `awa loop --task TASK-*.md --agent "echo test"` runs and completes
+- [ ] Safety warning displayed before first iteration (with countdown)
+- [ ] `--yes` skips safety warning countdown
+- [ ] Built-in agent presets resolve correctly (`--agent claude` works)
+- [ ] Custom agent command works (`--agent "my-tool --auto"` works)
+- [ ] Config `[loop.agents.*]` overrides built-in presets
+- [ ] `awa loop --task TASK-*.md --agent claude` runs and completes
 - [ ] Loop exits when all tasks are checked
 - [ ] Loop exits at max-iterations
 - [ ] Stall detection stops runaway loops
@@ -184,3 +193,4 @@ check-strict = false     # true = stop loop on check failure
 ## Change Log
 
 - 012 (2026-02-28): Initial plan from brainstorm session
+- 012.1 (2026-02-28): Added built-in agent presets with config override, mandatory safety warning with countdown
