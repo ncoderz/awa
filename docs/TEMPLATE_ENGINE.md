@@ -133,6 +133,7 @@ Template filenames map directly to output filenames — there is no `.eta` exten
 Files and directories starting with `_` are never written to the output directory. This covers:
 
 - `_partials/` — shared content blocks
+- `_tests/` — test fixtures for `awa test` (see [Template Testing](TEMPLATE_TESTING.md))
 - `_delete.txt` — delete list
 - `_README.md` — template documentation (not output)
 

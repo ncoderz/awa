@@ -111,6 +111,6 @@ awa check              # text output
 awa check --format json # JSON output for CI
 ```
 
-It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs, and enforces structural rules defined in `*.rules.yaml` schema files.
+It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs, and enforces structural rules defined in `*.schema.yaml` schema files.
 
 See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[check]` config section.

@@ -314,6 +314,8 @@ export class ConfigLoader {
     const refresh = cli.refresh ?? file?.refresh ?? false;
     const listUnknown = cli.listUnknown ?? file?.['list-unknown'] ?? false;
     const overlay = cli.overlay ?? file?.overlay ?? [];
+    const json = cli.json ?? false;
+    const summary = cli.summary ?? false;
 
     return {
       output,
@@ -328,6 +330,8 @@ export class ConfigLoader {
       presets,
       listUnknown,
       overlay,
+      json,
+      summary,
     };
   }
 }

@@ -53,7 +53,7 @@ export interface Finding {
   readonly filePath?: string;
   readonly line?: number;
   readonly id?: string;
-  /** Path to the .rules.yaml file that defines the violated rule. */
+  /** Path to the .schema.yaml file that defines the violated rule. */
   readonly ruleSource?: string;
   /** Concise representation of the violated rule. */
   readonly rule?: string;

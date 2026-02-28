@@ -1,0 +1,6 @@
+features = ["copilot"]
+expected-files = [
+  ".github/agents/awa.agent.md",
+  ".github/skills/awa-code/SKILL.md",
+  ".awa/.agent/awa.core.md",
+]
