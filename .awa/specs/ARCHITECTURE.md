@@ -9,6 +9,7 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - CLI LAYER: Command parsing, argument validation, user prompts
 - CONFIGURATION LOADER: TOML config file parsing, CLI override merging
 - TEMPLATE RESOLVER: Resolve template source (local path or Git repo)
+- OVERLAY RESOLVER: Resolve overlay sources and build merged temp directory
 - TEMPLATE ENGINE: Template loading, rendering with conditional logic
 - FILE GENERATOR: Output file creation, directory management, conflict resolution
 - DIFF ENGINE: Template comparison against target directory with diff reporting
@@ -98,6 +99,7 @@ awa/
 │   │   ├── feature-resolver.ts # Feature resolution (presets, removals)
 │   │   ├── generator.ts   # File generation logic
 │   │   ├── json-output.ts # JSON serialization for --json/--summary output
+│   │   ├── overlay.ts     # Overlay resolution and merged-dir builder
 │   │   ├── resolver.ts    # Conflict and delete resolution
 │   │   ├── template-resolver.ts  # Template source resolver
 │   │   ├── template.ts    # Template engine wrapper
@@ -255,6 +257,26 @@ CONSTRAINTS
 - Loads `_delete.txt` from template root to delete obsolete files after generation (requires `--delete` flag)
 - Delete list entries that conflict with generated files are skipped with a warning
 - Supports interactive multi-tool selection when no tool feature flags are present
+
+### Overlay Resolver
+
+Resolves overlay sources and builds a merged template directory.
+
+RESPONSIBILITIES
+
+- Accept `--overlay <path>` or config `overlay` array as a list of source specifiers
+- Resolve each overlay source to a local directory via TemplateResolver (local or Git)
+- Copy the base template into a temp directory, then copy each overlay in order (last wins)
+- Return the merged temp directory path to generate or diff command
+- Clean up the temp directory in a finally block after generation or diff completes
+
+CONSTRAINTS
+
+- Uses Node.js `fs.cp` with `recursive: true` for directory merging
+- Merging is whole-file only (no line-level patching)
+- All files including `_`-prefixed files (partials, helpers) are copied to the merged dir
+- Cleanup follows the same temp-dir pattern used by Diff Engine
+- Overlay sources use TemplateResolver so local and Git sources are both supported
 
 ### Delete List
 
@@ -489,3 +511,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag
 - 2.8.0 (2026-02-28): Added Test Runner component — `awa test` command, fixture discovery, template rendering per fixture, file
 - 2.9.0 (2026-02-28): CLI Layer — `generate` command gains `init` alias; added config-not-found hint in generate handler
+- 2.10.0 (2026-01-01): Added Overlay Resolver component — `--overlay` option, merged temp dir pattern, overlay config array

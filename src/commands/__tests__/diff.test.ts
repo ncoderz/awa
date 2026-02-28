@@ -19,9 +19,11 @@ vi.mock('../../core/differ.js');
 vi.mock('../../core/template-resolver.js');
 vi.mock('../../utils/fs.js');
 vi.mock('../../utils/logger.js');
+vi.mock('../../core/overlay.js');
 
 import { configLoader } from '../../core/config.js';
 import { diffEngine } from '../../core/differ.js';
+import { buildMergedDir, resolveOverlays } from '../../core/overlay.js';
 import { templateResolver } from '../../core/template-resolver.js';
 import { pathExists } from '../../utils/fs.js';
 import { logger } from '../../utils/logger.js';
@@ -49,6 +51,7 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      overlay: [],
       json: false,
       summary: false,
     });
@@ -91,6 +94,7 @@ describe('diffCommand', () => {
       dryRun: false,
       delete: false,
       listUnknown: false,
+      overlay: [],
       json: false,
       summary: false,
     });
@@ -287,6 +291,7 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: false,
+      overlay: [],
       json: false,
       summary: false,
     });
@@ -334,6 +339,7 @@ describe('diffCommand', () => {
       presets: {},
       refresh: false,
       listUnknown: true,
+      overlay: [],
       json: false,
       summary: false,
     });
@@ -412,5 +418,49 @@ describe('diffCommand', () => {
 
     expect(exitCode).toBe(1);
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('old-agent.md'));
+  });
+
+  // @awa-test: OVL-7_AC-1
+  test('should use merged overlay dir for diff when overlays are configured', async () => {
+    const mockResult: DiffResult = {
+      files: [],
+      identical: 5,
+      modified: 0,
+      newFiles: 0,
+      extraFiles: 0,
+      binaryDiffers: 0,
+      deleteListed: 0,
+      hasDifferences: false,
+    };
+
+    vi.mocked(configLoader.merge).mockReturnValue({
+      template: './templates/awa',
+      output: './output',
+      features: [],
+      preset: [],
+      removeFeatures: [],
+      presets: {},
+      refresh: false,
+      force: false,
+      dryRun: false,
+      delete: false,
+      listUnknown: false,
+      overlay: ['./my-overlay'],
+    });
+    vi.mocked(resolveOverlays).mockResolvedValue(['./my-overlay-resolved']);
+    vi.mocked(buildMergedDir).mockResolvedValue('/tmp/awa-overlay-merged');
+    vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
+
+    const exitCode = await diffCommand({
+      output: './output',
+      overlay: ['./my-overlay'],
+    });
+
+    expect(resolveOverlays).toHaveBeenCalledWith(['./my-overlay'], false);
+    expect(buildMergedDir).toHaveBeenCalledWith('./templates/awa', ['./my-overlay-resolved']);
+    expect(diffEngine.diff).toHaveBeenCalledWith(
+      expect.objectContaining({ templatePath: '/tmp/awa-overlay-merged' })
+    );
+    expect(exitCode).toBe(0);
   });
 });

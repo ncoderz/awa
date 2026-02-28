@@ -25,6 +25,7 @@ vi.mock('../../core/config.js');
 vi.mock('../../core/generator.js');
 vi.mock('../../core/template-resolver.js');
 vi.mock('../../core/json-output.js');
+vi.mock('../../core/overlay.js');
 vi.mock('../../core/feature-resolver.js');
 vi.mock('../../utils/logger.js');
 
@@ -64,6 +65,7 @@ const DEFAULT_RESOLVED_OPTIONS = {
   dryRun: false,
   delete: false,
   listUnknown: false,
+  overlay: [],
   json: false,
   summary: false,
 };

@@ -15,6 +15,8 @@ awa init . --dry-run                     # preview without writing
 awa init . --delete                      # apply deletions from template
 awa init . --json                        # JSON output (implies --dry-run)
 awa init . --summary                     # compact one-line summary
+awa init . --overlay ./my-overrides      # layer custom files over base template
+awa init . --overlay ./ov1 --overlay ./ov2  # stack multiple overlays
 awa generate .                           # works identically
 ```
 
@@ -30,6 +32,7 @@ awa generate .                           # works identically
 | `--delete` | Enable deletion of files listed for deletion in the template |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout (implies `--dry-run`) |
 | `--summary` | Output compact one-line counts summary |
 
@@ -43,6 +46,7 @@ Exit code 0 = files match, 1 = differences found.
 awa diff .                                # diff against current directory
 awa diff ./my-project --template ./tpl    # diff specific target and template
 awa diff . --list-unknown                 # include files not in template
+awa diff . --overlay ./my-overrides       # diff against merged template view
 awa diff . --json                         # JSON output for CI
 awa diff . --summary                      # compact one-line summary
 ```
@@ -57,6 +61,7 @@ awa diff . --summary                      # compact one-line summary
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout |
 | `--summary` | Output compact one-line counts summary |
 
@@ -129,6 +134,7 @@ Create a `.awa.toml` in your project root. CLI arguments always override config 
 output = ".github/agents"
 template = "owner/repo"
 features = ["copilot", "claude"]
+overlay = ["./overlays/company", "./overlays/project"]
 refresh = false
 delete = false
 
@@ -167,13 +173,14 @@ Presets expand into feature flags. `--remove-features` subtracts from the combin
 
 1. **Load config** — read `.awa.toml` (if present), merge with CLI arguments
 2. **Resolve template** — local path used directly; Git repos fetched via [degit](https://github.com/Rich-Harris/degit) and cached
-3. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
-4. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
-5. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
-6. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
-7. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
-8. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
-9. **Test** (for `awa test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots
+3. **Apply overlays** — if `--overlay` paths are given, each is resolved and merged on top of the base template (last wins); the merged temp directory is passed to the engine instead of the base template
+4. **Resolve features** — combine `--features`, expand `--preset`, subtract `--remove-features`
+5. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
+6. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
+7. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
+8. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
+9. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
+10. **Test** (for `awa test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots
 
 ## CI Integration
 

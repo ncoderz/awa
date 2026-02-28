@@ -21,6 +21,7 @@ export interface RawCliOptions {
   config?: string;
   refresh?: boolean;
   listUnknown?: boolean;
+  overlay?: string[];
   json?: boolean;
   summary?: boolean;
 }
@@ -44,6 +45,7 @@ export interface FileConfig {
   presets?: PresetDefinitions;
   'list-unknown'?: boolean;
   check?: Record<string, unknown>;
+  overlay?: string[];
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
@@ -59,6 +61,7 @@ export interface ResolvedOptions {
   readonly refresh: boolean;
   readonly presets: PresetDefinitions;
   readonly listUnknown: boolean;
+  readonly overlay: readonly string[];
   readonly json: boolean;
   readonly summary: boolean;
 }

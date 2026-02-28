@@ -101,6 +101,8 @@ program
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CLI-8_AC-1
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  // @awa-impl: OVL-1_AC-1
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   // @awa-impl: JSON-1_AC-1
   .option('--json', 'Output results as JSON (implies --dry-run)', false)
   // @awa-impl: JSON-5_AC-1
@@ -118,6 +120,7 @@ program
       delete: options.delete,
       config: options.config,
       refresh: options.refresh,
+      overlay: options.overlay || [],
       json: options.json,
       summary: options.summary,
     };
@@ -146,6 +149,8 @@ program
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
+  // @awa-impl: OVL-7_AC-1
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   // @awa-impl: JSON-2_AC-1
   .option('--json', 'Output results as JSON', false)
   // @awa-impl: JSON-5_AC-1
@@ -162,6 +167,7 @@ program
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
+      overlay: options.overlay || [],
       json: options.json,
       summary: options.summary,
     };

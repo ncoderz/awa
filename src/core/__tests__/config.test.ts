@@ -281,6 +281,62 @@ list-unknown = true
       expect(resolved.presets).toEqual({});
     });
 
+    // @awa-test: OVL-8_AC-1
+    it('should parse overlay array from TOML config', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      const tomlContent = `
+output = "./out"
+overlay = ["./overlay1", "./overlay2"]
+`;
+      await writeFile(configPath, tomlContent);
+
+      const config = await loader.load(configPath);
+
+      expect(config?.overlay).toEqual(['./overlay1', './overlay2']);
+    });
+
+    it('should merge overlay from CLI over config', async () => {
+      const cliOptions = {
+        output: './out',
+        overlay: ['./cli-overlay'],
+      };
+      const fileConfig = {
+        overlay: ['./config-overlay'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.overlay).toEqual(['./cli-overlay']);
+    });
+
+    it('should use config overlay when CLI overlay is not provided', async () => {
+      const cliOptions = {
+        output: './out',
+      };
+      const fileConfig = {
+        overlay: ['./config-overlay1', './config-overlay2'],
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.overlay).toEqual(['./config-overlay1', './config-overlay2']);
+    });
+
+    it('should default overlay to empty array when not provided', async () => {
+      const cliOptions = { output: './out' };
+      const resolved = loader.merge(cliOptions, null);
+      expect(resolved.overlay).toEqual([]);
+    });
+
+    it('should throw error if overlay is not an array of strings', async () => {
+      const configPath = join(testDir, 'invalid.toml');
+      await writeFile(configPath, 'overlay = "not-an-array"\n');
+
+      await expect(loader.load(configPath)).rejects.toMatchObject({
+        code: 'INVALID_TYPE',
+      });
+    });
+
     // @awa-test: CFG-3_AC-7
     it('should support delete as a boolean in config', () => {
       const cliOptions = {

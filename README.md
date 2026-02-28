@@ -45,6 +45,7 @@ See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 
 - [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
 - Feature flags and presets to turn content on/off per project
+- Template overlays (`--overlay`) to layer custom files over a base template without forking it
 - `awa diff` shows exactly what changed before you commit
 - `awa test` verifies templates produce expected output across feature combinations
 - `--json` flag for machine-readable output in CI pipelines
