@@ -2,17 +2,18 @@
 
 ## Commands
 
-### `awa generate [output]`
+### `awa init [output]` / `awa generate [output]`
 
-Generate configuration files from templates.
+Generate configuration files from templates. `init` and `generate` are aliases — identical behaviour, both equally valid. Quick-start guides use `awa init`; existing `awa generate` scripts continue to work unchanged.
 
 ```bash
-awa generate .                            # current directory, default template
-awa generate ./my-project                 # specific output directory
-awa generate . --features copilot claude  # with feature flags
-awa generate . --preset full              # with a preset
-awa generate . --dry-run                  # preview without writing
-awa generate . --delete                   # apply deletions from _delete.txt
+awa init .                               # current directory, default template
+awa init ./my-project                    # specific output directory
+awa init . --features copilot claude     # with feature flags
+awa init . --preset full                 # with a preset
+awa init . --dry-run                     # preview without writing
+awa init . --delete                      # apply deletions from _delete.txt
+awa generate .                           # works identically
 ```
 
 | Option | Description |

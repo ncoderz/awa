@@ -152,7 +152,8 @@ RESPONSIBILITIES
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
-- Support `generate`, `diff`, `check`, and `test` subcommands
+- Support `init`, `diff`, `check`, and `test` subcommands
+
 
 CONSTRAINTS
 
@@ -483,4 +484,5 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
 - 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit
 - 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag
-- 2.8.0 (2026-02-28): Added Test Runner component — `awa test` command, fixture discovery, template rendering per fixture, file existence assertion, snapshot comparison
+- 2.8.0 (2026-02-28): Added Test Runner component — `awa test` command, fixture discovery, template rendering per fixture, file
+- 2.9.0 (2026-02-28): CLI Layer — `generate` command gains `init` alias; added config-not-found hint in generate handler

@@ -45,6 +45,10 @@
 // @awa-impl: FP-4_AC-5
 // @awa-impl: GEN-10_AC-1
 // @awa-impl: GEN-10_AC-2
+// @awa-impl: INIT-1_AC-1
+// @awa-impl: INIT-2_AC-1
+// @awa-impl: INIT-3_AC-1
+// @awa-impl: INIT-4_AC-1
 
 import { Command } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
@@ -67,8 +71,10 @@ program
   .version(version, '-v, --version', 'Display version number');
 
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
+// @awa-impl: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
 program
   .command('generate')
+  .alias('init')
   .description('Generate AI agent configuration files from templates')
   // @awa-impl: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
   .argument('[output]', 'Output directory (optional if specified in config)')
