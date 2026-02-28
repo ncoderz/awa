@@ -60,6 +60,13 @@ import { testCommand } from '../commands/test.js';
 import type { RawCheckOptions } from '../core/check/types.js';
 import type { RawTestOptions } from '../core/template-test/types.js';
 import type { RawCliOptions } from '../types/index.js';
+import { logger } from '../utils/logger.js';
+import {
+  checkForUpdate,
+  printUpdateWarning,
+  type UpdateCheckResult,
+} from '../utils/update-check.js';
+import { shouldCheck, writeCache } from '../utils/update-check-cache.js';
 
 const version = PACKAGE_INFO.version;
 
@@ -256,5 +263,58 @@ program
     process.exit(exitCode);
   });
 
+// Fire update check asynchronously (non-blocking) before parse
+let updateCheckPromise: Promise<UpdateCheckResult | null> | null = null;
+
+const isJsonOrSummary = process.argv.includes('--json') || process.argv.includes('--summary');
+const isTTY = process.stdout.isTTY === true;
+const isDisabledByEnv = !!process.env.NO_UPDATE_NOTIFIER;
+
+if (!isJsonOrSummary && isTTY && !isDisabledByEnv) {
+  updateCheckPromise = (async () => {
+    try {
+      // Load config to check update-check settings
+      const { configLoader } = await import('../core/config.js');
+      const configPath =
+        process.argv.indexOf('-c') !== -1
+          ? process.argv[process.argv.indexOf('-c') + 1]
+          : process.argv.indexOf('--config') !== -1
+            ? process.argv[process.argv.indexOf('--config') + 1]
+            : undefined;
+      const fileConfig = await configLoader.load(configPath ?? null);
+
+      const updateCheckConfig = fileConfig?.['update-check'];
+      if (updateCheckConfig?.enabled === false) return null;
+
+      const intervalSeconds = updateCheckConfig?.interval ?? 86400;
+      const intervalMs = intervalSeconds * 1000;
+
+      const needsCheck = await shouldCheck(intervalMs);
+      if (!needsCheck) return null;
+
+      const result = await checkForUpdate();
+      if (result) {
+        await writeCache(result.latest);
+      }
+      return result;
+    } catch {
+      return null;
+    }
+  })();
+}
+
+// Print update warning after command completes
+program.hook('postAction', async () => {
+  if (!updateCheckPromise) return;
+  try {
+    const result = await updateCheckPromise;
+    if (result?.isOutdated) {
+      printUpdateWarning(logger, result);
+    }
+  } catch {
+    // Silently ignore
+  }
+});
+
 // @awa-impl: GEN-10_AC-1, GEN-10_AC-2
-program.parse();
+program.parseAsync();

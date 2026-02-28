@@ -43,6 +43,12 @@ export interface TargetConfig {
   'remove-features'?: string[];
 }
 
+// UpdateCheckConfig - Update check configuration
+export interface UpdateCheckConfig {
+  enabled?: boolean;
+  interval?: number;
+}
+
 // FileConfig - TOML configuration file structure
 export interface FileConfig {
   output?: string;
@@ -59,6 +65,7 @@ export interface FileConfig {
   check?: Record<string, unknown>;
   targets?: Record<string, TargetConfig>;
   overlay?: string[];
+  'update-check'?: UpdateCheckConfig;
 }
 
 // ResolvedOptions - Fully resolved configuration with defaults applied
