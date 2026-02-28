@@ -64,7 +64,7 @@ lite = ["copilot", "claude"]
 | `format` | string | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | string | *(regex)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
-| `schema-dir` | string | `".awa/.agent/schemas"` | Directory containing `*.rules.yaml` schema rule files |
+| `schema-dir` | string | `".awa/.agent/schemas"` | Directory containing `*.schema.yaml` schema rule files |
 | `schema-enabled` | boolean | `true` | Enable/disable schema structural validation |
 
 ## Presets

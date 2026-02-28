@@ -37,7 +37,7 @@ CHOSEN APPROACH:
 
 Each rule file declares structural expectations for a set of Markdown files. The format is YAML for readability and ease of authoring.
 
-Example: `REQ.rules.yaml`
+Example: `REQ.schema.yaml`
 ```yaml
 target-files: ".awa/specs/REQ-*.md"
 
@@ -77,7 +77,7 @@ sections-prohibited:
   - "*"        # no italic
 ```
 
-Example: `TASK.rules.yaml`
+Example: `TASK.schema.yaml`
 ```yaml
 target-files: ".awa/tasks/TASK-*.md"
 
@@ -113,7 +113,7 @@ sections:
           columns: ["Property", "Test"]
 ```
 
-Example: `DESIGN.rules.yaml`
+Example: `DESIGN.schema.yaml`
 ```yaml
 target-files: ".awa/specs/DESIGN-*.md"
 
@@ -208,14 +208,14 @@ schema-dir = ".awa/.agent/schemas"    # where to find rule files
 schema-enabled = true                  # enable/disable schema checking
 ```
 
-Rule files are discovered by globbing `{schema-dir}/*.rules.yaml`. Each file's `target-files` field determines which Markdown files it applies to.
+Rule files are discovered by globbing `{schema-dir}/*.schema.yaml`. Each file's `target-files` field determines which Markdown files it applies to.
 
 Optional overrides not needed initially — the `target-files` in each rule file handles mapping.
 
 ### New Components
 
 ```
-CHK-RuleLoader      — reads *.rules.yaml files, parses into typed rule definitions
+CHK-RuleLoader      — reads *.schema.yaml files, parses into typed rule definitions
 CHK-SchemaChecker   — parses Markdown via remark, walks AST checking rules
 ```
 
@@ -246,10 +246,10 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 
 1. Define TypeScript types for the YAML rule format (`RuleFile`, `SectionRule`, `ContainsRule`, etc.)
 2. Create `CHK-RuleLoader` component (`src/core/check/rule-loader.ts`)
-3. Glob `{schema-dir}/*.rules.yaml` files
+3. Glob `{schema-dir}/*.schema.yaml` files
 4. Parse YAML into typed rule definitions (use a YAML parser — check existing deps or add one)
 5. Resolve `target-files` patterns to determine which Markdown files each rule set applies to
-6. Unit tests: parse sample `.rules.yaml`, verify typed output
+6. Unit tests: parse sample `.schema.yaml`, verify typed output
 
 ### Phase 2: Schema Checker
 
@@ -273,7 +273,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 2. Add `[check]` TOML parsing for new fields in config builder
 3. Wire rule loading + schema checking into check command pipeline
 4. Add new finding codes to `FindingCode` type and reporter (both text and JSON)
-5. Integration test: create sample `.rules.yaml` + matching/non-matching Markdown files
+5. Integration test: create sample `.schema.yaml` + matching/non-matching Markdown files
 
 ### Phase 4: Documentation
 
@@ -288,7 +288,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 |---|---|---|
 | `unified` | Processor pipeline | ~5KB |
 | `remark-parse` | Markdown → mdast | ~30KB |
-| YAML parser (TBD) | Parse `.rules.yaml` | research needed — prefer lightweight, e.g. `smol-yaml` or `yaml` |
+| YAML parser (TBD) | Parse `.schema.yaml` | research needed — prefer lightweight, e.g. `smol-yaml` or `yaml` |
 
 ## Risks
 
@@ -303,7 +303,7 @@ Extended: `scanMarkers → parseSpecs → loadRules → [codeSpecChecker, specSp
 ## Completion Criteria
 
 - Rule file format defined and documented
-- `awa check` loads `*.rules.yaml` from configured schema directory
+- `awa check` loads `*.schema.yaml` from configured schema directory
 - Reports structural violations (missing sections, bad tables, missing patterns)
 - Schema checking is configurable (`schema-enabled = false` to disable)
 - Defaults match bundled awa workflow directory (`.awa/.agent/schemas/`)

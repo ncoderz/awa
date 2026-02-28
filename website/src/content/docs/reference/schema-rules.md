@@ -3,18 +3,18 @@ title: Schema Rules
 description: Define structural validation rules for Markdown spec files using declarative YAML.
 ---
 
-Schema rules define the expected structure of Markdown spec files. The `awa check` command loads `*.rules.yaml` files from the schema directory and checks spec files against them.
+Schema rules define the expected structure of Markdown spec files. The `awa check` command loads `*.schema.yaml` files from the schema directory and checks spec files against them.
 
 ## Rule File Location
 
-Rule files are discovered by globbing `{schema-dir}/*.rules.yaml`. The default schema directory is `.awa/.agent/schemas`.
+Rule files are discovered by globbing `{schema-dir}/*.schema.yaml`. The default schema directory is `.awa/.agent/schemas`.
 
 ```
 .awa/.agent/schemas/
-├── REQ.rules.yaml
-├── DESIGN.rules.yaml
-├── TASK.rules.yaml
-└── FEAT.rules.yaml
+├── REQ.schema.yaml
+├── DESIGN.schema.yaml
+├── TASK.schema.yaml
+└── FEAT.schema.yaml
 ```
 
 ## Rule File Format
@@ -210,7 +210,7 @@ Schema validation is enabled by default. Configure in `.awa.toml`:
 
 ```toml
 [check]
-schema-dir = ".awa/.agent/schemas"   # Directory containing *.rules.yaml files
+schema-dir = ".awa/.agent/schemas"   # Directory containing *.schema.yaml files
 schema-enabled = true                 # Set to false to disable schema checking
 ```
 
@@ -219,7 +219,7 @@ See [Configuration](/reference/configuration/) for the full `[check]` options re
 ## Complete Example
 
 ```yaml
-# REQ.rules.yaml — validates requirement spec files
+# REQ.schema.yaml — validates requirement spec files
 target-files: ".awa/specs/REQ-*.md"
 
 sections:

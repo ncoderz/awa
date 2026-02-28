@@ -17,10 +17,10 @@ SOURCE: PLAN-011-schema-check.md
 
 ## Phase 3: Rule Loader [MUST]
 
-GOAL: Load and parse *.rules.yaml files into typed rule definitions
+GOAL: Load and parse *.schema.yaml files into typed rule definitions
 TEST CRITERIA: Can parse valid YAML rule files, reject malformed rules, match target-files to spec paths
 
-- [x] T-CHK-120 Implement rule file discovery — glob `{schemaDir}/*.rules.yaml` → src/core/check/rule-loader.ts
+- [x] T-CHK-120 Implement rule file discovery — glob `{schemaDir}/*.schema.yaml` → src/core/check/rule-loader.ts
 - [x] T-CHK-121 Implement YAML parsing into typed `RuleFile` definitions → src/core/check/rule-loader.ts
 - [x] T-CHK-122 Implement target-files pattern matching — resolve which Markdown files each rule set applies to → src/core/check/rule-loader.ts
 - [x] T-CHK-123 Implement rule validation — detect invalid regex in `pattern` fields, missing required properties → src/core/check/rule-loader.ts
@@ -63,8 +63,8 @@ TEST CRITERIA: `awa check` loads rules, reports schema findings alongside marker
 - [x] T-CHK-153 Add schema finding codes to text reporter formatting → src/core/check/reporter.ts
 - [x] T-CHK-154 Add schema finding codes to JSON reporter output → src/core/check/reporter.ts
 - [x] T-CHK-155 Support `schema-enabled = false` to skip schema checking entirely → src/commands/check.ts
-- [x] T-CHK-156 [P] Integration test: validate with sample rules.yaml + conforming Markdown → src/commands/__tests__/check.test.ts
-- [x] T-CHK-157 [P] Integration test: validate with sample rules.yaml + non-conforming Markdown → src/commands/__tests__/check.test.ts
+- [x] T-CHK-156 [P] Integration test: validate with sample schema.yaml + conforming Markdown → src/commands/__tests__/check.test.ts
+- [x] T-CHK-157 [P] Integration test: validate with sample schema.yaml + non-conforming Markdown → src/commands/__tests__/check.test.ts
 - [x] T-CHK-158 [P] Integration test: validate with schema-enabled = false skips schema checking → src/commands/__tests__/check.test.ts
 
 ## Phase 6: Documentation

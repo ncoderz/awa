@@ -152,7 +152,7 @@ export function ghost() {}
     await mkdir(schemaDir, { recursive: true });
 
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: ".*"
@@ -226,7 +226,7 @@ test('works', () => {});
     await mkdir(schemaDir, { recursive: true });
 
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Requirements"
@@ -279,7 +279,7 @@ ACCEPTANCE CRITERIA
 
     // Create a rule that would fail
     await writeFile(
-      join(schemaDir, 'REQ.rules.yaml'),
+      join(schemaDir, 'REQ.schema.yaml'),
       `target-files: ".awa/specs/REQ-*.md"
 sections:
   - heading: "Required Section"

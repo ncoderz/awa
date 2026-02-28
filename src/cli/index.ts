@@ -55,7 +55,9 @@ import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
 import { diffCommand } from '../commands/diff.js';
 import { generateCommand } from '../commands/generate.js';
+import { testCommand } from '../commands/test.js';
 import type { RawCheckOptions } from '../core/check/types.js';
+import type { RawTestOptions } from '../core/template-test/types.js';
 import type { RawCliOptions } from '../types/index.js';
 
 const version = PACKAGE_INFO.version;
@@ -190,6 +192,24 @@ program
     };
 
     const exitCode = await checkCommand(cliOptions);
+    process.exit(exitCode);
+  });
+
+// @awa-impl: TTST-7_AC-1, TTST-5_AC-1
+program
+  .command('test')
+  .description('Run template test fixtures to verify expected output')
+  .option('-t, --template <source>', 'Template source (local path or Git repository)')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--update-snapshots', 'Update stored snapshots with current rendered output', false)
+  .action(async (options) => {
+    const testOptions: RawTestOptions = {
+      template: options.template,
+      config: options.config,
+      updateSnapshots: options.updateSnapshots,
+    };
+
+    const exitCode = await testCommand(testOptions);
     process.exit(exitCode);
   });
 
