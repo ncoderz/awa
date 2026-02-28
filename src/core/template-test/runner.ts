@@ -6,9 +6,9 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pathExists } from '../../utils/fs.js';
 import { featureResolver } from '../feature-resolver.js';
 import { fileGenerator } from '../generator.js';
-import { pathExists } from '../../utils/fs.js';
 import { compareSnapshots, updateSnapshots } from './snapshot.js';
 import type {
   FileAssertionResult,
@@ -70,9 +70,7 @@ export async function runFixture(
       snapshotResults = await compareSnapshots(tempDir, snapshotDir);
     }
 
-    const snapshotFailures = snapshotResults.filter(
-      (r) => r.status !== 'match'
-    );
+    const snapshotFailures = snapshotResults.filter((r) => r.status !== 'match');
 
     const passed = missingFiles.length === 0 && snapshotFailures.length === 0;
 

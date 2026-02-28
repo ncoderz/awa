@@ -78,6 +78,33 @@ The check command checks:
 - **Orphaned specs** — spec files with a feature code not referenced by any marker or cross-reference
 - **Schema validation** — spec file structure checked against declarative `*.rules.yaml` schema rules (see [SCHEMA_RULES.md](SCHEMA_RULES.md))
 
+### `awa test`
+
+Run template test fixtures to verify expected output.
+
+Exit code 0 = all pass, 1 = failures found.
+
+```bash
+awa test                                       # test default template
+awa test --template ./templates/awa            # test specific template
+awa test --update-snapshots                    # update stored snapshots
+```
+
+| Option | Description |
+|--------|-------------|
+| `-t, --template <source>` | Template source — local path or Git repo |
+| `-c, --config <path>` | Path to configuration file |
+| `--update-snapshots` | Update stored snapshots with current rendered output |
+
+The test command:
+- Discovers fixture files (`*.toml`) in the template's `_tests/` directory
+- Renders templates for each fixture with specified features, presets, and remove-features
+- Verifies expected files exist in the rendered output
+- Compares rendered output against stored snapshots (if snapshot directories exist)
+- Reports pass/fail per fixture with failure details
+
+See [Template Testing](TEMPLATE_TESTING.md) for fixture format and CI setup.
+
 ### Global Options
 
 | Option | Description |
@@ -137,3 +164,4 @@ Presets expand into feature flags. `--remove-features` subtracts from the combin
 6. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
 7. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
 8. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
+9. **Test** (for `awa test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots

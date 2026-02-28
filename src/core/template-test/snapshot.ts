@@ -67,10 +67,7 @@ export async function compareSnapshots(
 }
 
 // @awa-impl: TTST-5_AC-1
-export async function updateSnapshots(
-  renderedDir: string,
-  snapshotDir: string
-): Promise<void> {
+export async function updateSnapshots(renderedDir: string, snapshotDir: string): Promise<void> {
   // Remove existing snapshot directory
   if (await pathExists(snapshotDir)) {
     await rm(snapshotDir, { recursive: true, force: true });

@@ -46,10 +46,11 @@ See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 - [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
 - Feature flags and presets to turn content on/off per project
 - `awa diff` shows exactly what changed before you commit
+- `awa test` verifies templates produce expected output across feature combinations
 - Pull templates from GitHub, GitLab, Bitbucket, or use a local path
 - Optional `.awa.toml` config, or just use CLI flags
 
-See [CLI Reference](docs/CLI.md) and [Template Engine](docs/TEMPLATE_ENGINE.md) for details.
+See [CLI Reference](docs/CLI.md), [Template Engine](docs/TEMPLATE_ENGINE.md), and [Template Testing](docs/TEMPLATE_TESTING.md) for details.
 
 ## Quick Start
 
@@ -159,6 +160,7 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 | [Workflow](docs/WORKFLOW.md) | The awa workflow, `.awa/` structure, traceability chain, IDs and markers |
 | [CLI Reference](docs/CLI.md) | Commands, options, configuration, presets, and how it works |
 | [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
+| [Template Testing](docs/TEMPLATE_TESTING.md) | The `awa test` command, fixture format, snapshots, CI setup |
 | [Traceability Check](docs/TRACEABILITY_CHECK.md) | The `awa check` command, checks, configuration, JSON output |
 
 ## Community
