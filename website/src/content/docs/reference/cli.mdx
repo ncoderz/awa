@@ -65,14 +65,15 @@ Exit code `0` = all markers resolve, `1` = errors found.
 ```bash
 awa check                              # check with defaults
 awa check --format json                # JSON output for CI
-awa check --ignore "test/**"           # ignore specific paths
+awa check --code-ignore "test/**"      # ignore specific code paths
 awa check --config ./custom.toml       # custom config file
 ```
 
 | Option | Description |
 |--------|-------------|
 | `-c, --config <path>` | Path to configuration file |
-| `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
+| `--spec-ignore <pattern...>` | Glob patterns to exclude from spec file scanning |
+| `--code-ignore <pattern...>` | Glob patterns to exclude from code file scanning |
 | `--format <format>` | Output format: `text` (default) or `json` |
 
 The check command checks:

@@ -92,10 +92,15 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
       ? section['id-pattern']
       : DEFAULT_CHECK_CONFIG.idPattern;
 
-  // CLI --ignore appends to config ignore
-  const configIgnore = toStringArray(section?.ignore) ?? [...DEFAULT_CHECK_CONFIG.ignore];
-  const cliIgnore = cliOptions.ignore ?? [];
-  const ignore = [...configIgnore, ...cliIgnore];
+  // CLI --spec-ignore / --code-ignore append to their respective config lists
+  const configSpecIgnore = toStringArray(section?.['spec-ignore']) ?? [
+    ...DEFAULT_CHECK_CONFIG.specIgnore,
+  ];
+  const configCodeIgnore = toStringArray(section?.['code-ignore']) ?? [
+    ...DEFAULT_CHECK_CONFIG.codeIgnore,
+  ];
+  const specIgnore = [...configSpecIgnore, ...(cliOptions.specIgnore ?? [])];
+  const codeIgnore = [...configCodeIgnore, ...(cliOptions.codeIgnore ?? [])];
 
   const ignoreMarkers = toStringArray(section?.['ignore-markers']) ?? [
     ...DEFAULT_CHECK_CONFIG.ignoreMarkers,
@@ -135,7 +140,8 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
   return {
     specGlobs,
     codeGlobs,
-    ignore,
+    specIgnore,
+    codeIgnore,
     ignoreMarkers,
     markers,
     idPattern,

@@ -80,14 +80,15 @@ Exit code 0 = all markers resolve, 1 = errors found.
 ```bash
 awa check                              # check with defaults
 awa check --format json                # JSON output for CI
-awa check --ignore "test/**"           # ignore specific paths
+awa check --code-ignore "test/**"      # ignore specific code paths
 awa check --config ./custom.toml       # custom config file
 ```
 
 | Option | Description |
 |--------|-------------|
 | `-c, --config <path>` | Path to configuration file |
-| `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
+| `--spec-ignore <pattern...>` | Glob patterns to exclude from spec file scanning |
+| `--code-ignore <pattern...>` | Glob patterns to exclude from code file scanning |
 | `--format <format>` | Output format: `text` (default) or `json` |
 | `--allow-warnings` | Allow warnings without failing (default: warnings are treated as errors) |
 | `--spec-only` | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability |
@@ -202,10 +203,21 @@ full = ["copilot", "claude", "cursor", "windsurf", "kilocode", "opencode", "gemi
 lite = ["copilot", "claude"]
 
 [check]
-spec-globs = [".awa/specs/**/*.md"]
-code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
+spec-globs = [
+  ".awa/specs/ARCHITECTURE.md",
+  ".awa/specs/FEAT-*.md",
+  ".awa/specs/REQ-*.md",
+  ".awa/specs/DESIGN-*.md",
+  ".awa/specs/EXAMPLES-*.md",
+  ".awa/specs/API-*.tsp",
+  ".awa/tasks/TASK-*.md",
+  ".awa/plans/PLAN-*.md",
+  ".awa/align/ALIGN-*.md",
+]
+code-globs = ["**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
-ignore = ["node_modules/**", "dist/**"]
+spec-ignore = []                 # glob patterns to exclude from spec scanning
+code-ignore = ["node_modules/**", "dist/**", "vendor/**", "target/**", "build/**", "out/**", ".awa/**"]
 ignore-markers = []              # marker IDs to exclude from orphan checks
 format = "text"
 schema-dir = ".awa/.agent/schemas"

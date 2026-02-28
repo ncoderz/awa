@@ -4,7 +4,8 @@
 export interface CheckConfig {
   readonly specGlobs: readonly string[];
   readonly codeGlobs: readonly string[];
-  readonly ignore: readonly string[];
+  readonly specIgnore: readonly string[];
+  readonly codeIgnore: readonly string[];
   readonly ignoreMarkers: readonly string[];
   readonly markers: readonly string[];
   readonly idPattern: string;
@@ -17,9 +18,30 @@ export interface CheckConfig {
 }
 
 export const DEFAULT_CHECK_CONFIG: CheckConfig = {
-  specGlobs: ['.awa/specs/**/*.md'],
-  codeGlobs: ['src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}'],
-  ignore: ['node_modules/**', 'dist/**'],
+  specGlobs: [
+    '.awa/specs/ARCHITECTURE.md',
+    '.awa/specs/FEAT-*.md',
+    '.awa/specs/REQ-*.md',
+    '.awa/specs/DESIGN-*.md',
+    '.awa/specs/EXAMPLES-*.md',
+    '.awa/specs/API-*.tsp',
+    '.awa/tasks/TASK-*.md',
+    '.awa/plans/PLAN-*.md',
+    '.awa/align/ALIGN-*.md',
+  ],
+  codeGlobs: [
+    '**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}',
+  ],
+  specIgnore: [],
+  codeIgnore: [
+    'node_modules/**',
+    'dist/**',
+    'vendor/**',
+    'target/**',
+    'build/**',
+    'out/**',
+    '.awa/**',
+  ],
   ignoreMarkers: [],
   markers: ['@awa-impl', '@awa-test', '@awa-component'],
   idPattern: '([A-Z][A-Z0-9]*-\\d+(?:\\.\\d+)?(?:_AC-\\d+)?|[A-Z][A-Z0-9]*_P-\\d+)',
@@ -110,7 +132,8 @@ export interface CheckResult {
 }
 
 export interface RawCheckOptions {
-  readonly ignore?: string[];
+  readonly specIgnore?: string[];
+  readonly codeIgnore?: string[];
   readonly format?: string;
   readonly config?: string;
   readonly allowWarnings?: boolean;

@@ -82,7 +82,6 @@ test('works', () => {});
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
     });
 
@@ -104,7 +103,6 @@ export function ghost() {}
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
     });
 
@@ -123,7 +121,7 @@ export function ghost() {}
   });
 
   // @awa-test: CHK-10_AC-1
-  test('respects --ignore patterns', async () => {
+  test('respects --code-ignore patterns', async () => {
     // @awa-ignore-start
     await writeFile(
       join(codeDir, 'ignored.ts'),
@@ -135,7 +133,7 @@ export function ghost() {}
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: ['src/**'],
+      codeIgnore: ['src/**'],
       format: 'json',
     });
 
@@ -213,7 +211,6 @@ test('works', () => {});
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
     });
 
@@ -253,7 +250,6 @@ ACCEPTANCE CRITERIA
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
     });
 
@@ -301,7 +297,6 @@ schema-enabled = false
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
       allowWarnings: true,
     });
@@ -331,7 +326,6 @@ schema-enabled = false
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
     });
 
@@ -346,7 +340,6 @@ schema-enabled = false
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
       allowWarnings: true,
     });
@@ -367,7 +360,6 @@ allow-warnings = true
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
     });
 
@@ -428,7 +420,6 @@ spec-globs = ["custom-specs/**/*.md"]
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
     });
 
@@ -486,7 +477,6 @@ code-globs = ["custom-code/**/*.ts"]
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
     });
 
@@ -538,7 +528,6 @@ test('works', () => {});
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
       allowWarnings: true,
     });
@@ -606,7 +595,6 @@ cross-ref-patterns = ["IMPLEMENTS", "VALIDATES"]
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
     });
 
@@ -641,7 +629,6 @@ IMPLEMENTS: X-1_AC-1
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
       specOnly: true,
     });
@@ -661,7 +648,6 @@ IMPLEMENTS: GHOST-99_AC-1
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
       specOnly: true,
     });
@@ -676,7 +662,6 @@ IMPLEMENTS: GHOST-99_AC-1
 
     const exitCode = await checkCommand({
       config: undefined,
-      ignore: [],
       format: 'json',
       specOnly: true,
     });
@@ -704,7 +689,6 @@ spec-only = true
 
     const exitCode = await checkCommand({
       config: join(testDir, '.awa.toml'),
-      ignore: [],
       format: 'json',
     });
 

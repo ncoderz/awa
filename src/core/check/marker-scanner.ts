@@ -22,7 +22,7 @@ const IGNORE_END_RE = /@awa-ignore-end\b/;
 
 // @awa-impl: CHK-1_AC-1
 export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult> {
-  const files = await collectCodeFiles(config.codeGlobs, config.ignore);
+  const files = await collectCodeFiles(config.codeGlobs, config.codeIgnore);
   const markers: CodeMarker[] = [];
   const findings: Finding[] = [];
 

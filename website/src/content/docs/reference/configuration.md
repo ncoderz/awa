@@ -57,10 +57,11 @@ lite = ["copilot", "claude"]
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `spec-globs` | string[] | `[".awa/specs/**/*.md"]` | Glob patterns for spec files |
-| `code-globs` | string[] | `["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]` | Glob patterns for source files |
+| `spec-globs` | string[] | *(see example below)* | Glob patterns for spec, task, plan, and align files |
+| `code-globs` | string[] | `["**/*.{ts,js,...,zig}"]` | Glob patterns for source files |
 | `markers` | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
-| `ignore` | string[] | `["node_modules/**", "dist/**"]` | Glob patterns to exclude |
+| `spec-ignore` | string[] | `[]` | Glob patterns to exclude from spec file scanning |
+| `code-ignore` | string[] | `["node_modules/**", "dist/**", ...]` | Glob patterns to exclude from code file scanning |
 | `format` | string | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | string | *(regex)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
@@ -134,10 +135,21 @@ delete = true
 full = ["copilot", "claude", "cursor", "windsurf"]
 
 [check]
-spec-globs = [".awa/specs/**/*.md"]
-code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
+spec-globs = [
+  ".awa/specs/ARCHITECTURE.md",
+  ".awa/specs/FEAT-*.md",
+  ".awa/specs/REQ-*.md",
+  ".awa/specs/DESIGN-*.md",
+  ".awa/specs/EXAMPLES-*.md",
+  ".awa/specs/API-*.tsp",
+  ".awa/tasks/TASK-*.md",
+  ".awa/plans/PLAN-*.md",
+  ".awa/align/ALIGN-*.md",
+]
+code-globs = ["**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
-ignore = ["node_modules/**", "dist/**"]
+spec-ignore = []
+code-ignore = ["node_modules/**", "dist/**", "vendor/**", "target/**", "build/**", "out/**", ".awa/**"]
 format = "text"
 schema-dir = ".awa/.agent/schemas"
 schema-enabled = true

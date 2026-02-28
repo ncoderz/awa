@@ -194,7 +194,8 @@ program
   )
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CHK-10_AC-1
-  .option('--ignore <pattern...>', 'Glob patterns for paths to exclude')
+  .option('--spec-ignore <pattern...>', 'Glob patterns to exclude from spec file scanning')
+  .option('--code-ignore <pattern...>', 'Glob patterns to exclude from code file scanning')
   // @awa-impl: CHK-9_AC-1
   .option('--format <format>', 'Output format (text or json)', 'text')
   .option(
@@ -210,7 +211,8 @@ program
   .action(async (options) => {
     const cliOptions: RawCheckOptions = {
       config: options.config,
-      ignore: options.ignore,
+      specIgnore: options.specIgnore,
+      codeIgnore: options.codeIgnore,
       format: options.format,
       allowWarnings: options.allowWarnings,
       specOnly: options.specOnly,

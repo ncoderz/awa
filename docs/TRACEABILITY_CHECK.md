@@ -32,8 +32,8 @@ awa check
 # JSON output for CI pipelines
 awa check --format json
 
-# Ignore specific paths
-awa check --ignore "test/fixtures/**" --ignore "examples/**"
+# Ignore specific code paths
+awa check --code-ignore "test/fixtures/**" --code-ignore "examples/**"
 
 # Allow warnings without failing (default: warnings are errors)
 awa check --allow-warnings
@@ -61,10 +61,21 @@ All check settings can be specified in `.awa.toml` under the `[check]` section. 
 
 ```toml
 [check]
-spec-globs = [".awa/specs/**/*.md"]
-code-globs = ["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]
+spec-globs = [
+  ".awa/specs/ARCHITECTURE.md",
+  ".awa/specs/FEAT-*.md",
+  ".awa/specs/REQ-*.md",
+  ".awa/specs/DESIGN-*.md",
+  ".awa/specs/EXAMPLES-*.md",
+  ".awa/specs/API-*.tsp",
+  ".awa/tasks/TASK-*.md",
+  ".awa/plans/PLAN-*.md",
+  ".awa/align/ALIGN-*.md",
+]
+code-globs = ["**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
-ignore = ["node_modules/**", "dist/**"]
+spec-ignore = []
+code-ignore = ["node_modules/**", "dist/**", "vendor/**", "target/**", "build/**", "out/**", ".awa/**"]
 format = "text"
 schema-dir = ".awa/.agent/schemas"
 schema-enabled = true
@@ -76,10 +87,11 @@ cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `spec-globs` | `[".awa/specs/**/*.md"]` | Glob patterns for spec files |
-| `code-globs` | `["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]` | Glob patterns for source files |
+| `spec-globs` | *(see config example above)* | Glob patterns for spec, task, plan, and align files |
+| `code-globs` | `["**/*.{ts,js,...,zig}"]` | Glob patterns for source files |
 | `markers` | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
-| `ignore` | `["node_modules/**", "dist/**"]` | Glob patterns to exclude |
+| `spec-ignore` | `[]` | Glob patterns to exclude from spec file scanning |
+| `code-ignore` | `["node_modules/**", "dist/**", ...]` | Glob patterns to exclude from code file scanning |
 | `ignore-markers` | `[]` | Marker IDs to exclude from orphan checks |
 | `format` | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | *(see above)* | Regex for valid traceability IDs |

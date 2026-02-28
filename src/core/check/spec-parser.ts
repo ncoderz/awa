@@ -9,7 +9,7 @@ import type { CheckConfig, CrossReference, SpecFile, SpecParseResult } from './t
 
 // @awa-impl: CHK-2_AC-1
 export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> {
-  const files = await collectSpecFiles(config.specGlobs, config.ignore);
+  const files = await collectSpecFiles(config.specGlobs, config.specIgnore);
   const specFiles: SpecFile[] = [];
 
   const requirementIds = new Set<string>();
