@@ -1,6 +1,6 @@
 # Create awa Usage Skill
 
-STATUS: in-progress
+STATUS: done
 DIRECTION: lateral
 
 ## Context
@@ -22,32 +22,32 @@ When an AI agent encounters a project using awa for the first time, it needs a s
 
 All CLI and config detail included inline (AIs may not have access to `docs/` in every project):
 
-- [ ] **What awa is** — agent workflow for AIs, CLI tool, spec-driven development with traceability
-- [ ] **The `.awa/` directory** — structure of specs/, tasks/, plans/, align/, rules/, .agent/schemas/
-- [ ] **The workflow** — stages, traceability chain, IDs and markers
-- [ ] **CLI commands** — full reference for `awa init`/`generate`, `awa diff`, `awa check`, `awa test`, `awa features` with all options
-- [ ] **Configuration** — complete `.awa.toml` format: root options, `[presets]`, `[check]`, `[targets.*]`, feature resolution order
+- [x] **What awa is** — agent workflow for AIs, CLI tool, spec-driven development with traceability
+- [x] **The `.awa/` directory** — structure of specs/, tasks/, plans/, align/, rules/, .agent/schemas/
+- [x] **The workflow** — stages, traceability chain, IDs and markers
+- [x] **CLI commands** — full reference for `awa init`/`generate`, `awa diff`, `awa check`, `awa test`, `awa features` with all options
+- [x] **Configuration** — complete `.awa.toml` format: root options, `[presets]`, `[check]`, `[targets.*]`, feature resolution order
 
 ### Implementation
 
 Files to create following the existing skill pattern:
-- [ ] `templates/awa/_partials/awa.usage.md` — the actual content
-- [ ] `templates/awa/_partials/_skill.awa-usage.md` — frontmatter wrapper for non-copilot agents
-- [ ] `templates/awa/.github/skills/awa-usage/SKILL.md` — copilot (inline frontmatter)
-- [ ] `templates/awa/.claude/skills/awa-usage/SKILL.md` — claude
-- [ ] `templates/awa/.agent/skills/awa-usage/SKILL.md` — agy
-- [ ] `templates/awa/.agents/skills/awa-usage/SKILL.md` — codex
-- [ ] `templates/awa/.kilocode/skills/awa-usage/SKILL.md` — kilocode
-- [ ] `templates/awa/.gemini/skills/awa-usage/SKILL.md` — gemini
-- [ ] `templates/awa/.opencode/skills/awa-usage/SKILL.md` — opencode
-- [ ] `templates/awa/.qwen/skills/awa-usage/SKILL.md` — qwen
-- [ ] `templates/awa/.roo/skills/awa-usage/SKILL.md` — roo
-- [ ] `templates/awa/.windsurf/skills/awa-usage/SKILL.md` — windsurf
+- [x] `templates/awa/_partials/awa.usage.md` — the actual content
+- [x] `templates/awa/_partials/_skill.awa-usage.md` — frontmatter wrapper for non-copilot agents
+- [x] `templates/awa/.github/skills/awa-usage/SKILL.md` — copilot (inline frontmatter)
+- [x] `templates/awa/.claude/skills/awa-usage/SKILL.md` — claude
+- [x] `templates/awa/.agent/skills/awa-usage/SKILL.md` — agy
+- [x] `templates/awa/.agents/skills/awa-usage/SKILL.md` — codex
+- [x] `templates/awa/.kilocode/skills/awa-usage/SKILL.md` — kilocode
+- [x] `templates/awa/.gemini/skills/awa-usage/SKILL.md` — gemini
+- [x] `templates/awa/.opencode/skills/awa-usage/SKILL.md` — opencode
+- [x] `templates/awa/.qwen/skills/awa-usage/SKILL.md` — qwen
+- [x] `templates/awa/.roo/skills/awa-usage/SKILL.md` — roo
+- [x] `templates/awa/.windsurf/skills/awa-usage/SKILL.md` — windsurf
 
 ### Validation
 
-- [ ] Run `awa test` to verify templates still pass
-- [ ] Run `awa diff .` to verify diff is clean or expected
+- [x] Run `awa test` to verify templates still pass
+- [x] Run `awa diff .` to verify diff is clean or expected
 
 ## Risks
 
@@ -61,10 +61,10 @@ Files to create following the existing skill pattern:
 
 ## Completion Criteria
 
-- [ ] Skill file exists in all 10 agent skill directories plus `_partials/`
-- [ ] Skill follows the `---` frontmatter + markdown body format of other skills
-- [ ] Skill accurately covers: what awa is, `.awa/` structure, workflow, CLI commands (full reference), `.awa.toml` config (full reference)
-- [ ] `awa test` passes with the new skill in place
+- [x] Skill file exists in all 10 agent skill directories plus `_partials/`
+- [x] Skill follows the `---` frontmatter + markdown body format of other skills
+- [x] Skill accurately covers: what awa is, `.awa/` structure, workflow, CLI commands (full reference), `.awa.toml` config (full reference)
+- [x] `awa test` passes with the new skill in place
 
 ## Open Questions
 
