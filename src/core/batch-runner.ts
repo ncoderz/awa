@@ -47,7 +47,6 @@ export class BatchRunner {
     const namesToProcess = mode === 'all' ? targetNames : [targetName as string];
 
     const results: BatchTargetResult[] = [];
-    const resolvedTemplates = new Map<string, string>();
 
     for (const name of namesToProcess) {
       const resolved = configLoader.resolveTarget(name, fileConfig);
@@ -73,11 +72,6 @@ export class BatchRunner {
           );
         }
         throw error;
-      }
-
-      // Track template for deduplication logging
-      if (options.template) {
-        resolvedTemplates.set(options.template, name);
       }
 
       results.push({ targetName: name, options });

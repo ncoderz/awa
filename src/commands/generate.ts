@@ -27,7 +27,7 @@ const TOOL_FEATURES = [
 
 const TOOL_FEATURE_VALUES = new Set<string>(TOOL_FEATURES.map((t) => t.value));
 
-async function runGenerate(options: ResolvedOptions, nonInteractive: boolean): Promise<void> {
+async function runGenerate(options: ResolvedOptions, batchMode: boolean): Promise<void> {
   // Resolve template source
   const template = await templateResolver.resolve(options.template, options.refresh);
 
@@ -41,7 +41,7 @@ async function runGenerate(options: ResolvedOptions, nonInteractive: boolean): P
   // @awa-impl: MTT-1_AC-1 // @awa-ignore
   // If no tool feature flag is present, prompt the user to select tools interactively
   // In batch mode (--all / --target), skip prompting
-  if (!nonInteractive) {
+  if (!batchMode) {
     const hasToolFlag = features.some((f) => TOOL_FEATURE_VALUES.has(f));
     if (!hasToolFlag) {
       const selected = await multiselect({
