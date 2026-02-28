@@ -40,6 +40,10 @@ Get up and running with awa in just a few minutes.
 
    This generates agent configuration files into the current directory using awa's bundled default template.
 
+   :::tip
+   `awa init` is an alias for `awa generate` — you can use either one.
+   :::
+
 3. **Generate with specific AI tool features**
 
    ```bash
@@ -61,6 +65,22 @@ Get up and running with awa in just a few minutes.
    ```
 
    After templates are updated, use `awa diff` to see what would change in your project.
+
+6. **Validate traceability**
+
+   ```bash
+   awa check
+   ```
+
+   `awa check` validates that all traceability markers in your code reference real spec IDs, and flags uncovered acceptance criteria.
+
+7. **Discover available features**
+
+   ```bash
+   awa features
+   ```
+
+   Lists all feature flags discovered in the template.
 
 </Steps>
 
@@ -118,6 +138,8 @@ The exact output depends on your template and feature flags.
 ## Next Steps
 
 - [Workflow Guide](/guides/workflow/) — understand the awa workflow stages and traceability
+- [Traceability](/guides/traceability/) — how IDs and markers connect everything
 - [CLI Reference](/reference/cli/) — all commands and options
 - [Template Engine](/reference/template-engine/) — write your own templates
+- [Template Testing](/reference/template-testing/) — verify templates with fixtures and snapshots
 - [Configuration](/reference/configuration/) — `.awa.toml` reference
