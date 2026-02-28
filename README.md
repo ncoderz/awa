@@ -64,7 +64,7 @@ npm install -g @ncoderz/awa
 Or use with npx:
 
 ```bash
-npx @ncoderz/awa generate .
+npx @ncoderz/awa init .
 ```
 
 ### Generate
@@ -72,19 +72,19 @@ npx @ncoderz/awa generate .
 Generate files into the current directory using the bundled default template:
 
 ```bash
-awa generate .
+awa init .
 ```
 
 Generate with specific features enabled:
 
 ```bash
-awa generate . --features copilot claude cursor
+awa init . --features copilot claude cursor
 ```
 
 Generate to a specific output directory:
 
 ```bash
-awa generate ./my-project
+awa init ./my-project
 ```
 
 ### Preview Changes
@@ -98,7 +98,7 @@ awa diff .
 Apply any template configured file deletions (disabled by default):
 
 ```bash
-awa generate . --delete
+awa init . --delete
 ```
 
 ## The `.awa/` Directory
