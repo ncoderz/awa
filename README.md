@@ -21,40 +21,45 @@ Without structure, work drifts and nobody, including the AI, can trace what happ
 
 ## How awa Solves It
 
-awa generates agent configuration files from **templates** with **feature flags**. The generated output includes a spec-driven development workflow with full traceability:
+awa generates agent configuration files from **templates**. The generated output includes a powerful spec-driven development workflow with full traceability:
 
 ```
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
-Every artifact traces back to its origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
+Every code and test artefect traces back to its requirement and acceptance criteria origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
+
+Not only this, but awa actively checks that specs match a high quality schema, and that all requirements and acceptance criteria map to code and tests. This helps guide the AI to produce higher quality output.
 
 ## Features
 
 ### Workflow & Traceability
 
-- Structured workflow from architecture through features, requirements, design, tasks, code, tests, and docs
+- Structured but flexible workflow from architecture through features, requirements, design, tasks, code, tests, and docs
 - Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
 - Every requirement has an ID, every line of code links back to it via `@awa-impl` and `@awa-test` markers
-- `awa check` checks that all traceability markers resolve to real spec IDs and flags uncovered acceptance criteria
-- Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
+- `awa check` checks that specs match their schemas, and that all traceability markers resolve to real spec IDs. Any acceptance criteria missing tests are flagged to the AI automatically
+- All AI orchestration documents all live in `.awa/`
 
 See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
 
 ### CLI & Template Engine
 
-- [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
-- Feature flags and presets to turn content on/off per project
-- Multi-target configuration — define `[targets.claude]`, `[targets.copilot]`, etc. in `.awa.toml` and generate all with `--all`
-- Template overlays (`--overlay`) to layer custom files over a base template without forking it
-- `awa diff` shows exactly what changed before you commit
-- `awa test` verifies templates produce expected output across feature combinations
-- `--json` flag for machine-readable output in CI pipelines
-- `--summary` flag for compact one-line counts output
+The awa CLI can be used to update your AI guiding files such as AGENTS.md automatically from templates, making it easy to keep them up-to-date and in-sync for every project.
+
+- [Eta](https://eta.js.org/) templates with conditionals, loops, and partials allow templating AI files (and other project files if you wish)
 - Pull templates from GitHub, GitLab, Bitbucket, or use a local path
 - Optional `.awa.toml` config, or just use CLI flags
+- Feature flags and presets to turn content on/off per project
+- `awa check` validates traceability markers against spec IDs and enforces spec file structure via YAML schemas
+- Template overlays (`--overlay`) allow layering custom files over a base template without forking it
+- `awa diff` shows exactly what has changed in a template before applying it to your project; `--watch` re-diffs on template changes, making template development easy
+- `awa test` verifies templates produce expected output across feature combinations by automatically diffing against fixture files
+- `awa features` discovers available feature flags and presets in a template
+- `--json` flag for machine-readable output in CI pipelines
+- `--summary` flag for compact one-line counts output
 
-See [CLI Reference](docs/CLI.md), [Template Engine](docs/TEMPLATE_ENGINE.md), and [Template Testing](docs/TEMPLATE_TESTING.md) for details.
+See [CLI Reference](docs/CLI.md), [Template Engine](docs/TEMPLATE_ENGINE.md), [Template Testing](docs/TEMPLATE_TESTING.md), and [Schema Rules](docs/SCHEMA_RULES.md) for details.
 
 ## Quick Start
 
@@ -98,10 +103,47 @@ See what would change without writing files:
 awa diff .
 ```
 
+Watch for template changes and re-diff automatically:
+
+```bash
+awa diff . --watch
+```
+
 Apply any template configured file deletions (disabled by default):
 
 ```bash
 awa init . --delete
+```
+
+Layer custom files over the base template with overlays:
+
+```bash
+awa init . --overlay ./my-overrides
+```
+
+### Validate
+
+Check traceability markers and spec file structure:
+
+```bash
+awa check
+```
+
+### Test Templates
+
+Verify templates produce expected output across feature combinations:
+
+```bash
+awa test
+```
+
+### Discover Features
+
+List all feature flags available in a template:
+
+```bash
+awa features
+awa features --json   # machine-readable output
 ```
 
 ## The `.awa/` Directory
@@ -157,6 +199,34 @@ Every link is explicit. Nothing is implied.
 
 See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 
+## CI Integration
+
+Use `--json` for structured output in CI pipelines, or `--summary` for compact build-log output:
+
+```bash
+# Detect template drift (exit code 1 = differences found)
+awa diff . --json > diff-result.json
+
+# Compact summary for build logs
+awa diff . --summary
+# Output: changed: 2, new: 1, matching: 10, deleted: 0
+
+# Validate traceability
+awa check --format json > check-result.json
+```
+
+See [CI Integration](docs/CLI.md#ci-integration) in the CLI reference for JSON output formats.
+
+## Exit Codes
+
+| Command | 0 | 1 | 2 |
+|---------|---|---|---|
+| `awa init` / `awa generate` | Success | — | Internal error |
+| `awa diff` | All files match | Differences found | Internal error |
+| `awa check` | All checks pass | Errors found | Internal error |
+| `awa test` | All fixtures pass | Failures found | Internal error |
+| `awa features` | Success | Error | — |
+
 ## Documentation
 
 | Document | Description |
@@ -166,6 +236,7 @@ See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
 | [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
 | [Template Testing](docs/TEMPLATE_TESTING.md) | The `awa test` command, fixture format, snapshots, CI setup |
 | [Traceability Check](docs/TRACEABILITY_CHECK.md) | The `awa check` command, checks, configuration, JSON output |
+| [Schema Rules](docs/SCHEMA_RULES.md) | Declarative YAML rules for validating spec file structure |
 
 ## Community
 
@@ -220,6 +291,7 @@ npm run build
 | `npm test` | Run tests |
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run test:coverage` | Run tests with coverage |
+| `npm run check` | Run `awa check` on this project |
 | `npm run lint` | Check code with Biome |
 | `npm run lint:fix` | Fix linting issues |
 | `npm run format` | Format code with Biome |
@@ -227,7 +299,7 @@ npm run build
 | `npm run gen:example` | Generate example template to `outputs/example` |
 | `npm run gen:awa` | Generate awa templates to `outputs/awa` |
 | `npm run gen:awa:this` | Generate awa templates to current directory |
-| `npm run diff:awa` | Diff awa templates against current directory |
+| `npm run diff:awa:this` | Diff awa templates against current directory |
 
 
 

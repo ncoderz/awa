@@ -89,6 +89,8 @@ awa check --config ./custom.toml       # custom config file
 | `-c, --config <path>` | Path to configuration file |
 | `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
 | `--format <format>` | Output format: `text` (default) or `json` |
+| `--allow-warnings` | Allow warnings without failing (default: warnings are treated as errors) |
+| `--spec-only` | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability |
 
 The check command checks:
 - **Orphaned markers** — `@awa-impl`, `@awa-test`, `@awa-component` referencing IDs that don't exist in specs
@@ -97,6 +99,10 @@ The check command checks:
 - **Invalid ID format** — marker IDs not matching the configured ID pattern
 - **Orphaned specs** — spec files with a feature code not referenced by any marker or cross-reference
 - **Schema validation** — spec file structure checked against declarative `*.schema.yaml` schema rules (see [SCHEMA_RULES.md](SCHEMA_RULES.md))
+
+By default, warnings are treated as errors (exit code 1). Use `--allow-warnings` to restore the previous behavior where warnings don't affect the exit code.
+
+> **Note:** `schema-dir`, `schema-enabled`, `ignore-markers`, `allow-warnings`, and `spec-only` are also available as config keys in the `[check]` section of `.awa.toml`. `schema-dir` and `schema-enabled` are config-only (no CLI flags).
 
 ### `awa test`
 
@@ -124,6 +130,45 @@ The test command:
 - Reports pass/fail per fixture with failure details
 
 See [Template Testing](TEMPLATE_TESTING.md) for fixture format and CI setup.
+
+### `awa features`
+
+Discover feature flags available in a template.
+
+Exit code 0 = success, 1 = error.
+
+```bash
+awa features                              # discover flags in default template
+awa features --template ./templates/awa   # specific template
+awa features --json                       # JSON output
+```
+
+| Option | Description |
+|--------|-------------|
+| `-t, --template <source>` | Template source — local path or Git repo |
+| `-c, --config <path>` | Path to configuration file |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--json` | Output results as JSON |
+
+The features command:
+- Scans all template files (including partials) for `it.features.includes('name')` references
+- Lists each discovered feature flag and the files that reference it
+- Includes preset definitions from `.awa.toml` if available
+
+Example JSON output from `awa features --json`:
+
+```json
+{
+  "features": [
+    { "name": "copilot", "files": ["CLAUDE.md", "_partials/_header.md"] },
+    { "name": "claude", "files": ["CLAUDE.md"] }
+  ],
+  "presets": {
+    "full": ["copilot", "claude", "cursor"]
+  },
+  "filesScanned": 42
+}
+```
 
 ### Global Options
 
@@ -161,9 +206,12 @@ spec-globs = [".awa/specs/**/*.md"]
 code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
 markers = ["@awa-impl", "@awa-test", "@awa-component"]
 ignore = ["node_modules/**", "dist/**"]
+ignore-markers = []              # marker IDs to exclude from orphan checks
 format = "text"
 schema-dir = ".awa/.agent/schemas"
-schema-enabled = true
+schema-enabled = true            # set to false to disable schema validation
+allow-warnings = false           # set to true to allow warnings without failing
+spec-only = false                # set to true to skip code-to-spec traceability
 # id-pattern = custom regex for ID format validation
 # cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 ```

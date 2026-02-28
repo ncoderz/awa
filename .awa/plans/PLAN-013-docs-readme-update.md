@@ -1,6 +1,6 @@
 # Update README and Docs for Missing Features
 
-STATUS: in-progress
+STATUS: complete
 DIRECTION: lateral
 
 ## Context
@@ -72,44 +72,44 @@ The README.md and docs/ files have fallen behind the actual CLI implementation. 
 
 ### Phase 1: README.md Updates
 
-- [ ] Add `awa features` to the Features section with a brief description
-- [ ] Expand `awa check` coverage: brief explanation + example + link
-- [ ] Expand `awa test` coverage: brief explanation + example + link
-- [ ] Add Quick Start sections for `check`, `test`, `features`, and `diff --watch`
-- [ ] Add a CI Integration section (or "CI Usage" subsection) with `--json` and `--summary` examples
-- [ ] Add exit codes summary table covering all commands
-- [ ] Add SCHEMA_RULES.md to the Documentation table
-- [ ] Update Development Scripts table to match current `package.json` scripts
-- [ ] Add overlay example to Quick Start or expand the features bullet
+- [x] Add `awa features` to the Features section with a brief description
+- [x] Expand `awa check` coverage: brief explanation + example + link
+- [x] Expand `awa test` coverage: brief explanation + example + link
+- [x] Add Quick Start sections for `check`, `test`, `features`, and `diff --watch`
+- [x] Add a CI Integration section (or "CI Usage" subsection) with `--json` and `--summary` examples
+- [x] Add exit codes summary table covering all commands
+- [x] Add SCHEMA_RULES.md to the Documentation table
+- [x] Update Development Scripts table to match current `package.json` scripts
+- [x] Add overlay example to Quick Start or expand the features bullet
 
 ### Phase 2: docs/CLI.md Updates
 
-- [ ] Add `awa features` command section with options table, examples, and JSON output format
-- [ ] Add `--allow-warnings` to the `awa check` options table
-- [ ] Add `allow-warnings`, `ignore-markers`, `schema-dir`, `schema-enabled` to the config reference with notes on config-only vs CLI-available
-- [ ] Note that `schema-dir` and `schema-enabled` are config-only (no CLI flags)
+- [x] Add `awa features` command section with options table, examples, and JSON output format
+- [x] Add `--allow-warnings` to the `awa check` options table
+- [x] Add `allow-warnings`, `ignore-markers`, `schema-dir`, `schema-enabled` to the config reference with notes on config-only vs CLI-available
+- [x] Note that `schema-dir` and `schema-enabled` are config-only (no CLI flags)
 
 ### Phase 3: docs/TRACEABILITY_CHECK.md Updates
 
-- [ ] Add `--allow-warnings` flag to usage examples and options
-- [ ] Add `allow-warnings` and `ignore-markers` to the configuration options table
-- [ ] Document the warnings-are-errors default behavior (and how to opt out)
-- [ ] Add missing finding codes: `marker-trailing-text`, `schema-no-rule`, `schema-line-limit`
+- [x] Add `--allow-warnings` flag to usage examples and options
+- [x] Add `allow-warnings` and `ignore-markers` to the configuration options table
+- [x] Document the warnings-are-errors default behavior (and how to opt out)
+- [x] Add missing finding codes: `marker-trailing-text`, `schema-no-rule`, `schema-line-limit`
 
 ### Phase 4: docs/SCHEMA_RULES.md Updates
 
-- [ ] Add `schema-no-rule` and `schema-line-limit` as possible finding codes in an output section
+- [x] Add `schema-no-rule` and `schema-line-limit` as possible finding codes in an output section (already present)
 
 ### Phase 5: docs/WORKFLOW.md Updates
 
-- [ ] Add `awa features` to prompt examples section
-- [ ] Add note about Examples artifact in Stages table or directory section
+- [x] Add `awa features` to prompt examples section
+- [x] Add note about Examples artifact in Stages table or directory section
 
 ### Phase 6: Verify
 
-- [ ] Run `awa diff` to confirm generated templates still match
-- [ ] Cross-check README Documentation table links all work
-- [ ] Verify all CLI options from `awa --help` / `awa <cmd> --help` are documented
+- [x] Run `awa diff` to confirm generated templates still match (0 differences)
+- [x] Cross-check README Documentation table links all work (6 docs linked)
+- [x] Verify all CLI options from `awa --help` / `awa <cmd> --help` are documented
 
 ## Risks
 
@@ -123,12 +123,12 @@ The README.md and docs/ files have fallen behind the actual CLI implementation. 
 
 ## Completion Criteria
 
-- [ ] Every CLI command (`init`/`generate`, `diff`, `check`, `test`, `features`) has at least a brief description and example in README.md
-- [ ] Every CLI option visible in `awa <cmd> --help` is documented in docs/CLI.md
-- [ ] Every config key used in code is documented in the relevant docs page
-- [ ] All finding codes from `FindingCode` type are listed in TRACEABILITY_CHECK.md or SCHEMA_RULES.md
-- [ ] README Documentation table links to all docs/ pages
-- [ ] Development Scripts table matches package.json
+- [x] Every CLI command (`init`/`generate`, `diff`, `check`, `test`, `features`) has at least a brief description and example in README.md
+- [x] Every CLI option visible in `awa <cmd> --help` is documented in docs/CLI.md
+- [x] Every config key used in code is documented in the relevant docs page
+- [x] All finding codes from `FindingCode` type are listed in TRACEABILITY_CHECK.md or SCHEMA_RULES.md
+- [x] README Documentation table links to all docs/ pages
+- [x] Development Scripts table matches package.json
 
 ## Open Questions
 
@@ -154,3 +154,4 @@ The README.md and docs/ files have fallen behind the actual CLI implementation. 
 ## Change Log
 
 - 001 (2026-02-28): Initial plan — thorough audit of README.md and all docs/ files against architecture and source code
+- 002 (2026-02-28): Implementation complete — all phases executed, awa diff clean, build + 470 tests pass

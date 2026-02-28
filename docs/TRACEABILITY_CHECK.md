@@ -21,6 +21,7 @@ The `awa check` command verifies the integrity of the traceability chain between
 | Broken IMPLEMENTS | error | DESIGN component references an AC ID not in any REQ spec |
 | Broken VALIDATES | error | DESIGN property references an AC or requirement ID not in any REQ spec |
 | Orphaned spec | warning | Spec file's feature code isn't referenced by any marker or cross-reference |
+| Marker trailing text | error | Marker contains trailing text after the ID(s) |
 
 ## Usage
 
@@ -34,6 +35,12 @@ awa check --format json
 # Ignore specific paths
 awa check --ignore "test/fixtures/**" --ignore "examples/**"
 
+# Allow warnings without failing (default: warnings are errors)
+awa check --allow-warnings
+
+# Run only spec-level checks (skip code-to-spec traceability)
+awa check --spec-only
+
 # Custom config file
 awa check --config ./custom.toml
 ```
@@ -42,9 +49,11 @@ awa check --config ./custom.toml
 
 | Code | Meaning |
 |------|---------|
-| 0 | All checks pass (may have warnings) |
-| 1 | One or more errors found |
+| 0 | All checks pass (no errors; warnings only if `--allow-warnings`) |
+| 1 | One or more errors found (warnings count as errors unless `--allow-warnings`) |
 | 2 | Internal error (file read failure, invalid config) |
+
+By default, warnings are treated as errors and cause exit code 1. Use `--allow-warnings` or set `allow-warnings = true` in the `[check]` config to restore the previous behavior where only errors affect the exit code.
 
 ## Configuration
 
@@ -71,11 +80,14 @@ cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
 | `code-globs` | `["src/**/*.{ts,js,tsx,jsx,py,go,rs,java,cs}"]` | Glob patterns for source files |
 | `markers` | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
 | `ignore` | `["node_modules/**", "dist/**"]` | Glob patterns to exclude |
+| `ignore-markers` | `[]` | Marker IDs to exclude from orphan checks |
 | `format` | `"text"` | Output format (`text` or `json`) |
 | `id-pattern` | *(see above)* | Regex for valid traceability IDs |
 | `cross-ref-patterns` | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
 | `schema-dir` | `".awa/.agent/schemas"` | Directory containing `*.schema.yaml` schema rule files |
 | `schema-enabled` | `true` | Enable/disable schema structural validation |
+| `allow-warnings` | `false` | Allow warnings without failing (when `false`, warnings are promoted to errors) |
+| `spec-only` | `false` | Run only spec-level checks; skip code-to-spec traceability |
 
 ## Schema Validation
 
@@ -85,17 +97,30 @@ Rule files (`*.schema.yaml`) in the schema directory define expected heading str
 
 ### Schema Finding Codes
 
-| Check | Severity | Description |
-|-------|----------|-------------|
-| Missing required section | error | Expected heading not found in spec file |
-| Wrong heading level | warning | Section exists but at incorrect depth |
-| Missing content | error | Required pattern, list items, table, or code block not found |
-| Wrong table columns | error | Table columns don't match expected headers |
-| Prohibited formatting | warning | Disallowed text pattern found outside code blocks |
+| Code | Severity | Description |
+|------|----------|-------------|
+| `schema-missing-section` | error | Required section heading not found |
+| `schema-wrong-level` | warning | Section exists but at wrong heading level |
+| `schema-missing-content` | error | Section missing required content (pattern/list/table/code-block) |
+| `schema-table-columns` | error | Table columns don't match expected headers |
+| `schema-prohibited` | warning | Prohibited formatting pattern found outside code blocks |
+| `schema-line-limit` | warning | File exceeds the line limit defined in the rule |
+| `schema-no-rule` | — | File matches no schema rule set |
 
 Disable schema validation with `schema-enabled = false` in the `[check]` config section.
 
 For the full rule file format, see [SCHEMA_RULES.md](SCHEMA_RULES.md).
+
+### Traceability Finding Codes
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| `orphaned-marker` | error | `@awa-impl`, `@awa-test`, or `@awa-component` references an ID not in specs |
+| `uncovered-ac` | warning | Acceptance criterion has no corresponding `@awa-test` |
+| `broken-cross-ref` | error | IMPLEMENTS/VALIDATES points to non-existent requirement ID |
+| `invalid-id-format` | warning | Marker ID doesn't match the configured ID pattern |
+| `marker-trailing-text` | error | Marker contains trailing text after the ID(s) |
+| `orphaned-spec` | warning | Spec file's feature code not referenced by any marker or cross-ref |
 
 ## JSON Output Format
 

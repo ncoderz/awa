@@ -103,17 +103,18 @@ Any file exceeding 500 lines MUST be split logically into multiple files unless 
 - Trace Everything: Explicit links between artifacts
 </core_principles>
 
-<cli_invocation>
+<awa_cli_invocation>
 awa may be installed locally (devDependency) rather than globally. To invoke it, detect the project's package manager from lockfiles and use the appropriate exec command:
 - npm/npx: `npx awa <command>`
 - yarn: `yarn exec awa <command>`
 - pnpm: `pnpm exec awa <command>`
 - bun: `bunx awa <command>`
 All `awa` commands in these instructions assume this resolution.
-</cli_invocation>
+</awa_cli_invocation>
 
 <validation>
-You SHALL run `awa check` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and traceability integrity. Fix any errors before proceeding.
+You SHALL run `awa check --spec-only` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and cross-reference integrity. Fix any errors before proceeding.
+You SHALL run `awa check` (without --spec-only) after implementing code and tests to verify full traceability coverage.
 </validation>
 </awa>
 

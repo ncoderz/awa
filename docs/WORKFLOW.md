@@ -18,6 +18,14 @@ ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS →
 | Code & Tests | Source files | Implementation with trace markers |
 | Documentation | `README.md`, `docs/` | User-facing docs |
 
+Additionally, these lateral artifacts can be produced at any stage:
+
+| Artifact | File | Purpose |
+|----------|------|---------|
+| Examples | `EXAMPLES-{CODE}-*-{nnn}.md` | Concrete usage examples for a feature |
+| Plans | `PLAN-{nnn}-*.md` | Ad-hoc plans (vibe coding, refactors, etc.) |
+| Alignment Reports | `ALIGN-{x}-WITH-{y}-{nnn}.md` | Comparison of artifact alignment |
+
 ## The `.awa/` Directory
 
 All spec artifacts live in `.awa/`:
@@ -187,4 +195,14 @@ Check whether @awa-impl and @awa-test markers fully cover DIFF-7 acceptance crit
 
 ```text
 Create EXAMPLES docs for tool feature flags, including CLI commands and expected outputs for copilot/claude/cursor combinations.
+```
+
+### Feature discovery
+
+```text
+List all available feature flags in the awa template.
+```
+
+```text
+Run awa features --json and explain what each flag controls.
 ```
