@@ -41,6 +41,11 @@ list-unknown = false
 [presets]
 full = ["copilot", "claude", "cursor", "windsurf", "kilocode", "opencode", "gemini", "roo", "qwen", "codex", "agy", "agents-md"]
 lite = ["copilot", "claude"]
+
+# Update check configuration
+[update-check]
+enabled = true    # set to false to disable update checks
+interval = 86400  # seconds between checks (default: 1 day)
 ```
 
 ## Options Reference
@@ -73,6 +78,19 @@ lite = ["copilot", "claude"]
 | `schema-enabled` | boolean | `true` | Enable/disable schema structural validation |
 | `allow-warnings` | boolean | `false` | Allow warnings without failing (when `false`, warnings are promoted to errors) |
 | `spec-only` | boolean | `false` | Run only spec-level checks; skip code-to-spec traceability |
+
+### `[update-check]` Options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable/disable automatic update checks |
+| `interval` | number | `86400` | Minimum seconds between checks (default: 1 day) |
+
+awa periodically checks the npm registry for newer versions and prints a warning after command output. The check runs asynchronously and does not slow down CLI startup.
+
+The warning is suppressed when `--json` or `--summary` flags are active, stdout is not a TTY, or the `NO_UPDATE_NOTIFIER=1` environment variable is set.
+
+Results are cached in `~/.cache/awa/update-check.json`. Network failures are silent.
 
 ## Presets
 
@@ -184,6 +202,10 @@ schema-dir = ".awa/.agent/schemas"
 schema-enabled = true
 allow-warnings = false
 spec-only = false
+
+[update-check]
+enabled = true
+interval = 86400
 ```
 
 ### With Overlays

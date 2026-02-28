@@ -226,6 +226,11 @@ Create `.awa.toml` in the project root. CLI arguments always override config val
     allow-warnings = false
     spec-only = false
 
+    # Update check configuration
+    [update-check]
+    enabled = true        # set to false to disable update checks
+    interval = 86400      # seconds between checks (default: 1 day)
+
 Target fields: `output`, `template`, `features`, `preset`, `remove-features`. Boolean flags (`force`, `dry-run`, `delete`, `refresh`) apply globally. Target features replace root features entirely.
 
 Feature resolution order: start with `--features`, expand `--preset` (append, deduplicate), remove `--remove-features`.
