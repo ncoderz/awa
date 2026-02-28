@@ -16,14 +16,17 @@ vi.mock('../template-resolver.js', () => ({
   },
 }));
 
-import { templateResolver } from '../template-resolver.js';
 import { buildMergedDir, resolveOverlays } from '../overlay.js';
+import { templateResolver } from '../template-resolver.js';
 
 describe('overlay', () => {
   let testDir: string;
 
   beforeEach(async () => {
-    testDir = join(tmpdir(), `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    testDir = join(
+      tmpdir(),
+      `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
+    );
     await mkdir(testDir, { recursive: true });
     vi.clearAllMocks();
   });
@@ -239,10 +242,7 @@ describe('overlay', () => {
 
       mergedDir = await buildMergedDir(baseDir, [overlayDir]);
 
-      const content = await readFile(
-        join(mergedDir, '_partials', '_header.md'),
-        'utf-8'
-      );
+      const content = await readFile(join(mergedDir, '_partials', '_header.md'), 'utf-8');
       expect(content).toBe('overlay header partial');
     });
   });

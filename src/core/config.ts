@@ -234,10 +234,7 @@ export class ConfigLoader {
 
       // @awa-impl: OVL-8_AC-1
       if (parsed.overlay !== undefined) {
-        if (
-          !Array.isArray(parsed.overlay) ||
-          !parsed.overlay.every((o) => typeof o === 'string')
-        ) {
+        if (!Array.isArray(parsed.overlay) || !parsed.overlay.every((o) => typeof o === 'string')) {
           throw new ConfigError(
             `Invalid type for 'overlay': expected array of strings`,
             'INVALID_TYPE',
