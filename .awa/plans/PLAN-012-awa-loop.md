@@ -20,34 +20,64 @@ awa loop --task .awa/tasks/TASK-FOO-bar-001.md --max 10
 
 ## Design Decisions
 
-### Agent invocation: user-provided command string
+### Safety warning
 
-AWA does not abstract over agent CLIs. The user provides the full command string:
+`awa loop` runs agent CLIs with autonomous/no-permission flags. Before the first iteration, AWA MUST display a prominent warning:
+
+```
+⚠️  WARNING: awa loop runs an AI agent autonomously with no permission controls.
+   The agent will read, write, and execute code in this directory.
+   You are responsible for reviewing all changes. Use at your own risk.
+   Press Ctrl+C now to abort, or wait 5 seconds to continue...
+```
+
+The 5-second countdown gives the user time to abort. `--yes` flag skips the countdown (for CI / scripted use, explicit opt-in).
+
+### Agent invocation: built-in presets with custom override
+
+AWA embeds invocation strings for common agents as named presets. The user selects an agent by name; AWA knows the command, flags, and prompt delivery mode. Custom commands can override or extend the built-ins.
+
+```bash
+# Use a built-in preset
+awa loop --task .awa/tasks/TASK-FOO-bar-001.md --agent claude
+
+# Override with a custom command
+awa loop --task .awa/tasks/TASK-FOO-bar-001.md --agent "my-custom-agent --auto"
+```
+
+Built-in agent presets (embedded in code, not config):
+
+| Name | Command | Prompt mode | Notes |
+|------|---------|-------------|-------|
+| `claude` | `claude -p --dangerously-skip-permissions` | `arg` | Prompt appended as argument to `-p` |
+| `copilot` | `gh copilot` | `stdin` | GitHub Copilot CLI |
+| `codex` | `codex exec --full-auto` | `stdin` | OpenAI Codex CLI |
+| `gemini` | `gemini --yolo` | `stdin` | Google Gemini CLI |
+| `kilo` | `kilo --auto` | `stdin` | Kilo Code CLI |
+| `opencode` | `opencode run` | `stdin` | OpenCode CLI |
+| `aider` | `aider --yes-always --message` | `arg` | Aider (prompt via `--message`) |
+| `goose` | `goose run` | `stdin` | Goose CLI |
+
+If `--agent` matches a preset name, the preset is used. Otherwise the string is treated as a literal command.
+
+Config override — the user can redefine or add agents in `.awa.toml`:
 
 ```toml
 [loop]
-agent = "claude -p --dangerously-skip-permissions"
+agent = "claude"          # use built-in preset by name
 max-iterations = 10
+
+# Override a built-in or define a new agent
+[loop.agents.claude]
+command = "claude -p --dangerously-skip-permissions --model opus"
+prompt-mode = "arg"
+
+[loop.agents.my-local]
+command = "ollama run codellama"
+prompt-mode = "stdin"
 ```
 
-Rationale:
-- Agent CLI landscape is wide and growing fast (Claude, Copilot, Codex, Gemini, Kilo, OpenCode, Aider, Goose, plus new ones constantly)
-- Each has different invocation quirks (stdin vs flag, different auto-approve flags)
-- AWA shouldn't maintain an agent abstraction layer
-- User already knows their agent's CLI
-
-Known agents and their invocation patterns (for documentation, not code):
-
-| Agent | Example command | Prompt delivery |
-|-------|----------------|-----------------|
-| Claude Code | `claude -p --dangerously-skip-permissions` | `-p` flag (prompt as arg) |
-| GitHub Copilot | `gh copilot` | TBD |
-| Codex CLI | `codex exec --full-auto` | stdin |
-| Gemini CLI | `gemini --yolo` | stdin |
-| Kilo Code CLI | `kilo --auto` | stdin |
-| OpenCode | `opencode run` | stdin / sessions |
-| Aider | `aider --yes-always --message` | `--message` flag |
-| Goose | `goose run` | stdin |
+Resolution order: config `[loop.agents.<name>]` → built-in preset → treat as literal command.
 
 ### Prompt delivery modes
 
