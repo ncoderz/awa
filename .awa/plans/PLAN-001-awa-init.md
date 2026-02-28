@@ -1,6 +1,6 @@
 # PLAN-001: `awa init` — Alias for Generate + First-Run UX
 
-**Status:** in-progress
+**Status:** done
 **Workflow direction:** top-down
 **Traceability:** New feature — extends existing generate command
 

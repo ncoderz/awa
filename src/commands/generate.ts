@@ -1,4 +1,5 @@
 // @awa-component: GEN-GenerateCommand
+// @awa-impl: INIT-5_AC-1
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
@@ -32,6 +33,12 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
 
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
+
+    // @awa-impl: INIT-5_AC-1
+    // Non-blocking hint when no config file is present and --config was not provided
+    if (!cliOptions.config && fileConfig === null) {
+      logger.info('Tip: create .awa.toml to save your options for next time.');
+    }
 
     // Merge CLI and file config
     const options = configLoader.merge(cliOptions, fileConfig);
