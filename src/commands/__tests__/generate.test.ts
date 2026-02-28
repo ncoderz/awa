@@ -135,9 +135,7 @@ describe('generateCommand', () => {
       refresh: false,
     });
 
-    expect(logger.info).toHaveBeenCalledWith(
-      expect.stringContaining('.awa.toml')
-    );
+    expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('.awa.toml'));
   });
 
   // @awa-test: INIT-5_AC-1
@@ -159,8 +157,8 @@ describe('generateCommand', () => {
     });
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
-    const hintCalls = infoCalls.filter(([msg]) =>
-      typeof msg === 'string' && msg.includes('.awa.toml')
+    const hintCalls = infoCalls.filter(
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
     );
     expect(hintCalls).toHaveLength(0);
   });
@@ -183,8 +181,8 @@ describe('generateCommand', () => {
     });
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
-    const hintCalls = infoCalls.filter(([msg]) =>
-      typeof msg === 'string' && msg.includes('.awa.toml')
+    const hintCalls = infoCalls.filter(
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
     );
     expect(hintCalls).toHaveLength(0);
   });

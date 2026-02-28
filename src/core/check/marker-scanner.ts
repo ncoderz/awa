@@ -124,7 +124,7 @@ async function scanFile(
         const cleanId = tokenMatch ? tokenMatch[1].trim() : '';
         if (cleanId) {
           // Check for trailing text after the ID (only whitespace allowed)
-          const remainder = id.slice(tokenMatch![0].length).trim();
+          const remainder = id.slice(tokenMatch?.[0].length).trim();
           if (remainder) {
             findings.push({
               severity: 'error',
