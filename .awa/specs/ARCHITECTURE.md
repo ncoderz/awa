@@ -350,7 +350,7 @@ RESPONSIBILITIES
 - Report orphaned spec files (feature codes not referenced anywhere)
 - Validate ID format against configurable regex
 - Output findings as text (human-readable) or JSON (CI-friendly)
-- Load declarative schema rules from `*.rules.yaml` files
+- Load declarative schema rules from `*.schema.yaml` files
 - Parse Markdown into mdast AST and check against schema rules
 - Detect missing sections, wrong heading levels, missing content, bad table columns, prohibited patterns
 - Support `schema-enabled = false` to skip schema checking

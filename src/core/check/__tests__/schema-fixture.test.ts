@@ -1,5 +1,5 @@
 // @awa-test: CHK-2_AC-1
-// Tests that validate real .rules.yaml schemas against fixture documents.
+// Tests that validate real .schema.yaml schemas against fixture documents.
 
 import { readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -53,7 +53,7 @@ describe('Schema fixture validation', () => {
     ruleSets = await loadRules(SCHEMAS_DIR);
   });
 
-  test('loads all rules.yaml files', () => {
+  test('loads all schema.yaml files', () => {
     expect(ruleSets.length).toBeGreaterThanOrEqual(6);
   });
 

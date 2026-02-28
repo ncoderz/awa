@@ -11,14 +11,14 @@ description: Upgrade specs to match current schemas. Use this when asked to upgr
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/ARCHITECTURE.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/FEAT.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/EXAMPLES.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/REQ.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/DESIGN.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/TASK.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/PLAN.rules.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/ALIGN_REPORT.rules.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/ARCHITECTURE.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/FEAT.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/EXAMPLES.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/REQ.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/DESIGN.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/TASK.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/PLAN.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/ALIGN_REPORT.schema.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input
