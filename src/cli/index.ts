@@ -50,6 +50,7 @@ import { Command } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
 import { diffCommand } from '../commands/diff.js';
+import { featuresCommand } from '../commands/features.js';
 import { generateCommand } from '../commands/generate.js';
 import type { RawCheckOptions } from '../core/check/types.js';
 import type { RawCliOptions } from '../types/index.js';
@@ -172,6 +173,24 @@ program
     };
 
     const exitCode = await checkCommand(cliOptions);
+    process.exit(exitCode);
+  });
+
+// @awa-impl: DISC-4_AC-1, DISC-5_AC-1
+program
+  .command('features')
+  .description('Discover feature flags available in a template')
+  .option('-t, --template <source>', 'Template source (local path or Git repository)')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--json', 'Output results as JSON', false)
+  .action(async (options) => {
+    const exitCode = await featuresCommand({
+      template: options.template,
+      config: options.config,
+      refresh: options.refresh,
+      json: options.json,
+    });
     process.exit(exitCode);
   });
 
