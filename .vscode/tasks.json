@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-extension",
+      "type": "shell",
+      "command": "npm run build -w packages/awa-language-server && npm run build -w packages/awa-vscode",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

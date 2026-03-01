@@ -1,4 +1,4 @@
 # TODO
 
 - [x] remove checkboxes from the spec
-- [ ] Make arc split rather than compact when files exceed size limits
+- [x] Make awa split rather than compact when files exceed size limits

@@ -1,7 +1,8 @@
 {
-  "name": "@ncoderz/awa",
+  "name": "awa-workspace",
   "version": "1.5.0",
-  "description": "awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage agent workflow files using templates.",
+  "private": true,
+  "description": "Workspace root — see packages/awa for the CLI, packages/awa-core for shared logic.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -9,18 +10,19 @@
   },
   "author": "Richard Sewell <richard.sewell@ncoderz.com>",
   "type": "module",
-  "bin": {
-    "awa": "./dist/index.js"
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "init": "tsx scripts/init.ts",
-    "dev": "tsx src/cli/index.ts",
-    "start": "node dist/index.js",
-    "build": "npm run init && npm run check && npm run lint && npm run typecheck:all && tsup",
-    "gen:example": "tsx src/cli/index.ts template generate ./outputs/example --template ./templates/example",
-    "gen:awa": "tsx src/cli/index.ts template generate ./outputs/awa --template ./templates/awa",
-    "gen:awa:this": "tsx src/cli/index.ts template generate . --template ./templates/awa --features copilot",
-    "diff:awa:this": "tsx src/cli/index.ts template diff . --template ./templates/awa --features copilot",
+    "init": "npm run init -w packages/awa",
+    "dev": "tsx packages/awa/src/cli/index.ts",
+    "start": "node packages/awa/dist/index.js",
+    "build": "npm run build:packages && npm run check && npm run lint && npm run typecheck:all",
+    "build:packages": "npm run build -w packages/awa-core && npm run build -w packages/awa && npm run build -w packages/awa-language-server",
+    "gen:example": "tsx packages/awa/src/cli/index.ts template generate ./outputs/example --template ./templates/example",
+    "gen:awa": "tsx packages/awa/src/cli/index.ts template generate ./outputs/awa --template ./templates/awa",
+    "gen:awa:this": "tsx packages/awa/src/cli/index.ts template generate . --template ./templates/awa --features copilot",
+    "diff:awa:this": "tsx packages/awa/src/cli/index.ts template diff . --template ./templates/awa --features copilot",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -28,47 +30,14 @@
     "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check --error-on-warnings --fix .",
     "format": "biome format --write .",
-    "typecheck": "tsc --noEmit",
-    "typecheck:tests": "tsc --noEmit -p tsconfig.test.json",
+    "typecheck": "tsc --noEmit -p packages/awa/tsconfig.json && tsc --noEmit -p packages/awa-core/tsconfig.json",
+    "typecheck:tests": "tsc --noEmit -p packages/awa/tsconfig.test.json",
     "typecheck:all": "npm run typecheck && npm run typecheck:tests",
-    "prepublishOnly": "npm run clean && npm run build",
     "ncu": "npx -y npm-check-updates -i",
-    "clean": "node scripts/clean.mjs"
+    "clean": "node packages/awa/scripts/clean.mjs"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
-  "files": [
-    "dist",
-    "templates",
-    "README.md",
-    "LICENSE"
-  ],
-  "keywords": [
-    "cli",
-    "template",
-    "generator",
-    "ai-agent",
-    "typescript"
-  ],
   "engines": {
     "node": ">=24.0.0"
-  },
-  "dependencies": {
-    "@clack/core": "^1.0.1",
-    "@clack/prompts": "^1.0.1",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.3",
-    "degit": "^2.8.4",
-    "diff": "^8.0.3",
-    "eta": "^4.5.1",
-    "isbinaryfile": "^6.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "smol-toml": "^1.6.0",
-    "unified": "^11.0.5",
-    "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2",

@@ -1,5 +1,5 @@
 ---
-description: "awa 1.4.0"
+description: "awa 1.5.0"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 

@@ -56,11 +56,11 @@ import {
   type UpdateCheckConfig,
 } from '../types/index.js';
 import { pathExists, readTextFile } from '../utils/fs.js';
-import { logger } from '../utils/logger.js';
 
 const DEFAULT_CONFIG_PATH = '.awa.toml';
 
 export class ConfigLoader {
+  constructor(private readonly onWarn: (msg: string) => void = () => {}) {}
   // @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
   async load(configPath: string | null): Promise<FileConfig | null> {
     const pathToLoad = configPath ?? DEFAULT_CONFIG_PATH;
@@ -364,7 +364,7 @@ export class ConfigLoader {
       ]);
       for (const key of Object.keys(parsed)) {
         if (!knownKeys.has(key)) {
-          logger.warn(`Unknown configuration option: '${key}'`);
+          this.onWarn(`Unknown configuration option: '${key}'`);
         }
       }
 
@@ -448,7 +448,7 @@ export class ConfigLoader {
 
     for (const key of Object.keys(section)) {
       if (!allowedKeys.has(key)) {
-        logger.warn(`Unknown option in target '${targetName}': '${key}'`);
+        this.onWarn(`Unknown option in target '${targetName}': '${key}'`);
       }
     }
 

@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch awa Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/awa-vscode",
+        "${workspaceFolder}/packages/awa-vscode/test-workspace"
+      ],
+      "outFiles": ["${workspaceFolder}/packages/awa-vscode/dist/**/*.js"],
+      "preLaunchTask": "build-extension"
+    }
+  ]
+}

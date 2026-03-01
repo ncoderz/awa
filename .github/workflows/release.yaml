@@ -67,11 +67,11 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          pkg_version=$(node -p "require('./package.json').version")
+          pkg_version=$(node -p "require('./packages/awa/package.json').version")
           release_tag="${RELEASE_TAG}"
           expected_tag="v${pkg_version}"
           if [ "$release_tag" != "$expected_tag" ]; then
-            echo "Release tag $release_tag does not match package.json version $expected_tag"
+            echo "Release tag $release_tag does not match packages/awa/package.json version $expected_tag"
             exit 1
           fi
 
@@ -79,10 +79,11 @@ jobs:
         run: npm ci
 
       - name: Publish to npm
+        working-directory: packages/awa
         run: npm publish --access public --provenance
 
       - name: Upload dist artifacts
         uses: actions/upload-artifact@v4
         with:
           name: awa-dist
-          path: dist
+          path: packages/awa/dist

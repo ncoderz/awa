@@ -1,0 +1,49 @@
+{
+  "name": "@ncoderz/awa-language-server",
+  "version": "1.5.0",
+  "description": "LSP language server for awa — provides hover, diagnostics, completion, and code lens for @awa-* markers.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ncoderz/awa"
+  },
+  "author": "Richard Sewell <richard.sewell@ncoderz.com>",
+  "type": "module",
+  "main": "./dist/server.js",
+  "exports": {
+    ".": {
+      "import": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@ncoderz/awa-core": "*",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2",
+    "@types/node": "^25.3.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

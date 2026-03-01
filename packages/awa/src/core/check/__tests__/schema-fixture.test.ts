@@ -9,7 +9,10 @@ import type { LoadedRuleSet } from '../rule-types.js';
 import { checkSchemasAsync } from '../schema-checker.js';
 import type { SpecFile } from '../types.js';
 
-const SCHEMAS_DIR = resolve(import.meta.dirname, '../../../../templates/awa/.awa/.agent/schemas');
+const SCHEMAS_DIR = resolve(
+  import.meta.dirname,
+  '../../../../../../templates/awa/.awa/.agent/schemas'
+);
 const FIXTURES_DIR = resolve(import.meta.dirname, 'fixtures');
 
 function makeSpecFile(filePath: string, relPath: string): SpecFile {

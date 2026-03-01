@@ -67,7 +67,9 @@ You MUST NOT proceed if the build or tests fail. Prompt user to fix any issues f
 
 ### 3. DETERMINE VERSION BUMP
 
-Read the current version from the project manifest (e.g. `package.json`, `Cargo.toml`, `pyproject.toml`).
+> **Monorepo note:** This project uses npm workspaces. The publishable package is in `packages/awa/`. The root `package.json` is private and its version field is not used for releases. Always read and bump the version in `packages/awa/package.json`.
+
+Read the current version from `packages/awa/package.json`:
 
 Determine the bump level:
 - If the user specified a bump level (`patch`, `minor`, `major`) or an explicit version, use that.
@@ -95,11 +97,16 @@ Update the version in the project manifest. Use the appropriate tool for the pro
 
 The `--no-git-tag-version` flag (Node.js) prevents npm from creating a commit and tag — we handle that ourselves.
 
+> **Monorepo note:** Run the version bump targeting the `packages/awa` workspace, from the repo root:
+> ```sh
+> npm version <patch|minor|major> --no-git-tag-version -w packages/awa
+> ```
+
 Verify the new version:
 
 ```sh
-# Node.js example
-node -p "require('./package.json').version"
+# Read from the correct package in this monorepo
+node -p "require('./packages/awa/package.json').version"
 ```
 
 ### 5. COMMIT AND PUSH

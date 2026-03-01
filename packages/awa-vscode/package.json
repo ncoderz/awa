@@ -1,0 +1,84 @@
+{
+  "name": "awa-vscode",
+  "displayName": "awa — Traceability IDE Integration",
+  "description": "Hover, go-to-definition, diagnostics, and autocomplete for awa @awa-impl / @awa-test traceability markers",
+  "version": "0.1.0",
+  "publisher": "ncoderz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ncoderz/awa"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "traceability",
+    "requirements",
+    "awa",
+    "spec-driven"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact",
+    "onLanguage:python",
+    "onLanguage:go",
+    "workspaceContains:.awa/"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "awa",
+      "properties": {
+        "awa.lsp.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the awa Language Server for traceability marker support."
+        },
+        "awa.specDir": {
+          "type": "string",
+          "default": ".awa/specs",
+          "description": "Directory containing awa spec files (relative to workspace root)."
+        },
+        "awa.lsp.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Override path to the awa LSP server module. Leave empty to use auto-detection."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "awa.trace",
+        "title": "awa: Trace ID",
+        "category": "awa"
+      },
+      {
+        "command": "awa.rebuildIndex",
+        "title": "awa: Rebuild Spec Index",
+        "category": "awa"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "vscode:prepublish": "npm run build",
+    "package": "npx @vscode/vsce package"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.9.3"
+  },
+  "extensionDependencies": []
+}
