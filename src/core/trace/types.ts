@@ -1,5 +1,3 @@
-// @awa-component: TRC-TraceTypes
-
 /** Location of a code marker or spec ID in a file. */
 export interface CodeLocation {
   readonly filePath: string;
@@ -83,7 +81,15 @@ export interface ContentOptions {
 
 /** A content section ready for output. */
 export interface ContentSection {
-  readonly type: 'task' | 'requirement' | 'design' | 'feature' | 'implementation' | 'test' | 'architecture' | 'examples';
+  readonly type:
+    | 'task'
+    | 'requirement'
+    | 'design'
+    | 'feature'
+    | 'implementation'
+    | 'test'
+    | 'architecture'
+    | 'examples';
   readonly filePath: string;
   readonly startLine: number;
   readonly endLine: number;
@@ -98,6 +104,7 @@ export type OutputFormat = 'tree' | 'content' | 'list' | 'json';
 /** CLI options for the trace command. */
 export interface TraceCommandOptions {
   readonly ids: readonly string[];
+  readonly all?: boolean;
   readonly task?: string;
   readonly file?: string;
   readonly content: boolean;

@@ -65,8 +65,10 @@ import { diffCommand } from '../commands/diff.js';
 import { featuresCommand } from '../commands/features.js';
 import { generateCommand } from '../commands/generate.js';
 import { testCommand } from '../commands/test.js';
+import { traceCommand } from '../commands/trace.js';
 import type { RawCheckOptions } from '../core/check/types.js';
 import type { RawTestOptions } from '../core/template-test/types.js';
+import type { TraceCommandOptions } from '../core/trace/types.js';
 import type { RawCliOptions } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 import {
@@ -270,6 +272,61 @@ program
     };
 
     const exitCode = await testCommand(testOptions);
+    process.exit(exitCode);
+  });
+
+// @awa-impl: TRC-8_AC-1
+program
+  .command('trace')
+  .description('Explore traceability chains and assemble context from specs, code, and tests')
+  .argument('[ids...]', 'Traceability ID(s) to trace')
+  .option('--all', 'Trace all known IDs in the project', false)
+  .option('--task <path>', 'Resolve IDs from a task file')
+  .option('--file <path>', "Resolve IDs from a source file's markers")
+  .option('--content', 'Output actual file sections instead of locations', false)
+  .option('--list', 'Output file paths only (no content or tree)', false)
+  .option('--max-tokens <n>', 'Cap content output size (implies --content)')
+  .option('--depth <n>', 'Maximum traversal depth')
+  .option('--scope <code>', 'Limit results to a feature code')
+  .option('--direction <dir>', 'Traversal direction: both, forward, reverse', 'both')
+  .option('--no-code', 'Exclude source code (spec-only context)')
+  .option('--no-tests', 'Exclude test files')
+  .option('--json', 'Output as JSON', false)
+  .option('-A <n>', 'Lines of context after a code marker (--content only; default: 20)')
+  .option('-B <n>', 'Lines of context before a code marker (--content only; default: 5)')
+  .option('-C <n>', 'Lines of context before and after (--content only; overrides -A and -B)')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .action(async (ids: string[], options) => {
+    const traceOptions: TraceCommandOptions = {
+      ids,
+      all: options.all,
+      task: options.task,
+      file: options.file,
+      content: options.content,
+      list: options.list,
+      json: options.json,
+      maxTokens: options.maxTokens !== undefined ? Number(options.maxTokens) : undefined,
+      depth: options.depth !== undefined ? Number(options.depth) : undefined,
+      scope: options.scope,
+      direction: options.direction,
+      noCode: options.code === false,
+      noTests: options.tests === false,
+      beforeContext:
+        options.C !== undefined
+          ? Number(options.C)
+          : options.B !== undefined
+            ? Number(options.B)
+            : undefined,
+      afterContext:
+        options.C !== undefined
+          ? Number(options.C)
+          : options.A !== undefined
+            ? Number(options.A)
+            : undefined,
+      config: options.config,
+    };
+
+    const exitCode = await traceCommand(traceOptions);
     process.exit(exitCode);
   });
 
