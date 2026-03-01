@@ -122,7 +122,7 @@ interface MarkerInfo {
 
 ### Phase 1: Spec Index for LSP
 
-- [ ] Create `packages/awa-lsp/src/index.ts` (or `src/lsp/` within main package — decide packaging)
+- [ ] Create `packages/awa-lsp/src/index.ts`
 - [ ] Create `src/lsp/spec-index.ts` with `LspSpecIndex` that builds from spec-parser + marker-scanner
 - [ ] Extend spec-parser to extract requirement/AC text (not just IDs) for hover content
 - [ ] Build marker position index: for each source file, record exact character positions of marker IDs
@@ -214,7 +214,7 @@ interface MarkerInfo {
 - MULTI-EDITOR MAINTENANCE: supporting VS Code, Neovim, Emacs, etc. Mitigation: the LSP server is editor-agnostic. Only the VS Code extension is custom. Other editors use their native LSP client.
 - PERFORMANCE: full workspace scan on startup could be slow. Mitigation: incremental indexing, debounced file watching, progress reporting.
 - VERSIONING: LSP server and CLI may diverge. Mitigation: share core modules (spec-parser, marker-scanner) between CLI and LSP. Version together.
-- PACKAGING: deciding between monorepo package or separate npm package. Mitigation: start as `src/lsp/` within the main package, extract later if size warrants it.
+- PACKAGING: monorepo package
 
 ## Dependencies
 
