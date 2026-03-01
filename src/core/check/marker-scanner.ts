@@ -50,7 +50,7 @@ function buildMarkerRegex(markerNames: readonly string[]): RegExp {
 }
 
 /** Pattern matching valid impl/test IDs and component names. */
-const ID_TOKEN_RE = /^([A-Z][A-Z0-9]*(?:[-_][A-Za-z0-9]+)*(?:\.\d+)?)/;
+const ID_TOKEN_RE = /^([A-Z][A-Z0-9]*(?:[-_][A-Za-z0-9]+)*(?:\.\d+)?(?:[-_][A-Za-z0-9]+)*)/;
 
 async function scanFile(
   filePath: string,
