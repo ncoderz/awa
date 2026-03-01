@@ -7,35 +7,40 @@ import { Badge } from '@astrojs/starlight/components';
 
 <Badge text="Open Source" variant="tip" /> <Badge text="MIT License" variant="note" />
 
-**awa** (Agent Workflow for AIs) is an open-source CLI tool that generates AI coding agent configuration files from templates with feature flags. It solves the problem of AI agent configuration drift and lack of traceability in AI-assisted development.
+**awa** (Agent Workflow for AIs) is an open-source CLI tool for structured, traceable AI-assisted development. It enforces a Software Design Document (SDD) workflow with full end-to-end traceability, validated by `awa check` and navigable via `awa trace`. Agent configuration files are bootstrapped from templates with feature flags.
 
 ## The Problem
 
-Developing with AI agents requires process. Configuration files that define this process get copy-pasted between projects, then diverge. Requirements live in one place, implementation in another, tests in a third — nothing connects them. They diverge too.
+AI agents produce output that looks right but isn't connected. Requirements live in one place, implementation in another, tests in a third — nothing links them. The AI doesn't know when it has drifted from the original intent. You don't either, until something breaks.
 
-Without structure, work drifts and nobody — including the AI — can trace what happened or why.
+Agent configuration files diverge too: copy-pasted between projects, modified by hand, silently out of date.
 
 ## The Solution
 
-awa generates agent configuration files from **templates** with **feature flags**. The generated output includes a spec-driven development workflow with full traceability:
+awa provides a structured SDD workflow:
 
 ```
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
-Every artifact traces back to its origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
+Every artifact carries an explicit traceability marker (`@awa-impl`, `@awa-test`, `@awa-component`) linking it to its originating requirement and acceptance criterion. Any line of code traces back to why it was written. Any requirement traces forward to the tests that verify it.
+
+`awa check` enforces this chain — validating spec structure via YAML schemas and ensuring every acceptance criterion maps to code and tests. `awa trace` assembles the chain into context so AI agents navigate with confidence rather than guessing.
+
+Agent configuration files are bootstrapped from **templates** with **feature flags** — making the SDD workflow available in any project immediately.
 
 ## Key Features
 
-### Workflow & Traceability
+### SDD & Traceability
 
-- Structured workflow from architecture through features, requirements, design, tasks, code, tests, and docs
+- Structured SDD workflow from architecture through documentation
 - Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
-- Every requirement has an ID; every line of code links back to it via `@awa-impl` and `@awa-test` markers
-- `awa check` checks that all traceability markers resolve to real spec IDs and flags uncovered acceptance criteria
+- Every requirement has an ID; every line of code links back via `@awa-impl` and `@awa-test` markers
+- `awa check` validates spec structure via YAML schemas and flags uncovered acceptance criteria
+- `awa trace` assembles context from specs, code, and tests for AI agents
 - Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
 
-### CLI & Template Engine
+### Template Bootstrap
 
 - [Eta](https://eta.js.org/) templates with conditionals, loops, and partials
 - Feature flags and presets to turn content on/off per project

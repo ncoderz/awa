@@ -2,9 +2,18 @@
 
 ## Project Purpose
 
-awa CLI is a TypeScript-based command-line tool that generates AI coding agent configuration files via templating. It produces the awa agent system prompt files (`.github/agents/*.agent.md`) from customizable templates with conditional output support based on user-specified feature flags.
+awa CLI is a TypeScript-based command-line tool for structured, traceable AI-assisted development. Its core value is a Spec Driven Design (SDD) workflow — ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION — enforced by `awa check` (spec structure and traceability validation) and navigable via `awa trace`. Explicit traceability markers in code (`@awa-impl`, `@awa-test`, `@awa-component`) link every implementation artifact back to its originating requirement and acceptance criterion. This keeps AI agents honest: `awa check` catches divergence before it compounds.
+
+Template generation is a bootstrapping mechanism: it produces agent configuration files (e.g. `.github/copilot-instructions.md`) from customizable templates with conditional output based on feature flags, making the SDD workflow available in any project immediately.
 
 ## System Overview
+
+SDD CORE (primary USP)
+
+- CHECK ENGINE: Traceability validation — spec schema checks, marker scanning, AC coverage, cross-ref integrity
+- TRACE ENGINE: Traceability chain navigation — assembles context from specs, code, and tests for AI
+
+TEMPLATE BOOTSTRAP (delivery mechanism)
 
 - CLI LAYER: Command parsing, argument validation, user prompts
 - CONFIGURATION LOADER: TOML config file parsing, CLI override merging
@@ -13,7 +22,6 @@ awa CLI is a TypeScript-based command-line tool that generates AI coding agent c
 - TEMPLATE ENGINE: Template loading, rendering with conditional logic
 - FILE GENERATOR: Output file creation, directory management, conflict resolution
 - DIFF ENGINE: Template comparison against target directory with diff reporting
-- CHECK ENGINE: Traceability chain validation — scans code markers and spec IDs, reports findings
 - TEST RUNNER: Template testing — fixture discovery, rendering per fixture, file existence assertion, snapshot comparison
 
 ## Technology Stack
@@ -539,17 +547,4 @@ NOTE: These commands use the local development version via `npm run`. For the in
 ## Change Log
 
 - 1.0.0 (2025-12-11): Initial architecture
-- 1.1.0 (2025-12-11): Added Diff Engine component and diff command flow
-- 1.2.0 (2025-12-16): Added list-unknown flag for target-only file reporting
-- 2.0.0 (2025-12-19): Schema alignment update - removed Table of Contents, replaced bold with CAPITALS, added Change Log
-- 2.1.0 (2026-02-24): Added delete list (`_delete.txt`) convention, delete-listed diff reporting, skip-equal file action type
-- 2.2.0 (2026-02-24): Aligned with code — added feature-gated delete sections, `--delete` flag, `DeleteResolver`, interactive multi-tool selection, `delete`/`list-unknown` config options, fixed directory structure, updated developer commands
-- 2.4.0 (2026-07-14): Added schema validation — declarative YAML rules for Markdown structural checks via remark/mdast, rule-loader, schema-checker components
-- 2.3.0 (2026-07-14): Added Check Engine component — traceability chain validation (`awa check`), `[check]` config table, marker scanning, spec parsing, cross-reference checking, JSON/text reporting
-- 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
-- 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit
-- 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag
-- 2.8.0 (2026-02-28): Added Test Runner component — `awa template test` command, fixture discovery, template rendering per fixture, file
-- 2.9.0 (2026-02-28): CLI Layer — `generate` command gains `init` alias; added config-not-found hint in generate handler
-- 2.10.0 (2026-01-01): Added Overlay Resolver component — `--overlay` option, merged temp dir pattern, overlay config array
-- 2.11.0 (2026-03-01): CLI restructure — template commands (`generate`, `diff`, `features`, `test`) grouped under `awa template` subcommand; `check` and `trace` remain top-level
+- 2.12.0 (2026-03-01): Reframed Project Purpose and System Overview to lead with SDD traceability as the core USP; templating repositioned as bootstrap delivery mechanism

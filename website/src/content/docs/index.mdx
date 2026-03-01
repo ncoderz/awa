@@ -1,10 +1,10 @@
 ---
 title: awa — Agent Workflow for AIs
-description: Supercharge your AI development with structured workflows, full traceability, and powerful template generation.
+description: Structured, traceable AI development. Full traceability from requirements to tests, enforced by awa check. Agent configuration bootstrapped from templates.
 template: splash
 hero:
   title: '<img src="/logo-wordmark.svg" alt="awa" style="height:1.5em;vertical-align:-0.15em;display:inline-block"><br>Agent Workflow for AIs'
-  tagline: Supercharge your AI development.
+  tagline: Structured, traceable AI development.
   image:
     file: ../../assets/hero.svg
   actions:
@@ -21,53 +21,54 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## What is awa?
 
-**awa** (Agent Workflow for AIs) is a CLI tool that generates AI coding agent configuration files via templates with feature flags. It enforces a structured development workflow (awa's or yours) with full traceability from requirements through to tests.
-
+**awa** is an Agent Workflow for AIs. It provides a Spec-Driven Design (SDD) workflow with full end-to-end traceability, with tools to enforced consistency and help the AI follow the connections. It is also a powerful templating tool for agent configuration files.
 
 <CardGrid>
-  <Card title="Structured Workflow" icon="rocket">
-    Guide your AI through every stage: Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation.
-  </Card>
   <Card title="Full Traceability" icon="approve-check-circle">
-    Every line of code traces back to the requirement that motivated it via `@awa-impl` and `@awa-test` markers.
+    Every line of code traces back to its requirement via `@awa-impl` and `@awa-test` markers. Nothing drifts silently.
   </Card>
-  <Card title="Template AI Files" icon="puzzle">
-    Use [Eta](https://eta.js.org/) templates with conditionals, loops, and partials. Enable or disable content with feature flags and presets.
+  <Card title="awa check" icon="magnifier">
+    Validates spec structure via YAML schemas and verifies all AC markers map to code and tests. AI can't hide broken coverage.
   </Card>
-  <Card title="Drift Detection" icon="magnifier">
+  <Card title="awa trace" icon="open-book">
+    Assembles the traceability chain into context — specs, code, and tests — so AI navigates with confidence rather than guessing.
+  </Card>
+  <Card title="Structured SDD Workflow" icon="rocket">
+    Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation. Every stage has a spec. Every spec has an ID.
+  </Card>
+  <Card title="Template Bootstrap" icon="puzzle">
+    [Eta](https://eta.js.org/) templates with feature flags and presets generate agent configuration files for any AI tool — Copilot, Claude, Cursor, Windsurf, and more.
+  </Card>
+  <Card title="Drift Detection" icon="warning">
     `awa template diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
   </Card>
-  <Card title="Traceability Validation" icon="approve-check-circle">
-    `awa check` checks that all code markers resolve to real spec IDs and flags uncovered acceptance criteria.
-  </Card>
-  <Card title="Git or Local" icon="open-book">
-    Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast re-runs.
-  </Card>
   <Card title="Agent-Agnostic" icon="laptop">
-    Generate configuration for Copilot, Claude, Cursor, Windsurf, and more — all from a single template set.
+    One template set. All agents. Copilot, Claude, Cursor, Windsurf, and more from a single source of truth.
   </Card>
-  <Card title="Feature Discovery" icon="list-format">
-    `awa template features` discovers all feature flags in a template. `awa template test` verifies templates against fixtures and snapshots.
+  <Card title="Git or Local" icon="external">
+    Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast re-runs.
   </Card>
 </CardGrid>
 
-## The Problem: Divergence
+## The Problem: AI Drift
 
-Developing with AI agents requires process. Configuration files that define this process get copy-pasted between projects, then diverge. Requirements live in one place, implementation in another, tests in a third — nothing connects them. They diverge too.
+AI agents produce output that looks right but isn't connected. Requirements live in one place, implementation in another, tests in a third — nothing links them. The AI doesn't know when it has drifted from the original intent. You don't either, until something breaks.
 
-Without structure, work drifts and nobody, including the AI, can trace what happened or why.
+Agent configuration files diverge too: copy-pasted between projects, modified by hand, silently out of date.
 
 ## How awa Solves It
 
-awa generates agent configuration files from **templates** with **feature flags**. Every artifact traces back to its origin through explicit markers:
+awa provides a structured SDD workflow with full traceability:
 
 ```
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
+`awa check` enforces spec structure and validates that every acceptance criterion maps to code and tests. `awa trace` assembles context from the chain so AI can navigate rather than guess. Agent configuration files are bootstrapped from templates.
+
 <CardGrid>
   <LinkCard title="Quick Start" description="Install awa and generate your first configuration." href="/guides/quick-start/" />
-  <LinkCard title="Workflow Guide" description="Understand the awa workflow and traceability chain." href="/guides/workflow/" />
+  <LinkCard title="Workflow Guide" description="Understand the awa SDD workflow and traceability chain." href="/guides/workflow/" />
   <LinkCard title="CLI Reference" description="All commands and options documented." href="/reference/cli/" />
-  <LinkCard title="Template Engine" description="Learn how to write powerful templates with Eta." href="/reference/template-engine/" />
+  <LinkCard title="Traceability Guide" description="Learn how markers keep your AI honest." href="/guides/traceability/" />
 </CardGrid>
