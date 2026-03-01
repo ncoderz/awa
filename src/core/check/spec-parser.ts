@@ -61,8 +61,8 @@ async function parseSpecFile(
 
   // Requirement ID: ### CODE-N: Title or ### CODE-N.P: Title
   const reqIdRegex = /^###\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)\s*:/;
-  // AC ID: - [ ] CODE-N_AC-M or - [x] CODE-N.P_AC-M
-  const acIdRegex = /^-\s+\[[ x]\]\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?_AC-\d+)\s/;
+  // AC ID: - CODE-N_AC-M or - [ ] CODE-N_AC-M or - [x] CODE-N.P_AC-M
+  const acIdRegex = /^-\s+(?:\[[ x]\]\s+)?([A-Z][A-Z0-9]*-\d+(?:\.\d+)?_AC-\d+)\s/;
   // Property ID: - CODE_P-N [Name]
   const propIdRegex = /^-\s+([A-Z][A-Z0-9]*_P-\d+)\s/;
   // Component name: ### CODE-ComponentName

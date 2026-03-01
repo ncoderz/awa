@@ -18,7 +18,7 @@ AS A developer, I WANT the features command to scan all template files recursive
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-1_AC-1 [ubiquitous]: The system SHALL recursively walk all files in the resolved template directory and read their content for feature flag extraction
+- DISC-1_AC-1 [ubiquitous]: The system SHALL recursively walk all files in the resolved template directory and read their content for feature flag extraction
 
 ### DISC-2: Feature Flag Extraction [MUST]
 
@@ -26,7 +26,7 @@ AS A developer, I WANT the features command to extract flag names from template 
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-2_AC-1 [ubiquitous]: The system SHALL extract flag names from `it.features.includes('...')`, `it.features.includes("...")`, `it.features.indexOf('...')`, and `it.features.indexOf("...")` patterns
+- DISC-2_AC-1 [ubiquitous]: The system SHALL extract flag names from `it.features.includes('...')`, `it.features.includes("...")`, `it.features.indexOf('...')`, and `it.features.indexOf("...")` patterns
 
 ### DISC-3: Feature-to-File Aggregation [MUST]
 
@@ -34,7 +34,7 @@ AS A developer, I WANT each flag listed with the files that reference it, SO THA
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-3_AC-1 [ubiquitous]: The system SHALL aggregate discovered flags by name, listing all files that reference each flag, sorted alphabetically by flag name
+- DISC-3_AC-1 [ubiquitous]: The system SHALL aggregate discovered flags by name, listing all files that reference each flag, sorted alphabetically by flag name
 
 ### DISC-4: Template Source Resolution [MUST]
 
@@ -42,7 +42,7 @@ AS A developer, I WANT the features command to work with local and remote templa
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-4_AC-1 [ubiquitous]: The system SHALL resolve the template source using the same template resolver as the generate and diff commands, supporting local paths, Git repositories, and config defaults
+- DISC-4_AC-1 [ubiquitous]: The system SHALL resolve the template source using the same template resolver as the generate and diff commands, supporting local paths, Git repositories, and config defaults
 
 ### DISC-5: Configuration Integration [MUST]
 
@@ -50,7 +50,7 @@ AS A developer, I WANT the features command to use the same configuration loadin
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-5_AC-1 [ubiquitous]: The system SHALL load configuration via the config loader, using the template and refresh settings from config when not overridden by CLI options
+- DISC-5_AC-1 [ubiquitous]: The system SHALL load configuration via the config loader, using the template and refresh settings from config when not overridden by CLI options
 
 ### DISC-6: JSON Output [SHOULD]
 
@@ -58,7 +58,7 @@ AS A CI engineer, I WANT JSON output, SO THAT feature discovery results can be p
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-6_AC-1 [conditional]: IF `--json` is specified THEN the system SHALL output results as valid JSON to stdout containing the features array and files scanned count
+- DISC-6_AC-1 [conditional]: IF `--json` is specified THEN the system SHALL output results as valid JSON to stdout containing the features array and files scanned count
 
 ### DISC-7: Preset Display [SHOULD]
 
@@ -66,7 +66,7 @@ AS A developer, I WANT presets from `.awa.toml` shown alongside discovered flags
 
 ACCEPTANCE CRITERIA
 
-- [x] DISC-7_AC-1 [conditional]: IF preset definitions exist in the loaded config THEN the system SHALL include them in the output
+- DISC-7_AC-1 [conditional]: IF preset definitions exist in the loaded config THEN the system SHALL include them in the output
 
 ## Assumptions
 

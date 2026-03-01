@@ -228,7 +228,7 @@ describe('Schema fixture validation', () => {
 
       const codes = result.findings.map((f) => f.code);
       expect(codes).toContain('schema-missing-content');
-      // Missing: user story, AC heading, AC checkbox items
+      // Missing: user story, AC heading, AC list items
       const missingContent = result.findings.filter((f) => f.code === 'schema-missing-content');
       expect(missingContent.length).toBeGreaterThanOrEqual(2);
     });

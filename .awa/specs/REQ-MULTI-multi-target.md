@@ -25,7 +25,7 @@ AS A developer, I WANT to define `[targets.<name>]` sections in `.awa.toml`, SO 
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-1_AC-1 [ubiquitous]: The configuration file SHALL support `[targets.<name>]` sections as TOML tables
+- MULTI-1_AC-1 [ubiquitous]: The configuration file SHALL support `[targets.<name>]` sections as TOML tables
 
 ### MULTI-2: Target Section Fields [MUST]
 
@@ -35,7 +35,7 @@ AS A developer, I WANT each target section to specify output, features, preset, 
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-2_AC-1 [ubiquitous]: Each target section SHALL support `output`, `features`, `preset`, `remove-features`, and `template` fields (all optional; inherit from root)
+- MULTI-2_AC-1 [ubiquitous]: Each target section SHALL support `output`, `features`, `preset`, `remove-features`, and `template` fields (all optional; inherit from root)
 
 ### MULTI-3: Target Inheritance [MUST]
 
@@ -45,7 +45,7 @@ AS A developer, I WANT target sections to inherit from root config, SO THAT I on
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-3_AC-1 [ubiquitous]: Target sections SHALL inherit from root config via nullish coalescing (target values override root)
+- MULTI-3_AC-1 [ubiquitous]: Target sections SHALL inherit from root config via nullish coalescing (target values override root)
 
 ### MULTI-4: Generate All Targets [MUST]
 
@@ -55,8 +55,8 @@ AS A developer, I WANT `awa generate --all` to process all named targets, SO THA
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-4_AC-1 [event]: WHEN `--all` is provided THEN the system SHALL process all named `[targets.*]` sections
-- [ ] MULTI-4_AC-2 [event]: WHEN `--all` is provided AND no `[targets.*]` sections exist THEN the system SHALL error with `NO_TARGETS`
+- MULTI-4_AC-1 [event]: WHEN `--all` is provided THEN the system SHALL process all named `[targets.*]` sections
+- MULTI-4_AC-2 [event]: WHEN `--all` is provided AND no `[targets.*]` sections exist THEN the system SHALL error with `NO_TARGETS`
 
 ### MULTI-5: Generate Single Target [MUST]
 
@@ -66,8 +66,8 @@ AS A developer, I WANT `awa generate --target <name>` to process a specific targ
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-5_AC-1 [event]: WHEN `--target <name>` is provided THEN the system SHALL process only the named target
-- [ ] MULTI-5_AC-2 [event]: WHEN `--target <name>` is provided AND the name doesn't exist THEN the system SHALL error with `UNKNOWN_TARGET`
+- MULTI-5_AC-1 [event]: WHEN `--target <name>` is provided THEN the system SHALL process only the named target
+- MULTI-5_AC-2 [event]: WHEN `--target <name>` is provided AND the name doesn't exist THEN the system SHALL error with `UNKNOWN_TARGET`
 
 ### MULTI-6: Diff All Targets [MUST]
 
@@ -77,7 +77,7 @@ AS A developer, I WANT `awa diff --all` and `awa diff --target` to work identica
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-6_AC-1 [ubiquitous]: The diff command SHALL support `--all` and `--target` identically to the generate command
+- MULTI-6_AC-1 [ubiquitous]: The diff command SHALL support `--all` and `--target` identically to the generate command
 
 ### MULTI-7: Backward Compatibility [MUST]
 
@@ -87,7 +87,7 @@ AS A developer, I WANT existing behavior unchanged when no `--all` or `--target`
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-7_AC-1 [conditional]: IF neither `--all` nor `--target` is provided THEN the system SHALL use existing single-target behavior
+- MULTI-7_AC-1 [conditional]: IF neither `--all` nor `--target` is provided THEN the system SHALL use existing single-target behavior
 
 ### MULTI-8: Per-Target Reporting [MUST]
 
@@ -97,7 +97,7 @@ AS A developer, I WANT results reported per target with clear labels, SO THAT I 
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-8_AC-1 [ubiquitous]: Batch mode output SHALL prefix log lines with `[target-name]`
+- MULTI-8_AC-1 [ubiquitous]: Batch mode output SHALL prefix log lines with `[target-name]`
 
 ### MULTI-9: Missing Output Error [MUST]
 
@@ -107,7 +107,7 @@ AS A developer, I WANT a clear error naming the target when output is unresolvab
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-9_AC-1 [event]: WHEN a target has no output AND root has no output THEN the system SHALL error with `MISSING_OUTPUT` naming the target
+- MULTI-9_AC-1 [event]: WHEN a target has no output AND root has no output THEN the system SHALL error with `MISSING_OUTPUT` naming the target
 
 ### MULTI-10: Non-Interactive Batch Mode [MUST]
 
@@ -117,7 +117,7 @@ AS A developer, I WANT `--all` and `--target` to suppress interactive prompting,
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-10_AC-1 [conditional]: IF `--all` or `--target` is set THEN the system SHALL NOT prompt for tool feature selection
+- MULTI-10_AC-1 [conditional]: IF `--all` or `--target` is set THEN the system SHALL NOT prompt for tool feature selection
 
 ### MULTI-11: CLI Output Override [MUST]
 
@@ -127,7 +127,7 @@ AS A developer, I WANT consistent CLI positional behavior with batch flags, SO T
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-11_AC-1 [conditional]: IF `--all` is set THEN CLI positional `[output]` SHALL be ignored; IF `--target` is set THEN CLI positional SHALL override the target's output
+- MULTI-11_AC-1 [conditional]: IF `--all` is set THEN CLI positional `[output]` SHALL be ignored; IF `--target` is set THEN CLI positional SHALL override the target's output
 
 ### MULTI-12: Diff Exit Code Aggregation [MUST]
 
@@ -137,7 +137,7 @@ AS A developer, I WANT `diff --all` to return an aggregated exit code, SO THAT C
 
 ACCEPTANCE CRITERIA
 
-- [ ] MULTI-12_AC-1 [ubiquitous]: `diff --all` exit code SHALL be `1` if any target has differences, `0` if all identical, `2` on error
+- MULTI-12_AC-1 [ubiquitous]: `diff --all` exit code SHALL be `1` if any target has differences, `0` if all identical, `2` on error
 
 ## Assumptions
 

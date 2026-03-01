@@ -2,9 +2,13 @@
 // @awa-test: CHK-3_AC-1
 // @awa-test: CHK-4_AC-1
 // @awa-test: CHK-6_AC-1
+// @awa-test: CHK-18_AC-1
+// @awa-test: CHK-19_AC-1
 // @awa-test: CHK_P-1
 // @awa-test: CHK_P-2
 // @awa-test: CHK_P-4
+// @awa-test: CHK_P-6
+// @awa-test: CHK_P-7
 
 import { describe, expect, test } from 'vitest';
 import { checkCodeAgainstSpec } from '../code-spec-checker.js';
@@ -186,5 +190,99 @@ describe('CodeSpecChecker', () => {
 
     const orphaned = result.findings.filter((f) => f.code === 'orphaned-marker');
     expect(orphaned).toHaveLength(2);
+  });
+
+  // @awa-test: CHK_P-6
+  // @awa-test: CHK-18_AC-1
+  test('reports uncovered component when no @awa-component marker exists', () => {
+    const markers = makeMarkers([]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-ConfigLoader']),
+      allIds: new Set(['CFG-ConfigLoader']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-ConfigLoader'],
+          crossRefs: [],
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const uncovered = result.findings.filter((f) => f.code === 'uncovered-component');
+    expect(uncovered).toHaveLength(1);
+    expect(uncovered[0]).toMatchObject({
+      severity: 'warning',
+      id: 'CFG-ConfigLoader',
+    });
+  });
+
+  // @awa-test: CHK_P-6
+  test('does not report component as uncovered when @awa-component marker exists', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-ConfigLoader', filePath: 'src/config.ts', line: 1 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-ConfigLoader']),
+      allIds: new Set(['CFG-ConfigLoader']),
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const uncovered = result.findings.filter((f) => f.code === 'uncovered-component');
+    expect(uncovered).toHaveLength(0);
+  });
+
+  // @awa-test: CHK_P-7
+  // @awa-test: CHK-19_AC-1
+  test('reports unimplemented AC when no @awa-impl marker exists', () => {
+    const markers = makeMarkers([
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/config.ts', line: 10 },
+    ]);
+    const specs = makeSpecs({
+      acIds: new Set(['CFG-1_AC-1', 'CFG-1_AC-2']),
+      allIds: new Set(['CFG-1_AC-1', 'CFG-1_AC-2']),
+      specFiles: [
+        {
+          filePath: 'specs/REQ-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: ['CFG-1_AC-1', 'CFG-1_AC-2'],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [],
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const unimplemented = result.findings.filter((f) => f.code === 'unimplemented-ac');
+    expect(unimplemented).toHaveLength(1);
+    expect(unimplemented[0]).toMatchObject({
+      severity: 'warning',
+      id: 'CFG-1_AC-2',
+    });
+  });
+
+  // @awa-test: CHK_P-7
+  test('does not report AC as unimplemented when @awa-impl marker exists', () => {
+    const markers = makeMarkers([
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/config.ts', line: 10 },
+    ]);
+    const specs = makeSpecs({
+      acIds: new Set(['CFG-1_AC-1']),
+      allIds: new Set(['CFG-1_AC-1']),
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const unimplemented = result.findings.filter((f) => f.code === 'unimplemented-ac');
+    expect(unimplemented).toHaveLength(0);
   });
 });

@@ -1,4 +1,5 @@
 // @awa-component: GEN-ConflictResolver
+// @awa-component: GEN-DeleteResolver
 // @awa-impl: CLI-5_AC-2
 // @awa-impl: CLI-5_AC-3
 // @awa-impl: GEN-4_AC-1
@@ -13,6 +14,10 @@
 // @awa-impl: GEN-5_AC-7
 // @awa-impl: GEN-6_AC-3
 // @awa-impl: GEN-10_AC-3
+// @awa-impl: GEN-12_AC-3
+// @awa-impl: GEN-12_AC-4
+// @awa-impl: GEN-12_AC-5
+// @awa-impl: CLI-12_AC-3
 
 import { MultiSelectPrompt } from '@clack/core';
 import { isCancel, multiselect } from '@clack/prompts';

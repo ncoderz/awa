@@ -1,4 +1,5 @@
 // @awa-component: CFG-ConfigLoader
+// @awa-component: MULTI-TargetResolver
 // @awa-impl: CFG-1_AC-1
 // @awa-impl: CFG-1_AC-2
 // @awa-impl: CFG-1_AC-3
@@ -12,6 +13,10 @@
 // @awa-impl: CFG-3_AC-4
 // @awa-impl: CFG-3_AC-5
 // @awa-impl: CFG-3_AC-6
+// @awa-impl: CFG-3_AC-7
+// @awa-impl: CFG-3_AC-8
+// @awa-impl: CFG-3_AC-9
+// @awa-impl: CFG-3_AC-10
 // @awa-impl: CFG-4_AC-1
 // @awa-impl: CFG-4_AC-2
 // @awa-impl: CFG-4_AC-3
@@ -25,6 +30,20 @@
 // @awa-impl: CLI-2_AC-4
 // @awa-impl: CLI-4_AC-3
 // @awa-impl: CLI-7_AC-2
+// @awa-impl: FP-1_AC-1
+// @awa-impl: FP-1_AC-2
+// @awa-impl: FP-1_AC-3
+// @awa-impl: FP-1_AC-4
+// @awa-impl: FP-3_AC-1
+// @awa-impl: FP-3_AC-2
+// @awa-impl: FP-3_AC-3
+// @awa-impl: FP-5_AC-1
+// @awa-impl: FP-5_AC-2
+// @awa-impl: FP-5_AC-3
+// @awa-impl: MULTI-1_AC-1
+// @awa-impl: MULTI-2_AC-1
+// @awa-impl: MULTI-3_AC-1
+// @awa-impl: MULTI-5_AC-2
 
 import { parse } from 'smol-toml';
 import {

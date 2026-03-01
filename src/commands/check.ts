@@ -1,6 +1,9 @@
 // @awa-component: CHK-CheckCommand
 // @awa-impl: CHK-8_AC-1
 // @awa-impl: CHK-10_AC-1
+// @awa-impl: CHK-17_AC-1
+// @awa-impl: CHK-17_AC-2
+// @awa-impl: CHK-17_AC-3
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';

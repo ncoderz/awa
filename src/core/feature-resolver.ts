@@ -1,4 +1,13 @@
 // @awa-component: FP-FeatureResolver
+// @awa-impl: FP-2_AC-3
+// @awa-impl: FP-4_AC-4
+// @awa-impl: FP-6_AC-1
+// @awa-impl: FP-6_AC-2
+// @awa-impl: FP-6_AC-3
+// @awa-impl: FP-6_AC-4
+// @awa-impl: FP-6_AC-5
+// @awa-impl: FP-7_AC-1
+// @awa-impl: FP-7_AC-2
 
 import { ConfigError, type PresetDefinitions } from '../types/index.js';
 

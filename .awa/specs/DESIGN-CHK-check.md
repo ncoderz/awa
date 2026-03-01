@@ -116,7 +116,7 @@ function parseSpecs(config: CheckConfig): Promise<SpecParseResult>;
 
 Matches code markers against spec IDs. Reports orphaned markers (code references non-existent spec ID) and uncovered ACs (spec AC with no test marker).
 
-IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1
+IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1
 
 ```typescript
 interface CheckResult {
@@ -243,6 +243,12 @@ interface RawCheckOptions {
 - CHK_P-5 [Exit Code Correctness]: Exit code is 0 when no errors exist, 1 when errors exist (warnings alone do not affect exit code)
   VALIDATES: CHK-8_AC-1
 
+- CHK_P-6 [Component Coverage Detection]: Every DESIGN component without a corresponding `@awa-component` marker is reported as a warning
+  VALIDATES: CHK-18_AC-1
+
+- CHK_P-7 [Implementation Coverage Detection]: Every spec AC without a corresponding `@awa-impl` marker is reported as a warning
+  VALIDATES: CHK-19_AC-1
+
 ## Error Handling
 
 ### CheckError
@@ -297,8 +303,11 @@ PRINCIPLES:
 - CHK-14_AC-1 → CHK-CodeSpecChecker
 - CHK-15_AC-1 → CHK-SpecSpecChecker
 - CHK-16_AC-1 → CHK-CheckCommand
+- CHK-18_AC-1 → CHK-CodeSpecChecker (CHK_P-6)
+- CHK-19_AC-1 → CHK-CodeSpecChecker (CHK_P-7)
 
 ## Change Log
 
 - 1.0.0 (2026-02-27): Initial design
 - 1.1.0 (2026-02-27): Schema upgrade — added H3 heading under Requirements Traceability
+- 1.2.0 (2026-03-01): Added CHK-18 (uncovered component) and CHK-19 (unimplemented AC) to CodeSpecChecker; added CHK_P-6, CHK_P-7

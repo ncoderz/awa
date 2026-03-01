@@ -25,10 +25,10 @@ AS A developer, I WANT to define named feature presets in my config file, SO THA
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-1_AC-1 [ubiquitous]: The configuration file SHALL support a `[presets]` TOML table
-- [ ] FP-1_AC-2 [ubiquitous]: Each key in the `[presets]` table SHALL map to an array of feature strings
-- [ ] FP-1_AC-3 [event]: WHEN a preset value is not an array of strings THEN the system SHALL display a type error and exit
-- [ ] FP-1_AC-4 [conditional]: IF the `[presets]` table is absent THEN the system SHALL continue without error
+- FP-1_AC-1 [ubiquitous]: The configuration file SHALL support a `[presets]` TOML table
+- FP-1_AC-2 [ubiquitous]: Each key in the `[presets]` table SHALL map to an array of feature strings
+- FP-1_AC-3 [event]: WHEN a preset value is not an array of strings THEN the system SHALL display a type error and exit
+- FP-1_AC-4 [conditional]: IF the `[presets]` table is absent THEN the system SHALL continue without error
 
 ### FP-2: Preset CLI Option [MUST]
 
@@ -38,10 +38,10 @@ AS A developer, I WANT to activate presets from the command line, SO THAT I can 
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-2_AC-1 [ubiquitous]: The system SHALL accept `--preset <name>` as a CLI option
-- [ ] FP-2_AC-2 [event]: WHEN multiple `--preset` options are provided THEN the system SHALL collect all values
-- [ ] FP-2_AC-3 [event]: WHEN a preset name does not exist in config THEN the system SHALL display an error and exit
-- [ ] FP-2_AC-4 [conditional]: IF `--preset` is not provided THEN the system SHALL use an empty preset list as default
+- FP-2_AC-1 [ubiquitous]: The system SHALL accept `--preset <name>` as a CLI option
+- FP-2_AC-2 [event]: WHEN multiple `--preset` options are provided THEN the system SHALL collect all values
+- FP-2_AC-3 [event]: WHEN a preset name does not exist in config THEN the system SHALL display an error and exit
+- FP-2_AC-4 [conditional]: IF `--preset` is not provided THEN the system SHALL use an empty preset list as default
 
 ### FP-3: Preset Config Option [MUST]
 
@@ -51,9 +51,9 @@ AS A developer, I WANT to specify default presets in my config file, SO THAT I d
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-3_AC-1 [ubiquitous]: The configuration file SHALL support `preset` as an array of strings
-- [ ] FP-3_AC-2 [conditional]: IF CLI `--preset` is provided THEN it SHALL replace the config `preset` value
-- [ ] FP-3_AC-3 [conditional]: IF neither CLI nor config specifies presets THEN the system SHALL use an empty array
+- FP-3_AC-1 [ubiquitous]: The configuration file SHALL support `preset` as an array of strings
+- FP-3_AC-2 [conditional]: IF CLI `--preset` is provided THEN it SHALL replace the config `preset` value
+- FP-3_AC-3 [conditional]: IF neither CLI nor config specifies presets THEN the system SHALL use an empty array
 
 ### FP-4: Remove Features CLI Option [MUST]
 
@@ -63,11 +63,11 @@ AS A developer, I WANT to remove specific features from the final set, SO THAT I
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-4_AC-1 [ubiquitous]: The system SHALL accept `--remove-features <feature>` as a CLI option
-- [ ] FP-4_AC-2 [event]: WHEN multiple `--remove-features` options are provided THEN the system SHALL collect all values
-- [ ] FP-4_AC-3 [ubiquitous]: The system SHALL support comma-separated values in a single `--remove-features` option
-- [ ] FP-4_AC-4 [conditional]: IF a removed feature does not exist in the feature set THEN the system SHALL silently ignore it
-- [ ] FP-4_AC-5 [conditional]: IF `--remove-features` is not provided THEN the system SHALL use an empty removal list
+- FP-4_AC-1 [ubiquitous]: The system SHALL accept `--remove-features <feature>` as a CLI option
+- FP-4_AC-2 [event]: WHEN multiple `--remove-features` options are provided THEN the system SHALL collect all values
+- FP-4_AC-3 [ubiquitous]: The system SHALL support comma-separated values in a single `--remove-features` option
+- FP-4_AC-4 [conditional]: IF a removed feature does not exist in the feature set THEN the system SHALL silently ignore it
+- FP-4_AC-5 [conditional]: IF `--remove-features` is not provided THEN the system SHALL use an empty removal list
 
 ### FP-5: Remove Features Config Option [MUST]
 
@@ -77,9 +77,9 @@ AS A developer, I WANT to specify removed features in my config file, SO THAT I 
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-5_AC-1 [ubiquitous]: The configuration file SHALL support `remove-features` as an array of strings
-- [ ] FP-5_AC-2 [conditional]: IF CLI `--remove-features` is provided THEN it SHALL replace the config `remove-features` value
-- [ ] FP-5_AC-3 [conditional]: IF neither CLI nor config specifies removals THEN the system SHALL use an empty array
+- FP-5_AC-1 [ubiquitous]: The configuration file SHALL support `remove-features` as an array of strings
+- FP-5_AC-2 [conditional]: IF CLI `--remove-features` is provided THEN it SHALL replace the config `remove-features` value
+- FP-5_AC-3 [conditional]: IF neither CLI nor config specifies removals THEN the system SHALL use an empty array
 
 ### FP-6: Feature Resolution Order [MUST]
 
@@ -89,11 +89,11 @@ AS A developer, I WANT a predictable feature resolution order, SO THAT I can rea
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-6_AC-1 [ubiquitous]: The system SHALL compute base features as CLI `--features` if provided, else config `features`, else empty array
-- [ ] FP-6_AC-2 [ubiquitous]: The system SHALL compute preset features as the union of all features from activated presets
-- [ ] FP-6_AC-3 [ubiquitous]: The system SHALL compute the combined set as the union of base features and preset features
-- [ ] FP-6_AC-4 [ubiquitous]: The system SHALL compute the final features by removing all `remove-features` from the combined set
-- [ ] FP-6_AC-5 [ubiquitous]: The system SHALL deduplicate the final feature set
+- FP-6_AC-1 [ubiquitous]: The system SHALL compute base features as CLI `--features` if provided, else config `features`, else empty array
+- FP-6_AC-2 [ubiquitous]: The system SHALL compute preset features as the union of all features from activated presets
+- FP-6_AC-3 [ubiquitous]: The system SHALL compute the combined set as the union of base features and preset features
+- FP-6_AC-4 [ubiquitous]: The system SHALL compute the final features by removing all `remove-features` from the combined set
+- FP-6_AC-5 [ubiquitous]: The system SHALL deduplicate the final feature set
 
 ### FP-7: Preset Feature Union [MUST]
 
@@ -103,8 +103,8 @@ AS A developer, I WANT multiple presets to be merged, SO THAT I can combine pres
 
 ACCEPTANCE CRITERIA
 
-- [ ] FP-7_AC-1 [event]: WHEN multiple presets are activated THEN the system SHALL union their features
-- [ ] FP-7_AC-2 [ubiquitous]: Duplicate features across presets SHALL appear only once in the result
+- FP-7_AC-1 [event]: WHEN multiple presets are activated THEN the system SHALL union their features
+- FP-7_AC-2 [ubiquitous]: Duplicate features across presets SHALL appear only once in the result
 
 ## Assumptions
 

@@ -58,6 +58,8 @@ export type FindingSeverity = 'error' | 'warning';
 export type FindingCode =
   | 'orphaned-marker'
   | 'uncovered-ac'
+  | 'uncovered-component'
+  | 'unimplemented-ac'
   | 'broken-cross-ref'
   | 'invalid-id-format'
   | 'marker-trailing-text'

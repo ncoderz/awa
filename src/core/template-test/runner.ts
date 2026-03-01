@@ -2,6 +2,7 @@
 // @awa-impl: TTST-3_AC-1
 // @awa-impl: TTST-4_AC-1
 // @awa-impl: TTST-5_AC-1
+// @awa-impl: TTST-8_AC-1
 
 import { mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

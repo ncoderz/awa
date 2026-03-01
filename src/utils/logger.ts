@@ -11,6 +11,8 @@
 // @awa-impl: GEN-9_AC-4
 // @awa-impl: GEN-9_AC-5
 // @awa-impl: GEN-9_AC-6
+// @awa-impl: GEN-9_AC-7
+// @awa-impl: GEN-9_AC-8
 // @awa-impl: GEN-11_AC-1
 // @awa-impl: GEN-11_AC-2
 // @awa-impl: GEN-11_AC-4

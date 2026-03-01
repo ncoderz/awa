@@ -1,8 +1,11 @@
 // @awa-component: MULTI-BatchRunner
+// @awa-component: MULTI-Reporter
 // @awa-impl: MULTI-4_AC-1
 // @awa-impl: MULTI-4_AC-2
+// @awa-impl: MULTI-5_AC-1
 // @awa-impl: MULTI-8_AC-1
 // @awa-impl: MULTI-9_AC-1
+// @awa-impl: MULTI-11_AC-1
 
 import {
   ConfigError,

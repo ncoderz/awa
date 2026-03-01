@@ -44,8 +44,8 @@ AS A developer, I WANT config loading, SO THAT configuration works.
 
 ACCEPTANCE CRITERIA
 
-- [ ] CFG-1_AC-1 [event]: WHEN config loaded THEN system SHALL parse it
-- [ ] CFG-1_AC-2 [ubiquitous]: The system SHALL merge with defaults
+- CFG-1_AC-1 [event]: WHEN config loaded THEN system SHALL parse it
+- CFG-1_AC-2 [ubiquitous]: The system SHALL merge with defaults
 
 ### CFG-2: Config Validation [SHOULD]
 
@@ -53,7 +53,7 @@ AS A developer, I WANT validation, SO THAT errors are caught.
 
 ACCEPTANCE CRITERIA
 
-- [x] CFG-2_AC-1 [event]: WHEN invalid THEN system SHALL throw
+- CFG-2_AC-1 [event]: WHEN invalid THEN system SHALL throw
 `
     );
 
@@ -76,13 +76,13 @@ ACCEPTANCE CRITERIA
 
 ACCEPTANCE CRITERIA
 
-- [ ] ENG-1_AC-1 [event]: WHEN init THEN create context
+- ENG-1_AC-1 [event]: WHEN init THEN create context
 
 ### ENG-1.1: Subsystem [SHOULD]
 
 ACCEPTANCE CRITERIA
 
-- [ ] ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN register
+- ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN register
 `
     );
 
@@ -183,7 +183,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 
 ACCEPTANCE CRITERIA
 
-- [ ] CHK-1_AC-1 [ubiquitous]: The system SHALL scan
+- CHK-1_AC-1 [ubiquitous]: The system SHALL scan
 `
     );
 
@@ -209,7 +209,7 @@ ACCEPTANCE CRITERIA
 
 ACCEPTANCE CRITERIA
 
-- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+- X-1_AC-1 [event]: WHEN foo THEN bar
 `
     );
     await writeFile(
