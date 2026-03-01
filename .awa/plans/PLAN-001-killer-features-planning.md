@@ -89,18 +89,10 @@ The 9 features span traceability power-ups (A1–A3), visualization (B4), ecosys
 - [ ] Identify testing strategy: example plugins, plugin API contract tests
 - [ ] Assess risks: API surface area creep, security (arbitrary code execution), maintenance burden of stable API
 
-### PLAN-008: `awa context` — Intelligent Context Assembly (E9)
+### ~~PLAN-008: `awa context`~~ — Merged into PLAN-002 (`awa trace`)
 
-- [ ] Define scope: assemble optimized context payload for AI agents based on spec chain
-- [ ] Specify query modes: by ID (`awa context DIFF-7`), by task (`--task TASK-DIFF-diff-003`), by file (`--file src/core/differ.ts`)
-- [ ] Design context selection algorithm: follow traceability links, include referenced specs + relevant code + tests
-- [ ] Specify output formats: concatenated Markdown (default), `--json` (structured), `--clipboard` (copy to clipboard)
-- [ ] Define relevance ranking: direct references first, transitive second, configurable depth
-- [ ] Detail token budget: `--max-tokens <n>` to cap output size, prioritize by relevance
-- [ ] Specify integration points: pipe to AI tools, use in prompt templates, MCP server potential
-- [ ] Outline implementation steps (context resolver, relevance ranker, output formatter, token estimator)
-- [ ] Identify testing strategy: fixture projects, verify correct spec/code inclusion
-- [ ] Assess risks: context quality vs. quantity tradeoff, token counting accuracy, keeping up with AI model context limits
+Context assembly (query by ID/task/file, `--content`, `--max-tokens`, `--clipboard`) is now part of `awa trace`.
+See PLAN-002 for the merged scope.
 
 ### PLAN-009: `awa review` — Spec-Aware Code Review (E10)
 
@@ -132,7 +124,7 @@ The 9 features span traceability power-ups (A1–A3), visualization (B4), ecosys
 
 - All plans (002–010) depend on understanding the Check Engine internals (marker-scanner, spec-parser, code-spec-checker)
 - PLAN-002 (trace), PLAN-004 (impact), PLAN-005 (graph) share a reverse-index data structure — design this once
-- PLAN-008 (context) builds on the index from PLAN-002 (trace)
+- PLAN-008 (context) merged into PLAN-002 (trace) — context assembly is now a `--content` mode of trace
 - PLAN-009 (review) builds on PLAN-003 (coverage) gap detection
 - PLAN-010 (LSP) reuses the index from PLAN-002 (trace) and diagnostics from Check Engine
 
@@ -150,7 +142,7 @@ The 9 features span traceability power-ups (A1–A3), visualization (B4), ecosys
 - [x] PLAN-005 created: `awa graph`
 - [x] PLAN-006 created: template registry
 - [x] PLAN-007 created: `awa plugin`
-- [x] PLAN-008 created: `awa context`
+- [x] PLAN-008 created: `awa context` (merged into PLAN-002)
 - [x] PLAN-009 created: `awa review`
 - [x] PLAN-010 created: LSP / IDE integration
 
@@ -158,3 +150,4 @@ The 9 features span traceability power-ups (A1–A3), visualization (B4), ecosys
 
 - 001 (2026-03-01): Initial meta-plan from brainstorm session
 - 002 (2026-03-01): All 9 detail plans created (PLAN-002 through PLAN-010)
+- 003 (2026-03-01): Merged PLAN-008 (context) into PLAN-002 (trace) — shared 70% implementation

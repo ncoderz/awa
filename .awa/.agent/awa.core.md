@@ -87,7 +87,7 @@ Markers create the trace, not file paths.
 </traceability_chain>
 
 <file_size_limits>
-Any file exceeding 500 lines MUST be split logically into multiple files unless impossible.
+Any file exceeding schema defined line-limit, or otherwise 500 lines, MUST be split logically into multiple files unless impossible. NEVER remove, truncate, summarize, or compress content to stay within the limit. Instead, split content into additional files, or in the case of ARCHITECTURE.md, push details to other spec files.
 </file_size_limits>
 
 <core_principles>
