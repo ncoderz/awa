@@ -1,3 +1,4 @@
 # TODO
 
-- remove checkboxes from the spec
+- [x] remove checkboxes from the spec
+- [ ] Make arc split rather than compact when files exceed size limits
