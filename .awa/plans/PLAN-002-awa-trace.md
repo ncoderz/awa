@@ -21,9 +21,10 @@ IN SCOPE:
 - Reverse traversal: test → code → design → requirement
 - Output modes: location tree (default), `--content` (actual file sections), `--list` (file paths only), `--json`
 - Token budget: `--max-tokens <n>` to cap content output with priority-based truncation
-- Clipboard: `--clipboard` copies output to system clipboard
+- Context lines (with `--content`): `-A <n>` / `-B <n>` / `-C <n>` flags (grep-style) to control the number of lines returned around code markers (after / before / both)
 - Depth control: `--depth <n>` to limit traversal depth
 - Scope filtering: `--scope <CODE>` to limit to a feature code
+- All IDs: `--all` to trace every known ID in the project (useful for full marker listing)
 
 OUT OF SCOPE:
 - MCP server mode (future enhancement — expose as tool for AI agents)
@@ -66,12 +67,13 @@ interface CodeLocation {
 ## CLI Interface
 
 ```
-awa trace <ID... | --task <path> | --file <path>> [options]
+awa trace <ID... | --all | --task <path> | --file <path>> [options]
 
 Arguments:
   ID                      Traceability ID(s) (space-separated)
 
 Options:
+  --all                   Trace all known IDs in the project
   --task <path>           Resolve IDs from a task file
   --file <path>           Resolve IDs from a source file's markers
   --content               Output actual file sections instead of locations
@@ -83,7 +85,9 @@ Options:
   --no-code               Exclude source code (spec-only context)
   --no-tests              Exclude test files
   --json                  Output as JSON
-  --clipboard             Copy to clipboard instead of stdout
+  -A <n>                  Lines of context after a code marker (--content only; default: 20)
+  -B <n>                  Lines of context before a code marker (--content only; default: 5)
+  -C <n>                  Lines of context before and after (--content only; overrides -A and -B)
   -c, --config <path>     Path to configuration file
 ```
 
@@ -242,7 +246,7 @@ When `--content` is active, sections are included in this priority order (used f
 - [ ] Implement content extraction: for code files, extract the function/block containing the marker
 - [ ] Implement relevance scoring: distance from query ID determines priority
 - [ ] Implement deduplication: same file section referenced from multiple IDs appears once
-- [ ] Fallback: if AST extraction fails, include a window of lines around the marker (e.g. +/- 20 lines)
+- [ ] Fallback: if AST extraction fails, include a window of lines around the marker (controlled by `-A`/`-B`/`-C` flags; defaults: 5 before, 20 after)
 - [ ] Unit test content assembler with fixture data
 
 ### Phase 6: Token Budget
@@ -263,7 +267,7 @@ When `--content` is active, sections are included in this priority order (used f
 - [ ] Create `src/commands/trace.ts` command handler
 - [ ] Register `trace` command in `src/cli/index.ts` with commander
 - [ ] Wire up: config → scan + parse → build TraceIndex → resolve input → resolve chain → format → output
-- [ ] Implement `--clipboard` via Node.js child_process (`pbcopy` on macOS, `xclip` on Linux, `clip` on Windows)
+- [ ] Implement `-A`, `-B`, `-C` context line options (only effective with `--content`) to control the window of lines extracted around code markers
 - [ ] Reuse existing `checkCommand` pattern for config loading and error handling
 - [ ] Integration test: run trace on this project's own specs
 
@@ -313,7 +317,11 @@ When `--content` is active, sections are included in this priority order (used f
 - [ ] `--max-tokens 2000` truncates content by relevance priority
 - [ ] `--list` outputs file paths without content
 - [ ] `--json` outputs valid structured JSON
-- [ ] `--clipboard` copies to system clipboard
+- [ ] `--content -C 10` limits code context to 10 lines before and after markers
+- [ ] `--content -A 30 -B 3` controls asymmetric context window
+- [ ] `-C 10` without `--content` is ignored (no error)
+- [ ] `awa trace --all --list` lists all files containing traceability markers
+- [ ] `awa trace --all --json` outputs JSON for every known ID
 - [ ] `--depth 1` limits traversal to direct references only
 - [ ] Exit code 1 when ID not found
 - [ ] All unit tests pass
@@ -333,4 +341,7 @@ When `--content` is active, sections are included in this priority order (used f
 ## Change Log
 
 - 001 (2026-03-01): Initial plan
-- 002 (2026-03-01): Merged PLAN-008 (awa context) — added --content, --task, --file, --max-tokens, --clipboard, --list modes; added content assembly, token budget, and content formatter phases
+- 002 (2026-03-01): Merged PLAN-008 (awa context) — added --content, --task, --file, --max-tokens, --list modes; added content assembly, token budget, and content formatter phases
+- 003 (2026-03-01): Added -A/-B/-C context line flags (grep-style) for controlling lines around markers; dropped --clipboard (security risk)
+- 004 (2026-03-01): Clarified -A/-B/-C only apply with --content; silently ignored otherwise
+- 005 (2026-03-01): Added --all flag to trace every known ID in the project
