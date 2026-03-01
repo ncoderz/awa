@@ -108,6 +108,28 @@ export function loadAndMerge() {}
   });
 
   // @awa-test: CHK-1_AC-1
+  test('extracts dotted-subrequirement AC IDs (e.g. ARC-18.1_AC-1)', async () => {
+    // @awa-ignore-start
+    await writeFile(
+      join(testDir, 'dotted.ts'),
+      `// @awa-impl: ARC-18.1_AC-1
+// @awa-impl: ARC-82_AC-3
+// @awa-test: ARC-18.1_AC-2
+export function foo() {}
+`
+    );
+    // @awa-ignore-end
+
+    const result = await scanMarkers(makeConfig());
+
+    expect(result.markers).toHaveLength(3);
+    expect(result.markers[0]).toMatchObject({ type: 'impl', id: 'ARC-18.1_AC-1' });
+    expect(result.markers[1]).toMatchObject({ type: 'impl', id: 'ARC-82_AC-3' });
+    expect(result.markers[2]).toMatchObject({ type: 'test', id: 'ARC-18.1_AC-2' });
+    expect(result.findings).toHaveLength(0);
+  });
+
+  // @awa-test: CHK-1_AC-1
   test('strips partial annotations from marker IDs', async () => {
     // @awa-ignore-start
     await writeFile(
