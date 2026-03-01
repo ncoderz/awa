@@ -35,7 +35,7 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
     Use [Eta](https://eta.js.org/) templates with conditionals, loops, and partials. Enable or disable content with feature flags and presets.
   </Card>
   <Card title="Drift Detection" icon="magnifier">
-    `awa diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
+    `awa template diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
   </Card>
   <Card title="Traceability Validation" icon="approve-check-circle">
     `awa check` checks that all code markers resolve to real spec IDs and flags uncovered acceptance criteria.
@@ -47,7 +47,7 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
     Generate configuration for Copilot, Claude, Cursor, Windsurf, and more — all from a single template set.
   </Card>
   <Card title="Feature Discovery" icon="list-format">
-    `awa features` discovers all feature flags in a template. `awa test` verifies templates against fixtures and snapshots.
+    `awa template features` discovers all feature flags in a template. `awa template test` verifies templates against fixtures and snapshots.
   </Card>
 </CardGrid>
 

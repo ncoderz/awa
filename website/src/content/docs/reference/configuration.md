@@ -60,7 +60,7 @@ interval = 86400  # seconds between checks (default: 1 day)
 | `dry-run` | boolean | `false` | Preview changes without writing files |
 | `delete` | boolean | `false` | Apply deletions from `_delete.txt` |
 | `refresh` | boolean | `false` | Force re-fetch of cached remote templates |
-| `list-unknown` | boolean | `false` | Include target-only files in `awa diff` output |
+| `list-unknown` | boolean | `false` | Include target-only files in `awa template diff` output |
 
 ### `[check]` Options
 

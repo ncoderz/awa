@@ -29,11 +29,11 @@ An important concept is the INTERACTIVE MULTI-TOOL SELECTION: when the `generate
 
 ### Scenario 1: Clean generation
 
-A developer runs `awa generate ./my-project` for the first time. No files exist in the output directory. The generator creates all files, reports "N created", and finishes without prompts.
+A developer runs `awa template generate ./my-project` for the first time. No files exist in the output directory. The generator creates all files, reports "N created", and finishes without prompts.
 
 ### Scenario 2: Regeneration with conflicts
 
-The developer runs `awa generate .` again. Some files have changed in the template. The system detects files where content differs and presents a single multiselect prompt listing all conflicting files (all checked by default). The developer unchecks two files they want to keep, and the rest are overwritten.
+The developer runs `awa template generate .` again. Some files have changed in the template. The system detects files where content differs and presents a single multiselect prompt listing all conflicting files (all checked by default). The developer unchecks two files they want to keep, and the rest are overwritten.
 
 ### Scenario 3: Identical content auto-skip
 
@@ -41,19 +41,19 @@ A file was generated previously and neither the template nor the feature flags h
 
 ### Scenario 4: Dry run
 
-A developer runs `awa generate . --dry-run`. The system renders all templates, detects conflicts, and prints what it would do — but writes nothing to disk. The summary shows what would be created, overwritten, and skipped.
+A developer runs `awa template generate . --dry-run`. The system renders all templates, detects conflicts, and prints what it would do — but writes nothing to disk. The summary shows what would be created, overwritten, and skipped.
 
 ### Scenario 5: Force overwrite
 
-A CI pipeline runs `awa generate . --force`. All conflicts are automatically overwritten without prompting. The pipeline needs no interactive input.
+A CI pipeline runs `awa template generate . --force`. All conflicts are automatically overwritten without prompting. The pipeline needs no interactive input.
 
 ### Scenario 6: Delete list processing
 
-A template update adds entries to `_delete.txt` for agent config files that are no longer needed. The developer runs `awa generate . --delete`. After generation, the system finds the listed files in the output directory and presents a destructive-styled multiselect (red checkboxes, all pre-selected) for confirmation. The developer confirms, and the stale files are removed.
+A template update adds entries to `_delete.txt` for agent config files that are no longer needed. The developer runs `awa template generate . --delete`. After generation, the system finds the listed files in the output directory and presents a destructive-styled multiselect (red checkboxes, all pre-selected) for confirmation. The developer confirms, and the stale files are removed.
 
 ### Scenario 7: Delete list without --delete flag
 
-The developer runs `awa generate .` (without `--delete`). The system sees files in `_delete.txt` that exist in the output, logs a warning about each one, but does not delete anything. The developer must opt-in explicitly.
+The developer runs `awa template generate .` (without `--delete`). The system sees files in `_delete.txt` that exist in the output, logs a warning about each one, but does not delete anything. The developer must opt-in explicitly.
 
 ### Scenario 8: Feature-gated delete list
 
@@ -66,7 +66,7 @@ When the developer generates with `--features copilot --delete`, the file is NOT
 
 ### Scenario 9: Interactive tool selection
 
-A developer runs `awa generate .` with no feature flags. The CLI presents a multiselect of available tools (copilot, claude, cursor, etc.). The developer selects the ones they use, and those become the active features for this generation run.
+A developer runs `awa template generate .` with no feature flags. The CLI presents a multiselect of available tools (copilot, claude, cursor, etc.). The developer selects the ones they use, and those become the active features for this generation run.
 
 ## Change Log
 

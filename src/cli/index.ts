@@ -1,4 +1,6 @@
 // @awa-component: CLI-ArgumentParser
+// @awa-component: TCLI-TemplateGroup
+// @awa-component: TCLI-RootProgram
 // @awa-impl: CLI-1_AC-1
 // @awa-impl: CLI-1_AC-2
 // @awa-impl: CLI-1_AC-3
@@ -57,6 +59,25 @@
 // @awa-impl: INIT-2_AC-1
 // @awa-impl: INIT-3_AC-1
 // @awa-impl: INIT-4_AC-1
+// @awa-impl: TCLI-1_AC-1
+// @awa-impl: TCLI-1_AC-2
+// @awa-impl: TCLI-1_AC-3
+// @awa-impl: TCLI-1_AC-4
+// @awa-impl: TCLI-1_AC-5
+// @awa-impl: TCLI-1_AC-6
+// @awa-impl: TCLI-1_AC-7
+// @awa-impl: TCLI-2_AC-1
+// @awa-impl: TCLI-2_AC-2
+// @awa-impl: TCLI-3_AC-1
+// @awa-impl: TCLI-3_AC-2
+// @awa-impl: TCLI-3_AC-3
+// @awa-impl: TCLI-3_AC-4
+// @awa-impl: TCLI-4_AC-1
+// @awa-impl: TCLI-4_AC-2
+// @awa-impl: TCLI-5_AC-1
+// @awa-impl: TCLI-5_AC-2
+// @awa-impl: TCLI-5_AC-3
+// @awa-impl: TCLI-5_AC-4
 
 import { Command } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
@@ -81,6 +102,7 @@ import { shouldCheck, writeCache } from '../utils/update-check-cache.js';
 const version = PACKAGE_INFO.version;
 
 // @awa-impl: CLI-1_AC-2, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
+// @awa-impl: TCLI-4_AC-1
 const program = new Command();
 
 program
@@ -88,69 +110,90 @@ program
   .description('awa - tool for generating AI coding agent configuration files')
   .version(version, '-v, --version', 'Display version number');
 
+// @awa-impl: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-4_AC-2
+// @awa-impl: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
+const template = new Command('template').description(
+  'Template operations (generate, diff, features, test)'
+);
+
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
 // @awa-impl: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
-program
-  .command('generate')
-  .alias('init')
-  .description('Generate AI agent configuration files from templates')
-  // @awa-impl: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
-  .argument('[output]', 'Output directory (optional if specified in config)')
-  // @awa-impl: CLI-3_AC-1
-  .option('-t, --template <source>', 'Template source (local path or Git repository)')
-  // @awa-impl: CLI-4_AC-1, CLI-4_AC-2
-  .option('-f, --features <flag...>', 'Feature flags (can be specified multiple times)')
-  .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
-  .option(
-    '--remove-features <flag...>',
-    'Feature flags to remove (can be specified multiple times)'
-  )
-  // @awa-impl: CLI-5_AC-1
-  .option('--force', 'Force overwrite existing files without prompting', false)
-  // @awa-impl: CLI-6_AC-1
-  .option('--dry-run', 'Preview changes without modifying files', false)
-  .option(
-    '--delete',
-    'Enable deletion of files listed in the delete list (default: warn only)',
-    false
-  )
-  // @awa-impl: CLI-7_AC-1
-  .option('-c, --config <path>', 'Path to configuration file')
-  // @awa-impl: CLI-8_AC-1
-  .option('--refresh', 'Force refresh of cached Git templates', false)
-  .option('--all', 'Process all named targets from config', false)
-  .option('--target <name>', 'Process a specific named target from config')
-  // @awa-impl: OVL-1_AC-1
-  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
-  // @awa-impl: JSON-1_AC-1
-  .option('--json', 'Output results as JSON (implies --dry-run)', false)
-  // @awa-impl: JSON-5_AC-1
-  .option('--summary', 'Output compact one-line summary', false)
-  .action(async (output: string | undefined, options) => {
-    // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
-    const cliOptions: RawCliOptions = {
-      output,
-      template: options.template,
-      features: options.features,
-      preset: options.preset,
-      removeFeatures: options.removeFeatures,
-      force: options.force,
-      dryRun: options.dryRun,
-      delete: options.delete,
-      config: options.config,
-      refresh: options.refresh,
-      all: options.all,
-      target: options.target,
-      overlay: options.overlay || [],
-      json: options.json,
-      summary: options.summary,
-    };
+// @awa-impl: TCLI-1_AC-4, TCLI-2_AC-1, TCLI-2_AC-2
 
-    await generateCommand(cliOptions);
-  });
+/** Configure a generate/init command with shared options and action handler. */
+function configureGenerateCommand(cmd: Command): Command {
+  return (
+    cmd
+      .description('Generate AI agent configuration files from templates')
+      // @awa-impl: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
+      .argument('[output]', 'Output directory (optional if specified in config)')
+      // @awa-impl: CLI-3_AC-1
+      .option('-t, --template <source>', 'Template source (local path or Git repository)')
+      // @awa-impl: CLI-4_AC-1, CLI-4_AC-2
+      .option('-f, --features <flag...>', 'Feature flags (can be specified multiple times)')
+      .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
+      .option(
+        '--remove-features <flag...>',
+        'Feature flags to remove (can be specified multiple times)'
+      )
+      // @awa-impl: CLI-5_AC-1
+      .option('--force', 'Force overwrite existing files without prompting', false)
+      // @awa-impl: CLI-6_AC-1
+      .option('--dry-run', 'Preview changes without modifying files', false)
+      .option(
+        '--delete',
+        'Enable deletion of files listed in the delete list (default: warn only)',
+        false
+      )
+      // @awa-impl: CLI-7_AC-1
+      .option('-c, --config <path>', 'Path to configuration file')
+      // @awa-impl: CLI-8_AC-1
+      .option('--refresh', 'Force refresh of cached Git templates', false)
+      .option('--all', 'Process all named targets from config', false)
+      .option('--target <name>', 'Process a specific named target from config')
+      // @awa-impl: OVL-1_AC-1
+      .option(
+        '--overlay <path...>',
+        'Overlay directory paths applied over base template (repeatable)'
+      )
+      // @awa-impl: JSON-1_AC-1
+      .option('--json', 'Output results as JSON (implies --dry-run)', false)
+      // @awa-impl: JSON-5_AC-1
+      .option('--summary', 'Output compact one-line summary', false)
+      .action(async (output: string | undefined, options) => {
+        // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
+        const cliOptions: RawCliOptions = {
+          output,
+          template: options.template,
+          features: options.features,
+          preset: options.preset,
+          removeFeatures: options.removeFeatures,
+          force: options.force,
+          dryRun: options.dryRun,
+          delete: options.delete,
+          config: options.config,
+          refresh: options.refresh,
+          all: options.all,
+          target: options.target,
+          overlay: options.overlay || [],
+          json: options.json,
+          summary: options.summary,
+        };
+
+        await generateCommand(cliOptions);
+      })
+  );
+}
+
+configureGenerateCommand(template.command('generate'));
+
+// @awa-impl: TCLI-2_AC-1, TCLI-2_AC-2
+// Top-level init convenience command (delegates to same handler as template generate)
+configureGenerateCommand(program.command('init'));
 
 // @awa-impl: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10
-program
+// @awa-impl: TCLI-1_AC-5
+template
   .command('diff')
   .description('Compare template output with existing target directory')
   // @awa-impl: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5
@@ -204,6 +247,7 @@ program
   });
 
 // @awa-impl: CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1
+// @awa-impl: TCLI-3_AC-1, TCLI-3_AC-3
 program
   .command('check')
   .description(
@@ -240,7 +284,8 @@ program
   });
 
 // @awa-impl: DISC-4_AC-1, DISC-5_AC-1
-program
+// @awa-impl: TCLI-1_AC-6
+template
   .command('features')
   .description('Discover feature flags available in a template')
   .option('-t, --template <source>', 'Template source (local path or Git repository)')
@@ -258,7 +303,8 @@ program
   });
 
 // @awa-impl: TTST-7_AC-1, TTST-5_AC-1
-program
+// @awa-impl: TCLI-1_AC-7
+template
   .command('test')
   .description('Run template test fixtures to verify expected output')
   .option('-t, --template <source>', 'Template source (local path or Git repository)')
@@ -275,7 +321,11 @@ program
     process.exit(exitCode);
   });
 
+// Add template group to root program
+program.addCommand(template);
+
 // @awa-impl: TRC-8_AC-1
+// @awa-impl: TCLI-3_AC-2, TCLI-3_AC-4
 program
   .command('trace')
   .description('Explore traceability chains and assemble context from specs, code, and tests')

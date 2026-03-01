@@ -44,17 +44,17 @@ features = ["architect", "code"]
 tools = ["copilot", "claude", "cursor"]
 full = ["copilot", "claude", "cursor", "windsurf", "gemini"]
 ```
-Running `awa generate . --preset tools` resolves features to `["architect", "code", "copilot", "claude", "cursor"]`.
+Running `awa template generate . --preset tools` resolves features to `["architect", "code", "copilot", "claude", "cursor"]`.
 
 ### Scenario 2: Multiple presets
 
-Running `awa generate . --preset tools --preset full` merges both presets. Since `full` is a superset of `tools`, the result is the union: `["architect", "code", "copilot", "claude", "cursor", "windsurf", "gemini"]`.
+Running `awa template generate . --preset tools --preset full` merges both presets. Since `full` is a superset of `tools`, the result is the union: `["architect", "code", "copilot", "claude", "cursor", "windsurf", "gemini"]`.
 
 ### Scenario 3: Removing a feature
 
 A developer normally uses the `full` preset but wants to exclude `windsurf` for this run:
 ```bash
-awa generate . --preset full --remove-features windsurf
+awa template generate . --preset full --remove-features windsurf
 ```
 The final features include everything from `full` except `windsurf`.
 
@@ -64,7 +64,7 @@ Running `--remove-features nonexistent` does not cause an error. The removal is 
 
 ### Scenario 5: Invalid preset reference
 
-Running `awa generate . --preset typo` when `typo` is not defined in the `[presets]` table produces an error and exits. The developer sees which preset name was not found.
+Running `awa template generate . --preset typo` when `typo` is not defined in the `[presets]` table produces an error and exits. The developer sees which preset name was not found.
 
 ### Scenario 6: Deduplication
 

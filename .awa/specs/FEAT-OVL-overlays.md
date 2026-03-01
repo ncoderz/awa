@@ -43,21 +43,21 @@ Key abstractions:
 A team uses the bundled awa template but wants a custom company-specific
 introduction in every generated file. They create `./overlays/company/`
 containing only `_partials/header.md` with their branding. Running
-`awa generate . --overlay ./overlays/company` produces output that uses
+`awa template generate . --overlay ./overlays/company` produces output that uses
 their custom header while keeping all other base template files unchanged.
 
 ### Scenario 2: Stack Multiple Overlays
 
 A monorepo has a company-wide overlay (`./overlays/company`) and a
 project-specific overlay (`./overlays/project-x`). Running
-`awa generate . --overlay ./overlays/company --overlay ./overlays/project-x`
+`awa template generate . --overlay ./overlays/company --overlay ./overlays/project-x`
 applies both in order. When both overlays contain the same file, the
 project-specific version wins. Files unique to the company overlay are still
 included.
 
 ### Scenario 3: Diff with Overlay
 
-A developer runs `awa diff . --overlay ./overlays/company` to see how their
+A developer runs `awa template diff . --overlay ./overlays/company` to see how their
 working directory compares against the merged template view. The diff correctly
 reflects the overlay's replacements rather than the raw base template. This
 lets them track drift even on a customized template stack.
@@ -65,14 +65,14 @@ lets them track drift even on a customized template stack.
 ### Scenario 4: Git Overlay Source
 
 A shared overlay lives in a Git repository at `company/awa-overlay`. Any
-developer can run `awa generate . --overlay company/awa-overlay` without
+developer can run `awa template generate . --overlay company/awa-overlay` without
 cloning it manually. The overlay is fetched and cached using the same
 mechanism as Git template sources.
 
 ### Scenario 5: Config-Driven Overlay
 
 A project's `.awa.toml` file declares `overlay = ["./overlays/base",
-"./overlays/project"]`. Running `awa generate .` picks up the overlays
+"./overlays/project"]`. Running `awa template generate .` picks up the overlays
 automatically, so no command-line flags are needed in day-to-day use.
 
 ## Glossary

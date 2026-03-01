@@ -1,6 +1,6 @@
 # Example awa configuration
 # Copy this file to `.awa.toml` at the root of your project and adjust values for your project.
-# Then run `awa generate` to install your AI agent files
+# Then run `awa template generate` to install your AI agent files
 
 # Output directory for generated files (required unless provided as CLI positional arg)
 output = "."

@@ -19,19 +19,19 @@ Stdout carries only the JSON payload; stderr carries error messages. This separa
 
 ### Scenario 1: CI Drift Detection
 
-A GitHub Actions workflow runs `awa diff . --json`. The step captures stdout as JSON, parses the counts, and fails the build if any differences are found. The structured output lets the workflow post a detailed PR comment listing each changed file.
+A GitHub Actions workflow runs `awa template diff . --json`. The step captures stdout as JSON, parses the counts, and fails the build if any differences are found. The structured output lets the workflow post a detailed PR comment listing each changed file.
 
 ### Scenario 2: Dry-Run Preview in Automation
 
-A developer's script runs `awa generate . --json` to preview what files would be created or overwritten. The JSON flag implies dry-run, so no files are modified. The script parses the actions array to decide whether to proceed with actual generation.
+A developer's script runs `awa template generate . --json` to preview what files would be created or overwritten. The JSON flag implies dry-run, so no files are modified. The script parses the actions array to decide whether to proceed with actual generation.
 
 ### Scenario 3: Quick Summary in Logs
 
-A CI step runs `awa diff . --summary` for a concise one-line output like "changed: 2, new: 1, matching: 10, deleted: 0" that appears in build logs without clutter.
+A CI step runs `awa template diff . --summary` for a concise one-line output like "changed: 2, new: 1, matching: 10, deleted: 0" that appears in build logs without clutter.
 
 ### Scenario 4: Error Handling in Pipelines
 
-A pipeline runs `awa generate . --json` with an invalid template path. The JSON flag suppresses all interactive output. The error message goes to stderr, and the process exits with a non-zero code. No partial JSON is written to stdout.
+A pipeline runs `awa template generate . --json` with an invalid template path. The JSON flag suppresses all interactive output. The error message goes to stderr, and the process exits with a non-zero code. No partial JSON is written to stdout.
 
 ## Change Log
 

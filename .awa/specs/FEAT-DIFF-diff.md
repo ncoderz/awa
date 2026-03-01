@@ -2,13 +2,13 @@
 
 ## Problem
 
-After generating agent configuration files, developers need to know when their project's files have drifted from the latest templates — whether from template updates, manual edits, or feature flag changes. Running `awa generate` again risks overwriting intentional changes. Developers need a read-only comparison that shows exactly what differs without touching anything.
+After generating agent configuration files, developers need to know when their project's files have drifted from the latest templates — whether from template updates, manual edits, or feature flag changes. Running `awa template generate` again risks overwriting intentional changes. Developers need a read-only comparison that shows exactly what differs without touching anything.
 
 This is especially important in CI pipelines, where an automated check can flag drift and block merges until agent files are regenerated.
 
 ## Conceptual Model
 
-The `awa diff` command is a read-only comparison between what the templates would produce and what currently exists in the target directory. It works in three steps:
+The `awa template diff` command is a read-only comparison between what the templates would produce and what currently exists in the target directory. It works in three steps:
 
 1. GENERATE TO TEMP — templates are rendered into a system temporary directory using the same pipeline as `generate` (same features, same template, same config).
 
@@ -22,7 +22,7 @@ The `awa diff` command is a read-only comparison between what the templates woul
 
 3. CLEAN UP — the temporary directory is always deleted, even if an error occurs mid-comparison.
 
-Exit codes convey the result: 0 means all files match (no drift), 1 means differences were found, 2 means an error occurred. This makes `awa diff` directly usable as a CI gate.
+Exit codes convey the result: 0 means all files match (no drift), 1 means differences were found, 2 means an error occurred. This makes `awa template diff` directly usable as a CI gate.
 
 Target-only ("extra") files are excluded by default to reduce noise. The `--list-unknown` flag includes them in results and summary. Delete-listed files are always reported when they exist in the target.
 
@@ -30,23 +30,23 @@ Target-only ("extra") files are excluded by default to reduce noise. The `--list
 
 ### Scenario 1: No drift
 
-A developer runs `awa diff .` after a clean generation. All files match. Exit code 0, no output beyond a brief summary.
+A developer runs `awa template diff .` after a clean generation. All files match. Exit code 0, no output beyond a brief summary.
 
 ### Scenario 2: Template update detected
 
-After upgrading awa, `awa diff .` shows unified diffs for three modified files and one new file. The developer reviews the diffs and decides to regenerate.
+After upgrading awa, `awa template diff .` shows unified diffs for three modified files and one new file. The developer reviews the diffs and decides to regenerate.
 
 ### Scenario 3: CI drift check
 
-A GitHub Actions workflow includes `awa diff .` as a step. If it exits with code 1, the workflow fails and comments on the PR that agent files need regeneration.
+A GitHub Actions workflow includes `awa template diff .` as a step. If it exits with code 1, the workflow fails and comments on the PR that agent files need regeneration.
 
 ### Scenario 4: Listing unknown files
 
-A developer suspects stale files in their `.github/` directory. They run `awa diff . --list-unknown`. In addition to the usual comparison, files in the target that don't correspond to any template are reported as "extra".
+A developer suspects stale files in their `.github/` directory. They run `awa template diff . --list-unknown`. In addition to the usual comparison, files in the target that don't correspond to any template are reported as "extra".
 
 ### Scenario 5: Delete-listed file detection
 
-The template's `_delete.txt` lists a file that still exists in the target. `awa diff .` reports it as "delete-listed" and counts it as a difference (affecting the exit code and summary).
+The template's `_delete.txt` lists a file that still exists in the target. `awa template diff .` reports it as "delete-listed" and counts it as a difference (affecting the exit code and summary).
 
 ### Scenario 6: Feature-gated delete awareness
 

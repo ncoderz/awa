@@ -40,9 +40,10 @@ Every link is explicit. Nothing is implied.
 | `{CODE}-{n}` | Requirement | `DIFF-1` |
 | `{CODE}-{n}.{p}` | Subrequirement | `DIFF-1.1` |
 | `{CODE}-{n}_AC-{m}` | Acceptance criterion | `DIFF-1_AC-1` |
+| `{CODE}-{n}.{p}_AC-{m}` | Subrequirement AC | `DIFF-1.1_AC-3` |
 | `{CODE}_P-{n}` | Correctness property | `DIFF_P-2` |
 
-`{CODE}` is a short uppercase identifier for the feature area (e.g., `DIFF`, `GEN`, `CFG`).
+`{CODE}` is a short uppercase identifier for the feature area (e.g., `DIFF`, `GEN`, `CFG`). `{n}`, `{p}`, and `{m}` are integers.
 
 ## Code Markers
 

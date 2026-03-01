@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design implements `awa test` as a pipeline: config → fixture discovery → template rendering per fixture → assertions → reporting. It reuses the existing generator and feature-resolver pipeline. Fixtures are TOML files in the template's `_tests/` directory.
+This design implements `awa template test` as a pipeline: config → fixture discovery → template rendering per fixture → assertions → reporting. It reuses the existing generator and feature-resolver pipeline. Fixtures are TOML files in the template's `_tests/` directory.
 
 ## Architecture
 

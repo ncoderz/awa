@@ -113,18 +113,18 @@ example: |
   ### Scenario 1: First-time Setup
 
   A developer starts a new project and wants to add AI agent configuration
-  for GitHub Copilot and Claude. They run `awa generate --features copilot,claude`
+  for GitHub Copilot and Claude. They run `awa template generate --features copilot,claude`
   and get a complete set of configuration files tailored to those two agents.
 
   ### Scenario 2: Adding a New Agent
 
   An existing project already has Copilot configuration. The developer adds
-  Cursor support by running `awa generate --features copilot,cursor`. The engine
+  Cursor support by running `awa template generate --features copilot,cursor`. The engine
   merges the new feature without disrupting existing configuration.
 
   ### Scenario 3: Previewing Changes
 
-  Before applying changes, the developer runs `awa diff` to see what files
+  Before applying changes, the developer runs `awa template diff` to see what files
   would be added, modified, or removed. This gives confidence before committing.
 
   ## Background

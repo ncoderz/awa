@@ -26,8 +26,8 @@ ACCEPTANCE CRITERIA
 
 - CLI-1_AC-1 [ubiquitous]: The system SHALL provide a `generate` command as the primary entry point
 - CLI-1_AC-2 [event]: WHEN the user invokes `awa` without a command THEN the system SHALL display help information
-- CLI-1_AC-3 [ubiquitous]: The system SHALL accept an output directory as the first positional argument: `awa generate <output>`
-- CLI-1_AC-4 [conditional]: IF the user invokes `awa generate` without an output directory AND no output is specified in config THEN the system SHALL display an error and usage information
+- CLI-1_AC-3 [ubiquitous]: The system SHALL accept an output directory as the first positional argument: `awa template generate <output>`
+- CLI-1_AC-4 [conditional]: IF the user invokes `awa template generate` without an output directory AND no output is specified in config THEN the system SHALL display an error and usage information
 - CLI-1_AC-5 [ubiquitous]: The help output SHALL display the positional argument syntax in the usage line
 
 ### CLI-2: Output Directory Argument [MUST]
@@ -124,7 +124,7 @@ AS A developer, I WANT to view help information, SO THAT I understand available 
 ACCEPTANCE CRITERIA
 
 - CLI-9_AC-1 [event]: WHEN the user invokes `awa --help` or `awa -h` THEN the system SHALL display usage information
-- CLI-9_AC-2 [event]: WHEN the user invokes `awa generate --help` THEN the system SHALL display generate command options
+- CLI-9_AC-2 [event]: WHEN the user invokes `awa template generate --help` THEN the system SHALL display generate command options
 - CLI-9_AC-3 [ubiquitous]: The help output SHALL list all available options with descriptions
 
 ### CLI-10: Version Display [MUST]

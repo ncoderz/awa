@@ -23,11 +23,11 @@ The supported config options mirror the CLI surface: `output`, `template`, `feat
 
 ### Scenario 1: Project-level defaults
 
-A developer creates `.awa.toml` in their project root with `output = "."` and `features = ["copilot", "claude"]`. From now on, running `awa generate` uses those defaults without any flags.
+A developer creates `.awa.toml` in their project root with `output = "."` and `features = ["copilot", "claude"]`. From now on, running `awa template generate` uses those defaults without any flags.
 
 ### Scenario 2: CLI overrides
 
-The same developer occasionally needs extra features. Running `awa generate --features copilot claude cursor` replaces the config's features array entirely for that invocation — it does not append to it.
+The same developer occasionally needs extra features. Running `awa template generate --features copilot claude cursor` replaces the config's features array entirely for that invocation — it does not append to it.
 
 ### Scenario 3: Team-shared configuration
 
@@ -35,7 +35,7 @@ A team commits `.awa.toml` to their repository with agreed-upon defaults. Every 
 
 ### Scenario 4: Alternate config file
 
-A monorepo has different agent configurations for different packages. A developer runs `awa generate ./pkg-a --config ./pkg-a/.awa.toml` to use the package-specific config.
+A monorepo has different agent configurations for different packages. A developer runs `awa template generate ./pkg-a --config ./pkg-a/.awa.toml` to use the package-specific config.
 
 ### Scenario 5: No config file
 

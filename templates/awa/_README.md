@@ -6,18 +6,18 @@ This template set generates the awa agent files for all major AI coding tools.
 
 ```bash
 # Interactive tool selection (prompts when no tool flag provided)
-npx awa generate . --template ./templates/awa
+npx awa template generate . --template ./templates/awa
 
 # Single tool
-npx awa generate . --template ./templates/awa --features copilot
-npx awa generate . --template ./templates/awa --features claude
-npx awa generate . --template ./templates/awa --features cursor
+npx awa template generate . --template ./templates/awa --features copilot
+npx awa template generate . --template ./templates/awa --features claude
+npx awa template generate . --template ./templates/awa --features cursor
 
 # Multiple tools
-npx awa generate . --template ./templates/awa --features copilot claude cursor
+npx awa template generate . --template ./templates/awa --features copilot claude cursor
 
 # Cross-tool AGENTS.md only
-npx awa generate . --template ./templates/awa --features agents-md
+npx awa template generate . --template ./templates/awa --features agents-md
 ```
 
 ## Tool Feature Flags
@@ -84,4 +84,4 @@ Shared content is in `_partials/`:
 1. Copy `templates/awa/` to your project
 2. Modify `_partials/awa.core.md` for shared system instruction changes
 3. Modify individual `_partials/awa.*.md` for skill-specific changes
-4. Run `npx awa generate . --features <tool>` to regenerate
+4. Run `npx awa template generate . --features <tool>` to regenerate

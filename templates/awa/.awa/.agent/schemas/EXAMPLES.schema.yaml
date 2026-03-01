@@ -82,7 +82,7 @@ example: |
   Enable specific features when generating.
 
   ```bash
-  awa generate --features copilot,claude,cursor
+  awa template generate --features copilot,claude,cursor
   ```
 
   ## Example 3: Custom Template Source
@@ -90,7 +90,7 @@ example: |
   Use a Git repository as the template source.
 
   ```bash
-  awa generate --template owner/repo --features copilot
+  awa template generate --template owner/repo --features copilot
   ```
 
   ## Change Log

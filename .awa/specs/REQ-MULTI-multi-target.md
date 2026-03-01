@@ -49,7 +49,7 @@ ACCEPTANCE CRITERIA
 
 ### MULTI-4: Generate All Targets [MUST]
 
-AS A developer, I WANT `awa generate --all` to process all named targets, SO THAT I can regenerate all agent configs in one command.
+AS A developer, I WANT `awa template generate --all` to process all named targets, SO THAT I can regenerate all agent configs in one command.
 
 > Enables single-command multi-agent generation.
 
@@ -60,7 +60,7 @@ ACCEPTANCE CRITERIA
 
 ### MULTI-5: Generate Single Target [MUST]
 
-AS A developer, I WANT `awa generate --target <name>` to process a specific target, SO THAT I can regenerate one agent's config.
+AS A developer, I WANT `awa template generate --target <name>` to process a specific target, SO THAT I can regenerate one agent's config.
 
 > Enables targeted regeneration without processing all agents.
 
@@ -71,7 +71,7 @@ ACCEPTANCE CRITERIA
 
 ### MULTI-6: Diff All Targets [MUST]
 
-AS A developer, I WANT `awa diff --all` and `awa diff --target` to work identically to generate, SO THAT I can check all agents for drift.
+AS A developer, I WANT `awa template diff --all` and `awa template diff --target` to work identically to generate, SO THAT I can check all agents for drift.
 
 > Consistent batch behavior across commands.
 

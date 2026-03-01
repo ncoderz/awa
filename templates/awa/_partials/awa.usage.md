@@ -103,9 +103,9 @@ awa may be installed locally. Detect the package manager and use the appropriate
     pnpm:    pnpm exec awa <command>
     bun:     bunx awa <command>
 
-### awa init [output] / awa generate [output]
+### awa init [output] / awa template generate [output]
 
-Generate configuration files from templates. `init` and `generate` are aliases.
+Generate configuration files from templates. `init` is a top-level convenience command equivalent to `awa template generate`.
 
 | Option | Description |
 |--------|-------------|
@@ -125,7 +125,7 @@ Generate configuration files from templates. `init` and `generate` are aliases.
 | `--json` | JSON output to stdout (implies --dry-run) |
 | `--summary` | Compact one-line counts summary |
 
-### awa diff [target]
+### awa template diff [target]
 
 Compare generated template output against an existing target directory. Exit code 0 = match, 1 = differences.
 
@@ -160,7 +160,7 @@ Check traceability chain integrity and spec schema conformance. Exit code 0 = cl
 
 Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `spec-only`.
 
-### awa test
+### awa template test
 
 Run template test fixtures. Exit code 0 = all pass, 1 = failures.
 
@@ -172,7 +172,7 @@ Run template test fixtures. Exit code 0 = all pass, 1 = failures.
 
 Discovers `*.toml` fixtures in `_tests/`, renders per fixture, verifies expected files, compares against snapshots.
 
-### awa features
+### awa template features
 
 Discover feature flags available in a template.
 
@@ -237,9 +237,9 @@ Feature resolution order: start with `--features`, expand `--preset` (append, de
 
 Multi-target usage:
 
-    awa generate --all                  # process all targets
-    awa generate --target claude        # process one target
-    awa diff --all                      # diff all targets
+    awa template generate --all                  # process all targets
+    awa template generate --target claude        # process one target
+    awa template diff --all                      # diff all targets
 
 ## Template Sources
 
@@ -258,8 +258,8 @@ Git templates are cached in `~/.cache/awa/templates/`. Use `--refresh` to re-fet
 
 | Command | 0 | 1 | 2 |
 |---------|---|---|---|
-| `awa init` / `awa generate` | Success | — | Internal error |
-| `awa diff` | All files match | Differences found | Internal error |
+| `awa init` / `awa template generate` | Success | — | Internal error |
+| `awa template diff` | All files match | Differences found | Internal error |
 | `awa check` | All checks pass | Errors found | Internal error |
-| `awa test` | All fixtures pass | Failures found | Internal error |
-| `awa features` | Success | Error | — |
+| `awa template test` | All fixtures pass | Failures found | Internal error |
+| `awa template features` | Success | Error | — |

@@ -131,4 +131,4 @@ Run awa features --json and explain what each flag controls.
 ## Next Steps
 
 - [Traceability](/guides/traceability/) — how IDs and markers connect everything
-- [CLI Reference](/reference/cli/) — all commands, including `awa generate`, `awa diff`, `awa check`, `awa features`, and `awa test`
+- [CLI Reference](/reference/cli/) — all commands, including `awa template generate`, `awa template diff`, `awa check`, `awa template features`, and `awa template test`

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Requirements for the `awa features` command that discovers feature flags available in a template set.
+Requirements for the `awa template features` command that discovers feature flags available in a template set.
 
 ## Glossary
 
