@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document defines requirements for the awa CLI `diff` command, which compares generated template output against an existing target directory to identify differences without modifying files. This enables validation workflows, CI checks, and template development iteration. The command accepts a target directory as an optional positional argument: `awa diff [target]`, which can also be specified via the `output` field in the configuration file.
+This document defines requirements for the awa CLI `diff` command, which compares generated template output against an existing target directory to identify differences without modifying files. This enables validation workflows, CI checks, and template development iteration. The command accepts a target directory as an optional positional argument: `awa template diff [target]`, which can also be specified via the `output` field in the configuration file.
 
 ## Glossary
 
@@ -12,7 +12,7 @@ This document defines requirements for the awa CLI `diff` command, which compare
 
 ## Stakeholders
 
-- DEVELOPER: Engineers using `awa diff` to validate generated output matches expectations
+- DEVELOPER: Engineers using `awa template diff` to validate generated output matches expectations
 - CI SYSTEM: Automated pipelines using exit codes to detect template drift
 
 ## Requirements
@@ -25,7 +25,7 @@ AS A developer, I WANT templates generated to a temporary directory, SO THAT the
 
 ACCEPTANCE CRITERIA
 
-- DIFF-1_AC-1 [event]: WHEN `awa diff` is invoked THEN the system SHALL create a temporary directory using Node.js `os.tmpdir()`
+- DIFF-1_AC-1 [event]: WHEN `awa template diff` is invoked THEN the system SHALL create a temporary directory using Node.js `os.tmpdir()`
 - DIFF-1_AC-2 [ubiquitous]: The system SHALL generate all templates into the temporary directory before comparison
 - DIFF-1_AC-3 [ubiquitous]: The system SHALL NOT write any files to the target directory during diff operations
 

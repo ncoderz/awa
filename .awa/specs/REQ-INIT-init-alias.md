@@ -2,11 +2,11 @@
 
 ## Introduction
 
-This document defines requirements for the `awa init` command alias — a user-friendly entry point that maps to the existing `generate` command with identical behaviour.
+This document defines requirements for the `awa init` command — a top-level user-friendly entry point that delegates to the same handler as `awa template generate` with identical behaviour.
 
 ## Glossary
 
-- ALIAS: A secondary name for a command that invokes the same handler with the same options
+- ALIAS: A secondary command that invokes the same handler with the same options as the primary command
 - CONFIG HINT: A non-blocking informational message suggesting config file creation
 
 ## Stakeholders
@@ -18,33 +18,33 @@ This document defines requirements for the `awa init` command alias — a user-f
 
 ### INIT-1: Init Alias Registration [MUST]
 
-AS A developer, I WANT to run `awa init` as an alternative to `awa generate`, SO THAT the CLI uses familiar onboarding vocabulary.
+AS A developer, I WANT to run `awa init` as an alternative to `awa template generate`, SO THAT the CLI uses familiar onboarding vocabulary.
 
-> `init` is registered as an alias on the generate command using commander's `.alias()` API.
+> `init` is registered as a top-level command sharing the same handler as `template generate`.
 
 ACCEPTANCE CRITERIA
 
-- INIT-1_AC-1 [ubiquitous]: The system SHALL register `init` as an alias for the `generate` command
+- INIT-1_AC-1 [ubiquitous]: The system SHALL register `init` as a top-level command under `awa`
 
 ### INIT-2: Option Parity [MUST]
 
-AS A developer, I WANT `awa init` to accept all options that `awa generate` accepts, SO THAT I can use any option with either command name.
+AS A developer, I WANT `awa init` to accept all options that `awa template generate` accepts, SO THAT I can use any option with either command name.
 
-> Both command names share the same commander definition, so option parity is structural.
+> Both commands share the same handler configuration, so option parity is structural.
 
 ACCEPTANCE CRITERIA
 
-- INIT-2_AC-1 [ubiquitous]: The `init` alias SHALL accept all options defined on the `generate` command
+- INIT-2_AC-1 [ubiquitous]: The `init` command SHALL accept all options defined on the `template generate` command
 
 ### INIT-3: Behavioural Identity [MUST]
 
-AS A developer, I WANT `awa init <args>` to produce the same result as `awa generate <args>`, SO THAT the choice of command name has no observable effect.
+AS A developer, I WANT `awa init <args>` to produce the same result as `awa template generate <args>`, SO THAT the choice of command name has no observable effect.
 
 > Identical handler ensures identical behaviour.
 
 ACCEPTANCE CRITERIA
 
-- INIT-3_AC-1 [ubiquitous]: `awa init <args>` SHALL produce output identical to `awa generate <args>` for the same arguments
+- INIT-3_AC-1 [ubiquitous]: `awa init <args>` SHALL produce output identical to `awa template generate <args>` for the same arguments
 
 ### INIT-4: Help Visibility [MUST]
 
@@ -54,7 +54,7 @@ AS A developer, I WANT both `init` and `generate` to appear in help output, SO T
 
 ACCEPTANCE CRITERIA
 
-- INIT-4_AC-1 [event]: WHEN the user invokes `awa --help` THEN the help output SHALL list both `generate` and `init`
+- INIT-4_AC-1 [event]: WHEN the user invokes `awa --help` THEN the help output SHALL list `init` as a top-level command
 
 ### INIT-5: Config-Not-Found Hint [SHOULD]
 

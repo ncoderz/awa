@@ -15,23 +15,23 @@ A testing command enables:
 
 A fixture is a TOML file that describes a single test scenario: which feature flags to enable, which presets to apply, and what output files to expect. The test command renders templates for each fixture independently, then checks the output against expectations.
 
-Users think of fixtures as "if I ran `awa generate` with these flags, I expect these files." Snapshots extend this by storing the full rendered output so future runs can detect unintended changes.
+Users think of fixtures as "if I ran `awa template generate` with these flags, I expect these files." Snapshots extend this by storing the full rendered output so future runs can detect unintended changes.
 
-The testing pipeline reuses the same generator and feature-resolver as `awa generate`, so test behavior matches production behavior exactly.
+The testing pipeline reuses the same generator and feature-resolver as `awa template generate`, so test behavior matches production behavior exactly.
 
 ## Scenarios
 
 ### Scenario 1: Basic fixture
 
-A template author defines `_tests/full.toml` with `features = ["a", "b", "c"]` and `expected-files = ["CLAUDE.md"]`. Running `awa test` renders the templates with those features and verifies `CLAUDE.md` exists in the output.
+A template author defines `_tests/full.toml` with `features = ["a", "b", "c"]` and `expected-files = ["CLAUDE.md"]`. Running `awa template test` renders the templates with those features and verifies `CLAUDE.md` exists in the output.
 
 ### Scenario 2: Snapshot comparison
 
-After running `awa test --update-snapshots`, the rendered output is saved to `_tests/full/`. On subsequent runs, `awa test` compares the rendered output against the stored snapshot and reports any differences.
+After running `awa template test --update-snapshots`, the rendered output is saved to `_tests/full/`. On subsequent runs, `awa template test` compares the rendered output against the stored snapshot and reports any differences.
 
 ### Scenario 3: CI usage
 
-A GitHub Actions workflow runs `awa test --template ./templates/awa`. Exit code 0 means all fixtures pass; exit code 1 fails the workflow, catching template regressions.
+A GitHub Actions workflow runs `awa template test --template ./templates/awa`. Exit code 0 means all fixtures pass; exit code 1 fails the workflow, catching template regressions.
 
 ### Scenario 4: Feature preset testing
 

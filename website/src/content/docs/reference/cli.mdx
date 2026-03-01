@@ -5,25 +5,31 @@ description: Complete reference for the awa command-line interface — all comma
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
+## Command Structure
+
+awa organizes commands into two groups, top-level and template commands:
+
+- `awa <cmd>` — worflow operations
+- `awa template <cmd>` — template operations
+
 ## Commands
 
-### `awa generate [output]` / `awa init [output]`
+### `awa init [output]` / `awa template generate [output]`
 
-Generate configuration files from templates. `init` and `generate` are aliases — identical behaviour, both equally valid.
+Generate configuration files from templates. `init` is a top-level convenience command equivalent to `awa template generate` — identical behaviour, both equally valid.
 
 ```bash
-awa generate .                            # current directory, default template
-awa init .                                # same as above (alias)
-awa generate ./my-project                 # specific output directory
-awa generate . --features copilot claude  # with feature flags
-awa generate . --preset full              # with a preset
-awa generate . --dry-run                  # preview without writing
-awa generate . --delete                   # apply deletions from template
-awa generate . --json                     # JSON output (implies --dry-run)
-awa generate . --summary                  # compact one-line summary
-awa generate . --overlay ./my-overrides   # layer custom files over base template
-awa generate --all                        # process all named targets from config
-awa generate --target claude              # process a specific named target
+awa init .                                         # current directory, default template
+awa init ./my-project                              # specific output directory
+awa init . --features copilot claude               # with feature flags
+awa init . --preset full              # with a preset
+awa init . --dry-run                  # preview without writing
+awa init . --delete                   # apply deletions from template
+awa init . --json                     # JSON output (implies --dry-run)
+awa init . --summary                  # compact one-line summary
+awa init . --overlay ./my-overrides   # layer custom files over base template
+awa init --all                        # process all named targets from config
+awa init --target claude              # process a specific named target
 ```
 
 | Option | Description |
@@ -42,41 +48,6 @@ awa generate --target claude              # process a specific named target
 | `--target <name>` | Process a specific named target from config |
 | `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout (implies `--dry-run`) |
-| `--summary` | Output compact one-line counts summary |
-
-### `awa diff [target]`
-
-Compare generated template output against an existing target directory.
-
-Exit code `0` = files match, `1` = differences found.
-
-```bash
-awa diff .                                # diff against current directory
-awa diff ./my-project --template ./tpl    # diff specific target and template
-awa diff . --list-unknown                 # include files not in template
-awa diff . --watch                        # watch template and re-diff on change
-awa diff . --overlay ./my-overrides       # diff against merged template view
-awa diff . --json                         # JSON output for CI
-awa diff . --summary                      # compact one-line summary
-awa diff --all                            # diff all named targets from config
-awa diff --target copilot                 # diff a specific named target
-```
-
-| Option | Description |
-|--------|-------------|
-| `[target]` | Target directory to compare (positional, optional if set in config) |
-| `-t, --template <source>` | Template source — local path or Git repo |
-| `-f, --features <flag...>` | Feature flags (repeatable) |
-| `--preset <name...>` | Preset names to enable (repeatable) |
-| `--remove-features <flag...>` | Feature flags to remove (repeatable) |
-| `-c, --config <path>` | Path to configuration file |
-| `--refresh` | Force re-fetch of cached Git templates |
-| `--list-unknown` | Include files in target not present in templates |
-| `--all` | Process all named targets from config |
-| `--target <name>` | Process a specific named target from config |
-| `-w, --watch` | Watch template directory for changes and re-run diff |
-| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
-| `--json` | Output results as JSON to stdout |
 | `--summary` | Output compact one-line counts summary |
 
 ### `awa check`
@@ -104,13 +75,36 @@ awa check --spec-only                  # skip code-to-spec traceability
 | `--spec-only` | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability |
 
 The check command validates:
-- **Orphaned markers** — `@awa-impl`, `@awa-test`, `@awa-component` referencing IDs that don't exist in specs
-- **Uncovered ACs** — acceptance criteria in specs with no corresponding `@awa-test`
-- **Broken cross-refs** — IMPLEMENTS/VALIDATES in design specs pointing to non-existent requirement IDs
-- **Invalid ID format** — marker IDs not matching the configured ID pattern
-- **Marker trailing text** — markers with trailing text after the ID(s)
-- **Orphaned specs** — spec files with a feature code not referenced by any marker or cross-reference
-- **Schema validation** — spec file structure checked against declarative `*.schema.yaml` schema rules
+
+#### Code-to-Spec Checks
+
+| Check | Severity | Description |
+|-------|----------|-------------|
+| Orphaned `@awa-impl` | error | Marker references an AC ID not found in any REQ spec |
+| Orphaned `@awa-test` | error | Marker references an AC or property ID not in any spec |
+| Orphaned `@awa-component` | error | Marker references a component name not in any DESIGN spec |
+| Uncovered AC | warning | Acceptance criterion in a REQ spec has no `@awa-test` |
+| Invalid ID format | warning | Marker ID doesn't match the configured ID pattern |
+
+#### Spec-to-Spec Checks
+
+| Check | Severity | Description |
+|-------|----------|-------------|
+| Broken IMPLEMENTS | error | DESIGN component references an AC ID not in any REQ spec |
+| Broken VALIDATES | error | DESIGN property references an AC or requirement ID not in any REQ spec |
+| Orphaned spec | warning | Spec file's feature code isn't referenced by any marker or cross-reference |
+| Marker trailing text | error | Marker contains trailing text after the ID(s) |
+
+#### Schema Checks
+
+| Check | Severity | Description |
+|-------|----------|-------------|
+| Missing section | error | Required section heading not found |
+| Wrong level | warning | Section exists but at wrong heading level |
+| Missing content | error | Section missing required content (pattern/list/table/code-block) |
+| Table columns | error | Table columns don't match expected headers |
+| Prohibited formatting | warning | Prohibited formatting pattern found outside code blocks |
+| Line limit | warning | File exceeds the line limit defined in the rule |
 
 By default, warnings are treated as errors (exit code `1`). Use `--allow-warnings` to only fail on errors.
 
@@ -124,6 +118,12 @@ By default, warnings are treated as errors (exit code `1`). Use `--allow-warning
 | `invalid-id-format` | warning | Marker ID doesn't match the configured ID pattern |
 | `marker-trailing-text` | error | Marker contains trailing text after the ID(s) |
 | `orphaned-spec` | warning | Spec file's feature code not referenced by any marker or cross-ref |
+| `schema-missing-section` | error | Required section heading not found |
+| `schema-wrong-level` | warning | Section exists but at wrong heading level |
+| `schema-missing-content` | error | Section missing required content |
+| `schema-table-columns` | error | Table columns don't match expected headers |
+| `schema-prohibited` | warning | Prohibited formatting pattern found outside code blocks |
+| `schema-line-limit` | warning | File exceeds the line limit defined in the rule |
 
 #### JSON Output Format
 
@@ -153,16 +153,95 @@ When `--format json` is used, output is a JSON object:
 }
 ```
 
-### `awa features`
+### `awa trace [ids...]`
+
+Explore traceability chains and assemble context from specs, code, and tests.
+
+Exit code `0` = chain found, `1` = ID not found / no context, `2` = internal error.
+
+```bash
+awa trace DIFF-1_AC-1                    # trace a single ID
+awa trace DIFF-1 DIFF-2                  # trace multiple IDs
+awa trace --all                          # trace all known IDs
+awa trace --task .awa/tasks/TASK-DIFF-diff-001.md  # trace IDs from a task file
+awa trace --file src/core/differ.ts      # trace IDs from a source file's markers
+awa trace DIFF-1 --content               # output actual file sections
+awa trace DIFF-1 --content --max-tokens 4000  # cap content output size
+awa trace DIFF-1 --list                  # output file paths only
+awa trace DIFF-1 --json                  # JSON output
+awa trace DIFF-1 --direction forward     # trace forward only
+awa trace DIFF-1 --depth 2              # limit traversal depth
+awa trace DIFF-1 --scope DIFF            # limit to a feature code
+awa trace DIFF-1 --no-code               # exclude source code
+awa trace DIFF-1 --no-tests              # exclude test files
+awa trace DIFF-1 --content -C 10         # 10 lines of context before and after
+```
+
+| Option | Description |
+|--------|-------------|
+| `[ids...]` | Traceability ID(s) to trace (positional) |
+| `--all` | Trace all known IDs in the project |
+| `--task <path>` | Resolve IDs from a task file |
+| `--file <path>` | Resolve IDs from a source file's markers |
+| `--content` | Output actual file sections instead of locations |
+| `--list` | Output file paths only (no content or tree) |
+| `--max-tokens <n>` | Cap content output size (implies `--content`) |
+| `--depth <n>` | Maximum traversal depth |
+| `--scope <code>` | Limit results to a feature code |
+| `--direction <dir>` | Traversal direction: `both` (default), `forward`, `reverse` |
+| `--no-code` | Exclude source code (spec-only context) |
+| `--no-tests` | Exclude test files |
+| `--json` | Output as JSON |
+| `-A <n>` | Lines of context after a code marker (`--content` only; default: 20) |
+| `-B <n>` | Lines of context before a code marker (`--content` only; default: 5) |
+| `-C <n>` | Lines of context before and after (`--content` only; overrides `-A` and `-B`) |
+| `-c, --config <path>` | Path to configuration file |
+
+### `awa template diff [target]`
+
+Compare generated template output against an existing target directory.
+
+Exit code `0` = files match, `1` = differences found.
+
+```bash
+awa template diff .                                # diff against current directory
+awa template diff ./my-project --template ./tpl    # diff specific target and template
+awa template diff . --list-unknown                 # include files not in template
+awa template diff . --watch                        # watch template and re-diff on change
+awa template diff . --overlay ./my-overrides       # diff against merged template view
+awa template diff . --json                         # JSON output for CI
+awa template diff . --summary                      # compact one-line summary
+awa template diff --all                            # diff all named targets from config
+awa template diff --target copilot                 # diff a specific named target
+```
+
+| Option | Description |
+|--------|-------------|
+| `[target]` | Target directory to compare (positional, optional if set in config) |
+| `-t, --template <source>` | Template source — local path or Git repo |
+| `-f, --features <flag...>` | Feature flags (repeatable) |
+| `--preset <name...>` | Preset names to enable (repeatable) |
+| `--remove-features <flag...>` | Feature flags to remove (repeatable) |
+| `-c, --config <path>` | Path to configuration file |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--list-unknown` | Include files in target not present in templates |
+| `--all` | Process all named targets from config |
+| `--target <name>` | Process a specific named target from config |
+| `-w, --watch` | Watch template directory for changes and re-run diff |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
+| `--json` | Output results as JSON to stdout |
+| `--summary` | Output compact one-line counts summary |
+
+### `awa template features`
 
 Discover feature flags available in a template.
 
 Exit code `0` = success, `1` = error.
 
 ```bash
-awa features                              # discover flags in default template
-awa features --template ./templates/awa   # specific template
-awa features --json                       # JSON output
+awa template features                              # discover flags in default template
+awa template features --template ./templates/awa   # specific template
+awa template features --json                       # JSON output
 ```
 
 | Option | Description |
@@ -177,7 +256,7 @@ The features command:
 - Lists each discovered feature flag and the files that reference it
 - Includes preset definitions from `.awa.toml` if available
 
-Example JSON output from `awa features --json`:
+Example JSON output from `awa template features --json`:
 
 ```json
 {
@@ -192,16 +271,16 @@ Example JSON output from `awa features --json`:
 }
 ```
 
-### `awa test`
+### `awa template test`
 
 Run template test fixtures to verify expected output.
 
 Exit code `0` = all pass, `1` = failures found, `2` = internal error.
 
 ```bash
-awa test                                       # test default template
-awa test --template ./templates/awa            # test specific template
-awa test --update-snapshots                    # update stored snapshots
+awa template test                                       # test default template
+awa template test --template ./templates/awa            # test specific template
+awa template test --update-snapshots                    # update stored snapshots
 ```
 
 | Option | Description |
@@ -250,35 +329,35 @@ Results are cached in `~/.cache/awa/update-check.json`. Network failures are sil
 <Tabs>
   <TabItem label="Local path">
     ```bash
-    awa generate . --template ./my-templates
-    awa generate . --template /absolute/path/to/templates
+    awa template generate . --template ./my-templates
+    awa template generate . --template /absolute/path/to/templates
     ```
   </TabItem>
   <TabItem label="GitHub">
     ```bash
     # Shorthand
-    awa generate . --template owner/repo
+    awa template generate . --template owner/repo
 
     # With subdirectory
-    awa generate . --template owner/repo/templates
+    awa template generate . --template owner/repo/templates
 
     # With branch or tag
-    awa generate . --template owner/repo#main
-    awa generate . --template owner/repo#v1.0.0
+    awa template generate . --template owner/repo#main
+    awa template generate . --template owner/repo#v1.0.0
 
     # Full URL
-    awa generate . --template https://github.com/owner/repo
+    awa template generate . --template https://github.com/owner/repo
     ```
   </TabItem>
   <TabItem label="GitLab / Bitbucket">
     ```bash
-    awa generate . --template gitlab:owner/repo
-    awa generate . --template bitbucket:owner/repo
+    awa template generate . --template gitlab:owner/repo
+    awa template generate . --template bitbucket:owner/repo
     ```
   </TabItem>
   <TabItem label="SSH">
     ```bash
-    awa generate . --template git@github.com:owner/repo
+    awa template generate . --template git@github.com:owner/repo
     ```
   </TabItem>
 </Tabs>
@@ -295,7 +374,7 @@ Features are resolved in this order:
 
 ```bash
 # All three options combined
-awa generate . --features copilot --preset full --remove-features roo agy
+awa template generate . --features copilot --preset full --remove-features roo agy
 ```
 
 ## Multi-Target Configuration
@@ -318,10 +397,10 @@ features = ["copilot", "code", "vibe"]
 Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config.
 
 ```bash
-awa generate --all                   # process all targets
-awa generate --target claude         # process one target
-awa diff --all                       # diff all targets
-awa diff --target copilot            # diff one target
+awa template generate --all                   # process all targets
+awa template generate --target claude         # process one target
+awa template diff --all                       # diff all targets
+awa template diff --target copilot            # diff one target
 ```
 
 **Behavior notes:**
@@ -343,10 +422,10 @@ Use `--json` to get structured output for CI pipelines. JSON is written to stdou
 
 ```bash
 # Check for template drift — exit code 1 means differences found
-awa diff . --json > diff-result.json
+awa template diff . --json > diff-result.json
 ```
 
-Example JSON output from `awa diff . --json`:
+Example JSON output from `awa template diff . --json`:
 
 ```json
 {
@@ -368,10 +447,10 @@ Example JSON output from `awa diff . --json`:
 
 ```bash
 # Preview what would be generated — --json implies --dry-run
-awa generate . --json > generate-result.json
+awa template generate . --json > generate-result.json
 ```
 
-Example JSON output from `awa generate . --json`:
+Example JSON output from `awa template generate . --json`:
 
 ```json
 {
@@ -394,10 +473,10 @@ Example JSON output from `awa generate . --json`:
 Use `--summary` for a compact one-line output in build logs:
 
 ```bash
-awa diff . --summary
+awa template diff . --summary
 # Output: changed: 2, new: 1, matching: 10, deleted: 0
 
-awa generate . --summary
+awa template generate . --summary
 # Output: created: 3, overwritten: 1, skipped: 2, deleted: 0
 ```
 
@@ -410,6 +489,18 @@ awa generate . --summary
 5. **Render** — walk template directory, render each file with Eta passing `{ features }` as context
 6. **Write** — create output files, prompt on conflicts (or `--force`/`--dry-run`), process `_delete.txt`
 7. **Delete** — apply delete list entries only when `--delete` (or `delete = true` in config) is set
-8. **Diff** (for `awa diff`) — render to a temp directory, compare against target, report unified diffs
+8. **Diff** (for `awa template diff`) — render to a temp directory, compare against target, report unified diffs
 9. **Validate** (for `awa check`) — scan code for traceability markers, parse spec files, cross-check, report findings
-10. **Test** (for `awa test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots
+10. **Test** (for `awa template test`) — discover fixtures in `_tests/`, render per fixture, verify expected files, compare snapshots
+11. **Trace** (for `awa trace`) — scan markers, build index, resolve IDs, format trace chains
+
+## Exit Codes
+
+| Command | 0 | 1 | 2 |
+|---------|---|---|---|
+| `awa init` / `awa template generate` | Success | — | Internal error |
+| `awa template diff` | All files match | Differences found | Internal error |
+| `awa check` | All checks pass | Errors found | Internal error |
+| `awa template test` | All fixtures pass | Failures found | Internal error |
+| `awa template features` | Success | Error | — |
+| `awa trace` | Chain found | ID not found / no context | Internal error |

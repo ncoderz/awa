@@ -100,13 +100,13 @@ example: |
 
   ```bash
   # Generate configuration from default template
-  awa generate
+  awa template generate
 
   # Generate with specific features enabled
-  awa generate --features typescript,testing
+  awa template generate --features typescript,testing
 
   # Preview changes without writing files
-  awa diff
+  awa template diff
   ```
 
   ### Examples
@@ -114,7 +114,7 @@ example: |
   #### Custom Template
 
   ```bash
-  awa generate --template ./my-templates --output ./.ai
+  awa template generate --template ./my-templates --output ./.ai
   ```
 
   ## Documentation

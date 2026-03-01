@@ -8,7 +8,7 @@ New adopters and template authors both need a quick way to enumerate the availab
 
 ## Conceptual Model
 
-`awa features` is a discovery command that scans a resolved template directory for feature flag references. It walks all template files, extracts `it.features.includes(...)` and `it.features.indexOf(...)` patterns, and produces a deduplicated, sorted list of flags with the files that reference them.
+`awa template features` is a discovery command that scans a resolved template directory for feature flag references. It walks all template files, extracts `it.features.includes(...)` and `it.features.indexOf(...)` patterns, and produces a deduplicated, sorted list of flags with the files that reference them.
 
 Key abstractions:
 - FEATURE FLAG: A string identifier found inside `it.features.includes('name')` or `it.features.indexOf('name')` in template files
@@ -21,19 +21,19 @@ The command reuses the same template resolution as `generate` and `diff`, so it 
 
 ### Scenario 1: Discovering flags in the default template
 
-A new user has configured `.awa.toml` with a template path. They run `awa features` and see a table of all available flags, each with a list of template files that reference it.
+A new user has configured `.awa.toml` with a template path. They run `awa template features` and see a table of all available flags, each with a list of template files that reference it.
 
 ### Scenario 2: Inspecting a remote template
 
-A developer evaluates a third-party template before adopting it. They run `awa features --template owner/repo` to see what flags the template supports, without cloning or generating any files.
+A developer evaluates a third-party template before adopting it. They run `awa template features --template owner/repo` to see what flags the template supports, without cloning or generating any files.
 
 ### Scenario 3: Machine-readable output
 
-A CI script needs to verify that all expected flags exist in a template. It runs `awa features --json` and parses the JSON output to validate completeness.
+A CI script needs to verify that all expected flags exist in a template. It runs `awa template features --json` and parses the JSON output to validate completeness.
 
 ### Scenario 4: Viewing presets alongside flags
 
-A developer has presets defined in `.awa.toml`. Running `awa features` shows both the discovered flags and the configured presets, making it easy to see which flags each preset activates.
+A developer has presets defined in `.awa.toml`. Running `awa template features` shows both the discovered flags and the configured presets, making it easy to see which flags each preset activates.
 
 ## Glossary
 

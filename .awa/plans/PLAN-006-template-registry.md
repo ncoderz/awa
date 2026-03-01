@@ -162,7 +162,7 @@ Search results for "python":
 - [ ] Implement `awa-template.toml` parser (reuse smol-toml)
 - [ ] Validate manifest on `registry add`: required fields, tag format, feature list
 - [ ] Validate `min-awa-version` against current CLI version during search (show warning for incompatible)
-- [ ] Add manifest to `awa features` output if present
+- [ ] Add manifest to `awa template features` output if present
 
 ### Phase 5: Documentation
 

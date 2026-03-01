@@ -10,6 +10,7 @@ awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage age
 
 > awa was written by awa (AI-assisted development using its own workflows). The workflows themselves are designed and crafted by a human who uses Copilot. If something is wrong, let's fix it together.
 
+**[Documentation](https://awa.ncoderz.com)** · **[Quick Start](https://awa.ncoderz.com/guides/quick-start/)** · **[CLI Reference](https://awa.ncoderz.com/reference/cli/)**
 
 ## The Problem
 
@@ -21,45 +22,36 @@ Without structure, work drifts and nobody, including the AI, can trace what happ
 
 ## How awa Solves It
 
-awa generates agent configuration files from **templates**. The generated output includes a powerful spec-driven development workflow with full traceability:
+awa does two thing. Firstly, it generates agent configuration files from **templates**. Secondly, the generated output includes a powerful spec-driven development workflow with full traceability:
 
 ```
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
-Every code and test artefect traces back to its requirement and acceptance criteria origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
+Every code and test artifact traces back to its requirement and acceptance criteria origin through explicit markers (`@awa-impl`, `@awa-test`, `@awa-component`). Any line of code traces back to the requirement that motivated it. Any requirement traces forward to the tests that verify it.
 
 Not only this, but awa actively checks that specs match a high quality schema, and that all requirements and acceptance criteria map to code and tests. This helps guide the AI to produce higher quality output.
 
-## Features
+## Workflow Features
 
-### Workflow & Traceability
+- **Structured workflow with full traceability** - every requirement, acceptance critera and property test has an ID, every line of code links back via `@awa-component`, `@awa-impl` and `@awa-test` code markers
+- **`awa check`** - allows AI or humans to enforces spec structure via YAML schemas, and to validate traceability markers against spec IDs
+- **`awa trace`** - allows AI or humans to explore traceability chains and quickly assemble context from specs, code, and tests
+- **Agent-agnostic** - Copilot, Claude, Cursor, Windsurf, and more from a single template set
 
-- Structured but flexible workflow from architecture through features, requirements, design, tasks, code, tests, and docs
-- Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
-- Every requirement has an ID, every line of code links back to it via `@awa-impl` and `@awa-test` markers
-- `awa check` checks that specs match their schemas, and that all traceability markers resolve to real spec IDs. Any acceptance criteria missing tests are flagged to the AI automatically
-- All AI orchestration documents all live in `.awa/`
+## Template Features
 
-See [Workflow](docs/WORKFLOW.md) for the full workflow and traceability chain.
+- **[Eta](https://eta.js.org/) templates** with conditionals, loops, and partials for AI configuration files
+- **Feature flags and presets** - to turn content on/off per project
+- **Template overlays** - to layer customizations without forking
+- **`awa template diff`** - shows exactly what changed before you commit; `--watch` re-diffs on template changes
+- **`awa template test`** - verifies templates against fixtures and snapshots
+- **`awa template features`** - discovers available feature flags and presets
+- **Multi-target configuration** - for generating different agent setups in one command
+- **Git or local** - template sources — GitHub, GitLab, Bitbucket, or local path
+- **`--json` and `--summary`** - flags for CI integration
 
-### CLI & Template Engine
-
-The awa CLI can be used to update your AI guiding files such as AGENTS.md automatically from templates, making it easy to keep them up-to-date and in-sync for every project.
-
-- [Eta](https://eta.js.org/) templates with conditionals, loops, and partials allow templating AI files (and other project files if you wish)
-- Pull templates from GitHub, GitLab, Bitbucket, or use a local path
-- Optional `.awa.toml` config, or just use CLI flags
-- Feature flags and presets to turn content on/off per project
-- `awa check` validates traceability markers against spec IDs and enforces spec file structure via YAML schemas
-- Template overlays (`--overlay`) allow layering custom files over a base template without forking it
-- `awa diff` shows exactly what has changed in a template before applying it to your project; `--watch` re-diffs on template changes, making template development easy
-- `awa test` verifies templates produce expected output across feature combinations by automatically diffing against fixture files
-- `awa features` discovers available feature flags and presets in a template
-- `--json` flag for machine-readable output in CI pipelines
-- `--summary` flag for compact one-line counts output
-
-See [CLI Reference](docs/CLI.md), [Template Engine](docs/TEMPLATE_ENGINE.md), [Template Testing](docs/TEMPLATE_TESTING.md), and [Schema Rules](docs/SCHEMA_RULES.md) for details.
+See the **[full documentation](https://awa.ncoderz.com)** for details.
 
 ## Quick Start
 
@@ -75,177 +67,18 @@ Or use with npx:
 npx @ncoderz/awa init .
 ```
 
-### Generate
-
-Generate files into the current directory using the bundled default template:
+### Initialise Project
 
 ```bash
+# Current directory, default template
 awa init .
-```
 
-Generate with specific features enabled:
-
-```bash
+# With specific features
 awa init . --features copilot claude cursor
 ```
 
-Generate to a specific output directory:
 
-```bash
-awa init ./my-project
-```
-
-### Preview Changes
-
-See what would change without writing files:
-
-```bash
-awa diff .
-```
-
-Watch for template changes and re-diff automatically:
-
-```bash
-awa diff . --watch
-```
-
-Apply any template configured file deletions (disabled by default):
-
-```bash
-awa init . --delete
-```
-
-Layer custom files over the base template with overlays:
-
-```bash
-awa init . --overlay ./my-overrides
-```
-
-### Validate
-
-Check traceability markers and spec file structure:
-
-```bash
-awa check
-```
-
-### Test Templates
-
-Verify templates produce expected output across feature combinations:
-
-```bash
-awa test
-```
-
-### Discover Features
-
-List all feature flags available in a template:
-
-```bash
-awa features
-awa features --json   # machine-readable output
-```
-
-## The `.awa/` Directory
-
-Each workflow stage produces artifacts in `.awa/`:
-
-```
-.awa/
-├── specs/
-│   ├── ARCHITECTURE.md              # System overview
-│   ├── FEAT-{CODE}-*.md             # Feature context & motivation
-│   ├── EXAMPLES-{CODE}-*-{nnn}.md   # Usage examples per feature
-│   ├── REQ-{CODE}-*.md              # Requirements (EARS format)
-│   ├── DESIGN-{CODE}-*.md           # Design & components
-│   └── API-{CODE}-*.tsp             # TypeSpec API definitions
-├── tasks/
-│   └── TASK-{CODE}-*-{nnn}.md       # Implementation steps
-├── plans/
-│   └── PLAN-{nnn}-*.md              # Ad-hoc plans
-├── align/
-│   └── ALIGN-{x}-WITH-{y}-{nnn}.md  # Alignment reports
-└── rules/
-    └── *.md                         # Project-specific rules
-```
-
-## The Traceability Chain
-
-Every artifact links to its origin through IDs and markers:
-
-```
-REQ-{CODE}-*.md
-  └── {CODE}-1: Requirement title
-        └── {CODE}-1_AC-1: Acceptance criterion
-                │
-                ▼
-DESIGN-{CODE}-*.md
-  └── {CODE}-ComponentName
-        ├── IMPLEMENTS: {CODE}-1_AC-1
-        └── {CODE}_P-1: Correctness property
-                │
-                ▼
-Source code
-  └── // @awa-component: {CODE}-ComponentName
-      └── // @awa-impl: {CODE}-1_AC-1
-                │
-                ▼
-Tests
-  ├── // @awa-test: {CODE}_P-1        ← verifies property
-  └── // @awa-test: {CODE}-1_AC-1     ← verifies acceptance criterion
-```
-
-Every link is explicit. Nothing is implied.
-
-See [Workflow](docs/WORKFLOW.md) for IDs, markers, and how to read a trace.
-
-## CI Integration
-
-Use `--json` for structured output in CI pipelines, or `--summary` for compact build-log output:
-
-```bash
-# Detect template drift (exit code 1 = differences found)
-awa diff . --json > diff-result.json
-
-# Compact summary for build logs
-awa diff . --summary
-# Output: changed: 2, new: 1, matching: 10, deleted: 0
-
-# Validate traceability
-awa check --format json > check-result.json
-```
-
-See [CI Integration](docs/CLI.md#ci-integration) in the CLI reference for JSON output formats.
-
-## Exit Codes
-
-| Command | 0 | 1 | 2 |
-|---------|---|---|---|
-| `awa init` / `awa generate` | Success | — | Internal error |
-| `awa diff` | All files match | Differences found | Internal error |
-| `awa check` | All checks pass | Errors found | Internal error |
-| `awa test` | All fixtures pass | Failures found | Internal error |
-| `awa features` | Success | Error | — |
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Workflow](docs/WORKFLOW.md) | The awa workflow, `.awa/` structure, traceability chain, IDs and markers |
-| [CLI Reference](docs/CLI.md) | Commands, options, configuration, presets, and how it works |
-| [Template Engine](docs/TEMPLATE_ENGINE.md) | Template sources, Eta syntax, partials, file handling, delete lists |
-| [Template Testing](docs/TEMPLATE_TESTING.md) | The `awa test` command, fixture format, snapshots, CI setup |
-| [Traceability Check](docs/TRACEABILITY_CHECK.md) | The `awa check` command, checks, configuration, JSON output |
-| [Schema Rules](docs/SCHEMA_RULES.md) | Declarative YAML rules for validating spec file structure |
-
-## Community
-
-- [Contributing Guide](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Security Policy](SECURITY.md)
-- [Support](SUPPORT.md)
-- [Maintainers](MAINTAINERS.md)
-- [Funding](.github/FUNDING.yml)
+See the **[Quick Start guide](https://awa.ncoderz.com/guides/quick-start/)** for more.
 
 ## Alternatives
 
@@ -260,7 +93,7 @@ Several tools address parts of the AI-assisted development workflow. Here's how 
 | **Template engine** | ✅ Eta with conditionals, loops, partials | ❌ | ❌ Static templates copied on init | ❌ Static skill files | ❌ Static markdown | ❌ |
 | **Feature flags** | ✅ Enable/disable content per project | ❌ | ❌ | ❌ | ⚠️ Lite/Full modes | ❌ |
 | **Presets** | ✅ Named flag bundles | ❌ | ❌ | ⚠️ Complexity levels | ⚠️ Operation levels | ❌ |
-| **AI Instructions Drift detection** | ✅ `awa diff` shows what changed vs. templates | ❌ | ❌ | ❌ | ⚠️ Manual compliance checklist | ❌ |
+| **AI Instructions Drift detection** | ✅ `awa template diff` shows what changed vs. templates | ❌ | ❌ | ❌ | ⚠️ Manual compliance checklist | ❌ |
 | **Re-generation** | ✅ Generates from templates on every run | ❌ Specs created per feature | ❌ One-time `specify init` | ❌ One-time install | ❌ One-time copy | ❌ One-time manual creation |
 | **Agent hooks** | ❌ | ✅ Event-driven agent triggers on file save | ❌ | ❌ | ❌ | ❌ |
 | **Built-in IDE** | ❌ | ✅ VS Code-compatible IDE | ❌ | ❌ | ❌ | ❌ |
@@ -301,7 +134,14 @@ npm run build
 | `npm run gen:awa:this` | Generate awa templates to current directory |
 | `npm run diff:awa:this` | Diff awa templates against current directory |
 
+## Community
 
+- [Contributing Guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [Maintainers](MAINTAINERS.md)
+- [Funding](.github/FUNDING.yml)
 
 ## License
 

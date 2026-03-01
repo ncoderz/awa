@@ -3,7 +3,7 @@ title: Template Testing
 description: Verify templates produce expected output using test fixtures and snapshot comparison.
 ---
 
-`awa test` verifies templates produce expected output across feature flag combinations. It renders templates against test fixtures and checks file existence and optional snapshot matching.
+`awa template test` verifies templates produce expected output across feature flag combinations. It renders templates against test fixtures and checks file existence and optional snapshot matching.
 
 ## Fixture Format
 
@@ -23,19 +23,19 @@ expected-files = ["CLAUDE.md", ".github/agents/copilot.agent.md"]
 | `remove-features` | `string[]` | Features to remove after preset expansion |
 | `expected-files` | `string[]` | Files that must exist in rendered output (relative paths) |
 
-All fields are optional. Features are resolved using the same pipeline as `awa generate` (presets expand, then remove-features subtract).
+All fields are optional. Features are resolved using the same pipeline as `awa template generate` (presets expand, then remove-features subtract).
 
 ## Running Tests
 
 ```bash
 # Test the default bundled template
-awa test
+awa template test
 
 # Test a specific template
-awa test --template ./templates/awa
+awa template test --template ./templates/awa
 
 # Test a Git-hosted template
-awa test --template owner/repo
+awa template test --template owner/repo
 ```
 
 ## Snapshot Comparison
@@ -44,22 +44,22 @@ Snapshots store the full rendered output of a fixture for comparison. Snapshot d
 
 ```bash
 # Update snapshots with current output
-awa test --update-snapshots
+awa template test --update-snapshots
 
 # Compare against stored snapshots (default)
-awa test
+awa template test
 ```
 
 When `--update-snapshots` is passed, the rendered output replaces the snapshot directory. Without the flag, each rendered file is compared against its snapshot counterpart. Mismatches, missing snapshots, and extra snapshot files are reported as failures.
 
 ## CI Usage
 
-Run `awa test` in your CI pipeline to catch template regressions:
+Run `awa template test` in your CI pipeline to catch template regressions:
 
 ```yaml
 # GitHub Actions example
 - name: Test templates
-  run: npx @ncoderz/awa test --template ./templates/awa
+  run: npx @ncoderz/awa template test --template ./templates/awa
 ```
 
 Exit code `0` means all fixtures pass. Exit code `1` means one or more fixtures failed.

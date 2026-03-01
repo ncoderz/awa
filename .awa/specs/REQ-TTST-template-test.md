@@ -2,19 +2,19 @@
 
 ## Introduction
 
-Requirements for the `awa test` command that verifies template output across feature flag combinations by running fixture-based tests with file existence assertions and snapshot comparison.
+Requirements for the `awa template test` command that verifies template output across feature flag combinations by running fixture-based tests with file existence assertions and snapshot comparison.
 
 ## Requirements
 
 ### TTST-1: Fixture Discovery [MUST]
 
-AS A template author, I WANT `awa test` to discover fixture files automatically, SO THAT I don't have to manually specify each test case.
+AS A template author, I WANT `awa template test` to discover fixture files automatically, SO THAT I don't have to manually specify each test case.
 
-The `awa test` command SHALL discover fixture files in the template's `_tests/` directory.
+The `awa template test` command SHALL discover fixture files in the template's `_tests/` directory.
 
 ACCEPTANCE CRITERIA
 
-- TTST-1_AC-1 [event]: WHEN `awa test` is invoked with a template path THEN all `*.toml` files in the template's `_tests/` directory are discovered and loaded
+- TTST-1_AC-1 [event]: WHEN `awa template test` is invoked with a template path THEN all `*.toml` files in the template's `_tests/` directory are discovered and loaded
 
 ### TTST-2: Fixture Format [MUST]
 

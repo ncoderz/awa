@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design implements the `init` alias for the `generate` command. The change is purely additive: one `.alias('init')` call on the generate commander definition, plus a non-blocking config hint in the generate command handler.
+This design implements the `init` top-level convenience command that delegates to the same handler as `template generate`. The change is purely additive: a separate `init` command on the root program configured with the same options via a shared helper, plus a non-blocking config hint in the generate command handler.
 
 ## Architecture
 
@@ -10,11 +10,12 @@ AFFECTED LAYERS: CLI Layer
 
 ### High-Level Architecture
 
-`init` is registered as a commander alias on the existing `generate` command. No new handler, no new pipeline.
+`init` is registered as a top-level command on the root program, sharing the same handler as `template generate`. No new handler, no new pipeline.
 
 ```mermaid
 flowchart LR
-    Init["awa init"] --> Generate["awa generate handler"]
+    Init["awa init"] --> Generate["generateCommand handler"]
+    TemplateGen["awa template generate"] --> Generate
     Generate --> ConfigLoader
     ConfigLoader -->|null| Hint["Config hint (info)"]
     ConfigLoader -->|FileConfig| Merge
@@ -27,29 +28,33 @@ flowchart LR
 ```
 src/
 ├── cli/
-│   └── index.ts         # Add .alias('init') to generate command
+│   └── index.ts         # configureGenerateCommand helper applied to both template generate and top-level init
 └── commands/
     └── generate.ts      # Add config-not-found hint after config load
 ```
 
 ### Architectural Decisions
 
-- ALIAS OVER DUPLICATE: Commander `.alias()` shares the exact handler. No code duplication, no risk of divergence. Alternatives: separate command definition (duplication risk), shell wrapper (fragile)
+- SHARED HELPER OVER ALIAS: A `configureGenerateCommand` helper applies the same options and action to both `template generate` and top-level `init`. This avoids commander alias nesting limitations and keeps init at the root level. Alternatives: commander `.alias()` (only works within same parent), separate command definition (duplication risk), shell wrapper (fragile)
 - HINT IN HANDLER NOT LOADER: The config hint belongs in `generateCommand`, not the config loader. The loader's responsibility is loading; surfacing UX hints is the handler's concern. Alternatives: loader emits hint (mixed concerns)
 
 ## Components and Interfaces
 
 ### INIT-AliasRegistration
 
-Registers `init` as an alias for the `generate` command using commander's `.alias()` API. No additional handler is needed — the existing generate handler is reused automatically.
+Registers `init` as a top-level command on the root program, configured with the same options and handler as `template generate` via the `configureGenerateCommand` helper.
 
 IMPLEMENTS: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
 
 ```typescript
-program
-  .command('generate')
-  .alias('init')
-  // ... existing options and action unchanged
+function configureGenerateCommand(cmd: Command): Command {
+  return cmd
+    .description('Generate AI agent configuration files from templates')
+    // ... shared options and action
+}
+
+configureGenerateCommand(template.command('generate'));
+configureGenerateCommand(program.command('init'));
 ```
 
 ### INIT-ConfigHint
@@ -75,7 +80,7 @@ No new types. Uses existing types from `src/types/index.ts`.
 
 ## Correctness Properties
 
-- INIT_P-1 [Alias Transparency]: `awa init <args>` and `awa generate <args>` invoke the same handler with identical resolved options
+- INIT_P-1 [Alias Transparency]: `awa init <args>` and `awa template generate <args>` invoke the same handler with identical resolved options
   VALIDATES: INIT-3_AC-1
 
 - INIT_P-2 [Hint Non-Blocking]: Config hint is logged at info level only; it never throws or calls `process.exit`
@@ -89,7 +94,7 @@ No new error cases introduced. Alias registration and hint logging are non-throw
 
 PRINCIPLES:
 
-- Alias registration uses commander built-in — no custom error paths needed
+- Alias registration uses a shared helper function — no custom error paths needed
 - Hint is fire-and-forget info log — any logger failure is silent and non-blocking
 
 ## Testing Strategy

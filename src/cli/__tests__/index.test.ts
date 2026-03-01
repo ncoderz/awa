@@ -1,4 +1,6 @@
 // @awa-component: CLI-ArgumentParser
+// @awa-component: TCLI-TemplateGroup
+// @awa-component: TCLI-RootProgram
 // @awa-test: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-5
 // @awa-test: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
 // @awa-test: CLI-3_AC-1
@@ -15,6 +17,11 @@
 // @awa-test: GEN-10_AC-1, GEN-10_AC-2
 // @awa-test: DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7
 // @awa-test: DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-12, DIFF-7_AC-13
+// @awa-test: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7
+// @awa-test: TCLI-2_AC-1, TCLI-2_AC-2
+// @awa-test: TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4
+// @awa-test: TCLI-4_AC-1, TCLI-4_AC-2
+// @awa-test: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
 
 import { Command } from 'commander';
 import { describe, expect, it } from 'vitest';
@@ -67,6 +74,64 @@ function buildDiffCommand(): Command {
   return cmd;
 }
 
+/** Build a minimal features command matching the CLI definition. */
+function buildFeaturesCommand(): Command {
+  const cmd = new Command('features')
+    .option('-t, --template <source>', 'Template source (local path or Git repository)')
+    .option('-c, --config <path>', 'Path to configuration file')
+    .option('--refresh', 'Force refresh of cached Git templates', false)
+    .option('--json', 'Output results as JSON', false);
+  return cmd;
+}
+
+/** Build a minimal test command matching the CLI definition. */
+function buildTestCommand(): Command {
+  const cmd = new Command('test')
+    .option('-t, --template <source>', 'Template source (local path or Git repository)')
+    .option('-c, --config <path>', 'Path to configuration file')
+    .option('--update-snapshots', 'Update stored snapshots with current rendered output', false);
+  return cmd;
+}
+
+/** Build a minimal check command matching the CLI definition. */
+function buildCheckCommand(): Command {
+  const cmd = new Command('check')
+    .option('-c, --config <path>', 'Path to configuration file')
+    .option('--spec-ignore <pattern...>', 'Glob patterns to exclude from spec file scanning')
+    .option('--code-ignore <pattern...>', 'Glob patterns to exclude from code file scanning')
+    .option('--format <format>', 'Output format (text or json)', 'text')
+    .option('--allow-warnings', 'Allow warnings without failing', false)
+    .option('--spec-only', 'Run only spec-level checks', false);
+  return cmd;
+}
+
+/** Build a minimal trace command matching the CLI definition. */
+function buildTraceCommand(): Command {
+  const cmd = new Command('trace')
+    .argument('[ids...]', 'Traceability ID(s) to trace')
+    .option('--all', 'Trace all known IDs in the project', false)
+    .option('--json', 'Output as JSON', false)
+    .option('-c, --config <path>', 'Path to configuration file');
+  return cmd;
+}
+
+/** Build the template subcommand group. */
+function buildTemplateGroup(): Command {
+  const template = new Command('template').description(
+    'Template operations (generate, diff, features, test)'
+  );
+  template.addCommand(buildGenerateCommand());
+  template.addCommand(buildDiffCommand());
+  template.addCommand(buildFeaturesCommand());
+  template.addCommand(buildTestCommand());
+  return template;
+}
+
+/** Build a top-level init command (convenience alias for template generate). */
+function buildInitCommand(): Command {
+  return buildGenerateCommand().name('init');
+}
+
 /** Build the root program matching the CLI definition. */
 function buildProgram(): Command {
   const program = new Command();
@@ -75,17 +140,21 @@ function buildProgram(): Command {
     .description('awa - tool for generating AI coding agent configuration files')
     .version('0.0.0-test', '-v, --version', 'Display version number');
 
-  program.addCommand(buildGenerateCommand());
-  program.addCommand(buildDiffCommand());
+  program.addCommand(buildTemplateGroup());
+  program.addCommand(buildInitCommand());
+  program.addCommand(buildCheckCommand());
+  program.addCommand(buildTraceCommand());
   return program;
 }
 
 describe('CLI Argument Parser', () => {
   describe('generate command', () => {
-    // @awa-test: CLI-1_AC-1
-    it('should provide generate as a command', () => {
+    // @awa-test: CLI-1_AC-1, TCLI-1_AC-4
+    it('should provide generate as a subcommand under template', () => {
       const program = buildProgram();
-      const genCmd = program.commands.find((c) => c.name() === 'generate');
+      const templateCmd = program.commands.find((c) => c.name() === 'template');
+      expect(templateCmd).toBeDefined();
+      const genCmd = templateCmd!.commands.find((c) => c.name() === 'generate');
       expect(genCmd).toBeDefined();
     });
 
@@ -262,12 +331,14 @@ describe('CLI Argument Parser', () => {
   });
 
   describe('root program', () => {
-    // @awa-test: CLI-1_AC-5, CLI-9_AC-1, CLI-9_AC-3
-    it('should display help with all available options', () => {
+    // @awa-test: CLI-1_AC-5, CLI-9_AC-1, CLI-9_AC-3, TCLI-4_AC-1
+    it('should display help with init, template, check, and trace commands', () => {
       const program = buildProgram();
       const helpText = program.helpInformation();
-      expect(helpText).toContain('generate');
-      expect(helpText).toContain('diff');
+      expect(helpText).toContain('init');
+      expect(helpText).toContain('template');
+      expect(helpText).toContain('check');
+      expect(helpText).toContain('trace');
     });
 
     // @awa-test: CLI-9_AC-2
@@ -296,6 +367,125 @@ describe('CLI Argument Parser', () => {
       const program = buildProgram();
       const helpText = program.helpInformation();
       expect(helpText).toContain('awa');
+    });
+  });
+
+  // @awa-test: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3
+  describe('template subcommand group', () => {
+    // @awa-test: TCLI-1_AC-1
+    it('should provide template as a top-level command', () => {
+      const program = buildProgram();
+      const templateCmd = program.commands.find((c) => c.name() === 'template');
+      expect(templateCmd).toBeDefined();
+    });
+
+    // @awa-test: TCLI-1_AC-2, TCLI-4_AC-2
+    it('should contain generate, diff, features, and test subcommands', () => {
+      const template = buildTemplateGroup();
+      const names = template.commands.map((c) => c.name());
+      expect(names).toContain('generate');
+      expect(names).toContain('diff');
+      expect(names).toContain('features');
+      expect(names).toContain('test');
+    });
+
+    // @awa-test: TCLI-1_AC-3
+    it('should display help when invoked without a subcommand', () => {
+      const template = buildTemplateGroup();
+      const helpText = template.helpInformation();
+      expect(helpText).toContain('generate');
+      expect(helpText).toContain('diff');
+      expect(helpText).toContain('features');
+      expect(helpText).toContain('test');
+    });
+
+    // @awa-test: TCLI-1_AC-5
+    it('diff subcommand should have expected options', () => {
+      const cmd = buildDiffCommand();
+      const helpText = cmd.helpInformation();
+      expect(helpText).toContain('--template');
+      expect(helpText).toContain('--features');
+      expect(helpText).toContain('--config');
+      expect(helpText).toContain('--refresh');
+      expect(helpText).toContain('--list-unknown');
+    });
+
+    // @awa-test: TCLI-1_AC-6
+    it('features subcommand should have expected options', () => {
+      const cmd = buildFeaturesCommand();
+      const helpText = cmd.helpInformation();
+      expect(helpText).toContain('--template');
+      expect(helpText).toContain('--config');
+      expect(helpText).toContain('--refresh');
+      expect(helpText).toContain('--json');
+    });
+
+    // @awa-test: TCLI-1_AC-7
+    it('test subcommand should have expected options', () => {
+      const cmd = buildTestCommand();
+      const helpText = cmd.helpInformation();
+      expect(helpText).toContain('--template');
+      expect(helpText).toContain('--config');
+      expect(helpText).toContain('--update-snapshots');
+    });
+
+    // @awa-test: TCLI-2_AC-1, TCLI-2_AC-2
+    it('should provide init as a top-level command', () => {
+      const program = buildProgram();
+      const initCmd = program.commands.find((c) => c.name() === 'init');
+      expect(initCmd).toBeDefined();
+    });
+
+    // @awa-test: TCLI-2_AC-2
+    it('init command should accept the same options as generate', () => {
+      const initCmd = buildInitCommand();
+      const genCmd = buildGenerateCommand();
+      const initOpts = initCmd.options.map((o) => o.long).sort();
+      const genOpts = genCmd.options.map((o) => o.long).sort();
+      expect(initOpts).toEqual(genOpts);
+    });
+  });
+
+  // @awa-test: TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4
+  describe('top-level awa commands', () => {
+    // @awa-test: TCLI-3_AC-1, TCLI-3_AC-3
+    it('should provide check as a top-level command with expected options', () => {
+      const program = buildProgram();
+      const checkCmd = program.commands.find((c) => c.name() === 'check');
+      expect(checkCmd).toBeDefined();
+      const helpText = checkCmd!.helpInformation();
+      expect(helpText).toContain('--config');
+      expect(helpText).toContain('--format');
+      expect(helpText).toContain('--spec-only');
+    });
+
+    // @awa-test: TCLI-3_AC-2, TCLI-3_AC-4
+    it('should provide trace as a top-level command with expected options', () => {
+      const program = buildProgram();
+      const traceCmd = program.commands.find((c) => c.name() === 'trace');
+      expect(traceCmd).toBeDefined();
+      const helpText = traceCmd!.helpInformation();
+      expect(helpText).toContain('--all');
+      expect(helpText).toContain('--json');
+      expect(helpText).toContain('--config');
+    });
+  });
+
+  // @awa-test: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
+  describe('removed top-level commands', () => {
+    it('should NOT have generate, diff, features, or test at root level', () => {
+      const program = buildProgram();
+      const rootNames = program.commands.map((c) => c.name());
+      expect(rootNames).not.toContain('generate');
+      expect(rootNames).not.toContain('diff');
+      expect(rootNames).not.toContain('features');
+      expect(rootNames).not.toContain('test');
+    });
+
+    it('should have init at root level (convenience command)', () => {
+      const program = buildProgram();
+      const rootNames = program.commands.map((c) => c.name());
+      expect(rootNames).toContain('init');
     });
   });
 });

@@ -4,7 +4,7 @@ Thanks for contributing.
 
 ## Before You Start
 
-- Review [README.md](README.md), [docs/CLI.md](docs/CLI.md), and [docs/WORKFLOW.md](docs/WORKFLOW.md)
+- Review [README.md](README.md) and the [documentation](https://awa.ncoderz.com)
 - Search existing issues and pull requests to avoid duplicates
 - For non-trivial changes, open an issue first to align scope
 
@@ -56,10 +56,10 @@ Useful commands:
 
 ## Template and Docs Changes
 
-If you change `templates/` behavior, also update relevant docs:
+If you change `templates/` behavior, also update relevant docs on the [website](https://awa.ncoderz.com):
 
-- [docs/TEMPLATE_ENGINE.md](docs/TEMPLATE_ENGINE.md)
-- [docs/CLI.md](docs/CLI.md)
+- [Template Engine](https://awa.ncoderz.com/reference/template-engine/)
+- [CLI Reference](https://awa.ncoderz.com/reference/cli/)
 - [README.md](README.md)
 
 ## Security

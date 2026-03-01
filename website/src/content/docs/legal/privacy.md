@@ -29,7 +29,7 @@ This documentation website is hosted on GitHub Pages.
 
 ### Third-Party Services
 
-When using `awa generate` or `awa diff` with a Git template source, awa fetches templates from the hosting provider you specify. Those requests are subject to the provider's own privacy policy.
+When using `awa template generate` or `awa template diff` with a Git template source, awa fetches templates from the hosting provider you specify. Those requests are subject to the provider's own privacy policy.
 
 ### Changes
 

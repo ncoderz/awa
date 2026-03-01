@@ -156,12 +156,15 @@ RESPONSIBILITIES
 - Validate inputs
 - Invoke configuration loader then core commands
 - Display help and version info
-- Support `init`, `diff`, `check`, and `test` subcommands
+- Group template-related commands under `template` subcommand: `generate`/`init`, `diff`, `features`, `test`
+- Provide top-level commands for awa-specific operations: `check`, `trace`
 
 
 CONSTRAINTS
 
-- Uses commander for command definition
+- Uses commander for command definition with nested subcommands
+- Template commands accessed via `awa template <cmd>` (e.g. `awa template generate .`)
+- `awa check` and `awa trace` remain top-level commands
 - Output directory is an optional positional argument (can come from CLI or config)
 - `--features` accepts variadic string values
 - `--config` specifies alternate config file path
@@ -445,7 +448,7 @@ RESPONSIBILITIES
 CONSTRAINTS
 
 - Fixtures are TOML files in `_tests/` directory
-- Feature resolution uses the same pipeline as `awa generate` (presets, remove-features)
+- Feature resolution uses the same pipeline as `awa template generate` (presets, remove-features)
 - Temp directories cleaned up after each fixture
 - Snapshot directories stored at `_tests/{fixture-name}/`
 - `--update-snapshots` replaces snapshot directories with current output
@@ -462,7 +465,7 @@ sequenceDiagram
     participant Engine as TemplateEngine
     participant Gen as FileGenerator
 
-    User->>CLI: awa generate ./out --features a b c
+    User->>CLI: awa template generate ./out --features a b c
     CLI->>Config: Load + merge .awa.toml
     Config-->>CLI: ResolvedOptions
     CLI->>Resolver: Resolve template source
@@ -484,7 +487,7 @@ sequenceDiagram
     participant Gen as FileGenerator
     participant Diff as DiffEngine
 
-    User->>CLI: awa diff ./target --template ./templates
+    User->>CLI: awa template diff ./target --template ./templates
     CLI->>Gen: generate to temp dir
     Gen-->>CLI: Complete
     CLI->>Diff: diff(tempDir, targetDir)
@@ -504,7 +507,7 @@ sequenceDiagram
 - Feature flags as `it.features: string[]`; partials in `_partials/` (not output)
 - `_delete.txt` lists files to delete; `# @feature <name>` for feature-gated sections
 - Deletions require `--delete` flag; `--force` skips prompts; `--dry-run` simulates
-- `awa diff` generates to temp dir, compares against target, cleans up on exit
+- `awa template diff` generates to temp dir, compares against target, cleans up on exit
 - Exit codes: 0 = clean/match, 1 = errors/differences, 2 = internal error
 - Configuration via `.awa.toml` with `[presets]` and `[check]` tables; CLI overrides config
 - Template sources: local path, GitHub shorthand (`owner/repo`), Git URL, SSH; cache in `~/.cache/awa/templates/`
@@ -546,6 +549,7 @@ NOTE: These commands use the local development version via `npm run`. For the in
 - 2.5.0 (2026-02-27): Schema upgrade — fixed H1 title to match ARCHITECTURE schema, replaced bold formatting with CAPITALS in System Overview
 - 2.6.0 (2026-02-28): Condensed sequence diagrams, consolidated Architectural Rules into flat list, removed over-detailed subsections to meet 500-line limit
 - 2.7.0 (2026-02-28): Check Engine warnings treated as errors by default; added `--allow-warnings` flag
-- 2.8.0 (2026-02-28): Added Test Runner component — `awa test` command, fixture discovery, template rendering per fixture, file
+- 2.8.0 (2026-02-28): Added Test Runner component — `awa template test` command, fixture discovery, template rendering per fixture, file
 - 2.9.0 (2026-02-28): CLI Layer — `generate` command gains `init` alias; added config-not-found hint in generate handler
 - 2.10.0 (2026-01-01): Added Overlay Resolver component — `--overlay` option, merged temp dir pattern, overlay config array
+- 2.11.0 (2026-03-01): CLI restructure — template commands (`generate`, `diff`, `features`, `test`) grouped under `awa template` subcommand; `check` and `trace` remain top-level

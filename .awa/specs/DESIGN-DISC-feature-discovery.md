@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design implements the `awa features` command as a simple pipeline: resolve template → scan files → report results. It reuses the existing template resolver and config loader, adding a new FeatureScanner for flag extraction and a FeaturesReporter for output formatting.
+This design implements the `awa template features` command as a simple pipeline: resolve template → scan files → report results. It reuses the existing template resolver and config loader, adding a new FeatureScanner for flag extraction and a FeaturesReporter for output formatting.
 
 ## Architecture
 

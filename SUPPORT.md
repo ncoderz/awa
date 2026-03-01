@@ -2,8 +2,7 @@
 
 ## Getting Help
 
-- Read [README.md](README.md)
-- Review [docs/CLI.md](docs/CLI.md), [docs/TEMPLATE_ENGINE.md](docs/TEMPLATE_ENGINE.md), and [docs/WORKFLOW.md](docs/WORKFLOW.md)
+- Read [README.md](README.md) and the [documentation](https://awa.ncoderz.com)
 - Search existing issues before opening a new one
 
 ## Bug Reports

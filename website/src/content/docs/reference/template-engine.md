@@ -142,17 +142,17 @@ my-templates/
 - Keep templates deterministic: same inputs should produce same outputs
 - Put reusable blocks in `_partials/` instead of duplicating content
 - Keep `_delete.txt` focused on stale output paths and document intent with comments
-- Test template changes with `awa diff . --template <path>` before writing changes
+- Test template changes with `awa template diff . --template <path>` before writing changes
 - Use `--dry-run` and `--delete` together when validating cleanup behavior
-- Use `awa test` with snapshot fixtures to catch template regressions in CI
+- Use `awa template test` with snapshot fixtures to catch template regressions in CI
 
 ## Overlays
 
 Overlays let you layer additional files on top of a base template without modifying it. Each overlay directory is merged over the base template (last overlay wins for conflicting paths).
 
 ```bash
-awa generate . --overlay ./overlays/company --overlay ./overlays/project
-awa diff . --overlay ./my-overrides
+awa template generate . --overlay ./overlays/company --overlay ./overlays/project
+awa template diff . --overlay ./my-overrides
 ```
 
 Overlays are also configurable in `.awa.toml`:

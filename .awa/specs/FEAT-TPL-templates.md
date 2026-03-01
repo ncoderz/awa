@@ -31,15 +31,15 @@ Template CACHING works for Git sources: fetched repositories are stored in `~/.c
 
 ### Scenario 1: Local template development
 
-A template author creates a `./templates/` directory with `.md` files using Eta syntax. They run `awa generate . --template ./templates/` to test rendering. Changes to the local templates take effect immediately — no caching.
+A template author creates a `./templates/` directory with `.md` files using Eta syntax. They run `awa template generate . --template ./templates/` to test rendering. Changes to the local templates take effect immediately — no caching.
 
 ### Scenario 2: Git repository templates
 
-A team publishes templates at `github:myorg/agent-templates`. A developer runs `awa generate . --template myorg/agent-templates`. The first run fetches via degit (shallow, no `.git` directory); subsequent runs use the cached copy.
+A team publishes templates at `github:myorg/agent-templates`. A developer runs `awa template generate . --template myorg/agent-templates`. The first run fetches via degit (shallow, no `.git` directory); subsequent runs use the cached copy.
 
 ### Scenario 3: Refreshing a cached template
 
-After the team pushes template updates, a developer runs `awa generate . --template myorg/agent-templates --refresh` to re-fetch the latest version from Git.
+After the team pushes template updates, a developer runs `awa template generate . --template myorg/agent-templates --refresh` to re-fetch the latest version from Git.
 
 ### Scenario 4: Conditional content via features
 
@@ -65,7 +65,7 @@ A template needs to create an empty placeholder file. The template outputs `<!--
 
 ### Scenario 8: Git ref and subdirectory support
 
-A developer runs `awa generate . --template myorg/repo/templates#v2.0` to fetch from a specific tag and subdirectory within the repository.
+A developer runs `awa template generate . --template myorg/repo/templates#v2.0` to fetch from a specific tag and subdirectory within the repository.
 
 ## Change Log
 
