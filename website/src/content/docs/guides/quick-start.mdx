@@ -17,12 +17,14 @@ Get up and running with awa in just a few minutes.
   </TabItem>
   <TabItem label="npx (no install)">
     ```bash
-    npx @ncoderz/awa generate .
+    npx @ncoderz/awa init
     ```
   </TabItem>
 </Tabs>
 
-## Generate Your First Configuration
+## Generate Agent Configuration Files
+
+awa's core value: one command generates AI agent configuration files for every tool your team uses — GitHub Copilot, Claude, Cursor, Gemini, and more — from a single template.
 
 <Steps>
 
@@ -35,19 +37,15 @@ Get up and running with awa in just a few minutes.
 2. **Generate files using the default awa template**
 
    ```bash
-   awa template generate .
+   awa init
    ```
 
    This generates agent configuration files into the current directory using awa's bundled default template.
 
-   :::tip
-   `awa init` is a top-level convenience command equivalent to `awa template generate` — you can use either one.
-   :::
-
 3. **Generate with specific AI tool features**
 
    ```bash
-   awa template generate . --features copilot claude cursor
+   awa init --features copilot claude cursor
    ```
 
    Feature flags control which sections are included. Enable only what you need.
@@ -55,32 +53,24 @@ Get up and running with awa in just a few minutes.
 4. **Preview before writing (dry run)**
 
    ```bash
-   awa template generate . --dry-run
+   awa init --dry-run
    ```
 
-5. **Check for drift later**
-
-   ```bash
-   awa template diff .
-   ```
-
-   After templates are updated, use `awa template diff` to see what would change in your project.
-
-6. **Validate traceability**
-
-   ```bash
-   awa check
-   ```
-
-   `awa check` validates that all traceability markers in your code reference real spec IDs, and flags uncovered acceptance criteria.
-
-7. **Discover available features**
+5. **Discover available features**
 
    ```bash
    awa template features
    ```
 
-   Lists all feature flags discovered in the template.
+   Lists all feature flags available in the template.
+
+6. **Check for drift after a template update**
+
+   ```bash
+   awa template diff .
+   ```
+
+   See what would change in your project if you re-generated from the latest template.
 
 </Steps>
 
@@ -90,23 +80,23 @@ Get up and running with awa in just a few minutes.
 
 ```bash
 # Enable all supported AI tools
-awa template generate . --preset full
+awa init --preset full
 
 # Enable a subset
-awa template generate . --preset full --remove-features roo agy
+awa init --preset full --remove-features roo agy
 ```
 
 ### Using a Custom Template
 
 ```bash
 # From a local directory
-awa template generate . --template ./my-templates
+awa init --template ./my-templates
 
 # From a GitHub repository
-awa template generate . --template owner/repo
+awa init --template owner/repo
 
 # From a specific branch or tag
-awa template generate . --template owner/repo#v1.0.0
+awa init --template owner/repo#v1.0.0
 ```
 
 ### Using a Config File
@@ -122,18 +112,35 @@ features = ["copilot", "claude"]
 Then simply run:
 
 ```bash
-awa template generate
+awa init
 ```
 
 ## What Gets Generated
 
-By default, awa generates files into `.github/agents/` (configurable). These include:
+By default, awa generates files into the project root (configurable). These typically include:
 
-- Agent configuration files (e.g., `awa.agent.md`)
+- Agent instruction files (e.g., `CLAUDE.md`, `AGENTS.md`)
 - Prompt files in `.github/prompts/`
-- Workflow rules in `.awa/rules/`
+- Workflow skills in `.github/skills/`
 
 The exact output depends on your template and feature flags.
+
+## Traceability and the awa Workflow
+
+`awa check` and `awa trace` are separate from template generation — they are used when following the [awa structured workflow](/guides/workflow/) for spec-driven development.
+
+- **`awa check`** — validates that traceability markers in your code reference real spec IDs, and flags uncovered acceptance criteria. Run this as part of your structured development workflow, not as part of template setup.
+- **`awa trace <ID>`** — assembles the full trace for a requirement or component: spec text, implementation, and tests in one view. Useful when working on a feature or investigating coverage.
+
+```bash
+# Check traceability coverage across your codebase
+awa check
+
+# Trace a specific requirement or component
+awa trace FEAT-1
+```
+
+These commands require spec files (`.awa/specs/`) to be present. See the [Workflow Guide](/guides/workflow/) for how to set up the full awa development workflow.
 
 ## Next Steps
 

@@ -24,6 +24,9 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 **awa** is an Agent Workflow for AIs. It provides a Spec-Driven Design (SDD) workflow with full end-to-end traceability, with tools to enforced consistency and help the AI follow the connections. It is also a powerful templating tool for agent configuration files.
 
 <CardGrid>
+  <Card title="Structured SDD Workflow" icon="rocket">
+    Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation. Every stage has a spec. Every spec has an ID.
+  </Card>
   <Card title="Full Traceability" icon="approve-check-circle">
     Every line of code traces back to its requirement via `@awa-impl` and `@awa-test` markers. Nothing drifts silently.
   </Card>
@@ -33,14 +36,11 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
   <Card title="awa trace" icon="open-book">
     Assembles the traceability chain into context — specs, code, and tests — so AI navigates with confidence rather than guessing.
   </Card>
-  <Card title="Structured SDD Workflow" icon="rocket">
-    Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation. Every stage has a spec. Every spec has an ID.
-  </Card>
   <Card title="Template Bootstrap" icon="puzzle">
     [Eta](https://eta.js.org/) templates with feature flags and presets generate agent configuration files for any AI tool — Copilot, Claude, Cursor, Windsurf, and more.
   </Card>
-  <Card title="Drift Detection" icon="warning">
-    `awa template diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit.
+  <Card title="Template Diffs" icon="warning">
+    `awa template diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit to update.
   </Card>
   <Card title="Agent-Agnostic" icon="laptop">
     One template set. All agents. Copilot, Claude, Cursor, Windsurf, and more from a single source of truth.
