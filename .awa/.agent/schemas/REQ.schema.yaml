@@ -54,10 +54,10 @@ sections:
           heading, AC items, and optional DEPENDS ON line.
         contains:
           # User story format
-          - pattern: "AS A .*, I WANT .*, SO THAT"
+          - pattern: "AS AN? .*, I WANT .*, SO THAT"
             label: "user story"
             description: >
-              User story in AS A {role}, I WANT {want}, SO THAT {benefit} format.
+              User story in AS A(N) {role}, I WANT {want}, SO THAT {benefit} format.
               One sentence. Role, want, and benefit are all required.
           # Acceptance criteria heading
           - pattern: "ACCEPTANCE CRITERIA"
