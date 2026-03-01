@@ -14,7 +14,9 @@ const MARKER_TYPE_MAP: Record<string, MarkerType> = {
 };
 
 /** Ignore directive patterns (similar to eslint-disable comments). */
-const IGNORE_FILE_RE = /@awa-ignore-file\b/;
+// Use RegExp constructor so the literal token does not appear in this source file,
+// preventing the marker scanner from self-ignoring when it scans its own code.
+const IGNORE_FILE_RE = new RegExp('@awa-ignore' + '-file\\b');
 const IGNORE_NEXT_LINE_RE = /@awa-ignore-next-line\b/;
 const IGNORE_LINE_RE = /@awa-ignore\b/;
 const IGNORE_START_RE = /@awa-ignore-start\b/;
@@ -61,7 +63,7 @@ async function scanFile(
     return { markers: [], findings: [] };
   }
 
-  // Check for @awa-ignore-file directive anywhere in the file
+  // Check for file-level ignore directive anywhere in the file
   if (IGNORE_FILE_RE.test(content)) {
     return { markers: [], findings: [] };
   }

@@ -24,6 +24,12 @@
 // @awa-impl: CLI-11_AC-1
 // @awa-impl: CLI-11_AC-2
 // @awa-impl: CLI-11_AC-3
+// @awa-impl: CLI-12_AC-1
+// @awa-impl: CLI-13_AC-1
+// @awa-impl: CLI-13_AC-2
+// @awa-impl: CLI-14_AC-1
+// @awa-impl: CLI-14_AC-2
+// @awa-impl: CLI-6_AC-2
 // @awa-impl: CFG-5_AC-2
 // @awa-impl: DIFF-7_AC-1
 // @awa-impl: DIFF-7_AC-2
@@ -36,6 +42,8 @@
 // @awa-impl: DIFF-7_AC-9
 // @awa-impl: DIFF-7_AC-10
 // @awa-impl: DIFF-7_AC-11
+// @awa-impl: DIFF-7_AC-12
+// @awa-impl: DIFF-7_AC-13
 // @awa-impl: FP-2_AC-1
 // @awa-impl: FP-2_AC-2
 // @awa-impl: FP-2_AC-4

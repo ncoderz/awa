@@ -28,7 +28,7 @@ AS A CLI user, I WANT to supply one or more --overlay paths on the generate comm
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-1_AC-1 [event]: WHEN `--overlay <path>` is provided one or more times on the generate command THEN the system SHALL include each path as an overlay source applied over the base template
+- OVL-1_AC-1 [event]: WHEN `--overlay <path>` is provided one or more times on the generate command THEN the system SHALL include each path as an overlay source applied over the base template
 
 DEPENDS ON: (none)
 
@@ -38,7 +38,7 @@ AS A CLI user, I WANT an overlay file at the same relative path as a base file t
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-2_AC-1 [ubiquitous]: The system SHALL replace a base template file with any overlay file that shares the same relative path in the merged view
+- OVL-2_AC-1 [ubiquitous]: The system SHALL replace a base template file with any overlay file that shares the same relative path in the merged view
 
 DEPENDS ON: OVL-1
 
@@ -48,7 +48,7 @@ AS A CLI user, I WANT base template files that have no overlay counterpart to ap
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-3_AC-1 [ubiquitous]: The system SHALL include every base template file that is not present in any overlay unchanged in the merged view
+- OVL-3_AC-1 [ubiquitous]: The system SHALL include every base template file that is not present in any overlay unchanged in the merged view
 
 DEPENDS ON: OVL-1
 
@@ -58,7 +58,7 @@ AS A CLI user, I WANT overlay files that do not exist in the base template to be
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-4_AC-1 [ubiquitous]: The system SHALL include every overlay file that has no corresponding base template file in the merged view
+- OVL-4_AC-1 [ubiquitous]: The system SHALL include every overlay file that has no corresponding base template file in the merged view
 
 DEPENDS ON: OVL-1
 
@@ -68,7 +68,7 @@ AS A CLI user, I WANT multiple overlays to be applied in the order I specify the
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-5_AC-1 [ubiquitous]: The system SHALL apply multiple overlays in the order specified, with each subsequent overlay's files overriding any file from an earlier overlay at the same relative path
+- OVL-5_AC-1 [ubiquitous]: The system SHALL apply multiple overlays in the order specified, with each subsequent overlay's files overriding any file from an earlier overlay at the same relative path
 
 DEPENDS ON: OVL-1
 
@@ -78,7 +78,7 @@ AS A CLI user, I WANT to specify overlays as either local directory paths or Git
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-6_AC-1 [ubiquitous]: The system SHALL resolve overlay sources using the same local-path and Git-repository resolution logic used for the main template source
+- OVL-6_AC-1 [ubiquitous]: The system SHALL resolve overlay sources using the same local-path and Git-repository resolution logic used for the main template source
 
 DEPENDS ON: OVL-1
 
@@ -88,7 +88,7 @@ AS A CLI user, I WANT the diff command to accept --overlay options identical to 
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-7_AC-1 [event]: WHEN `--overlay <path>` is provided on the diff command THEN the system SHALL compare the merged template view against the target directory
+- OVL-7_AC-1 [event]: WHEN `--overlay <path>` is provided on the diff command THEN the system SHALL compare the merged template view against the target directory
 
 DEPENDS ON: OVL-2
 
@@ -98,7 +98,7 @@ AS A project maintainer, I WANT to declare an `overlay` array in `.awa.toml`, SO
 
 ACCEPTANCE CRITERIA
 
-- [ ] OVL-8_AC-1 [event]: WHEN `overlay` is declared as an array of strings in `.awa.toml` THEN the system SHALL use those paths as overlay sources for generate and diff commands
+- OVL-8_AC-1 [event]: WHEN `overlay` is declared as an array of strings in `.awa.toml` THEN the system SHALL use those paths as overlay sources for generate and diff commands
 
 DEPENDS ON: OVL-1
 

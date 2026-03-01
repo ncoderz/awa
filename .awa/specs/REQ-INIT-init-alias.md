@@ -24,7 +24,7 @@ AS A developer, I WANT to run `awa init` as an alternative to `awa generate`, SO
 
 ACCEPTANCE CRITERIA
 
-- [ ] INIT-1_AC-1 [ubiquitous]: The system SHALL register `init` as an alias for the `generate` command
+- INIT-1_AC-1 [ubiquitous]: The system SHALL register `init` as an alias for the `generate` command
 
 ### INIT-2: Option Parity [MUST]
 
@@ -34,7 +34,7 @@ AS A developer, I WANT `awa init` to accept all options that `awa generate` acce
 
 ACCEPTANCE CRITERIA
 
-- [ ] INIT-2_AC-1 [ubiquitous]: The `init` alias SHALL accept all options defined on the `generate` command
+- INIT-2_AC-1 [ubiquitous]: The `init` alias SHALL accept all options defined on the `generate` command
 
 ### INIT-3: Behavioural Identity [MUST]
 
@@ -44,7 +44,7 @@ AS A developer, I WANT `awa init <args>` to produce the same result as `awa gene
 
 ACCEPTANCE CRITERIA
 
-- [ ] INIT-3_AC-1 [ubiquitous]: `awa init <args>` SHALL produce output identical to `awa generate <args>` for the same arguments
+- INIT-3_AC-1 [ubiquitous]: `awa init <args>` SHALL produce output identical to `awa generate <args>` for the same arguments
 
 ### INIT-4: Help Visibility [MUST]
 
@@ -54,7 +54,7 @@ AS A developer, I WANT both `init` and `generate` to appear in help output, SO T
 
 ACCEPTANCE CRITERIA
 
-- [ ] INIT-4_AC-1 [event]: WHEN the user invokes `awa --help` THEN the help output SHALL list both `generate` and `init`
+- INIT-4_AC-1 [event]: WHEN the user invokes `awa --help` THEN the help output SHALL list both `generate` and `init`
 
 ### INIT-5: Config-Not-Found Hint [SHOULD]
 
@@ -64,7 +64,7 @@ AS A developer, I WANT an informational hint when no config file is found, SO TH
 
 ACCEPTANCE CRITERIA
 
-- [ ] INIT-5_AC-1 [conditional]: IF no `.awa.toml` is found AND `--config` was not provided THEN the system SHALL log an info-level hint suggesting config file creation
+- INIT-5_AC-1 [conditional]: IF no `.awa.toml` is found AND `--config` was not provided THEN the system SHALL log an info-level hint suggesting config file creation
 
 ## Assumptions
 

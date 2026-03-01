@@ -18,6 +18,10 @@
 // @awa-impl: DIFF-6_AC-1
 // @awa-impl: DIFF-6_AC-2
 // @awa-impl: DIFF-6_AC-3
+// @awa-impl: DIFF-8_AC-1
+// @awa-impl: DIFF-8_AC-2
+// @awa-impl: DIFF-8_AC-3
+// @awa-impl: DIFF-8_AC-4
 
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';

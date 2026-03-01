@@ -1,4 +1,6 @@
 // @awa-component: GEN-DeleteList
+// @awa-impl: GEN-12_AC-1
+// @awa-impl: GEN-12_AC-8
 
 import { join } from 'node:path';
 import { pathExists, readTextFile } from '../utils/fs.js';

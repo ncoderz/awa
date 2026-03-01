@@ -24,9 +24,9 @@ AS A game developer, I WANT a game loop, SO THAT predictable execution.
 
 ACCEPTANCE CRITERIA
 
-- [x] ENG-1_AC-1 [event]: WHEN engine initializes THEN system SHALL create context
-- [ ] ENG-1_AC-2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging
-- [ ] ENG-1_AC-3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
+- ENG-1_AC-1 [event]: WHEN engine initializes THEN system SHALL create context
+- ENG-1_AC-2 [event]: WHEN `--verbose` flag is provided THEN system SHALL enable debug logging
+- ENG-1_AC-3 [ubiquitous]: The system SHALL maintain 60fps minimum frame rate
 
 ### ENG-1.1: Subsystem Registration [SHOULD]
 
@@ -34,7 +34,7 @@ AS A engine maintainer, I WANT subsystems to self-register, SO THAT modular arch
 
 ACCEPTANCE CRITERIA
 
-- [ ] ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN it SHALL register with context
+- ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN it SHALL register with context
 
 ### ENG-2: Resource Management [MUST]
 
@@ -42,8 +42,8 @@ AS A game developer, I WANT automatic resource loading, SO THAT simplified asset
 
 ACCEPTANCE CRITERIA
 
-- [ ] ENG-2_AC-1 [event]: WHEN resource requested THEN system SHALL load asynchronously
-- [ ] ENG-2_AC-2 [ubiquitous]: The system SHALL cache loaded resources
+- ENG-2_AC-1 [event]: WHEN resource requested THEN system SHALL load asynchronously
+- ENG-2_AC-2 [ubiquitous]: The system SHALL cache loaded resources
 
 DEPENDS ON: ENG-1
 

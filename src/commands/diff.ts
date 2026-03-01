@@ -1,9 +1,11 @@
 // @awa-component: DIFF-DiffCommand
 // @awa-component: JSON-DiffCommand
+// @awa-component: MULTI-DiffCommand
 // @awa-impl: DIFF-5_AC-1
 // @awa-impl: DIFF-5_AC-2
 // @awa-impl: DIFF-5_AC-3
 // @awa-impl: MULTI-6_AC-1
+// @awa-impl: MULTI-7_AC-1
 // @awa-impl: MULTI-12_AC-1
 
 import { intro, outro } from '@clack/prompts';

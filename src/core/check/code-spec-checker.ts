@@ -3,6 +3,8 @@
 // @awa-impl: CHK-4_AC-1
 // @awa-impl: CHK-6_AC-1
 // @awa-impl: CHK-14_AC-1
+// @awa-impl: CHK-18_AC-1
+// @awa-impl: CHK-19_AC-1
 
 import type {
   CheckConfig,
@@ -12,7 +14,7 @@ import type {
   SpecParseResult,
 } from './types.js';
 
-// @awa-impl: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1
+// @awa-impl: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-18_AC-1, CHK-19_AC-1
 export function checkCodeAgainstSpec(
   markers: MarkerScanResult,
   specs: SpecParseResult,
@@ -83,6 +85,48 @@ export function checkCodeAgainstSpec(
         severity: 'warning',
         code: 'uncovered-ac',
         message: `Acceptance criterion '${acId}' has no @awa-test reference`,
+        filePath: loc?.filePath ?? specFile?.filePath,
+        line: loc?.line,
+        id: acId,
+      });
+    }
+  }
+
+  // @awa-impl: CHK-18_AC-1
+  // Check for uncovered components (DESIGN components with no @awa-component marker)
+  const implementedComponents = new Set(
+    markers.markers.filter((m) => m.type === 'component').map((m) => m.id)
+  );
+
+  for (const componentName of specs.componentNames) {
+    if (!implementedComponents.has(componentName)) {
+      const loc = specs.idLocations.get(componentName);
+      const specFile = loc
+        ? undefined
+        : specs.specFiles.find((sf) => sf.componentNames.includes(componentName));
+      findings.push({
+        severity: 'warning',
+        code: 'uncovered-component',
+        message: `Component '${componentName}' has no @awa-component reference`,
+        filePath: loc?.filePath ?? specFile?.filePath,
+        line: loc?.line,
+        id: componentName,
+      });
+    }
+  }
+
+  // @awa-impl: CHK-19_AC-1
+  // Check for unimplemented ACs (spec ACs with no @awa-impl marker)
+  const implementedIds = new Set(markers.markers.filter((m) => m.type === 'impl').map((m) => m.id));
+
+  for (const acId of specs.acIds) {
+    if (!implementedIds.has(acId)) {
+      const loc = specs.idLocations.get(acId);
+      const specFile = loc ? undefined : specs.specFiles.find((sf) => sf.acIds.includes(acId));
+      findings.push({
+        severity: 'warning',
+        code: 'unimplemented-ac',
+        message: `Acceptance criterion '${acId}' has no @awa-impl reference`,
         filePath: loc?.filePath ?? specFile?.filePath,
         line: loc?.line,
         id: acId,
