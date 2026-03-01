@@ -1,5 +1,5 @@
 ---
-description: "awa 1.3.1"
+description: "awa 1.4.0"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
@@ -116,6 +116,14 @@ All `awa` commands in these instructions assume this resolution.
 You SHALL run `awa check --spec-only` after creating or modifying any file in `.awa/specs/`, `.awa/tasks/`, or `.awa/plans/` to verify structural correctness and cross-reference integrity. Fix any errors before proceeding.
 You SHALL run `awa check` (without --spec-only) after implementing code and tests to verify full traceability coverage.
 </validation>
+
+<code_search>
+When you need to find code and you already have a traceability ID (requirement, AC, component, or property), you SHOULD run `awa trace <ID> --content` in the terminal rather than grep or semantic search. `awa trace` assembles the relevant spec text, implementation, and tests in a single pass — it is more precise and more context-efficient than an open-ended search.
+
+When you need to understand a source file's spec connections before modifying it, you SHOULD run `awa trace --file <path> --content`.
+
+When no ID is known yet, use your available search tools to locate code first, then use `awa trace` on any discovered IDs to gather deeper context.
+</code_search>
 </awa>
 
 <tool name="read_file">

@@ -165,6 +165,28 @@ Check traceability chain integrity and spec schema conformance. Exit code 0 = cl
 
 Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `spec-only`.
 
+### awa trace
+
+Navigate the traceability chain and assemble context from specs, code, and tests. Use this to gather focused context before implementing, refactoring, or reviewing.
+
+    awa trace [ids...] [options]
+
+| Option | Description |
+|--------|-------------|
+| `[ids...]` | Traceability ID(s) to trace (e.g. `FEAT-1`, `FEAT-1_AC-2`, `FEAT_P-3`) |
+| `--all` | Trace all known IDs in the project |
+| `--scope <code>` | Limit results to a feature code (e.g. `--scope FEAT`) |
+| `--file <path>` | Resolve IDs from a source file's markers — useful to understand a file's spec connections before changing it |
+| `--task <path>` | Resolve IDs from a task file |
+| `--content` | Output actual file sections instead of locations |
+| `--list` | Output file paths only |
+| `--direction <dir>` | Traversal direction: `both` (default), `forward`, `reverse` |
+| `--depth <n>` | Maximum traversal depth |
+| `--no-code` | Exclude source code (spec-only context) |
+| `--no-tests` | Exclude test files |
+| `--json` | JSON output |
+| `-A/-B/-C <n>` | Lines of context after/before/both around a code marker (`--content` only) |
+
 ### awa template test
 
 Run template test fixtures. Exit code 0 = all pass, 1 = failures.
