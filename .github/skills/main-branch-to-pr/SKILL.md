@@ -1,6 +1,6 @@
 ---
 name: main-branch-to-pr
-description: Checkout main, verify build/tests, create a branch, commit changes, open a GitHub PR, merge it, and clean up. Use this when asked to ship changes via PR from main.
+description: Verify on main, build/test, create a branch, commit changes, open a GitHub PR, merge it, and clean up. Use this when asked to ship changes via PR from main.
 ---
 
 # Ship Changes via PR from Main
@@ -33,11 +33,7 @@ If the current branch is NOT `main`, **stop immediately** and inform the user:
 
 Do NOT attempt to checkout or switch branches.
 
-If on `main`, pull latest:
-
-```sh
-git pull --ff-only
-```
+Do NOT attempt to pull — uncommitted changes will cause `git pull` to fail. The PR will target `origin/main` so local main does not need to be up-to-date.
 
 ### 2. VERIFY BUILD AND TESTS
 
@@ -57,7 +53,7 @@ You MUST NOT proceed if the build or tests fail. Prompt user to fix any issues f
 
 Derive a short, descriptive branch name from the changes:
 
-- Inspect changed files: `git diff --name-only` (unstaged) and `git diff --cached --name-only` (staged)
+- Inspect changed files: `git diff --name-only` (unstaged), `git diff --cached --name-only` (staged), and `git ls-files --others --exclude-standard` (untracked)
 - Choose a prefix: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`, `test/`
 - Use kebab-case: e.g. `fix/req-schema-as-an-regex`, `feat/add-overlay-support`
 
@@ -86,24 +82,16 @@ Examples:
 
 ### 5. PUSH AND CREATE PR
 
-Push the branch and open a pull request:
+Push the branch and open a pull request with an explicit title and body:
 
 ```sh
 git push -u origin <branch-name>
-gh pr create --fill --base main
-```
-
-If `--fill` produces an inadequate title/body, use explicit flags:
-
-```sh
 gh pr create --title "<type>: <summary>" --body "<description of changes>" --base main
 ```
 
-Verify the PR was created:
+The title should match the commit message. The body should summarize what changed and why.
 
-```sh
-gh pr view --web
-```
+The PR URL will be printed in the output — no need to open a browser.
 
 ### 6. MERGE THE PR
 
@@ -119,17 +107,20 @@ If squash is not available, fall back to:
 gh pr merge --merge --delete-branch
 ```
 
-### 7. CLEANUP
+### 7. VERIFY CLEANUP
 
-Return to main and pull the merged changes:
+`gh pr merge --delete-branch` automatically switches back to `main`, pulls the merged changes, and deletes both local and remote branches.
+
+Verify you are back on main:
+
+```sh
+git branch --show-current
+```
+
+If not on main (e.g. merge was done differently), clean up manually:
 
 ```sh
 git checkout main && git pull --ff-only
-```
-
-Delete the local branch if it still exists:
-
-```sh
 git branch -d <branch-name> 2>/dev/null
 ```
 
@@ -141,8 +132,7 @@ You SHALL use conventional commit message format (`type: summary`).
 You SHALL NOT include `Claude` or any AI signature in commit messages.
 You SHALL create the PR against `main` (or the repo's default branch).
 You SHALL use `--delete-branch` when merging to auto-clean the remote branch.
-You SHALL return to `main` after merging.
+You SHALL verify you are back on `main` after merging.
 You SHALL stop and report if any step fails (build, test, push, PR creation, merge).
 You SHOULD prefer squash merge to keep commit history clean.
-You SHOULD use `gh pr view` to confirm the PR exists before merging.
 You MAY split unrelated changes into separate commits if appropriate.
