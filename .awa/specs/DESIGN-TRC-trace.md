@@ -293,7 +293,8 @@ PRINCIPLES:
 
 ### REQ-TRC-trace.md
 
-- TRC-1_AC-1 → TRC-SharedScanner, TRC-IndexBuilder (TRC_P-1)
+- TRC-1_AC-1 → TRC-SharedScanner (TRC_P-1)
+- TRC-1_AC-1 → TRC-IndexBuilder (TRC_P-1)
 - TRC-2_AC-1 → TRC-InputResolver
 - TRC-2_AC-2 → TRC-InputResolver
 - TRC-2_AC-3 → TRC-InputResolver

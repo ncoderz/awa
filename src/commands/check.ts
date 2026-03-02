@@ -7,6 +7,7 @@
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
+import { fixMatrices } from '../core/check/matrix-fixer.js';
 import { report } from '../core/check/reporter.js';
 import { loadRules } from '../core/check/rule-loader.js';
 import { checkSchemasAsync } from '../core/check/schema-checker.js';
@@ -66,6 +67,14 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
 
     // Report results
     report(allFindings, config.format);
+
+    // Run fix: regenerate traceability matrices in DESIGN and TASK files (default; skip with --no-fix)
+    if (config.fix) {
+      const fixResult = await fixMatrices(specs, config.crossRefPatterns);
+      if (fixResult.filesFixed > 0) {
+        logger.info(`Fixed traceability matrices in ${fixResult.filesFixed} file(s)`);
+      }
+    }
 
     // Exit code: 0 = clean, 1 = any errors present
     const hasErrors = allFindings.some((f) => f.severity === 'error');
@@ -140,6 +149,8 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
         ? section['spec-only']
         : DEFAULT_CHECK_CONFIG.specOnly;
 
+  const fix = cliOptions.fix === false ? false : DEFAULT_CHECK_CONFIG.fix;
+
   return {
     specGlobs,
     codeGlobs,
@@ -154,6 +165,7 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
     schemaEnabled,
     allowWarnings,
     specOnly,
+    fix,
   };
 }
 

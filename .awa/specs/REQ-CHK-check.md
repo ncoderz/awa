@@ -202,6 +202,47 @@ ACCEPTANCE CRITERIA
 
 DEPENDS ON: CHK-1, CHK-2
 
+### CHK-20: Uncovered Property Detection [MUST]
+
+AS A developer, I WANT uncovered DESIGN properties reported, SO THAT I know which correctness properties lack test coverage.
+
+ACCEPTANCE CRITERIA
+
+- CHK-20_AC-1 [conditional]: IF a DESIGN property has no `@awa-test` marker referencing it in any code file THEN the system SHALL report it as a warning
+
+DEPENDS ON: CHK-1, CHK-2
+
+### CHK-21: Unlinked AC Detection [MUST]
+
+AS A developer, I WANT REQ ACs not claimed by any DESIGN IMPLEMENTS reported, SO THAT I know which acceptance criteria lack a design component.
+
+ACCEPTANCE CRITERIA
+
+- CHK-21_AC-1 [conditional]: IF a REQ AC is not referenced by any DESIGN IMPLEMENTS line THEN the system SHALL report it as an error
+
+DEPENDS ON: CHK-2
+
+### CHK-22: IMPLEMENTS vs @awa-impl Consistency [MUST]
+
+AS A developer, I WANT inconsistencies between DESIGN IMPLEMENTS lists and code @awa-impl markers reported, SO THAT coverage inflation is caught.
+
+ACCEPTANCE CRITERIA
+
+- CHK-22_AC-1 [conditional]: IF a component's @awa-impl markers in code do not match its DESIGN IMPLEMENTS list THEN the system SHALL report each mismatch as a warning
+
+DEPENDS ON: CHK-1, CHK-2
+
+### CHK-23: Matrix Generation [MUST]
+
+AS A developer, I WANT the check command to regenerate Requirements Traceability sections in DESIGN and TASK files by default, SO THAT traceability matrices stay in sync with IMPLEMENTS/VALIDATES/TESTS lines.
+
+ACCEPTANCE CRITERIA
+
+- CHK-23_AC-1 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Requirements Traceability section in each DESIGN file by inverting component IMPLEMENTS and property VALIDATES lines
+- CHK-23_AC-2 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Requirements Traceability section in each TASK file by inverting task IMPLEMENTS and TESTS lines, including an UNCOVERED line for any ACs or properties without coverage
+
+DEPENDS ON: CHK-2
+
 ## Assumptions
 
 - Spec files are Markdown with identifiable patterns for IDs
@@ -224,3 +265,6 @@ DEPENDS ON: CHK-1, CHK-2
 - 1.0.0 (2026-02-27): Initial requirements
 - 1.1.0 (2026-02-28): CHK-8 updated — warnings are now errors by default; added CHK-17 `--allow-warnings` flag
 - 1.2.0 (2026-03-01): Added CHK-18 (uncovered component detection) and CHK-19 (unimplemented AC detection)
+- 1.3.0 (2026-03-02): Added CHK-20 (uncovered property), CHK-21 (unlinked AC), CHK-22 (IMPLEMENTS ↔ @awa-impl consistency)
+- 1.4.0 (2026-03-02): Added CHK-23 (matrix generation via --fix)
+- 1.5.0 (2026-03-02): CHK-23 inverted default — fix is now default, --no-fix to skip

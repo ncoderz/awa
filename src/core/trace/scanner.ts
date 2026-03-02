@@ -46,6 +46,7 @@ export function buildScanConfig(
     schemaEnabled: false,
     allowWarnings: true,
     specOnly: false,
+    fix: true,
     ...overrides,
   };
 }

@@ -205,14 +205,16 @@ Test generate and diff commands with mocked BatchRunner.
 
 ### REQ-MULTI-multi-target.md
 
-- MULTI-1_AC-1 → MULTI-TargetResolver (MULTI_P-1)
+- MULTI-1_AC-1 → MULTI-TargetResolver
 - MULTI-2_AC-1 → MULTI-TargetResolver
 - MULTI-3_AC-1 → MULTI-TargetResolver (MULTI_P-1)
 - MULTI-4_AC-1 → MULTI-BatchRunner (MULTI_P-2)
+- MULTI-4_AC-1 → MULTI-GenerateCommand (MULTI_P-2)
 - MULTI-4_AC-2 → MULTI-BatchRunner
 - MULTI-5_AC-1 → MULTI-BatchRunner
 - MULTI-5_AC-2 → MULTI-TargetResolver
-- MULTI-6_AC-1 → MULTI-GenerateCommand, MULTI-DiffCommand
+- MULTI-6_AC-1 → MULTI-GenerateCommand
+- MULTI-6_AC-1 → MULTI-DiffCommand
 - MULTI-7_AC-1 → MULTI-DiffCommand
 - MULTI-8_AC-1 → MULTI-Reporter
 - MULTI-9_AC-1 → MULTI-BatchRunner

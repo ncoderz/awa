@@ -269,6 +269,10 @@ program
     'Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability',
     false
   )
+  .option(
+    '--no-fix',
+    'Skip regeneration of Requirements Traceability sections in DESIGN and TASK files'
+  )
   .action(async (options) => {
     const cliOptions: RawCheckOptions = {
       config: options.config,
@@ -277,6 +281,7 @@ program
       format: options.format,
       allowWarnings: options.allowWarnings,
       specOnly: options.specOnly,
+      fix: options.fix,
     };
 
     const exitCode = await checkCommand(cliOptions);

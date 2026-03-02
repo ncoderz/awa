@@ -212,13 +212,13 @@ PRINCIPLES:
 ### REQ-TTST-template-test.md
 
 - TTST-1_AC-1 → TTST-FixtureLoader (TTST_P-1)
-- TTST-2_AC-1 → TTST-FixtureLoader, TTST-Types (TTST_P-1)
+- TTST-2_AC-1 → TTST-Types (TTST_P-1)
+- TTST-2_AC-1 → TTST-FixtureLoader (TTST_P-1)
 - TTST-3_AC-1 → TTST-TestRunner (TTST_P-2)
 - TTST-4_AC-1 → TTST-TestRunner (TTST_P-2)
 - TTST-5_AC-1 → TTST-TestRunner (TTST_P-4)
 - TTST-6_AC-1 → TTST-Reporter (TTST_P-3)
 - TTST-7_AC-1 → TTST-TestCommand (TTST_P-3)
-- TTST-8_AC-1 → TTST-TestRunner (TTST_P-2)
 
 ## Change Log
 

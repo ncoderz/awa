@@ -232,4 +232,63 @@ IMPLEMENTS: X-1_AC-1
     expect(result.allIds).toContain('X_P-1');
     expect(result.allIds).toContain('X-Loader');
   });
+
+  // @awa-test: CHK-2_AC-1
+  test('builds componentImplements map from DESIGN files', async () => {
+    await writeFile(
+      join(testDir, 'DESIGN-X-x.md'),
+      `# Design
+
+## Components and Interfaces
+
+### X-Loader
+
+Loads resources.
+
+IMPLEMENTS: X-1_AC-1, X-1_AC-2
+
+### X-Validator
+
+Validates resources.
+
+IMPLEMENTS: X-2_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+
+    const result = await parseSpecs(makeConfig());
+
+    const specFile = result.specFiles[0]!;
+    expect(specFile.componentImplements).toBeDefined();
+    expect(specFile.componentImplements?.get('X-Loader')).toEqual(['X-1_AC-1', 'X-1_AC-2']);
+    expect(specFile.componentImplements?.get('X-Validator')).toEqual(['X-2_AC-1']);
+  });
+
+  // @awa-test: CHK-2_AC-1
+  test('componentImplements resets on non-component H2 heading', async () => {
+    await writeFile(
+      join(testDir, 'DESIGN-X-x.md'),
+      `# Design
+
+### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+`
+    );
+
+    const result = await parseSpecs(makeConfig());
+
+    const specFile = result.specFiles[0]!;
+    // VALIDATES under Correctness Properties should not be associated with X-Loader
+    expect(specFile.componentImplements?.get('X-Loader')).toEqual(['X-1_AC-1']);
+  });
 });

@@ -15,6 +15,7 @@ export interface CheckConfig {
   readonly schemaEnabled: boolean;
   readonly allowWarnings: boolean;
   readonly specOnly: boolean;
+  readonly fix: boolean;
 }
 
 export const DEFAULT_CHECK_CONFIG: CheckConfig = {
@@ -51,6 +52,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
   schemaEnabled: true,
   allowWarnings: false,
   specOnly: false,
+  fix: true,
 };
 
 export type FindingSeverity = 'error' | 'warning';
@@ -59,7 +61,11 @@ export type FindingCode =
   | 'orphaned-marker'
   | 'uncovered-ac'
   | 'uncovered-component'
+  | 'uncovered-property'
   | 'unimplemented-ac'
+  | 'unlinked-ac'
+  | 'impl-not-in-implements'
+  | 'implements-not-in-impl'
   | 'broken-cross-ref'
   | 'invalid-id-format'
   | 'marker-trailing-text'
@@ -116,6 +122,8 @@ export interface SpecFile {
   readonly crossRefs: readonly CrossReference[];
   /** Maps IDs parsed from this file to their line number. Populated by spec-parser. */
   readonly idLocations?: ReadonlyMap<string, { filePath: string; line: number }>;
+  /** Maps component names to their IMPLEMENTS AC IDs. Populated for DESIGN files. */
+  readonly componentImplements?: ReadonlyMap<string, readonly string[]>;
 }
 
 export interface SpecParseResult {
@@ -140,4 +148,5 @@ export interface RawCheckOptions {
   readonly config?: string;
   readonly allowWarnings?: boolean;
   readonly specOnly?: boolean;
+  readonly fix?: boolean;
 }

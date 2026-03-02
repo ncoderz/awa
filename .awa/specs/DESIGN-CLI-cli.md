@@ -206,51 +206,6 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
-### REQ-CLI-cli.md
-
-- CLI-1_AC-1 → CLI-ArgumentParser
-- CLI-1_AC-2 → CLI-ArgumentParser
-- CLI-1_AC-3 → CLI-ArgumentParser
-- CLI-1_AC-4 → CLI-ArgumentParser
-- CLI-1_AC-5 → CLI-ArgumentParser
-- CLI-2_AC-1 → CLI-ArgumentParser
-- CLI-2_AC-2 → CFG-ConfigLoader
-- CLI-2_AC-3 → CFG-ConfigLoader
-- CLI-2_AC-4 → CFG-ConfigLoader
-- CLI-2_AC-5 → CLI-ArgumentParser
-- CLI-2_AC-6 → CLI-ArgumentParser
-- CLI-3_AC-1 → CLI-ArgumentParser
-- CLI-3_AC-2 → TPL-TemplateResolver
-- CLI-3_AC-3 → TPL-TemplateResolver
-- CLI-4_AC-1 → CLI-ArgumentParser
-- CLI-4_AC-2 → CLI-ArgumentParser
-- CLI-4_AC-3 → CFG-ConfigLoader
-- CLI-5_AC-1 → CLI-ArgumentParser
-- CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
-- CLI-5_AC-3 → GEN-ConflictResolver
-- CLI-6_AC-1 → CLI-ArgumentParser
-- CLI-6_AC-2 → GEN-FileGenerator (GEN_P-3)
-- CLI-6_AC-3 → GEN-Logger
-- CLI-7_AC-1 → CLI-ArgumentParser
-- CLI-7_AC-2 → CFG-ConfigLoader
-- CLI-8_AC-1 → CLI-ArgumentParser
-- CLI-8_AC-2 → TPL-TemplateResolver (TPL_P-4)
-- CLI-9_AC-1 → CLI-ArgumentParser
-- CLI-9_AC-2 → CLI-ArgumentParser
-- CLI-9_AC-3 → CLI-ArgumentParser
-- CLI-10_AC-1 → CLI-ArgumentParser
-- CLI-10_AC-2 → CLI-ArgumentParser
-- CLI-11_AC-1 → CLI-ArgumentParser
-- CLI-11_AC-2 → CLI-ArgumentParser
-- CLI-11_AC-3 → CLI-ArgumentParser
-- CLI-12_AC-1 → CLI-ArgumentParser
-- CLI-12_AC-2 → GEN-FileGenerator
-- CLI-12_AC-3 → GEN-DeleteResolver
-- CLI-13_AC-1 → CLI-ArgumentParser
-- CLI-13_AC-2 → CLI-ArgumentParser
-- CLI-14_AC-1 → CLI-ArgumentParser
-- CLI-14_AC-2 → CLI-ArgumentParser
-
 ### REQ-CFG-config.md
 
 - CFG-1_AC-1 → CFG-ConfigLoader
@@ -278,6 +233,53 @@ PRINCIPLES:
 - CFG-5_AC-2 → CLI-ArgumentParser
 - CFG-6_AC-1 → CFG-ConfigLoader
 - CFG-6_AC-2 → CFG-ConfigLoader
+
+### REQ-CLI-cli.md
+
+- CLI-1_AC-1 → CLI-ArgumentParser
+- CLI-1_AC-2 → CLI-ArgumentParser
+- CLI-1_AC-3 → CLI-ArgumentParser
+- CLI-1_AC-4 → CLI-ArgumentParser
+- CLI-1_AC-5 → CLI-ArgumentParser
+- CLI-2_AC-1 → CLI-ArgumentParser
+- CLI-2_AC-2 → CLI-ArgumentParser
+- CLI-2_AC-3 → CFG-ConfigLoader
+- CLI-2_AC-4 → CFG-ConfigLoader
+- CLI-2_AC-5 → CLI-ArgumentParser
+- CLI-2_AC-6 → CLI-ArgumentParser
+- CLI-3_AC-1 → CLI-ArgumentParser
+- CLI-4_AC-1 → CLI-ArgumentParser
+- CLI-4_AC-2 → CLI-ArgumentParser
+- CLI-4_AC-3 → CFG-ConfigLoader
+- CLI-5_AC-1 → CLI-ArgumentParser
+- CLI-6_AC-1 → CLI-ArgumentParser
+- CLI-7_AC-1 → CLI-ArgumentParser
+- CLI-7_AC-2 → CFG-ConfigLoader
+- CLI-8_AC-1 → CLI-ArgumentParser
+- CLI-9_AC-1 → CLI-ArgumentParser
+- CLI-9_AC-2 → CLI-ArgumentParser
+- CLI-9_AC-3 → CLI-ArgumentParser
+- CLI-10_AC-1 → CLI-ArgumentParser
+- CLI-10_AC-2 → CLI-ArgumentParser
+- CLI-11_AC-1 → CLI-ArgumentParser
+- CLI-11_AC-2 → CLI-ArgumentParser
+- CLI-11_AC-3 → CLI-ArgumentParser
+- CLI-12_AC-1 → CLI-ArgumentParser
+
+### REQ-DIFF-diff.md
+
+- DIFF-7_AC-1 → CLI-ArgumentParser
+- DIFF-7_AC-2 → CLI-ArgumentParser
+- DIFF-7_AC-3 → CLI-ArgumentParser
+- DIFF-7_AC-4 → CLI-ArgumentParser
+- DIFF-7_AC-5 → CLI-ArgumentParser
+- DIFF-7_AC-6 → CLI-ArgumentParser
+- DIFF-7_AC-7 → CLI-ArgumentParser
+- DIFF-7_AC-8 → CLI-ArgumentParser
+- DIFF-7_AC-9 → CLI-ArgumentParser
+- DIFF-7_AC-10 → CLI-ArgumentParser
+- DIFF-7_AC-12 → CLI-ArgumentParser
+- DIFF-7_AC-13 → CLI-ArgumentParser
 
 ### REQ-FP-feature-presets.md
 
@@ -307,6 +309,11 @@ PRINCIPLES:
 - FP-6_AC-5 → FP-FeatureResolver (FP_P-3)
 - FP-7_AC-1 → FP-FeatureResolver (FP_P-4)
 - FP-7_AC-2 → FP-FeatureResolver (FP_P-3)
+
+### REQ-GEN-generation.md
+
+- GEN-10_AC-1 → CLI-ArgumentParser
+- GEN-10_AC-2 → CLI-ArgumentParser
 
 ## Library Usage
 

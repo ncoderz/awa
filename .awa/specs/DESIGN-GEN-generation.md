@@ -271,10 +271,29 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
+### REQ-CLI-cli.md
+
+- CLI-1_AC-1 → GEN-GenerateCommand
+- CLI-1_AC-1 → GEN-CoreTypes
+- CLI-1_AC-2 → GEN-GenerateCommand
+- CLI-1_AC-3 → GEN-GenerateCommand
+- CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
+- CLI-5_AC-3 → GEN-ConflictResolver
+- CLI-6_AC-2 → GEN-FileGenerator
+- CLI-6_AC-3 → GEN-Logger
+
+### REQ-DIFF-diff.md
+
+- DIFF-4_AC-3 → GEN-Logger
+- DIFF-4_AC-4 → GEN-Logger
+- DIFF-4_AC-5 → GEN-Logger
+
 ### REQ-GEN-generation.md
 
 - GEN-1_AC-1 → GEN-FileGenerator (GEN_P-2)
+- GEN-1_AC-1 → GEN-FileSystem (GEN_P-2)
 - GEN-1_AC-2 → GEN-FileGenerator (GEN_P-2)
+- GEN-1_AC-2 → GEN-FileSystem (GEN_P-2)
 - GEN-1_AC-3 → GEN-FileGenerator
 - GEN-2_AC-1 → GEN-FileGenerator
 - GEN-2_AC-2 → GEN-FileGenerator
@@ -292,8 +311,6 @@ PRINCIPLES:
 - GEN-5_AC-5 → GEN-ConflictResolver
 - GEN-5_AC-6 → GEN-ConflictResolver
 - GEN-5_AC-7 → GEN-ConflictResolver (GEN_P-5)
-- GEN-6_AC-1 → GEN-FileGenerator (GEN_P-3)
-- GEN-6_AC-2 → GEN-FileGenerator (GEN_P-3)
 - GEN-6_AC-3 → GEN-ConflictResolver
 - GEN-6_AC-4 → GEN-Logger
 - GEN-7_AC-1 → GEN-Logger
@@ -302,7 +319,7 @@ PRINCIPLES:
 - GEN-7_AC-4 → GEN-Logger
 - GEN-8_AC-1 → GEN-FileGenerator (GEN_P-1)
 - GEN-8_AC-2 → GEN-FileGenerator (GEN_P-1)
-- GEN-8_AC-3 → GEN-FileGenerator (GEN_P-1)
+- GEN-8_AC-3 → GEN-FileGenerator
 - GEN-9_AC-1 → GEN-Logger
 - GEN-9_AC-2 → GEN-Logger
 - GEN-9_AC-3 → GEN-Logger
@@ -311,21 +328,30 @@ PRINCIPLES:
 - GEN-9_AC-6 → GEN-Logger
 - GEN-9_AC-7 → GEN-Logger
 - GEN-9_AC-8 → GEN-Logger
-- GEN-10_AC-1 → CLI-ArgumentParser
-- GEN-10_AC-2 → CLI-ArgumentParser
 - GEN-10_AC-3 → GEN-ConflictResolver
 - GEN-11_AC-1 → GEN-Logger
 - GEN-11_AC-2 → GEN-Logger
 - GEN-11_AC-3 → GEN-FileGenerator
 - GEN-11_AC-4 → GEN-Logger
 - GEN-12_AC-1 → GEN-FileGenerator
+- GEN-12_AC-1 → GEN-DeleteList
 - GEN-12_AC-2 → GEN-FileGenerator
+- GEN-12_AC-3 → GEN-FileGenerator
 - GEN-12_AC-3 → GEN-DeleteResolver
 - GEN-12_AC-4 → GEN-FileGenerator
+- GEN-12_AC-4 → GEN-DeleteResolver
 - GEN-12_AC-5 → GEN-FileGenerator
+- GEN-12_AC-5 → GEN-DeleteResolver
 - GEN-12_AC-6 → GEN-FileGenerator
 - GEN-12_AC-7 → GEN-FileGenerator
+- GEN-12_AC-8 → GEN-FileGenerator (GEN_P-6)
 - GEN-12_AC-8 → GEN-DeleteList (GEN_P-6)
+
+### REQ-TPL-templates.md
+
+- TPL-7_AC-3 → GEN-Logger
+- TPL-9_AC-1 → GEN-FileGenerator (GEN_P-1)
+- TPL-9_AC-2 → GEN-FileGenerator (GEN_P-1)
 
 ## Library Usage
 

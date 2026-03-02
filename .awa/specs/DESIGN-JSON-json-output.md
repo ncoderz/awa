@@ -176,7 +176,8 @@ PRINCIPLES:
 - JSON-3_AC-1 → JSON-JsonSerializer (JSON_P-2)
 - JSON-4_AC-1 → JSON-JsonSerializer (JSON_P-2)
 - JSON-5_AC-1 → JSON-JsonSerializer
-- JSON-6_AC-1 → JSON-GenerateCommand, JSON-DiffCommand (JSON_P-4)
+- JSON-6_AC-1 → JSON-GenerateCommand (JSON_P-4)
+- JSON-6_AC-1 → JSON-DiffCommand (JSON_P-4)
 - JSON-7_AC-1 → JSON-GenerateCommand (JSON_P-3)
 - JSON-8_AC-1 → JSON-JsonSerializer (JSON_P-4)
 

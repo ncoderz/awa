@@ -681,6 +681,13 @@ ACCEPTANCE CRITERIA
 `
     );
     await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `### X-Loader
+
+IMPLEMENTS: X-1_AC-1
+`
+    );
+    await writeFile(
       join(testDir, '.awa.toml'),
       `[check]
 spec-only = true
@@ -694,5 +701,131 @@ spec-only = true
 
     // Config-driven spec-only should skip code checks
     expect(exitCode).toBe(0);
+  });
+
+  // --- fix (default) tests ---
+
+  // @awa-test: CHK-23_AC-1
+  test('fix (default) regenerates DESIGN traceability matrix', async () => {
+    // @awa-ignore-start
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`
+    );
+    await writeFile(
+      join(specDir, 'DESIGN-X-x.md'),
+      `# Design Specification
+
+## Overview
+
+Test.
+
+## Architecture
+
+### High-Level Architecture
+
+\`\`\`mermaid
+flowchart LR
+  A --> B
+\`\`\`
+
+### Module Organization
+
+\`\`\`
+src/
+\`\`\`
+
+## Components and Interfaces
+
+### X-Loader
+
+Loads things.
+
+IMPLEMENTS: X-1_AC-1
+
+\`\`\`typescript
+function load(): void;
+\`\`\`
+
+## Data Models
+
+### Core Types
+
+- TYPE_A: A type
+
+## Correctness Properties
+
+- X_P-1 [Prop]: Description
+  VALIDATES: X-1_AC-1
+
+## Error Handling
+
+### LoadError
+
+Load errors
+
+- NOT_FOUND: File not found
+
+### Strategy
+
+PRINCIPLES:
+
+- Fail fast
+
+## Testing Strategy
+
+### Property-Based Testing
+
+- FRAMEWORK: fast-check
+- MINIMUM_ITERATIONS: 100
+- TAG_FORMAT: @awa-test: X_P-{n}
+
+## Requirements Traceability
+
+### OLD
+
+- old → old
+
+## Change Log
+
+- 1.0.0: Initial
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`
+    );
+    // @awa-ignore-end
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      format: 'json',
+    });
+
+    expect(exitCode).toBe(0);
+
+    // Verify the matrix was regenerated
+    const { readFile: rf } = await import('node:fs/promises');
+    const designContent = await rf(join(specDir, 'DESIGN-X-x.md'), 'utf-8');
+    expect(designContent).toContain('### REQ-X-x.md');
+    expect(designContent).toContain('- X-1_AC-1 → X-Loader (X_P-1)');
+    expect(designContent).not.toContain('OLD');
+    // Change Log preserved
+    expect(designContent).toContain('## Change Log');
   });
 });

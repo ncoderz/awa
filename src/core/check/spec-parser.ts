@@ -58,6 +58,7 @@ async function parseSpecFile(
   const componentNames: string[] = [];
   const crossRefs: CrossReference[] = [];
   const idLocations = new Map<string, { filePath: string; line: number }>();
+  const componentImplements = new Map<string, string[]>();
 
   // Requirement ID: ### CODE-N: Title or ### CODE-N.P: Title
   const reqIdRegex = /^###\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)\s*:/;
@@ -67,6 +68,9 @@ async function parseSpecFile(
   const propIdRegex = /^-\s+([A-Z][A-Z0-9]*_P-\d+)\s/;
   // Component name: ### CODE-ComponentName
   const componentRegex = /^###\s+([A-Z][A-Z0-9]*-[A-Za-z][A-Za-z0-9]*(?:[A-Z][a-z0-9]*)*)\s*$/;
+
+  // Track current component for building componentImplements map
+  let currentComponent: string | null = null;
 
   for (const [i, line] of lines.entries()) {
     const lineNum = i + 1;
@@ -99,7 +103,13 @@ async function parseSpecFile(
       if (!reqIdRegex.test(line)) {
         componentNames.push(compMatch[1]);
         idLocations.set(compMatch[1], { filePath, line: lineNum });
+        currentComponent = compMatch[1];
       }
+    }
+
+    // Any H2 or H1 heading resets the current component context
+    if (/^#{1,2}\s/.test(line) && !compMatch) {
+      currentComponent = null;
     }
 
     // Cross-references (IMPLEMENTS:, VALIDATES:)
@@ -111,6 +121,13 @@ async function parseSpecFile(
         if (ids.length > 0) {
           const type = pattern.toLowerCase().includes('implements') ? 'implements' : 'validates';
           crossRefs.push({ type, ids, filePath, line: i + 1 });
+
+          // Build componentImplements map for IMPLEMENTS lines
+          if (type === 'implements' && currentComponent) {
+            const existing = componentImplements.get(currentComponent) ?? [];
+            existing.push(...ids);
+            componentImplements.set(currentComponent, existing);
+          }
         }
       }
     }
@@ -125,6 +142,7 @@ async function parseSpecFile(
     componentNames,
     crossRefs,
     idLocations,
+    componentImplements,
   };
 }
 

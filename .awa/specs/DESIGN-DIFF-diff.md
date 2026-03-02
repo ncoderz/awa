@@ -208,24 +208,31 @@ PRINCIPLES:
 - DIFF-3_AC-4 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-4_AC-1 → DIFF-DiffEngine
 - DIFF-4_AC-2 → DIFF-DiffEngine
-- DIFF-4_AC-3 → GEN-Logger
-- DIFF-4_AC-4 → GEN-Logger
-- DIFF-4_AC-5 → GEN-Logger
+- DIFF-4_AC-3 → DIFF-DiffEngine
+- DIFF-4_AC-4 → DIFF-DiffEngine
+- DIFF-4_AC-5 → DIFF-DiffEngine
 - DIFF-5_AC-1 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-5_AC-1 → DIFF-DiffCommand (DIFF_P-4)
 - DIFF-5_AC-2 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-5_AC-2 → DIFF-DiffCommand (DIFF_P-4)
 - DIFF-5_AC-3 → DIFF-DiffEngine (DIFF_P-4)
+- DIFF-5_AC-3 → DIFF-DiffCommand (DIFF_P-4)
 - DIFF-6_AC-1 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-2 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-3 → DIFF-DiffEngine (DIFF_P-2)
-- DIFF-7_AC-1 → CLI-ArgumentParser
-- DIFF-7_AC-2 → CLI-ArgumentParser
-- DIFF-7_AC-3 → CLI-ArgumentParser
-- DIFF-7_AC-4 → CLI-ArgumentParser
-- DIFF-7_AC-5 → CLI-ArgumentParser
-- DIFF-7_AC-6 → CLI-ArgumentParser
-- DIFF-7_AC-11 → CLI-ArgumentParser
-- DIFF-7_AC-12 → CLI-ArgumentParser
-- DIFF-7_AC-13 → CLI-ArgumentParser
+- DIFF-7_AC-1 → DIFF-DiffCommand
+- DIFF-7_AC-2 → DIFF-DiffCommand
+- DIFF-7_AC-3 → DIFF-DiffCommand
+- DIFF-7_AC-4 → DIFF-DiffCommand
+- DIFF-7_AC-5 → DIFF-DiffCommand
+- DIFF-7_AC-6 → DIFF-DiffCommand
+- DIFF-7_AC-7 → DIFF-DiffCommand
+- DIFF-7_AC-8 → DIFF-DiffCommand
+- DIFF-7_AC-9 → DIFF-DiffCommand
+- DIFF-7_AC-10 → DIFF-DiffCommand
+- DIFF-7_AC-10 → DIFF-Debouncer
+- DIFF-7_AC-10 → DIFF-FileWatcher
+- DIFF-7_AC-11 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-8_AC-1 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-2 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-3 → DIFF-DiffEngine (DIFF_P-6)

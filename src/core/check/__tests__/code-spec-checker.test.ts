@@ -4,11 +4,15 @@
 // @awa-test: CHK-6_AC-1
 // @awa-test: CHK-18_AC-1
 // @awa-test: CHK-19_AC-1
+// @awa-test: CHK-20_AC-1
+// @awa-test: CHK-22_AC-1
 // @awa-test: CHK_P-1
 // @awa-test: CHK_P-2
 // @awa-test: CHK_P-4
 // @awa-test: CHK_P-6
 // @awa-test: CHK_P-7
+// @awa-test: CHK_P-8
+// @awa-test: CHK_P-9
 
 import { describe, expect, test } from 'vitest';
 import { checkCodeAgainstSpec } from '../code-spec-checker.js';
@@ -284,5 +288,163 @@ describe('CodeSpecChecker', () => {
 
     const unimplemented = result.findings.filter((f) => f.code === 'unimplemented-ac');
     expect(unimplemented).toHaveLength(0);
+  });
+
+  // @awa-test: CHK_P-8
+  // @awa-test: CHK-20_AC-1
+  test('reports uncovered property when no @awa-test marker references it', () => {
+    const markers = makeMarkers([{ type: 'test', id: 'CFG_P-1', filePath: 'test.ts', line: 5 }]);
+    const specs = makeSpecs({
+      propertyIds: new Set(['CFG_P-1', 'CFG_P-2']),
+      allIds: new Set(['CFG_P-1', 'CFG_P-2']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: ['CFG_P-1', 'CFG_P-2'],
+          componentNames: [],
+          crossRefs: [],
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const uncovered = result.findings.filter((f) => f.code === 'uncovered-property');
+    expect(uncovered).toHaveLength(1);
+    expect(uncovered[0]).toMatchObject({
+      severity: 'warning',
+      id: 'CFG_P-2',
+    });
+  });
+
+  // @awa-test: CHK_P-8
+  test('does not report property as uncovered when @awa-test marker exists', () => {
+    const markers = makeMarkers([{ type: 'test', id: 'CFG_P-1', filePath: 'test.ts', line: 5 }]);
+    const specs = makeSpecs({
+      propertyIds: new Set(['CFG_P-1']),
+      allIds: new Set(['CFG_P-1']),
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const uncovered = result.findings.filter((f) => f.code === 'uncovered-property');
+    expect(uncovered).toHaveLength(0);
+  });
+
+  // @awa-test: CHK_P-9
+  // @awa-test: CHK-22_AC-1
+  test('reports impl-not-in-implements when @awa-impl is not in DESIGN IMPLEMENTS', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 5 },
+      { type: 'impl', id: 'CFG-2_AC-1', filePath: 'src/loader.ts', line: 10 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader']),
+      allIds: new Set(['CFG-Loader', 'CFG-1_AC-1', 'CFG-2_AC-1']),
+      acIds: new Set(['CFG-1_AC-1', 'CFG-2_AC-1']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader'],
+          crossRefs: [
+            { type: 'implements', ids: ['CFG-1_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 10 },
+          ],
+          componentImplements: new Map([['CFG-Loader', ['CFG-1_AC-1']]]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const findings = result.findings.filter((f) => f.code === 'impl-not-in-implements');
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      severity: 'warning',
+      id: 'CFG-2_AC-1',
+    });
+  });
+
+  // @awa-test: CHK_P-9
+  // @awa-test: CHK-22_AC-1
+  test('reports implements-not-in-impl when DESIGN IMPLEMENTS has no code @awa-impl', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 5 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader']),
+      allIds: new Set(['CFG-Loader', 'CFG-1_AC-1', 'CFG-2_AC-1']),
+      acIds: new Set(['CFG-1_AC-1', 'CFG-2_AC-1']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader'],
+          crossRefs: [
+            {
+              type: 'implements',
+              ids: ['CFG-1_AC-1', 'CFG-2_AC-1'],
+              filePath: 'specs/DESIGN-CFG.md',
+              line: 10,
+            },
+          ],
+          componentImplements: new Map([['CFG-Loader', ['CFG-1_AC-1', 'CFG-2_AC-1']]]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const findings = result.findings.filter((f) => f.code === 'implements-not-in-impl');
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      severity: 'warning',
+      id: 'CFG-2_AC-1',
+    });
+  });
+
+  // @awa-test: CHK_P-9
+  test('does not report impl-vs-implements when sets match', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 5 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader']),
+      allIds: new Set(['CFG-Loader', 'CFG-1_AC-1']),
+      acIds: new Set(['CFG-1_AC-1']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader'],
+          crossRefs: [
+            { type: 'implements', ids: ['CFG-1_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 10 },
+          ],
+          componentImplements: new Map([['CFG-Loader', ['CFG-1_AC-1']]]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const implNotIn = result.findings.filter((f) => f.code === 'impl-not-in-implements');
+    const implNotImpl = result.findings.filter((f) => f.code === 'implements-not-in-impl');
+    expect(implNotIn).toHaveLength(0);
+    expect(implNotImpl).toHaveLength(0);
   });
 });

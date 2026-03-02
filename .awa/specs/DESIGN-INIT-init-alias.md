@@ -115,8 +115,8 @@ Tests cover: alias invokes the same handler as generate; hint appears when confi
 
 ### REQ-INIT-init-alias.md
 
-- INIT-1_AC-1 → INIT-AliasRegistration (INIT_P-1)
-- INIT-2_AC-1 → INIT-AliasRegistration (INIT_P-1)
+- INIT-1_AC-1 → INIT-AliasRegistration
+- INIT-2_AC-1 → INIT-AliasRegistration
 - INIT-3_AC-1 → INIT-AliasRegistration (INIT_P-1)
 - INIT-4_AC-1 → INIT-AliasRegistration
 - INIT-5_AC-1 → INIT-ConfigHint (INIT_P-2)

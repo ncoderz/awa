@@ -1,0 +1,510 @@
+// @awa-component: CHK-MatrixFixer
+// @awa-impl: CHK-23_AC-1
+// @awa-impl: CHK-23_AC-2
+
+import { readFile, writeFile } from 'node:fs/promises';
+import { basename } from 'node:path';
+import type { SpecFile, SpecParseResult } from './types.js';
+
+// --- Public API ---
+
+export interface FixResult {
+  readonly filesFixed: number;
+  readonly fileResults: readonly FileFixResult[];
+}
+
+export interface FileFixResult {
+  readonly filePath: string;
+  readonly changed: boolean;
+}
+
+/**
+ * Regenerate "Requirements Traceability" sections in all DESIGN and TASK files.
+ * Returns the number of files that were actually modified.
+ */
+export async function fixMatrices(
+  specs: SpecParseResult,
+  crossRefPatterns: readonly string[]
+): Promise<FixResult> {
+  const codeToReqFile = buildCodeToReqFileMap(specs.specFiles);
+  const fileResults: FileFixResult[] = [];
+
+  for (const specFile of specs.specFiles) {
+    const fileName = basename(specFile.filePath);
+
+    if (fileName.startsWith('DESIGN-')) {
+      const changed = await fixDesignMatrix(specFile.filePath, codeToReqFile, crossRefPatterns);
+      fileResults.push({ filePath: specFile.filePath, changed });
+    } else if (fileName.startsWith('TASK-')) {
+      const changed = await fixTaskMatrix(
+        specFile.filePath,
+        codeToReqFile,
+        specs,
+        crossRefPatterns
+      );
+      fileResults.push({ filePath: specFile.filePath, changed });
+    }
+  }
+
+  return {
+    filesFixed: fileResults.filter((r) => r.changed).length,
+    fileResults,
+  };
+}
+
+// --- Code prefix → REQ filename map ---
+
+function buildCodeToReqFileMap(specFiles: readonly SpecFile[]): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const sf of specFiles) {
+    if (/\bREQ-/.test(basename(sf.filePath)) && sf.code) {
+      map.set(sf.code, basename(sf.filePath));
+    }
+  }
+  return map;
+}
+
+function getCodePrefix(id: string): string {
+  const match = /^([A-Z][A-Z0-9]*)[-_]/.exec(id);
+  return match?.[1] ?? '';
+}
+
+// --- DESIGN matrix ---
+
+interface ComponentInfo {
+  readonly name: string;
+  readonly implements: string[];
+}
+
+interface PropertyInfo {
+  readonly id: string;
+  readonly validates: string[];
+}
+
+async function fixDesignMatrix(
+  filePath: string,
+  codeToReqFile: Map<string, string>,
+  crossRefPatterns: readonly string[]
+): Promise<boolean> {
+  let content: string;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch {
+    return false;
+  }
+
+  const { components, properties } = parseDesignFileData(content, crossRefPatterns);
+
+  // AC → component names
+  const acToComponents = new Map<string, string[]>();
+  for (const comp of components) {
+    for (const acId of comp.implements) {
+      const existing = acToComponents.get(acId) ?? [];
+      existing.push(comp.name);
+      acToComponents.set(acId, existing);
+    }
+  }
+
+  // AC → property IDs (from VALIDATES)
+  const acToProperties = new Map<string, string[]>();
+  for (const prop of properties) {
+    for (const acId of prop.validates) {
+      const existing = acToProperties.get(acId) ?? [];
+      existing.push(prop.id);
+      acToProperties.set(acId, existing);
+    }
+  }
+
+  // Group ACs by REQ file
+  const allAcIds = [...acToComponents.keys()];
+  const grouped = groupByReqFile(allAcIds, codeToReqFile);
+
+  const newSection = generateDesignSection(grouped, acToComponents, acToProperties);
+  const newContent = replaceTraceabilitySection(content, newSection);
+  if (newContent === content) return false;
+
+  await writeFile(filePath, newContent, 'utf-8');
+  return true;
+}
+
+function parseDesignFileData(
+  content: string,
+  crossRefPatterns: readonly string[]
+): { components: ComponentInfo[]; properties: PropertyInfo[] } {
+  const lines = content.split('\n');
+  const components: ComponentInfo[] = [];
+  const properties: PropertyInfo[] = [];
+
+  const componentRegex = /^###\s+([A-Z][A-Z0-9]*-[A-Za-z][A-Za-z0-9]*(?:[A-Z][a-z0-9]*)*)\s*$/;
+  const reqIdRegex = /^###\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)\s*:/;
+  const propIdRegex = /^-\s+([A-Z][A-Z0-9]*_P-\d+)\s/;
+
+  let currentComponent: string | null = null;
+  let lastPropertyId: string | null = null;
+
+  for (const line of lines) {
+    // Component heading
+    const compMatch = componentRegex.exec(line);
+    if (compMatch?.[1] && !reqIdRegex.test(line)) {
+      currentComponent = compMatch[1];
+      lastPropertyId = null;
+      components.push({ name: currentComponent, implements: [] });
+      continue;
+    }
+
+    // H1/H2 heading resets context
+    if (/^#{1,2}\s/.test(line) && !compMatch) {
+      currentComponent = null;
+      lastPropertyId = null;
+      continue;
+    }
+
+    // Property ID
+    const propMatch = propIdRegex.exec(line);
+    if (propMatch?.[1]) {
+      lastPropertyId = propMatch[1];
+      properties.push({ id: lastPropertyId, validates: [] });
+      continue;
+    }
+
+    // Cross-references
+    for (const pattern of crossRefPatterns) {
+      const patIdx = line.indexOf(pattern);
+      if (patIdx !== -1) {
+        const afterPattern = line.slice(patIdx + pattern.length);
+        const ids = extractIdsFromText(afterPattern);
+        if (ids.length > 0) {
+          const isImplements = pattern.toLowerCase().includes('implements');
+          if (isImplements && currentComponent) {
+            const comp = components.find((c) => c.name === currentComponent);
+            if (comp) comp.implements.push(...ids);
+          } else if (!isImplements && lastPropertyId) {
+            const prop = properties.find((p) => p.id === lastPropertyId);
+            if (prop) prop.validates.push(...ids);
+          }
+        }
+      }
+    }
+  }
+
+  return { components, properties };
+}
+
+function generateDesignSection(
+  grouped: Map<string, string[]>,
+  acToComponents: Map<string, string[]>,
+  acToProperties: Map<string, string[]>
+): string {
+  const lines: string[] = [];
+  const reqFiles = [...grouped.keys()].sort();
+
+  for (const reqFile of reqFiles) {
+    lines.push(`### ${reqFile}`);
+    lines.push('');
+
+    const acIds = grouped.get(reqFile) ?? [];
+    acIds.sort(compareIds);
+
+    for (const acId of acIds) {
+      const components = acToComponents.get(acId) ?? [];
+      const props = acToProperties.get(acId) ?? [];
+
+      for (const comp of components) {
+        const propStr = props.length > 0 ? ` (${props.join(', ')})` : '';
+        lines.push(`- ${acId} → ${comp}${propStr}`);
+      }
+    }
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+// --- TASK matrix ---
+
+interface TaskInfo {
+  readonly id: string;
+  readonly implements: string[];
+  readonly tests: string[];
+}
+
+async function fixTaskMatrix(
+  filePath: string,
+  codeToReqFile: Map<string, string>,
+  specs: SpecParseResult,
+  crossRefPatterns: readonly string[]
+): Promise<boolean> {
+  let content: string;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch {
+    return false;
+  }
+
+  const { tasks, sourceReqs, sourceDesigns } = parseTaskFileData(content, crossRefPatterns);
+
+  // AC → implementing task(s)
+  const acToTasks = new Map<string, string[]>();
+  for (const task of tasks) {
+    for (const acId of task.implements) {
+      const existing = acToTasks.get(acId) ?? [];
+      existing.push(task.id);
+      acToTasks.set(acId, existing);
+    }
+  }
+
+  // AC/property → testing task(s)
+  const idToTestTasks = new Map<string, string[]>();
+  for (const task of tasks) {
+    for (const testId of task.tests) {
+      const existing = idToTestTasks.get(testId) ?? [];
+      existing.push(task.id);
+      idToTestTasks.set(testId, existing);
+    }
+  }
+
+  // Collect full universe of ACs from source REQ files
+  const sourceAcIds = new Set<string>();
+  for (const reqName of sourceReqs) {
+    const reqCode = extractCodeFromFileName(reqName);
+    for (const sf of specs.specFiles) {
+      if (sf.code === reqCode && /\bREQ-/.test(basename(sf.filePath))) {
+        for (const acId of sf.acIds) sourceAcIds.add(acId);
+      }
+    }
+  }
+
+  // Collect full universe of properties from source DESIGN files
+  const sourcePropertyIds = new Set<string>();
+  for (const designName of sourceDesigns) {
+    const designCode = extractCodeFromFileName(designName);
+    for (const sf of specs.specFiles) {
+      if (sf.code === designCode && /\bDESIGN-/.test(basename(sf.filePath))) {
+        for (const propId of sf.propertyIds) sourcePropertyIds.add(propId);
+      }
+    }
+  }
+
+  // All referenced IDs (from IMPLEMENTS + TESTS)
+  const allRefIds = new Set([...acToTasks.keys(), ...idToTestTasks.keys()]);
+
+  // Compute uncovered
+  const uncovered: string[] = [];
+  for (const acId of sourceAcIds) {
+    if (!allRefIds.has(acId)) uncovered.push(acId);
+  }
+  for (const propId of sourcePropertyIds) {
+    if (!allRefIds.has(propId)) uncovered.push(propId);
+  }
+  uncovered.sort(compareIds);
+
+  // Group ACs and properties by REQ file
+  const allIdsForMatrix = [...new Set([...acToTasks.keys(), ...idToTestTasks.keys()])];
+  const grouped = groupByReqFile(allIdsForMatrix, codeToReqFile);
+
+  const newSection = generateTaskSection(
+    grouped,
+    acToTasks,
+    idToTestTasks,
+    sourcePropertyIds,
+    uncovered
+  );
+  const newContent = replaceTraceabilitySection(content, newSection);
+  if (newContent === content) return false;
+
+  await writeFile(filePath, newContent, 'utf-8');
+  return true;
+}
+
+interface TaskFileParseResult {
+  tasks: TaskInfo[];
+  sourceReqs: string[];
+  sourceDesigns: string[];
+}
+
+function parseTaskFileData(
+  content: string,
+  crossRefPatterns: readonly string[]
+): TaskFileParseResult {
+  const lines = content.split('\n');
+  const tasks: TaskInfo[] = [];
+  const sourceReqs: string[] = [];
+  const sourceDesigns: string[] = [];
+
+  // Parse SOURCE line
+  const sourceRegex = /^SOURCE:\s*(.+)/;
+  const taskIdRegex = /^-\s+\[[ x]\]\s+(T-[A-Z][A-Z0-9]*-\d+)/;
+
+  let currentTaskId: string | null = null;
+
+  for (const line of lines) {
+    // SOURCE line
+    const sourceMatch = sourceRegex.exec(line);
+    if (sourceMatch?.[1]) {
+      const parts = sourceMatch[1].split(',').map((s) => s.trim());
+      for (const part of parts) {
+        if (part.startsWith('REQ-')) sourceReqs.push(part);
+        else if (part.startsWith('DESIGN-')) sourceDesigns.push(part);
+      }
+      continue;
+    }
+
+    // Task checkbox item
+    const taskMatch = taskIdRegex.exec(line);
+    if (taskMatch?.[1]) {
+      currentTaskId = taskMatch[1];
+      tasks.push({ id: currentTaskId, implements: [], tests: [] });
+      continue;
+    }
+
+    // H2 heading resets task context (new phase)
+    if (/^##\s/.test(line)) {
+      currentTaskId = null;
+      continue;
+    }
+
+    // --- or horizontal rule also resets
+    if (/^---/.test(line)) {
+      currentTaskId = null;
+      continue;
+    }
+
+    // IMPLEMENTS / TESTS lines (indented under a task)
+    if (currentTaskId) {
+      const task = tasks.find((t) => t.id === currentTaskId);
+      if (task) {
+        for (const pattern of crossRefPatterns) {
+          const patIdx = line.indexOf(pattern);
+          if (patIdx !== -1) {
+            const afterPattern = line.slice(patIdx + pattern.length);
+            const ids = extractIdsFromText(afterPattern);
+            if (ids.length > 0) {
+              const isImplements = pattern.toLowerCase().includes('implements');
+              if (isImplements) {
+                task.implements.push(...ids);
+              }
+            }
+          }
+        }
+        // TESTS: is not in crossRefPatterns, parse it directly
+        const testsIdx = line.indexOf('TESTS:');
+        if (testsIdx !== -1) {
+          const afterTests = line.slice(testsIdx + 'TESTS:'.length);
+          const ids = extractIdsFromText(afterTests);
+          if (ids.length > 0) {
+            task.tests.push(...ids);
+          }
+        }
+      }
+    }
+  }
+
+  return { tasks, sourceReqs, sourceDesigns };
+}
+
+function generateTaskSection(
+  grouped: Map<string, string[]>,
+  acToTasks: Map<string, string[]>,
+  idToTestTasks: Map<string, string[]>,
+  propertyIds: Set<string>,
+  uncovered: string[]
+): string {
+  const lines: string[] = [];
+  const reqFiles = [...grouped.keys()].sort();
+
+  for (const reqFile of reqFiles) {
+    lines.push(`### ${reqFile}`);
+    lines.push('');
+
+    const ids = grouped.get(reqFile) ?? [];
+    // Separate ACs from properties
+    const acIds = ids.filter((id) => !propertyIds.has(id));
+    const propIds = ids.filter((id) => propertyIds.has(id));
+
+    acIds.sort(compareIds);
+    propIds.sort(compareIds);
+
+    // AC entries: - {AC-ID} → {Task} ({TestTask})
+    for (const acId of acIds) {
+      const tasks = acToTasks.get(acId) ?? [];
+      const testTasks = idToTestTasks.get(acId) ?? [];
+      const taskStr = tasks.length > 0 ? tasks.join(', ') : '(none)';
+      const testStr = testTasks.length > 0 ? ` (${testTasks.join(', ')})` : '';
+      lines.push(`- ${acId} → ${taskStr}${testStr}`);
+    }
+
+    // Property entries: - {Prop-ID} → {TestTask}
+    for (const propId of propIds) {
+      const testTasks = idToTestTasks.get(propId) ?? [];
+      const testStr = testTasks.length > 0 ? testTasks.join(', ') : '(none)';
+      lines.push(`- ${propId} → ${testStr}`);
+    }
+
+    lines.push('');
+  }
+
+  // UNCOVERED line
+  const uncoveredStr = uncovered.length > 0 ? uncovered.join(', ') : '(none)';
+  lines.push(`UNCOVERED: ${uncoveredStr}`);
+
+  return lines.join('\n');
+}
+
+// --- Shared utilities ---
+
+function groupByReqFile(ids: string[], codeToReqFile: Map<string, string>): Map<string, string[]> {
+  const groups = new Map<string, string[]>();
+  for (const id of ids) {
+    const code = getCodePrefix(id);
+    const reqFile = codeToReqFile.get(code);
+    if (!reqFile) continue; // Skip IDs we can't resolve to a REQ file
+    const existing = groups.get(reqFile) ?? [];
+    existing.push(id);
+    groups.set(reqFile, existing);
+  }
+  return groups;
+}
+
+function replaceTraceabilitySection(content: string, newSection: string): string {
+  const lines = content.split('\n');
+  const sectionStart = lines.findIndex((l) => /^##\s+Requirements Traceability\s*$/.test(l));
+
+  if (sectionStart === -1) return content;
+
+  // Find the next ## heading after the section start
+  let sectionEnd = lines.length;
+  for (let i = sectionStart + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line !== undefined && /^##\s/.test(line)) {
+      sectionEnd = i;
+      break;
+    }
+  }
+
+  const before = lines.slice(0, sectionStart + 1);
+  const after = lines.slice(sectionEnd);
+
+  const result = [...before, '', newSection.trimEnd(), '', ...after];
+  return result.join('\n');
+}
+
+function extractIdsFromText(text: string): string[] {
+  const idRegex = /[A-Z][A-Z0-9]*-\d+(?:\.\d+)?(?:_AC-\d+)?|[A-Z][A-Z0-9]*_P-\d+/g;
+  const ids: string[] = [];
+  let match = idRegex.exec(text);
+  while (match !== null) {
+    ids.push(match[0]);
+    match = idRegex.exec(text);
+  }
+  return ids;
+}
+
+function extractCodeFromFileName(fileName: string): string {
+  // Extract CODE from REQ-CODE-feature.md or DESIGN-CODE-feature.md
+  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLES|API|TASK)-([A-Z][A-Z0-9]*)-/.exec(fileName);
+  return match?.[1] ?? '';
+}
+
+function compareIds(a: string, b: string): number {
+  return a.localeCompare(b, undefined, { numeric: true });
+}

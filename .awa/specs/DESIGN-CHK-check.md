@@ -38,12 +38,14 @@ src/
         ├── marker-scanner.ts
         ├── code-spec-checker.ts
         ├── spec-spec-checker.ts
+        ├── matrix-fixer.ts
         ├── reporter.ts
         └── __tests__/
             ├── spec-parser.test.ts
             ├── marker-scanner.test.ts
             ├── code-spec-checker.test.ts
             ├── spec-spec-checker.test.ts
+            ├── matrix-fixer.test.ts
             └── reporter.test.ts
 ```
 
@@ -116,7 +118,7 @@ function parseSpecs(config: CheckConfig): Promise<SpecParseResult>;
 
 Matches code markers against spec IDs. Reports orphaned markers (code references non-existent spec ID) and uncovered ACs (spec AC with no test marker).
 
-IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1
+IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1, CHK-20_AC-1, CHK-22_AC-1
 
 ```typescript
 interface CheckResult {
@@ -134,7 +136,7 @@ function checkCodeAgainstSpec(
 
 Validates cross-references between spec files. Reports broken IMPLEMENTS/VALIDATES references and orphaned spec files.
 
-IMPLEMENTS: CHK-5_AC-1, CHK-7_AC-1, CHK-15_AC-1
+IMPLEMENTS: CHK-5_AC-1, CHK-7_AC-1, CHK-15_AC-1, CHK-21_AC-1
 
 ```typescript
 function checkSpecAgainstSpec(
@@ -177,12 +179,30 @@ function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[
 
 ### CHK-CheckCommand
 
-Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code.
+Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code. Runs matrix generation by default after checks complete (skip with `--no-fix`).
 
-IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1
+IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-23_AC-1, CHK-23_AC-2
 
 ```typescript
 function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
+```
+
+### CHK-MatrixFixer
+
+Regenerates Requirements Traceability sections in DESIGN and TASK files. For DESIGN files, inverts component IMPLEMENTS and property VALIDATES lines to build AC→Component(Property) entries. For TASK files, inverts task IMPLEMENTS and TESTS lines to build AC→Task(Test) entries plus UNCOVERED.
+
+IMPLEMENTS: CHK-23_AC-1, CHK-23_AC-2
+
+```typescript
+interface FixResult {
+  readonly filesFixed: number;
+  readonly fileResults: readonly FileFixResult[];
+}
+
+function fixMatrices(
+  specs: SpecParseResult,
+  crossRefPatterns: readonly string[]
+): Promise<FixResult>;
 ```
 
 ## Data Models
@@ -249,6 +269,21 @@ interface RawCheckOptions {
 - CHK_P-7 [Implementation Coverage Detection]: Every spec AC without a corresponding `@awa-impl` marker is reported as a warning
   VALIDATES: CHK-19_AC-1
 
+- CHK_P-8 [Property Coverage Detection]: Every DESIGN property without a corresponding `@awa-test` marker is reported as a warning
+  VALIDATES: CHK-20_AC-1
+
+- CHK_P-9 [IMPLEMENTS Consistency]: Every mismatch between a component's DESIGN IMPLEMENTS list and code @awa-impl markers is reported as a warning
+  VALIDATES: CHK-22_AC-1
+
+- CHK_P-10 [Unlinked AC Detection]: Every REQ AC not claimed by any DESIGN IMPLEMENTS is reported as an error
+  VALIDATES: CHK-21_AC-1
+
+- CHK_P-11 [DESIGN Matrix Idempotence]: Running fix twice on a DESIGN file produces identical output
+  VALIDATES: CHK-23_AC-1
+
+- CHK_P-12 [TASK Matrix Completeness]: Generated TASK matrix UNCOVERED line lists exactly the ACs and properties from source REQ/DESIGN files that lack IMPLEMENTS/TESTS coverage
+  VALIDATES: CHK-23_AC-2
+
 ## Error Handling
 
 ### CheckError
@@ -289,6 +324,7 @@ PRINCIPLES:
 
 - CHK-1_AC-1 → CHK-MarkerScanner
 - CHK-2_AC-1 → CHK-SpecParser
+- CHK-2_AC-1 → CHK-SchemaChecker
 - CHK-3_AC-1 → CHK-CodeSpecChecker (CHK_P-1)
 - CHK-4_AC-1 → CHK-CodeSpecChecker (CHK_P-2)
 - CHK-5_AC-1 → CHK-SpecSpecChecker (CHK_P-3)
@@ -302,12 +338,22 @@ PRINCIPLES:
 - CHK-13_AC-1 → CHK-MarkerScanner
 - CHK-14_AC-1 → CHK-CodeSpecChecker
 - CHK-15_AC-1 → CHK-SpecSpecChecker
-- CHK-16_AC-1 → CHK-CheckCommand
+- CHK-16_AC-1 → CHK-RuleLoader
 - CHK-18_AC-1 → CHK-CodeSpecChecker (CHK_P-6)
 - CHK-19_AC-1 → CHK-CodeSpecChecker (CHK_P-7)
+- CHK-20_AC-1 → CHK-CodeSpecChecker (CHK_P-8)
+- CHK-21_AC-1 → CHK-SpecSpecChecker (CHK_P-10)
+- CHK-22_AC-1 → CHK-CodeSpecChecker (CHK_P-9)
+- CHK-23_AC-1 → CHK-CheckCommand (CHK_P-11)
+- CHK-23_AC-1 → CHK-MatrixFixer (CHK_P-11)
+- CHK-23_AC-2 → CHK-CheckCommand (CHK_P-12)
+- CHK-23_AC-2 → CHK-MatrixFixer (CHK_P-12)
 
 ## Change Log
 
 - 1.0.0 (2026-02-27): Initial design
 - 1.1.0 (2026-02-27): Schema upgrade — added H3 heading under Requirements Traceability
 - 1.2.0 (2026-03-01): Added CHK-18 (uncovered component) and CHK-19 (unimplemented AC) to CodeSpecChecker; added CHK_P-6, CHK_P-7
+- 1.3.0 (2026-03-02): Added CHK-20 (uncovered property), CHK-21 (unlinked AC), CHK-22 (IMPLEMENTS consistency); added componentImplements to SpecFile; added CHK_P-8, CHK_P-9, CHK_P-10
+- 1.4.0 (2026-03-02): Added CHK-MatrixFixer component for --fix matrix generation; added CHK-23 to CheckCommand IMPLEMENTS; added CHK_P-11, CHK_P-12
+- 1.5.0 (2026-03-02): CHK-23 inverted default — fix is now default, --no-fix to skip

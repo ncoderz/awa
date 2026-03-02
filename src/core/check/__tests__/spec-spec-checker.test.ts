@@ -1,7 +1,9 @@
 // @awa-component: CHK-SpecSpecChecker
 // @awa-test: CHK-5_AC-1
 // @awa-test: CHK-7_AC-1
+// @awa-test: CHK-21_AC-1
 // @awa-test: CHK_P-3
+// @awa-test: CHK_P-10
 
 import { describe, expect, test } from 'vitest';
 import { checkSpecAgainstSpec } from '../spec-spec-checker.js';
@@ -250,5 +252,98 @@ describe('SpecSpecChecker', () => {
       severity: 'error',
       id: 'GHOST-1_AC-1',
     });
+  });
+
+  // @awa-test: CHK_P-10
+  // @awa-test: CHK-21_AC-1
+  test('reports unlinked AC when REQ AC is not claimed by any DESIGN IMPLEMENTS', () => {
+    const specs = makeSpecs([
+      {
+        filePath: 'specs/REQ-X-x.md',
+        code: 'X',
+        requirementIds: ['X-1'],
+        acIds: ['X-1_AC-1', 'X-1_AC-2'],
+        propertyIds: [],
+        componentNames: [],
+        crossRefs: [],
+      },
+      {
+        filePath: 'specs/DESIGN-X-x.md',
+        code: 'X',
+        requirementIds: [],
+        acIds: [],
+        propertyIds: [],
+        componentNames: ['X-Loader'],
+        crossRefs: [
+          {
+            type: 'implements',
+            ids: ['X-1_AC-1'],
+            filePath: 'specs/DESIGN-X-x.md',
+            line: 10,
+          },
+        ],
+      },
+    ]);
+
+    const result = checkSpecAgainstSpec(specs, makeMarkers(), makeConfig());
+
+    const unlinked = result.findings.filter((f) => f.code === 'unlinked-ac');
+    expect(unlinked).toHaveLength(1);
+    expect(unlinked[0]).toMatchObject({
+      severity: 'error',
+      id: 'X-1_AC-2',
+    });
+  });
+
+  // @awa-test: CHK_P-10
+  test('does not report AC as unlinked when DESIGN IMPLEMENTS claims it', () => {
+    const specs = makeSpecs([
+      {
+        filePath: 'specs/REQ-X-x.md',
+        code: 'X',
+        requirementIds: ['X-1'],
+        acIds: ['X-1_AC-1'],
+        propertyIds: [],
+        componentNames: [],
+        crossRefs: [],
+      },
+      {
+        filePath: 'specs/DESIGN-X-x.md',
+        code: 'X',
+        requirementIds: [],
+        acIds: [],
+        propertyIds: [],
+        componentNames: ['X-Loader'],
+        crossRefs: [
+          { type: 'implements', ids: ['X-1_AC-1'], filePath: 'specs/DESIGN-X-x.md', line: 10 },
+        ],
+      },
+    ]);
+
+    const result = checkSpecAgainstSpec(specs, makeMarkers(), makeConfig());
+
+    const unlinked = result.findings.filter((f) => f.code === 'unlinked-ac');
+    expect(unlinked).toHaveLength(0);
+  });
+
+  // @awa-test: CHK_P-10
+  test('only checks ACs from REQ files, not DESIGN files', () => {
+    const specs = makeSpecs([
+      {
+        filePath: 'specs/DESIGN-X-x.md',
+        code: 'X',
+        requirementIds: [],
+        acIds: ['X-1_AC-1'],
+        propertyIds: [],
+        componentNames: ['X-Loader'],
+        crossRefs: [],
+      },
+    ]);
+
+    const result = checkSpecAgainstSpec(specs, makeMarkers(), makeConfig());
+
+    // AC from a DESIGN file, not a REQ file, should not be flagged as unlinked
+    const unlinked = result.findings.filter((f) => f.code === 'unlinked-ac');
+    expect(unlinked).toHaveLength(0);
   });
 });

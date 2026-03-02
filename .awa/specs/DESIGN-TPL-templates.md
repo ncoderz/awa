@@ -141,6 +141,12 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
+### REQ-CLI-cli.md
+
+- CLI-3_AC-2 → TPL-TemplateResolver
+- CLI-3_AC-3 → TPL-TemplateResolver
+- CLI-8_AC-2 → TPL-TemplateResolver
+
 ### REQ-TPL-templates.md
 
 - TPL-1_AC-1 → TPL-TemplateResolver
@@ -168,13 +174,10 @@ PRINCIPLES:
 - TPL-6_AC-2 → TPL-TemplateEngine
 - TPL-7_AC-1 → TPL-TemplateEngine (TPL_P-1)
 - TPL-7_AC-2 → TPL-TemplateEngine (TPL_P-2)
-- TPL-7_AC-3 → GEN-Logger
 - TPL-8_AC-1 → TPL-TemplateEngine
 - TPL-8_AC-2 → TPL-TemplateEngine
 - TPL-8_AC-3 → TPL-TemplateEngine
 - TPL-8_AC-4 → TPL-TemplateEngine
-- TPL-9_AC-1 → GEN-FileGenerator (GEN_P-1)
-- TPL-9_AC-2 → GEN-FileGenerator (GEN_P-1)
 - TPL-10_AC-1 → TPL-TemplateResolver
 - TPL-10_AC-2 → TPL-TemplateResolver
 - TPL-10_AC-3 → TPL-TemplateResolver

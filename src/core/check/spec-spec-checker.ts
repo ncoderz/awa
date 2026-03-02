@@ -2,6 +2,7 @@
 // @awa-impl: CHK-5_AC-1
 // @awa-impl: CHK-7_AC-1
 // @awa-impl: CHK-15_AC-1
+// @awa-impl: CHK-21_AC-1
 
 import type {
   CheckConfig,
@@ -11,7 +12,7 @@ import type {
   SpecParseResult,
 } from './types.js';
 
-// @awa-impl: CHK-5_AC-1, CHK-7_AC-1
+// @awa-impl: CHK-5_AC-1, CHK-7_AC-1, CHK-21_AC-1
 export function checkSpecAgainstSpec(
   specs: SpecParseResult,
   markers: MarkerScanResult,
@@ -35,6 +36,43 @@ export function checkSpecAgainstSpec(
           });
         }
       }
+    }
+  }
+
+  // @awa-impl: CHK-21_AC-1
+  // G3: Check that every REQ AC is claimed by at least one DESIGN IMPLEMENTS
+  const implementedAcIds = new Set<string>();
+  for (const specFile of specs.specFiles) {
+    for (const crossRef of specFile.crossRefs) {
+      if (crossRef.type === 'implements') {
+        for (const id of crossRef.ids) {
+          implementedAcIds.add(id);
+        }
+      }
+    }
+  }
+
+  // Only check ACs that come from REQ files (not DESIGN/TASK/etc.)
+  const reqAcIds = new Set<string>();
+  for (const specFile of specs.specFiles) {
+    if (/\bREQ-/.test(specFile.filePath)) {
+      for (const acId of specFile.acIds) {
+        reqAcIds.add(acId);
+      }
+    }
+  }
+
+  for (const acId of reqAcIds) {
+    if (!implementedAcIds.has(acId)) {
+      const loc = specs.idLocations.get(acId);
+      findings.push({
+        severity: 'error',
+        code: 'unlinked-ac',
+        message: `Acceptance criterion '${acId}' is not claimed by any DESIGN IMPLEMENTS`,
+        filePath: loc?.filePath,
+        line: loc?.line,
+        id: acId,
+      });
     }
   }
 

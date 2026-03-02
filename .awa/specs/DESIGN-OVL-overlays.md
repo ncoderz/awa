@@ -198,7 +198,8 @@ Test generate and diff commands with mocked overlay module.
 
 ### REQ-OVL-overlays.md
 
-- OVL-1_AC-1 → OVL-OverlayResolver, CLI-ArgumentParser
+- OVL-1_AC-1 → OVL-OverlayResolver
+- OVL-1_AC-1 → CLI-ArgumentParser
 - OVL-2_AC-1 → OVL-MergedTemplateView (OVL_P-1)
 - OVL-3_AC-1 → OVL-MergedTemplateView (OVL_P-2)
 - OVL-4_AC-1 → OVL-MergedTemplateView
