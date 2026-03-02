@@ -1,4 +1,5 @@
 // @awa-component: DIFF-Debouncer
+// @awa-impl: DIFF-7_AC-10
 
 export class Debouncer {
   private timer: ReturnType<typeof setTimeout> | null = null;

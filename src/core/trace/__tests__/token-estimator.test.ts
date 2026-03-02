@@ -1,3 +1,4 @@
+// @awa-test: TRC_P-4
 // @awa-test: TRC-6_AC-1
 
 import { describe, expect, it } from 'vitest';

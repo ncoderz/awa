@@ -64,7 +64,7 @@ Resolves each overlay source string to a local directory path by delegating to
 the existing TemplateResolver. Local paths are resolved relative to cwd; Git
 sources are fetched and cached via degit.
 
-IMPLEMENTS: OVL-1_AC-1, OVL-6_AC-1
+IMPLEMENTS: OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
 
 ```typescript
 async function resolveOverlays(
@@ -80,7 +80,7 @@ overlay directory on top in order. Because `fs.cp` defaults to `force: true`,
 overlay files replace any base (or earlier-overlay) file at the same relative
 path. Files only in the base or an earlier overlay are left intact.
 
-IMPLEMENTS: OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1
+IMPLEMENTS: OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
 
 ```typescript
 async function buildMergedDir(
@@ -95,7 +95,7 @@ Extended with a repeatable `--overlay <path>` option on both the generate and
 diff subcommands. The parsed value is forwarded as `overlay: string[]` in
 RawCliOptions.
 
-IMPLEMENTS: OVL-1_AC-1, OVL-7_AC-1
+IMPLEMENTS: CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1, CLI-2_AC-3, CLI-6_AC-2, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-11, DISC-4_AC-1, DISC-5_AC-1, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 .option('--overlay <path...>', 'Overlay directory paths (repeatable)')
@@ -106,7 +106,7 @@ IMPLEMENTS: OVL-1_AC-1, OVL-7_AC-1
 Extended to parse an `overlay` array of strings from `.awa.toml` and include
 it in FileConfig and ResolvedOptions. CLI --overlay overrides config overlay.
 
-IMPLEMENTS: OVL-8_AC-1
+IMPLEMENTS: CHK-16_AC-1, CLI-1_AC-4, CLI-2_AC-2, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2, OVL-8_AC-1
 
 ```typescript
 interface FileConfig {

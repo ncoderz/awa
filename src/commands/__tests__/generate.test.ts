@@ -1,5 +1,4 @@
 // @awa-component: JSON-GenerateCommand
-// @awa-component: INIT-AliasRegistration
 // @awa-test: JSON_P-3
 // @awa-test: JSON_P-4
 // @awa-test: INIT-1_AC-1

@@ -1,4 +1,5 @@
 // @awa-component: CHK-RuleLoader
+// @awa-impl: CHK-16_AC-1
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';

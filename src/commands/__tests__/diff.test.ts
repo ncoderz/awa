@@ -1,5 +1,5 @@
 // @awa-component: DIFF-DiffCommand
-// @awa-test: DIFF_P-4
+// @awa-test: DIFF_P-4, MULTI_P-3
 // @awa-test: DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
 // @awa-test: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
 // @awa-test: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-11

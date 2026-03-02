@@ -1,4 +1,5 @@
 // @awa-component: GEN-FileSystem
+// @awa-impl: GEN-1_AC-1, GEN-1_AC-2
 
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';

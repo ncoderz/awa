@@ -86,7 +86,7 @@ function discoverFixtures(templatePath: string): Promise<TestFixture[]>;
 
 Renders templates per fixture to a temporary directory and runs assertions (file existence, snapshot comparison).
 
-IMPLEMENTS: TTST-3_AC-1, TTST-4_AC-1, TTST-5_AC-1
+IMPLEMENTS: TTST-3_AC-1, TTST-4_AC-1, TTST-5_AC-1, TTST-8_AC-1
 
 ```typescript
 function runFixture(fixture: TestFixture, templatePath: string, options: TestRunOptions): Promise<FixtureResult>;

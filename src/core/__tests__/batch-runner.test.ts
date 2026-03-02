@@ -1,5 +1,5 @@
 // @awa-component: MULTI-BatchRunner
-// @awa-test: MULTI_P-1
+// @awa-test: MULTI_P-1, MULTI_P-2
 // @awa-test: MULTI-3_AC-1, MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-5_AC-2
 // @awa-test: MULTI-9_AC-1, MULTI-11_AC-1
 

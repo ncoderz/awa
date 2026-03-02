@@ -22,6 +22,7 @@
 // @awa-test: TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4
 // @awa-test: TCLI-4_AC-1, TCLI-4_AC-2
 // @awa-test: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
+// @awa-test: TCLI_P-1, TCLI_P-2, TCLI_P-3
 
 import { Command } from 'commander';
 import { describe, expect, it } from 'vitest';

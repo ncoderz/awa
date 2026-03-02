@@ -53,7 +53,7 @@ src/
 
 Orchestrates the generation process: walks template directory, invokes template engine, manages output structure, coordinates conflict resolution, and processes the delete list. When `dryRun` is true, it computes and reports actions without creating directories or writing files.
 
-IMPLEMENTS: GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3, GEN-11_AC-3, GEN-12_AC-1, GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, GEN-12_AC-8, TPL-9_AC-1, TPL-9_AC-2, CLI-6_AC-2
+IMPLEMENTS: CLI-6_AC-2, CLI-12_AC-2, GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-6_AC-1, GEN-6_AC-2, GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3, GEN-11_AC-3, GEN-12_AC-2, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, TPL-9_AC-1, TPL-9_AC-2
 
 ```typescript
 interface GenerateOptions {
@@ -95,7 +95,7 @@ interface FileGenerator {
 
 Handles file conflicts by comparing existing file content with new content, skipping identical files without prompting. For actual conflicts, prompts user with multi-select interface (all files checked by default).
 
-IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3
+IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, CLI-12_AC-3, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
 
 ```typescript
 interface ConflictItem {
@@ -137,7 +137,7 @@ function loadDeleteList(templatePath: string): Promise<DeleteEntry[]>;
 
 Prompts user to confirm which files to delete from the delete list. Uses a destructive-styled multiselect with red checkboxes.
 
-IMPLEMENTS: GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
+IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, CLI-12_AC-3, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
 
 ```typescript
 interface DeleteResolver {
@@ -168,7 +168,7 @@ interface Logger {
 
 Orchestrates the generation pipeline: resolve config, resolve template, generate files, handle conflicts, set exit code.
 
-IMPLEMENTS: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3
+IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 interface GenerateCommand {
@@ -195,7 +195,7 @@ interface FileSystem {
 
 Defines shared type definitions and error classes used across all command modules.
 
-IMPLEMENTS: CLI-1_AC-1
+IMPLEMENTS: JSON-3_AC-1, JSON-4_AC-1
 
 ```typescript
 interface CoreTypes {

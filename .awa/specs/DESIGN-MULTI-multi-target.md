@@ -61,7 +61,7 @@ src/
 Resolves a named target from file config by merging target fields over root via
 nullish coalescing. Validates target exists and targets are defined.
 
-IMPLEMENTS: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
+IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CHK-16_AC-1, CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, FP-1_AC-1, FP-1_AC-2, FP-1_AC-3, FP-1_AC-4, FP-3_AC-1, FP-3_AC-2, FP-3_AC-3, FP-5_AC-1, FP-5_AC-2, FP-5_AC-3, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2, OVL-8_AC-1
 
 ```typescript
 interface ConfigLoader {
@@ -75,7 +75,7 @@ interface ConfigLoader {
 Orchestrates multi-target processing. Resolves all or single targets, builds
 per-target CLI options, and delegates to ConfigLoader.merge() for final resolution.
 
-IMPLEMENTS: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
+IMPLEMENTS: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
 
 ```typescript
 interface BatchRunner {
@@ -92,7 +92,7 @@ interface BatchRunner {
 
 Per-target log prefixing for batch mode output. Implemented as methods on BatchRunner.
 
-IMPLEMENTS: MULTI-8_AC-1
+IMPLEMENTS: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
 
 ```typescript
 interface BatchRunner {
@@ -108,7 +108,7 @@ Extended generate command with batch mode. When `--all` or `--target` is set,
 delegates to BatchRunner then runs runGenerate per target with `batchMode=true`
 to suppress interactive prompts.
 
-IMPLEMENTS: MULTI-4_AC-1, MULTI-6_AC-1, MULTI-10_AC-1
+IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 async function generateCommand(cliOptions: RawCliOptions): Promise<void>;
@@ -119,7 +119,7 @@ async function generateCommand(cliOptions: RawCliOptions): Promise<void>;
 Extended diff command with batch mode and exit code aggregation. Returns 0 if all
 targets match, 1 if any differ, 2 on error.
 
-IMPLEMENTS: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1
+IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 
 ```typescript
 async function diffCommand(cliOptions: RawCliOptions): Promise<number>;

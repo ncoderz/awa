@@ -1,4 +1,5 @@
 // @awa-component: TTST-Types
+// @awa-impl: TTST-2_AC-1
 
 /** Raw fixture data parsed from TOML. */
 export interface TestFixture {

@@ -44,7 +44,7 @@ src/
 
 Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, produces unified diff output, reports delete-listed files from `_delete.txt`, and only includes target-only files when explicitly requested.
 
-IMPLEMENTS: DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3, DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5, DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3, DIFF-7_AC-11, DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-3, DIFF-8_AC-4
+IMPLEMENTS: DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3, DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5, DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3, DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-3, DIFF-8_AC-4
 
 ```typescript
 interface DiffOptions {
@@ -86,7 +86,7 @@ interface DiffEngine {
 
 Orchestrates the diff pipeline: resolve config, resolve template, run DiffEngine, display results, set exit code.
 
-IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10
+IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 
 ```typescript
 interface DiffCommand {

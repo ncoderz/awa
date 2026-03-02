@@ -1,4 +1,5 @@
 // @awa-component: GEN-DeleteList
+// @awa-test: GEN_P-6
 // @awa-test: GEN-12_AC-1, GEN-12_AC-7, GEN-12_AC-8
 // @awa-test: CLI-12_AC-1, CLI-12_AC-2, CLI-12_AC-3
 // @awa-test: DIFF-8_AC-3

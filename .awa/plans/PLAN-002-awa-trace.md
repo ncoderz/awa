@@ -136,9 +136,8 @@ ACCEPTANCE CRITERIA
 
 > From: .awa/specs/DESIGN-DIFF-diff.md
 
-### DIFF-DiffEngine
+> DIFF-DiffEngine
 
-IMPLEMENTS: DIFF-1_AC-1, DIFF-1_AC-2
 ...
 
 ## Implementation

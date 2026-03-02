@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { detectIdType, resolveTrace } from '../resolver.js';
 import type { CodeLocation, TraceIndex } from '../types.js';
 
+// @awa-test: TRC_P-2
 // @awa-test: TRC-3_AC-1, TRC-3_AC-2, TRC-3_AC-3, TRC-3_AC-4, TRC-3_AC-5
 // @awa-test: TRC-11_AC-1, TRC-11_AC-2
 

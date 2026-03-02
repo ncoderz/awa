@@ -91,7 +91,7 @@ function writeJsonOutput(data: GenerationJSON | DiffJSON): void;
 
 Orchestrates JSON and summary output in the generate command. Suppresses interactive output and enforces dry-run when --json is active.
 
-IMPLEMENTS: JSON-6_AC-1, JSON-7_AC-1
+IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 // Modified generateCommand behavior:
@@ -103,7 +103,7 @@ IMPLEMENTS: JSON-6_AC-1, JSON-7_AC-1
 
 Orchestrates JSON and summary output in the diff command. Suppresses interactive output when --json is active.
 
-IMPLEMENTS: JSON-6_AC-1
+IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 
 ```typescript
 // Modified diffCommand behavior:

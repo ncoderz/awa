@@ -40,28 +40,11 @@ src/
 
 ## Components and Interfaces
 
-### INIT-AliasRegistration
-
-Registers `init` as a top-level command on the root program, configured with the same options and handler as `template generate` via the `configureGenerateCommand` helper.
-
-IMPLEMENTS: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
-
-```typescript
-function configureGenerateCommand(cmd: Command): Command {
-  return cmd
-    .description('Generate AI agent configuration files from templates')
-    // ... shared options and action
-}
-
-configureGenerateCommand(template.command('generate'));
-configureGenerateCommand(program.command('init'));
-```
-
 ### INIT-ConfigHint
 
 After config loading in `generateCommand`, if no config file was found (loader returned `null`) and no `--config` path was provided, logs a non-blocking info-level hint.
 
-IMPLEMENTS: INIT-5_AC-1
+IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 if (!cliOptions.config && fileConfig === null) {

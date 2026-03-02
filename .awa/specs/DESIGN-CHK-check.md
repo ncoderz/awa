@@ -61,7 +61,7 @@ src/
 
 Scans code files matching configured globs for traceability markers. Extracts marker type, referenced ID, file path, and line number.
 
-IMPLEMENTS: CHK-1_AC-1, CHK-11_AC-1, CHK-13_AC-1
+IMPLEMENTS: CFG-1_AC-4, CHK-1_AC-1, CHK-11_AC-1, CHK-13_AC-1
 
 ```typescript
 interface MarkerScanResult {
@@ -118,7 +118,7 @@ function parseSpecs(config: CheckConfig): Promise<SpecParseResult>;
 
 Matches code markers against spec IDs. Reports orphaned markers (code references non-existent spec ID) and uncovered ACs (spec AC with no test marker).
 
-IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1, CHK-20_AC-1, CHK-22_AC-1
+IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1, CHK-20_AC-1, CHK-21_AC-1, CHK-22_AC-1
 
 ```typescript
 interface CheckResult {
@@ -181,7 +181,7 @@ function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[
 
 Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code. Runs matrix generation by default after checks complete (skip with `--no-fix`).
 
-IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-23_AC-1, CHK-23_AC-2
+IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-16_AC-1, CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
 
 ```typescript
 function checkCommand(cliOptions: RawCheckOptions): Promise<number>;

@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { MarkerScanResult, SpecParseResult } from '../../check/types.js';
 import { buildTraceIndex } from '../index-builder.js';
 
+// @awa-test: TRC_P-1
 // @awa-test: TRC-1_AC-1
 
 /** Helper to create a minimal SpecParseResult with sensible defaults. */
