@@ -271,16 +271,24 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
+### REQ-CHK-check.md
+
+- CHK-1_AC-2 → GEN-GenerateCommand
+- CHK-1_AC-3 → GEN-GenerateCommand
+- CHK-5_AC-2 → GEN-GenerateCommand
+- CHK-5_AC-3 → GEN-GenerateCommand
+
 ### REQ-CLI-cli.md
 
-- CLI-1_AC-1 → GEN-GenerateCommand
-- CLI-1_AC-1 → GEN-CoreTypes
-- CLI-1_AC-2 → GEN-GenerateCommand
-- CLI-1_AC-3 → GEN-GenerateCommand
 - CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
+- CLI-5_AC-2 → GEN-DeleteResolver (GEN_P-4)
 - CLI-5_AC-3 → GEN-ConflictResolver
+- CLI-5_AC-3 → GEN-DeleteResolver
 - CLI-6_AC-2 → GEN-FileGenerator
 - CLI-6_AC-3 → GEN-Logger
+- CLI-12_AC-2 → GEN-FileGenerator
+- CLI-12_AC-3 → GEN-ConflictResolver
+- CLI-12_AC-3 → GEN-DeleteResolver
 
 ### REQ-DIFF-diff.md
 
@@ -302,16 +310,29 @@ PRINCIPLES:
 - GEN-3_AC-2 → GEN-FileGenerator
 - GEN-3_AC-3 → GEN-FileGenerator
 - GEN-4_AC-1 → GEN-ConflictResolver
+- GEN-4_AC-1 → GEN-DeleteResolver
 - GEN-4_AC-2 → GEN-ConflictResolver
+- GEN-4_AC-2 → GEN-DeleteResolver
 - GEN-4_AC-3 → GEN-ConflictResolver (GEN_P-4)
+- GEN-4_AC-3 → GEN-DeleteResolver (GEN_P-4)
 - GEN-5_AC-1 → GEN-ConflictResolver
+- GEN-5_AC-1 → GEN-DeleteResolver
 - GEN-5_AC-2 → GEN-ConflictResolver
+- GEN-5_AC-2 → GEN-DeleteResolver
 - GEN-5_AC-3 → GEN-ConflictResolver
+- GEN-5_AC-3 → GEN-DeleteResolver
 - GEN-5_AC-4 → GEN-ConflictResolver
+- GEN-5_AC-4 → GEN-DeleteResolver
 - GEN-5_AC-5 → GEN-ConflictResolver
+- GEN-5_AC-5 → GEN-DeleteResolver
 - GEN-5_AC-6 → GEN-ConflictResolver
+- GEN-5_AC-6 → GEN-DeleteResolver
 - GEN-5_AC-7 → GEN-ConflictResolver (GEN_P-5)
+- GEN-5_AC-7 → GEN-DeleteResolver (GEN_P-5)
+- GEN-6_AC-1 → GEN-FileGenerator (GEN_P-3)
+- GEN-6_AC-2 → GEN-FileGenerator (GEN_P-3)
 - GEN-6_AC-3 → GEN-ConflictResolver
+- GEN-6_AC-3 → GEN-DeleteResolver
 - GEN-6_AC-4 → GEN-Logger
 - GEN-7_AC-1 → GEN-Logger
 - GEN-7_AC-2 → GEN-Logger
@@ -329,23 +350,47 @@ PRINCIPLES:
 - GEN-9_AC-7 → GEN-Logger
 - GEN-9_AC-8 → GEN-Logger
 - GEN-10_AC-3 → GEN-ConflictResolver
+- GEN-10_AC-3 → GEN-DeleteResolver
 - GEN-11_AC-1 → GEN-Logger
 - GEN-11_AC-2 → GEN-Logger
 - GEN-11_AC-3 → GEN-FileGenerator
 - GEN-11_AC-4 → GEN-Logger
-- GEN-12_AC-1 → GEN-FileGenerator
 - GEN-12_AC-1 → GEN-DeleteList
 - GEN-12_AC-2 → GEN-FileGenerator
-- GEN-12_AC-3 → GEN-FileGenerator
+- GEN-12_AC-3 → GEN-ConflictResolver
 - GEN-12_AC-3 → GEN-DeleteResolver
 - GEN-12_AC-4 → GEN-FileGenerator
+- GEN-12_AC-4 → GEN-ConflictResolver
 - GEN-12_AC-4 → GEN-DeleteResolver
 - GEN-12_AC-5 → GEN-FileGenerator
+- GEN-12_AC-5 → GEN-ConflictResolver
 - GEN-12_AC-5 → GEN-DeleteResolver
 - GEN-12_AC-6 → GEN-FileGenerator
 - GEN-12_AC-7 → GEN-FileGenerator
-- GEN-12_AC-8 → GEN-FileGenerator (GEN_P-6)
 - GEN-12_AC-8 → GEN-DeleteList (GEN_P-6)
+
+### REQ-INIT-init-alias.md
+
+- INIT-5_AC-1 → GEN-GenerateCommand
+
+### REQ-JSON-json-output.md
+
+- JSON-1_AC-1 → GEN-GenerateCommand
+- JSON-3_AC-1 → GEN-CoreTypes
+- JSON-4_AC-1 → GEN-CoreTypes
+- JSON-5_AC-1 → GEN-GenerateCommand
+- JSON-6_AC-1 → GEN-GenerateCommand
+- JSON-7_AC-1 → GEN-GenerateCommand
+- JSON-8_AC-1 → GEN-GenerateCommand
+
+### REQ-MULTI-multi-target.md
+
+- MULTI-6_AC-1 → GEN-GenerateCommand
+- MULTI-10_AC-1 → GEN-GenerateCommand
+
+### REQ-OVL-overlays.md
+
+- OVL-2_AC-1 → GEN-GenerateCommand
 
 ### REQ-TPL-templates.md
 

@@ -97,7 +97,7 @@ function runAll(fixtures: TestFixture[], templatePath: string, options: TestRunO
 
 Displays pass/fail summary per fixture with failure details.
 
-IMPLEMENTS: TTST-6_AC-1
+IMPLEMENTS: TTST-6_AC-1, TTST-10_AC-1
 
 ```typescript
 function report(result: TestSuiteResult): void;
@@ -107,7 +107,7 @@ function report(result: TestSuiteResult): void;
 
 CLI command handler that orchestrates fixture loading, test execution, and reporting.
 
-IMPLEMENTS: TTST-7_AC-1
+IMPLEMENTS: TTST-7_AC-1, TTST-9_AC-1, TTST-11_AC-1, TTST-12_AC-1
 
 ```typescript
 function testCommand(options: RawTestOptions): Promise<number>;
@@ -219,6 +219,11 @@ PRINCIPLES:
 - TTST-5_AC-1 → TTST-TestRunner (TTST_P-4)
 - TTST-6_AC-1 → TTST-Reporter (TTST_P-3)
 - TTST-7_AC-1 → TTST-TestCommand (TTST_P-3)
+- TTST-8_AC-1 → TTST-TestRunner (TTST_P-2)
+- TTST-9_AC-1 → TTST-TestCommand
+- TTST-10_AC-1 → TTST-Reporter
+- TTST-11_AC-1 → TTST-TestCommand
+- TTST-12_AC-1 → TTST-TestCommand
 
 ## Change Log
 

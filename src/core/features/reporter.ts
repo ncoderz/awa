@@ -1,6 +1,7 @@
 // @awa-component: DISC-Reporter
 // @awa-impl: DISC-6_AC-1
 // @awa-impl: DISC-7_AC-1
+// @awa-impl: DISC-9_AC-1
 
 import chalk from 'chalk';
 import type { PresetDefinitions } from '../../types/index.js';

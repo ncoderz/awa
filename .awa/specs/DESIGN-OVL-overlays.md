@@ -196,17 +196,101 @@ Test generate and diff commands with mocked overlay module.
 
 ## Requirements Traceability
 
+### REQ-CHK-check.md
+
+- CHK-8_AC-1 → CLI-ArgumentParser
+- CHK-9_AC-1 → CLI-ArgumentParser
+- CHK-10_AC-1 → CLI-ArgumentParser
+- CHK-16_AC-1 → CFG-ConfigLoader
+
+### REQ-CLI-cli.md
+
+- CLI-1_AC-4 → CFG-ConfigLoader
+- CLI-2_AC-2 → CFG-ConfigLoader
+- CLI-2_AC-3 → CLI-ArgumentParser
+- CLI-6_AC-2 → CLI-ArgumentParser
+- CLI-13_AC-1 → CLI-ArgumentParser
+- CLI-13_AC-2 → CLI-ArgumentParser
+- CLI-14_AC-1 → CLI-ArgumentParser
+- CLI-14_AC-2 → CLI-ArgumentParser
+
+### REQ-DIFF-diff.md
+
+- DIFF-7_AC-11 → CLI-ArgumentParser
+
+### REQ-DISC-feature-discovery.md
+
+- DISC-4_AC-1 → CLI-ArgumentParser
+- DISC-5_AC-1 → CLI-ArgumentParser
+
+### REQ-INIT-init-alias.md
+
+- INIT-1_AC-1 → CLI-ArgumentParser
+- INIT-2_AC-1 → CLI-ArgumentParser
+- INIT-3_AC-1 → CLI-ArgumentParser
+- INIT-4_AC-1 → CLI-ArgumentParser
+
+### REQ-JSON-json-output.md
+
+- JSON-1_AC-1 → CLI-ArgumentParser
+- JSON-2_AC-1 → CLI-ArgumentParser
+- JSON-5_AC-1 → CLI-ArgumentParser
+
+### REQ-MULTI-multi-target.md
+
+- MULTI-1_AC-1 → CFG-ConfigLoader
+- MULTI-2_AC-1 → CFG-ConfigLoader
+- MULTI-3_AC-1 → CFG-ConfigLoader
+- MULTI-5_AC-2 → CFG-ConfigLoader
+
 ### REQ-OVL-overlays.md
 
 - OVL-1_AC-1 → OVL-OverlayResolver
+- OVL-1_AC-1 → OVL-MergedTemplateView
 - OVL-1_AC-1 → CLI-ArgumentParser
+- OVL-2_AC-1 → OVL-OverlayResolver (OVL_P-1)
 - OVL-2_AC-1 → OVL-MergedTemplateView (OVL_P-1)
+- OVL-3_AC-1 → OVL-OverlayResolver (OVL_P-2)
 - OVL-3_AC-1 → OVL-MergedTemplateView (OVL_P-2)
+- OVL-4_AC-1 → OVL-OverlayResolver
 - OVL-4_AC-1 → OVL-MergedTemplateView
+- OVL-5_AC-1 → OVL-OverlayResolver (OVL_P-3)
 - OVL-5_AC-1 → OVL-MergedTemplateView (OVL_P-3)
 - OVL-6_AC-1 → OVL-OverlayResolver
+- OVL-6_AC-1 → OVL-MergedTemplateView
 - OVL-7_AC-1 → CLI-ArgumentParser
 - OVL-8_AC-1 → CFG-ConfigLoader
+
+### REQ-TCLI-template-cli.md
+
+- TCLI-1_AC-1 → CLI-ArgumentParser
+- TCLI-1_AC-2 → CLI-ArgumentParser
+- TCLI-1_AC-3 → CLI-ArgumentParser
+- TCLI-1_AC-4 → CLI-ArgumentParser
+- TCLI-1_AC-5 → CLI-ArgumentParser
+- TCLI-1_AC-6 → CLI-ArgumentParser
+- TCLI-1_AC-7 → CLI-ArgumentParser
+- TCLI-2_AC-1 → CLI-ArgumentParser
+- TCLI-2_AC-2 → CLI-ArgumentParser
+- TCLI-3_AC-1 → CLI-ArgumentParser
+- TCLI-3_AC-2 → CLI-ArgumentParser
+- TCLI-3_AC-3 → CLI-ArgumentParser
+- TCLI-3_AC-4 → CLI-ArgumentParser
+- TCLI-4_AC-1 → CLI-ArgumentParser
+- TCLI-4_AC-2 → CLI-ArgumentParser
+- TCLI-5_AC-1 → CLI-ArgumentParser
+- TCLI-5_AC-2 → CLI-ArgumentParser
+- TCLI-5_AC-3 → CLI-ArgumentParser
+- TCLI-5_AC-4 → CLI-ArgumentParser
+
+### REQ-TRC-trace.md
+
+- TRC-8_AC-1 → CLI-ArgumentParser
+
+### REQ-TTST-template-test.md
+
+- TTST-5_AC-1 → CLI-ArgumentParser
+- TTST-7_AC-1 → CLI-ArgumentParser
 
 ## Change Log
 

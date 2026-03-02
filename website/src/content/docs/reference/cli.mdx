@@ -28,7 +28,7 @@ awa init . --delete                   # apply deletions from template
 awa init . --json                     # JSON output (implies --dry-run)
 awa init . --summary                  # compact one-line summary
 awa init . --overlay ./my-overrides   # layer custom files over base template
-awa init --all                        # process all named targets from config
+awa init --all-targets                # process all named targets from config
 awa init --target claude              # process a specific named target
 ```
 
@@ -44,7 +44,7 @@ awa init --target claude              # process a specific named target
 | `--delete` | Enable deletion of files listed for deletion in the template |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
-| `--all` | Process all named targets from config |
+| `--all-targets` | Process all named targets from config |
 | `--target <name>` | Process a specific named target from config |
 | `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON to stdout (implies `--dry-run`) |
@@ -58,7 +58,8 @@ Exit code `0` = all checks pass, `1` = errors found, `2` = internal error.
 
 ```bash
 awa check                              # check with defaults
-awa check --format json                # JSON output for CI
+awa check --json                       # JSON output for CI
+awa check --summary                    # compact one-line summary
 awa check --code-ignore "test/**"      # ignore specific code paths
 awa check --config ./custom.toml       # custom config file
 awa check --allow-warnings             # warnings don't fail
@@ -70,7 +71,9 @@ awa check --spec-only                  # skip code-to-spec traceability
 | `-c, --config <path>` | Path to configuration file |
 | `--spec-ignore <pattern...>` | Glob patterns to exclude from spec file scanning |
 | `--code-ignore <pattern...>` | Glob patterns to exclude from code file scanning |
-| `--format <format>` | Output format: `text` (default) or `json` |
+| `--json` | Output results as JSON |
+| `--summary` | Output compact one-line summary |
+| `--format <format>` | Output format: `text` or `json` (hidden; prefer `--json`) |
 | `--allow-warnings` | Allow warnings without failing (default: warnings are treated as errors) |
 | `--spec-only` | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability |
 
@@ -127,7 +130,7 @@ By default, warnings are treated as errors (exit code `1`). Use `--allow-warning
 
 #### JSON Output Format
 
-When `--format json` is used, output is a JSON object:
+When `--json` (or `--format json`) is used, output is a JSON object:
 
 ```json
 {
@@ -169,6 +172,7 @@ awa trace DIFF-1 --content               # output actual file sections
 awa trace DIFF-1 --content --max-tokens 4000  # cap content output size
 awa trace DIFF-1 --list                  # output file paths only
 awa trace DIFF-1 --json                  # JSON output
+awa trace DIFF-1 --summary               # compact one-line summary
 awa trace DIFF-1 --direction forward     # trace forward only
 awa trace DIFF-1 --depth 2              # limit traversal depth
 awa trace DIFF-1 --scope DIFF            # limit to a feature code
@@ -191,7 +195,8 @@ awa trace DIFF-1 --content -C 10         # 10 lines of context before and after
 | `--direction <dir>` | Traversal direction: `both` (default), `forward`, `reverse` |
 | `--no-code` | Exclude source code (spec-only context) |
 | `--no-tests` | Exclude test files |
-| `--json` | Output as JSON |
+| `--json` | Output results as JSON |
+| `--summary` | Output compact one-line summary |
 | `-A <n>` | Lines of context after a code marker (`--content` only; default: 20) |
 | `-B <n>` | Lines of context before a code marker (`--content` only; default: 5) |
 | `-C <n>` | Lines of context before and after (`--content` only; overrides `-A` and `-B`) |
@@ -211,7 +216,7 @@ awa template diff . --watch                        # watch template and re-diff 
 awa template diff . --overlay ./my-overrides       # diff against merged template view
 awa template diff . --json                         # JSON output for CI
 awa template diff . --summary                      # compact one-line summary
-awa template diff --all                            # diff all named targets from config
+awa template diff --all-targets                    # diff all named targets from config
 awa template diff --target copilot                 # diff a specific named target
 ```
 
@@ -225,7 +230,7 @@ awa template diff --target copilot                 # diff a specific named targe
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
-| `--all` | Process all named targets from config |
+| `--all-targets` | Process all named targets from config |
 | `--target <name>` | Process a specific named target from config |
 | `-w, --watch` | Watch template directory for changes and re-run diff |
 | `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
@@ -242,6 +247,8 @@ Exit code `0` = success, `1` = error.
 awa template features                              # discover flags in default template
 awa template features --template ./templates/awa   # specific template
 awa template features --json                       # JSON output
+awa template features --overlay ./custom           # include overlay features
+awa template features --summary                    # compact one-line summary
 ```
 
 | Option | Description |
@@ -249,7 +256,9 @@ awa template features --json                       # JSON output
 | `-t, --template <source>` | Template source — local path or Git repo |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--json` | Output results as JSON |
+| `--summary` | Output compact one-line summary |
 
 The features command:
 - Scans all template files (including partials) for `it.features.includes('name')` references
@@ -281,13 +290,21 @@ Exit code `0` = all pass, `1` = failures found, `2` = internal error.
 awa template test                                       # test default template
 awa template test --template ./templates/awa            # test specific template
 awa template test --update-snapshots                    # update stored snapshots
+awa template test --refresh                             # re-fetch cached Git templates
+awa template test --overlay ./custom                    # test with overlay applied
+awa template test --json                                # JSON output for CI
+awa template test --summary                             # compact one-line summary
 ```
 
 | Option | Description |
 |--------|-------------|
 | `-t, --template <source>` | Template source — local path or Git repo |
 | `-c, --config <path>` | Path to configuration file |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--update-snapshots` | Update stored snapshots with current rendered output |
+| `--json` | Output results as JSON |
+| `--summary` | Output compact one-line summary |
 
 The test command:
 - Discovers fixture files (`*.toml`) in the template's `_tests/` directory
@@ -397,20 +414,20 @@ features = ["copilot", "code", "vibe"]
 Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config.
 
 ```bash
-awa template generate --all                   # process all targets
+awa template generate --all-targets           # process all targets
 awa template generate --target claude         # process one target
-awa template diff --all                       # diff all targets
+awa template diff --all-targets               # diff all targets
 awa template diff --target copilot            # diff one target
 ```
 
 **Behavior notes:**
 
-- `--all` and `--target` suppress interactive tool-feature prompting (non-interactive batch mode)
-- `--all` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override the target's output
-- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all`
-- `--all` requires at least one `[targets.*]` section; errors with `NO_TARGETS` otherwise
+- `--all-targets` and `--target` suppress interactive tool-feature prompting (non-interactive batch mode)
+- `--all-targets` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override the target's output
+- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all-targets`
+- `--all-targets` requires at least one `[targets.*]` section; errors with `NO_TARGETS` otherwise
 - `--target <name>` errors with `UNKNOWN_TARGET` if the name isn't defined
-- `diff --all` exit code: `0` if all targets match, `1` if any target has differences, `2` on error
+- `diff --all-targets` exit code: `0` if all targets match, `1` if any target has differences, `2` on error
 
 See [Configuration](/reference/configuration/) for the full `[targets]` reference.
 

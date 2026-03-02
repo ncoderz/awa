@@ -68,6 +68,22 @@ ACCEPTANCE CRITERIA
 
 - DISC-7_AC-1 [conditional]: IF preset definitions exist in the loaded config THEN the system SHALL include them in the output
 
+### DISC-8: Overlay Support [SHOULD]
+
+AS A developer, I WANT to apply overlays when discovering features, SO THAT overlay-added feature flags are included in the results.
+
+ACCEPTANCE CRITERIA
+
+- DISC-8_AC-1 [conditional]: IF `--overlay <path...>` is specified THEN the system SHALL merge overlay directories over the base template before scanning for features
+
+### DISC-9: Summary Output [SHOULD]
+
+AS A CI engineer, I WANT a compact one-line summary, SO THAT pipeline logs are concise.
+
+ACCEPTANCE CRITERIA
+
+- DISC-9_AC-1 [conditional]: IF `--summary` is specified THEN the system SHALL output a single line with feature count and files-scanned count and suppress interactive output
+
 ## Assumptions
 
 - Template files contain feature flag references as `it.features.includes(...)` or `it.features.indexOf(...)` patterns
@@ -85,3 +101,4 @@ ACCEPTANCE CRITERIA
 ## Change Log
 
 - 1.0.0 (2026-02-28): Initial requirements
+- 1.1.0 (2026-03-02): Added DISC-8 (`--overlay`), DISC-9 (`--summary`)

@@ -171,7 +171,7 @@ function applyTokenBudget(sections: ContentSection[], maxTokens: number): {
 
 Orchestrates the trace pipeline: config, scan, build index, resolve input, resolve chain, format, output.
 
-IMPLEMENTS: TRC-8_AC-1, TRC-8_AC-2, TRC-2_AC-4
+IMPLEMENTS: TRC-8_AC-1, TRC-8_AC-2, TRC-2_AC-4, TRC-12_AC-1
 
 ```typescript
 async function traceCommand(options: TraceCommandOptions): Promise<number>;
@@ -318,6 +318,7 @@ PRINCIPLES:
 - TRC-10_AC-1 → TRC-Formatter
 - TRC-11_AC-1 → TRC-TraceResolver
 - TRC-11_AC-2 → TRC-TraceResolver
+- TRC-12_AC-1 → TRC-TraceCommand
 
 ## Change Log
 

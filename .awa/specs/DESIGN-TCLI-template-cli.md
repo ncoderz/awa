@@ -52,7 +52,7 @@ src/
 
 A commander parent command that acts as a namespace for template-related subcommands. Does not have its own action handler — displays help when invoked without a subcommand.
 
-IMPLEMENTS: CFG-5_AC-2, CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface TemplateGroup {
@@ -67,7 +67,7 @@ interface TemplateGroup {
 
 The root `awa` command that wires together the template group, top-level init convenience command, and top-level awa commands.
 
-IMPLEMENTS: CFG-5_AC-2, CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface RootProgram {
@@ -133,27 +133,228 @@ Verify command tree structure by inspecting commander Command instances.
 
 ## Requirements Traceability
 
+### REQ-CFG-config.md
+
+- CFG-5_AC-2 → TCLI-TemplateGroup
+- CFG-5_AC-2 → TCLI-RootProgram
+
+### REQ-CHK-check.md
+
+- CHK-8_AC-1 → TCLI-TemplateGroup
+- CHK-8_AC-1 → TCLI-RootProgram
+- CHK-9_AC-1 → TCLI-TemplateGroup
+- CHK-9_AC-1 → TCLI-RootProgram
+- CHK-10_AC-1 → TCLI-TemplateGroup
+- CHK-10_AC-1 → TCLI-RootProgram
+
+### REQ-CLI-cli.md
+
+- CLI-1_AC-1 → TCLI-TemplateGroup
+- CLI-1_AC-1 → TCLI-RootProgram
+- CLI-1_AC-2 → TCLI-TemplateGroup
+- CLI-1_AC-2 → TCLI-RootProgram
+- CLI-1_AC-3 → TCLI-TemplateGroup
+- CLI-1_AC-3 → TCLI-RootProgram
+- CLI-1_AC-4 → TCLI-TemplateGroup
+- CLI-1_AC-4 → TCLI-RootProgram
+- CLI-1_AC-5 → TCLI-TemplateGroup
+- CLI-1_AC-5 → TCLI-RootProgram
+- CLI-2_AC-1 → TCLI-TemplateGroup
+- CLI-2_AC-1 → TCLI-RootProgram
+- CLI-2_AC-2 → TCLI-TemplateGroup
+- CLI-2_AC-2 → TCLI-RootProgram
+- CLI-2_AC-3 → TCLI-TemplateGroup
+- CLI-2_AC-3 → TCLI-RootProgram
+- CLI-2_AC-5 → TCLI-TemplateGroup
+- CLI-2_AC-5 → TCLI-RootProgram
+- CLI-2_AC-6 → TCLI-TemplateGroup
+- CLI-2_AC-6 → TCLI-RootProgram
+- CLI-3_AC-1 → TCLI-TemplateGroup
+- CLI-3_AC-1 → TCLI-RootProgram
+- CLI-4_AC-1 → TCLI-TemplateGroup
+- CLI-4_AC-1 → TCLI-RootProgram
+- CLI-4_AC-2 → TCLI-TemplateGroup
+- CLI-4_AC-2 → TCLI-RootProgram
+- CLI-5_AC-1 → TCLI-TemplateGroup
+- CLI-5_AC-1 → TCLI-RootProgram
+- CLI-6_AC-1 → TCLI-TemplateGroup
+- CLI-6_AC-1 → TCLI-RootProgram
+- CLI-6_AC-2 → TCLI-TemplateGroup
+- CLI-6_AC-2 → TCLI-RootProgram
+- CLI-7_AC-1 → TCLI-TemplateGroup
+- CLI-7_AC-1 → TCLI-RootProgram
+- CLI-8_AC-1 → TCLI-TemplateGroup
+- CLI-8_AC-1 → TCLI-RootProgram
+- CLI-9_AC-1 → TCLI-TemplateGroup
+- CLI-9_AC-1 → TCLI-RootProgram
+- CLI-9_AC-2 → TCLI-TemplateGroup
+- CLI-9_AC-2 → TCLI-RootProgram
+- CLI-9_AC-3 → TCLI-TemplateGroup
+- CLI-9_AC-3 → TCLI-RootProgram
+- CLI-10_AC-1 → TCLI-TemplateGroup
+- CLI-10_AC-1 → TCLI-RootProgram
+- CLI-10_AC-2 → TCLI-TemplateGroup
+- CLI-10_AC-2 → TCLI-RootProgram
+- CLI-11_AC-1 → TCLI-TemplateGroup
+- CLI-11_AC-1 → TCLI-RootProgram
+- CLI-11_AC-2 → TCLI-TemplateGroup
+- CLI-11_AC-2 → TCLI-RootProgram
+- CLI-11_AC-3 → TCLI-TemplateGroup
+- CLI-11_AC-3 → TCLI-RootProgram
+- CLI-12_AC-1 → TCLI-TemplateGroup
+- CLI-12_AC-1 → TCLI-RootProgram
+- CLI-13_AC-1 → TCLI-TemplateGroup
+- CLI-13_AC-1 → TCLI-RootProgram
+- CLI-13_AC-2 → TCLI-TemplateGroup
+- CLI-13_AC-2 → TCLI-RootProgram
+- CLI-14_AC-1 → TCLI-TemplateGroup
+- CLI-14_AC-1 → TCLI-RootProgram
+- CLI-14_AC-2 → TCLI-TemplateGroup
+- CLI-14_AC-2 → TCLI-RootProgram
+- CLI-15_AC-1 → TCLI-TemplateGroup
+- CLI-15_AC-1 → TCLI-RootProgram
+- CLI-15_AC-2 → TCLI-TemplateGroup
+- CLI-15_AC-2 → TCLI-RootProgram
+
+### REQ-DIFF-diff.md
+
+- DIFF-7_AC-1 → TCLI-TemplateGroup
+- DIFF-7_AC-1 → TCLI-RootProgram
+- DIFF-7_AC-2 → TCLI-TemplateGroup
+- DIFF-7_AC-2 → TCLI-RootProgram
+- DIFF-7_AC-3 → TCLI-TemplateGroup
+- DIFF-7_AC-3 → TCLI-RootProgram
+- DIFF-7_AC-4 → TCLI-TemplateGroup
+- DIFF-7_AC-4 → TCLI-RootProgram
+- DIFF-7_AC-5 → TCLI-TemplateGroup
+- DIFF-7_AC-5 → TCLI-RootProgram
+- DIFF-7_AC-6 → TCLI-TemplateGroup
+- DIFF-7_AC-6 → TCLI-RootProgram
+- DIFF-7_AC-7 → TCLI-TemplateGroup
+- DIFF-7_AC-7 → TCLI-RootProgram
+- DIFF-7_AC-8 → TCLI-TemplateGroup
+- DIFF-7_AC-8 → TCLI-RootProgram
+- DIFF-7_AC-9 → TCLI-TemplateGroup
+- DIFF-7_AC-9 → TCLI-RootProgram
+- DIFF-7_AC-10 → TCLI-TemplateGroup
+- DIFF-7_AC-10 → TCLI-RootProgram
+- DIFF-7_AC-11 → TCLI-TemplateGroup
+- DIFF-7_AC-11 → TCLI-RootProgram
+- DIFF-7_AC-12 → TCLI-TemplateGroup
+- DIFF-7_AC-12 → TCLI-RootProgram
+- DIFF-7_AC-13 → TCLI-TemplateGroup
+- DIFF-7_AC-13 → TCLI-RootProgram
+
+### REQ-DISC-feature-discovery.md
+
+- DISC-4_AC-1 → TCLI-TemplateGroup
+- DISC-4_AC-1 → TCLI-RootProgram
+- DISC-5_AC-1 → TCLI-TemplateGroup
+- DISC-5_AC-1 → TCLI-RootProgram
+
+### REQ-FP-feature-presets.md
+
+- FP-2_AC-1 → TCLI-TemplateGroup
+- FP-2_AC-1 → TCLI-RootProgram
+- FP-2_AC-2 → TCLI-TemplateGroup
+- FP-2_AC-2 → TCLI-RootProgram
+- FP-2_AC-4 → TCLI-TemplateGroup
+- FP-2_AC-4 → TCLI-RootProgram
+- FP-4_AC-1 → TCLI-TemplateGroup
+- FP-4_AC-1 → TCLI-RootProgram
+- FP-4_AC-2 → TCLI-TemplateGroup
+- FP-4_AC-2 → TCLI-RootProgram
+- FP-4_AC-3 → TCLI-TemplateGroup
+- FP-4_AC-3 → TCLI-RootProgram
+- FP-4_AC-5 → TCLI-TemplateGroup
+- FP-4_AC-5 → TCLI-RootProgram
+
+### REQ-GEN-generation.md
+
+- GEN-10_AC-1 → TCLI-TemplateGroup
+- GEN-10_AC-1 → TCLI-RootProgram
+- GEN-10_AC-2 → TCLI-TemplateGroup
+- GEN-10_AC-2 → TCLI-RootProgram
+
+### REQ-INIT-init-alias.md
+
+- INIT-1_AC-1 → TCLI-TemplateGroup
+- INIT-1_AC-1 → TCLI-RootProgram
+- INIT-2_AC-1 → TCLI-TemplateGroup
+- INIT-2_AC-1 → TCLI-RootProgram
+- INIT-3_AC-1 → TCLI-TemplateGroup
+- INIT-3_AC-1 → TCLI-RootProgram
+- INIT-4_AC-1 → TCLI-TemplateGroup
+- INIT-4_AC-1 → TCLI-RootProgram
+
+### REQ-JSON-json-output.md
+
+- JSON-1_AC-1 → TCLI-TemplateGroup
+- JSON-1_AC-1 → TCLI-RootProgram
+- JSON-2_AC-1 → TCLI-TemplateGroup
+- JSON-2_AC-1 → TCLI-RootProgram
+- JSON-5_AC-1 → TCLI-TemplateGroup
+- JSON-5_AC-1 → TCLI-RootProgram
+
+### REQ-OVL-overlays.md
+
+- OVL-1_AC-1 → TCLI-TemplateGroup
+- OVL-1_AC-1 → TCLI-RootProgram
+- OVL-7_AC-1 → TCLI-TemplateGroup
+- OVL-7_AC-1 → TCLI-RootProgram
+
 ### REQ-TCLI-template-cli.md
 
 - TCLI-1_AC-1 → TCLI-TemplateGroup
+- TCLI-1_AC-1 → TCLI-RootProgram
 - TCLI-1_AC-2 → TCLI-TemplateGroup (TCLI_P-1)
+- TCLI-1_AC-2 → TCLI-RootProgram (TCLI_P-1)
 - TCLI-1_AC-3 → TCLI-TemplateGroup
+- TCLI-1_AC-3 → TCLI-RootProgram
 - TCLI-1_AC-4 → TCLI-TemplateGroup (TCLI_P-2)
+- TCLI-1_AC-4 → TCLI-RootProgram (TCLI_P-2)
 - TCLI-1_AC-5 → TCLI-TemplateGroup (TCLI_P-2)
+- TCLI-1_AC-5 → TCLI-RootProgram (TCLI_P-2)
 - TCLI-1_AC-6 → TCLI-TemplateGroup (TCLI_P-2)
+- TCLI-1_AC-6 → TCLI-RootProgram (TCLI_P-2)
 - TCLI-1_AC-7 → TCLI-TemplateGroup (TCLI_P-2)
+- TCLI-1_AC-7 → TCLI-RootProgram (TCLI_P-2)
+- TCLI-2_AC-1 → TCLI-TemplateGroup
 - TCLI-2_AC-1 → TCLI-RootProgram
+- TCLI-2_AC-2 → TCLI-TemplateGroup (TCLI_P-2)
 - TCLI-2_AC-2 → TCLI-RootProgram (TCLI_P-2)
+- TCLI-3_AC-1 → TCLI-TemplateGroup (TCLI_P-3)
 - TCLI-3_AC-1 → TCLI-RootProgram (TCLI_P-3)
+- TCLI-3_AC-2 → TCLI-TemplateGroup (TCLI_P-3)
 - TCLI-3_AC-2 → TCLI-RootProgram (TCLI_P-3)
+- TCLI-3_AC-3 → TCLI-TemplateGroup
 - TCLI-3_AC-3 → TCLI-RootProgram
+- TCLI-3_AC-4 → TCLI-TemplateGroup
 - TCLI-3_AC-4 → TCLI-RootProgram
+- TCLI-4_AC-1 → TCLI-TemplateGroup
 - TCLI-4_AC-1 → TCLI-RootProgram
+- TCLI-4_AC-2 → TCLI-TemplateGroup
 - TCLI-4_AC-2 → TCLI-RootProgram
 - TCLI-5_AC-1 → TCLI-TemplateGroup (TCLI_P-1)
+- TCLI-5_AC-1 → TCLI-RootProgram (TCLI_P-1)
 - TCLI-5_AC-2 → TCLI-TemplateGroup (TCLI_P-1)
+- TCLI-5_AC-2 → TCLI-RootProgram (TCLI_P-1)
 - TCLI-5_AC-3 → TCLI-TemplateGroup (TCLI_P-1)
+- TCLI-5_AC-3 → TCLI-RootProgram (TCLI_P-1)
 - TCLI-5_AC-4 → TCLI-TemplateGroup (TCLI_P-1)
+- TCLI-5_AC-4 → TCLI-RootProgram (TCLI_P-1)
+
+### REQ-TRC-trace.md
+
+- TRC-8_AC-1 → TCLI-TemplateGroup
+- TRC-8_AC-1 → TCLI-RootProgram
+
+### REQ-TTST-template-test.md
+
+- TTST-5_AC-1 → TCLI-TemplateGroup
+- TTST-5_AC-1 → TCLI-RootProgram
+- TTST-7_AC-1 → TCLI-TemplateGroup
+- TTST-7_AC-1 → TCLI-RootProgram
 
 ## Library Usage
 

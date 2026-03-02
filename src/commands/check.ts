@@ -4,6 +4,7 @@
 // @awa-impl: CHK-17_AC-1
 // @awa-impl: CHK-17_AC-2
 // @awa-impl: CHK-17_AC-3
+// @awa-impl: CHK-24_AC-1
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
@@ -66,7 +67,14 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
         );
 
     // Report results
-    report(allFindings, config.format);
+    const isSummary = cliOptions.summary === true;
+    if (isSummary) {
+      const errors = allFindings.filter((f) => f.severity === 'error').length;
+      const warnings = allFindings.filter((f) => f.severity === 'warning').length;
+      console.log(`errors: ${errors}, warnings: ${warnings}`);
+    } else {
+      report(allFindings, config.format);
+    }
 
     // Run fix: regenerate traceability matrices in DESIGN and TASK files (default; skip with --no-fix)
     if (config.fix) {
@@ -119,11 +127,13 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
   ];
 
   const format: 'text' | 'json' =
-    cliOptions.format === 'json'
+    cliOptions.json === true
       ? 'json'
-      : section?.format === 'json'
+      : cliOptions.format === 'json'
         ? 'json'
-        : DEFAULT_CHECK_CONFIG.format;
+        : section?.format === 'json'
+          ? 'json'
+          : DEFAULT_CHECK_CONFIG.format;
 
   const schemaDir =
     typeof section?.['schema-dir'] === 'string'

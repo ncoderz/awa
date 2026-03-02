@@ -169,17 +169,53 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
+### REQ-CHK-check.md
+
+- CHK-1_AC-2 → JSON-GenerateCommand
+- CHK-1_AC-3 → JSON-GenerateCommand
+- CHK-5_AC-2 → JSON-GenerateCommand
+- CHK-5_AC-3 → JSON-GenerateCommand
+
+### REQ-DIFF-diff.md
+
+- DIFF-5_AC-1 → JSON-DiffCommand
+- DIFF-5_AC-2 → JSON-DiffCommand
+- DIFF-5_AC-3 → JSON-DiffCommand
+
+### REQ-INIT-init-alias.md
+
+- INIT-5_AC-1 → JSON-GenerateCommand
+
 ### REQ-JSON-json-output.md
 
 - JSON-1_AC-1 → JSON-JsonSerializer (JSON_P-1)
+- JSON-1_AC-1 → JSON-GenerateCommand (JSON_P-1)
 - JSON-2_AC-1 → JSON-JsonSerializer (JSON_P-1)
+- JSON-2_AC-1 → JSON-DiffCommand (JSON_P-1)
 - JSON-3_AC-1 → JSON-JsonSerializer (JSON_P-2)
 - JSON-4_AC-1 → JSON-JsonSerializer (JSON_P-2)
 - JSON-5_AC-1 → JSON-JsonSerializer
+- JSON-5_AC-1 → JSON-GenerateCommand
+- JSON-5_AC-1 → JSON-DiffCommand
 - JSON-6_AC-1 → JSON-GenerateCommand (JSON_P-4)
 - JSON-6_AC-1 → JSON-DiffCommand (JSON_P-4)
 - JSON-7_AC-1 → JSON-GenerateCommand (JSON_P-3)
 - JSON-8_AC-1 → JSON-JsonSerializer (JSON_P-4)
+- JSON-8_AC-1 → JSON-GenerateCommand (JSON_P-4)
+- JSON-8_AC-1 → JSON-DiffCommand (JSON_P-4)
+
+### REQ-MULTI-multi-target.md
+
+- MULTI-6_AC-1 → JSON-GenerateCommand
+- MULTI-6_AC-1 → JSON-DiffCommand
+- MULTI-7_AC-1 → JSON-DiffCommand
+- MULTI-10_AC-1 → JSON-GenerateCommand
+- MULTI-12_AC-1 → JSON-DiffCommand
+
+### REQ-OVL-overlays.md
+
+- OVL-2_AC-1 → JSON-GenerateCommand
+- OVL-7_AC-1 → JSON-DiffCommand
 
 ## Change Log
 

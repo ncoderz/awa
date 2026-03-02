@@ -1,12 +1,15 @@
 // @awa-component: DISC-FeaturesCommand
 // @awa-impl: DISC-4_AC-1
 // @awa-impl: DISC-5_AC-1
+// @awa-impl: DISC-8_AC-1
 
 import { intro, outro } from '@clack/prompts';
 import { configLoader } from '../core/config.js';
 import { featuresReporter } from '../core/features/reporter.js';
 import { featureScanner } from '../core/features/scanner.js';
+import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
+import { rmDir } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
 
 export interface FeaturesCommandOptions {
@@ -14,12 +17,18 @@ export interface FeaturesCommandOptions {
   config?: string;
   refresh?: boolean;
   json?: boolean;
+  summary?: boolean;
+  overlay?: string[];
 }
 
 // @awa-impl: DISC-4_AC-1, DISC-5_AC-1
 export async function featuresCommand(cliOptions: FeaturesCommandOptions): Promise<number> {
+  let mergedDir: string | null = null;
+
   try {
-    if (!cliOptions.json) {
+    const silent = cliOptions.json || cliOptions.summary;
+
+    if (!silent) {
       intro('awa CLI - Feature Discovery');
     }
 
@@ -31,20 +40,35 @@ export async function featuresCommand(cliOptions: FeaturesCommandOptions): Promi
     const refresh = cliOptions.refresh ?? fileConfig?.refresh ?? false;
     const template = await templateResolver.resolve(templateSource, refresh);
 
+    // Build merged dir if overlays are specified
+    const overlays = cliOptions.overlay ?? fileConfig?.overlay ?? [];
+    let templatePath = template.localPath;
+    if (overlays.length > 0) {
+      const overlayDirs = await resolveOverlays(overlays, refresh);
+      mergedDir = await buildMergedDir(template.localPath, overlayDirs);
+      templatePath = mergedDir;
+    }
+
     // Scan template for feature flags
-    const scanResult = await featureScanner.scan(template.localPath);
+    const scanResult = await featureScanner.scan(templatePath);
 
     // Retrieve preset definitions from config if available
     const presets = fileConfig?.presets;
 
     // Report results
-    featuresReporter.report({
-      scanResult,
-      json: cliOptions.json ?? false,
-      presets,
-    });
+    if (cliOptions.summary) {
+      console.log(
+        `features: ${scanResult.features.length}, files-scanned: ${scanResult.filesScanned}`
+      );
+    } else {
+      featuresReporter.report({
+        scanResult,
+        json: cliOptions.json ?? false,
+        presets,
+      });
+    }
 
-    if (!cliOptions.json) {
+    if (!silent) {
       outro('Feature discovery complete!');
     }
 
@@ -56,5 +80,9 @@ export async function featuresCommand(cliOptions: FeaturesCommandOptions): Promi
       logger.error(String(error));
     }
     return 1;
+  } finally {
+    if (mergedDir) {
+      await rmDir(mergedDir);
+    }
   }
 }

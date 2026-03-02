@@ -1,5 +1,6 @@
 // @awa-component: TRC-TraceCommand
 // @awa-impl: TRC-8_AC-1, TRC-8_AC-2, TRC-2_AC-4
+// @awa-impl: TRC-12_AC-1
 
 import { assembleContent } from '../core/trace/content-assembler.js';
 import { formatContentJson, formatContentMarkdown } from '../core/trace/content-formatter.js';
@@ -80,6 +81,13 @@ export async function traceCommand(options: TraceCommandOptions): Promise<number
     }
 
     // Format output
+    if (options.summary) {
+      const chainCount = result.chains.length;
+      const notFoundCount = result.notFound.length;
+      process.stdout.write(`chains: ${chainCount}, not-found: ${notFoundCount}\n`);
+      return result.notFound.length > 0 && result.chains.length === 0 ? 1 : 0;
+    }
+
     let output: string;
     const isContentMode = options.content || options.maxTokens !== undefined;
     const queryLabel = ids.join(', ');

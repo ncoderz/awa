@@ -96,13 +96,33 @@ Tests cover: alias invokes the same handler as generate; hint appears when confi
 
 ## Requirements Traceability
 
+### REQ-CHK-check.md
+
+- CHK-1_AC-2 → INIT-ConfigHint
+- CHK-1_AC-3 → INIT-ConfigHint
+- CHK-5_AC-2 → INIT-ConfigHint
+- CHK-5_AC-3 → INIT-ConfigHint
+
 ### REQ-INIT-init-alias.md
 
-- INIT-1_AC-1 → INIT-AliasRegistration
-- INIT-2_AC-1 → INIT-AliasRegistration
-- INIT-3_AC-1 → INIT-AliasRegistration (INIT_P-1)
-- INIT-4_AC-1 → INIT-AliasRegistration
 - INIT-5_AC-1 → INIT-ConfigHint (INIT_P-2)
+
+### REQ-JSON-json-output.md
+
+- JSON-1_AC-1 → INIT-ConfigHint
+- JSON-5_AC-1 → INIT-ConfigHint
+- JSON-6_AC-1 → INIT-ConfigHint
+- JSON-7_AC-1 → INIT-ConfigHint
+- JSON-8_AC-1 → INIT-ConfigHint
+
+### REQ-MULTI-multi-target.md
+
+- MULTI-6_AC-1 → INIT-ConfigHint
+- MULTI-10_AC-1 → INIT-ConfigHint
+
+### REQ-OVL-overlays.md
+
+- OVL-2_AC-1 → INIT-ConfigHint
 
 ## Change Log
 

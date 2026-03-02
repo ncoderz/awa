@@ -1,5 +1,6 @@
 // @awa-test: TRC_P-5
 // @awa-test: TRC-8_AC-1, TRC-8_AC-2, TRC-2_AC-4, TRC-5_AC-5
+// @awa-test: TRC-12_AC-1
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { TraceCommandOptions, TraceIndex, TraceResult } from '../../core/trace/types.js';

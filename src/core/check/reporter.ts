@@ -1,5 +1,7 @@
 // @awa-component: CHK-Reporter
 // @awa-impl: CHK-9_AC-1
+// @awa-impl: CHK-9_AC-2
+// @awa-impl: CHK-9_AC-3
 
 import chalk from 'chalk';
 import type { Finding } from './types.js';

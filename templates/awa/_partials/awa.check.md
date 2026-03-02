@@ -68,6 +68,6 @@ You SHALL fix all errors (severity: error) before completing.
 You SHALL re-run `awa check` after fixes to confirm resolution.
 You SHALL NOT remove traceability markers to silence errors — fix the root cause instead.
 You SHOULD address warnings when straightforward, but warnings do not block completion.
-You MAY use `awa check --format json` for structured output when analyzing complex results.
+You MAY use `awa check --json` for structured output when analyzing complex results.
 You MAY use todos and tools as needed.
 

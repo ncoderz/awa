@@ -14,6 +14,7 @@
 // @awa-test: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
 // @awa-test: CLI-13_AC-1, CLI-13_AC-2
 // @awa-test: CLI-14_AC-1, CLI-14_AC-2
+// @awa-test: CLI-15_AC-1, CLI-15_AC-2
 // @awa-test: GEN-10_AC-1, GEN-10_AC-2
 // @awa-test: DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7
 // @awa-test: DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-12, DIFF-7_AC-13
@@ -54,7 +55,15 @@ function buildGenerateCommand(): Command {
       false
     )
     .option('-c, --config <path>', 'Path to configuration file')
-    .option('--refresh', 'Force refresh of cached Git templates', false);
+    .option('--refresh', 'Force refresh of cached Git templates', false)
+    .option('--all-targets', 'Process all named targets from config', false)
+    .option('--target <name>', 'Process a specific named target from config')
+    .option(
+      '--overlay <path...>',
+      'Overlay directory paths applied over base template (repeatable)'
+    )
+    .option('--json', 'Output results as JSON (implies --dry-run)', false)
+    .option('--summary', 'Output compact one-line summary', false);
   return cmd;
 }
 
@@ -71,7 +80,15 @@ function buildDiffCommand(): Command {
     )
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
-    .option('--list-unknown', 'Include target-only files in diff results', false);
+    .option('--list-unknown', 'Include target-only files in diff results', false)
+    .option('--all-targets', 'Process all named targets from config', false)
+    .option('--target <name>', 'Process a specific named target from config')
+    .option(
+      '--overlay <path...>',
+      'Overlay directory paths applied over base template (repeatable)'
+    )
+    .option('--json', 'Output results as JSON', false)
+    .option('--summary', 'Output compact one-line summary', false);
   return cmd;
 }
 
@@ -81,7 +98,12 @@ function buildFeaturesCommand(): Command {
     .option('-t, --template <source>', 'Template source (local path or Git repository)')
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
-    .option('--json', 'Output results as JSON', false);
+    .option(
+      '--overlay <path...>',
+      'Overlay directory paths applied over base template (repeatable)'
+    )
+    .option('--json', 'Output results as JSON', false)
+    .option('--summary', 'Output compact one-line summary', false);
   return cmd;
 }
 
@@ -90,7 +112,14 @@ function buildTestCommand(): Command {
   const cmd = new Command('test')
     .option('-t, --template <source>', 'Template source (local path or Git repository)')
     .option('-c, --config <path>', 'Path to configuration file')
-    .option('--update-snapshots', 'Update stored snapshots with current rendered output', false);
+    .option('--update-snapshots', 'Update stored snapshots with current rendered output', false)
+    .option('--refresh', 'Force refresh of cached Git templates', false)
+    .option(
+      '--overlay <path...>',
+      'Overlay directory paths applied over base template (repeatable)'
+    )
+    .option('--json', 'Output results as JSON', false)
+    .option('--summary', 'Output compact one-line summary', false);
   return cmd;
 }
 
@@ -100,7 +129,9 @@ function buildCheckCommand(): Command {
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--spec-ignore <pattern...>', 'Glob patterns to exclude from spec file scanning')
     .option('--code-ignore <pattern...>', 'Glob patterns to exclude from code file scanning')
+    .option('--json', 'Output results as JSON', false)
     .option('--format <format>', 'Output format (text or json)', 'text')
+    .option('--summary', 'Output compact one-line summary', false)
     .option('--allow-warnings', 'Allow warnings without failing', false)
     .option('--spec-only', 'Run only spec-level checks', false);
   return cmd;
@@ -111,7 +142,8 @@ function buildTraceCommand(): Command {
   const cmd = new Command('trace')
     .argument('[ids...]', 'Traceability ID(s) to trace')
     .option('--all', 'Trace all known IDs in the project', false)
-    .option('--json', 'Output as JSON', false)
+    .option('--json', 'Output results as JSON', false)
+    .option('--summary', 'Output compact one-line summary', false)
     .option('-c, --config <path>', 'Path to configuration file');
   return cmd;
 }
@@ -355,6 +387,10 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--preset');
       expect(helpText).toContain('--remove-features');
       expect(helpText).toContain('--delete');
+      expect(helpText).toContain('--all-targets');
+      expect(helpText).toContain('--overlay');
+      expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
     });
 
     // @awa-test: CLI-10_AC-1, CLI-10_AC-2
@@ -409,6 +445,10 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--config');
       expect(helpText).toContain('--refresh');
       expect(helpText).toContain('--list-unknown');
+      expect(helpText).toContain('--all-targets');
+      expect(helpText).toContain('--overlay');
+      expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
     });
 
     // @awa-test: TCLI-1_AC-6
@@ -418,7 +458,9 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--template');
       expect(helpText).toContain('--config');
       expect(helpText).toContain('--refresh');
+      expect(helpText).toContain('--overlay');
       expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
     });
 
     // @awa-test: TCLI-1_AC-7
@@ -428,6 +470,10 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--template');
       expect(helpText).toContain('--config');
       expect(helpText).toContain('--update-snapshots');
+      expect(helpText).toContain('--refresh');
+      expect(helpText).toContain('--overlay');
+      expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
     });
 
     // @awa-test: TCLI-2_AC-1, TCLI-2_AC-2
@@ -456,7 +502,8 @@ describe('CLI Argument Parser', () => {
       expect(checkCmd).toBeDefined();
       const helpText = checkCmd!.helpInformation();
       expect(helpText).toContain('--config');
-      expect(helpText).toContain('--format');
+      expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
       expect(helpText).toContain('--spec-only');
     });
 
@@ -468,6 +515,7 @@ describe('CLI Argument Parser', () => {
       const helpText = traceCmd!.helpInformation();
       expect(helpText).toContain('--all');
       expect(helpText).toContain('--json');
+      expect(helpText).toContain('--summary');
       expect(helpText).toContain('--config');
     });
   });

@@ -208,9 +208,6 @@ PRINCIPLES:
 - DIFF-3_AC-4 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-4_AC-1 → DIFF-DiffEngine
 - DIFF-4_AC-2 → DIFF-DiffEngine
-- DIFF-4_AC-3 → DIFF-DiffEngine
-- DIFF-4_AC-4 → DIFF-DiffEngine
-- DIFF-4_AC-5 → DIFF-DiffEngine
 - DIFF-5_AC-1 → DIFF-DiffEngine (DIFF_P-4)
 - DIFF-5_AC-1 → DIFF-DiffCommand (DIFF_P-4)
 - DIFF-5_AC-2 → DIFF-DiffEngine (DIFF_P-4)
@@ -220,23 +217,29 @@ PRINCIPLES:
 - DIFF-6_AC-1 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-2 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-3 → DIFF-DiffEngine (DIFF_P-2)
-- DIFF-7_AC-1 → DIFF-DiffCommand
-- DIFF-7_AC-2 → DIFF-DiffCommand
-- DIFF-7_AC-3 → DIFF-DiffCommand
-- DIFF-7_AC-4 → DIFF-DiffCommand
-- DIFF-7_AC-5 → DIFF-DiffCommand
-- DIFF-7_AC-6 → DIFF-DiffCommand
-- DIFF-7_AC-7 → DIFF-DiffCommand
-- DIFF-7_AC-8 → DIFF-DiffCommand
-- DIFF-7_AC-9 → DIFF-DiffCommand
-- DIFF-7_AC-10 → DIFF-DiffCommand
 - DIFF-7_AC-10 → DIFF-Debouncer
 - DIFF-7_AC-10 → DIFF-FileWatcher
-- DIFF-7_AC-11 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-8_AC-1 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-2 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-3 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-4 → DIFF-DiffEngine
+
+### REQ-JSON-json-output.md
+
+- JSON-2_AC-1 → DIFF-DiffCommand
+- JSON-5_AC-1 → DIFF-DiffCommand
+- JSON-6_AC-1 → DIFF-DiffCommand
+- JSON-8_AC-1 → DIFF-DiffCommand
+
+### REQ-MULTI-multi-target.md
+
+- MULTI-6_AC-1 → DIFF-DiffCommand
+- MULTI-7_AC-1 → DIFF-DiffCommand
+- MULTI-12_AC-1 → DIFF-DiffCommand
+
+### REQ-OVL-overlays.md
+
+- OVL-7_AC-1 → DIFF-DiffCommand
 
 ## Library Usage
 

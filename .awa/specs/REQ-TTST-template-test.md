@@ -85,3 +85,45 @@ The `_tests/` directory SHALL be excluded from template output following the und
 ACCEPTANCE CRITERIA
 
 - TTST-8_AC-1 [ubiquitous]: The `_tests/` directory SHALL be excluded from generated output because directories starting with underscore are already excluded by the file walker
+
+### TTST-9: Template Refresh [SHOULD]
+
+AS A template author, I WANT to force-refresh cached Git templates before running tests, SO THAT tests run against the latest template version.
+
+ACCEPTANCE CRITERIA
+
+- TTST-9_AC-1 [conditional]: IF `--refresh` is specified THEN the system SHALL re-fetch the template from the remote source before running tests
+
+### TTST-10: JSON Output [SHOULD]
+
+AS A CI engineer, I WANT JSON output from template tests, SO THAT test results can be parsed programmatically.
+
+ACCEPTANCE CRITERIA
+
+- TTST-10_AC-1 [conditional]: IF `--json` is specified THEN the system SHALL output test results as valid JSON to stdout and suppress interactive output
+
+### TTST-11: Overlay Support [SHOULD]
+
+AS A template author, I WANT to apply overlays when running tests, SO THAT overlay-dependent templates are tested correctly.
+
+ACCEPTANCE CRITERIA
+
+- TTST-11_AC-1 [conditional]: IF `--overlay <path...>` is specified THEN the system SHALL merge overlay directories over the base template before running tests
+
+### TTST-12: Summary Output [SHOULD]
+
+AS A CI engineer, I WANT a compact one-line summary, SO THAT pipeline logs are concise.
+
+ACCEPTANCE CRITERIA
+
+- TTST-12_AC-1 [conditional]: IF `--summary` is specified THEN the system SHALL output a single line with passed, failed, and total counts and suppress interactive output
+
+## Assumptions
+
+- Template files use Eta syntax for conditional rendering
+- Fixture TOML files follow `.awa.toml` configuration format
+
+## Change Log
+
+- 1.0.0 (2026-02-28): Initial requirements
+- 1.1.0 (2026-03-02): Added TTST-9 (`--refresh`), TTST-10 (`--json`), TTST-11 (`--overlay`), TTST-12 (`--summary`)
