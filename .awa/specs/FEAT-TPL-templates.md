@@ -66,8 +66,3 @@ A template needs to create an empty placeholder file. The template outputs `<!--
 ### Scenario 8: Git ref and subdirectory support
 
 A developer runs `awa template generate . --template myorg/repo/templates#v2.0` to fetch from a specific tag and subdirectory within the repository.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

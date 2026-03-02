@@ -58,7 +58,3 @@ DEPENDS ON: ENG-1
 ## Out of Scope
 
 - Mobile platform support
-
-## Change Log
-
-- 1.0.0 (2025-01-10): Initial requirements

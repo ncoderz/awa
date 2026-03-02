@@ -365,9 +365,3 @@ Verify command tree structure by inspecting commander Command instances.
 ### External Libraries
 
 - commander (latest): CLI framework — nested command groups, help generation
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial design for CLI restructure
-- 1.1.0 (2026-03-01): Moved init from template alias to top-level convenience command
-

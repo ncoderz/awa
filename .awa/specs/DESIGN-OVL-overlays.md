@@ -291,7 +291,3 @@ Test generate and diff commands with mocked overlay module.
 
 - TTST-5_AC-1 → CLI-ArgumentParser
 - TTST-7_AC-1 → CLI-ArgumentParser
-
-## Change Log
-
-- 1.0.0 (2025-01-01): Initial design

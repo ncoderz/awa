@@ -189,7 +189,3 @@ Standard DOT format with named subgraphs per feature code, styled nodes, and dir
 - Mermaid docs: https://mermaid.js.org/syntax/flowchart.html
 - DOT language: https://graphviz.org/doc/info/lang.html
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

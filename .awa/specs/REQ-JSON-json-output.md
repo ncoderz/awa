@@ -95,7 +95,3 @@ ACCEPTANCE CRITERIA
 - JSON Schema validation file distribution
 - Streaming JSON output for large result sets
 - JSON output for the check command
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial requirements for JSON output

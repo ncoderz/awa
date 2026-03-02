@@ -35,7 +35,3 @@ Use a Git repository as the template source.
 ```bash
 awa generate --template owner/repo --features copilot
 ```
-
-## Change Log
-
-- 1.0.0 (2025-01-10): Initial examples

@@ -197,7 +197,3 @@ Plugin findings appear in the standard check output, prefixed with the plugin na
 - ESLint plugin architecture: https://eslint.org/docs/latest/extend/plugins (inspiration)
 - PLAN-002: .awa/plans/PLAN-002-awa-trace.md (TraceIndex)
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

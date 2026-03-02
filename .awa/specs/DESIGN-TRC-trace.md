@@ -319,7 +319,3 @@ PRINCIPLES:
 - TRC-11_AC-1 → TRC-TraceResolver
 - TRC-11_AC-2 → TRC-TraceResolver
 - TRC-12_AC-1 → TRC-TraceCommand
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial design

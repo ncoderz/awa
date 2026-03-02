@@ -792,10 +792,6 @@ PRINCIPLES:
 ### OLD
 
 - old → old
-
-## Change Log
-
-- 1.0.0: Initial
 `
     );
     await writeFile(
@@ -827,7 +823,5 @@ test('works', () => {});
     expect(designContent).toContain('### REQ-X-x.md');
     expect(designContent).toContain('- X-1_AC-1 → X-Loader (X_P-1)');
     expect(designContent).not.toContain('OLD');
-    // Change Log preserved
-    expect(designContent).toContain('## Change Log');
   });
 });

@@ -186,7 +186,3 @@ Generate a shields.io-compatible SVG. Badge color scales: red (<50%), orange (50
 - Check Engine types: src/core/check/types.ts
 - Code-spec checker: src/core/check/code-spec-checker.ts (existing uncovered-ac logic)
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

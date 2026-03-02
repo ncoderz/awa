@@ -44,8 +44,3 @@ A developer runs awa in a directory without `.awa.toml`. The tool proceeds norma
 ### Scenario 6: Malformed config
 
 A developer has a typo in `.awa.toml` (e.g., unclosed string). The tool displays a descriptive TOML parse error with the line number and exits.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with plain text

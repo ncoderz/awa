@@ -184,9 +184,3 @@ The bundled templates document CLI usage and must stay in sync.
 - Architecture: [.awa/specs/ARCHITECTURE.md](.awa/specs/ARCHITECTURE.md)
 - Template: [templates/awa/_partials/awa.usage.md](templates/awa/_partials/awa.usage.md)
 - Template: [templates/awa/_partials/awa.check.md](templates/awa/_partials/awa.check.md)
-
-## Change Log
-
-- 001 (2026-03-02): Initial plan from CLI parameter audit
-- 002 (2026-03-02): Resolved open questions — hide `--format` from help, add `--summary` to all commands (Phase 8), rename `--all` to `--all-targets` on template commands (Phase 7)
-- 003 (2026-03-02): Added Phase 10 for bundled awa template updates (`awa.usage.md`, `awa.check.md`)

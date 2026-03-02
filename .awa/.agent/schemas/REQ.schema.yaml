@@ -94,11 +94,6 @@ sections:
     level: 2
     description: "Bullet list of explicitly excluded functionality."
 
-  # Change Log section (optional)
-  - heading: "Change Log"
-    level: 2
-    description: "Version history. Format: - {version} ({date}): {changes}"
-
 sections-prohibited:
   - "**"
 
@@ -163,7 +158,3 @@ example: |
   ## Out of Scope
 
   - Mobile platform support
-
-  ## Change Log
-
-  - 1.0.0 (2025-01-10): Initial requirements

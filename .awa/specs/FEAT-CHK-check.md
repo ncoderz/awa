@@ -48,8 +48,3 @@ A spec file contains an ID with an underscore where a hyphen is expected (e.g., 
 ### Scenario 8: Duplicate references
 
 Two different source files both reference the same acceptance criterion ID via `@awa-impl`. `awa check` reports a warning about the duplicate implementation reference, helping developers spot accidental copy-paste or unclear ownership of acceptance criteria.
-
-## Change Log
-
-- 1.0.0 (2026-02-27): Initial feature context
-- 1.1.0 (2026-02-27): Schema upgrade — removed prohibited bold formatting, AC references, and IMPLEMENTS patterns

@@ -209,9 +209,3 @@ ACCEPTANCE CRITERIA
 - GUI interface
 - Watch mode for continuous regeneration
 - Remote execution or server mode
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial requirements based on architecture
-- 1.1.0 (2026-02-24): Added CLI-12 (`--delete`), CLI-13 (`--preset`), CLI-14 (`--remove-features`)
-- 1.2.0 (2026-03-02): Added CLI-15 (`--all-targets`, `--target`) — renamed from `--all` to avoid semantic overload with `trace --all`

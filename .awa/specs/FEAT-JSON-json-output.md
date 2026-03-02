@@ -32,7 +32,3 @@ A CI step runs `awa template diff . --summary` for a concise one-line output lik
 ### Scenario 4: Error Handling in Pipelines
 
 A pipeline runs `awa template generate . --json` with an invalid template path. The JSON flag suppresses all interactive output. The error message goes to stderr, and the process exits with a non-zero code. No partial JSON is written to stdout.
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial feature context for JSON output

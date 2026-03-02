@@ -193,7 +193,3 @@ Summary: 1 error, 2 warnings
 - diff npm package: already in dependencies
 - PLAN-003: .awa/plans/PLAN-003-awa-coverage.md (gap detection)
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

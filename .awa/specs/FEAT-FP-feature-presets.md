@@ -73,8 +73,3 @@ Base features and preset features overlap (both include `copilot`). The final fe
 ### Scenario 7: Config-level presets
 
 A team sets `preset = ["tools"]` in `.awa.toml` so that the `tools` preset is always active. Developers can override with `--preset full` on the CLI, which replaces (not appends to) the config's preset list.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

@@ -149,9 +149,3 @@ ACCEPTANCE CRITERIA
 - Side-by-side diff format
 - Binary file diff visualization (only reports as different)
 - Ignoring specific files or patterns
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial requirements based on architecture- 1.1.0 (2025-12-14): Updated DIFF-7 to make target directory optional (can come from CLI or config)
-- 1.2.0 (2025-12-16): Added `--list-unknown` flag and made target-only file reporting opt-in
-- 1.3.0 (2026-02-24): Added DIFF-8 (delete-listed reporting), DIFF-7_AC-12/13 (`--preset`/`--remove-features`), updated DIFF-7_AC-10 to exclude `--delete`

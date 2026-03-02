@@ -80,7 +80,3 @@ ACCEPTANCE CRITERIA
 
 - Making `init` the primary command and `generate` the alias (both are equally valid)
 - Interactive config creation wizard
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial requirements for PLAN-001
