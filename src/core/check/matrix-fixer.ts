@@ -241,7 +241,7 @@ async function fixTaskMatrix(
     return false;
   }
 
-  const { tasks, sourceReqs, sourceDesigns } = parseTaskFileData(content, crossRefPatterns);
+  const { tasks, sourceDesigns } = parseTaskFileData(content, crossRefPatterns);
 
   // AC → implementing task(s)
   const acToTasks = new Map<string, string[]>();
@@ -263,18 +263,7 @@ async function fixTaskMatrix(
     }
   }
 
-  // Collect full universe of ACs from source REQ files
-  const sourceAcIds = new Set<string>();
-  for (const reqName of sourceReqs) {
-    const reqCode = extractCodeFromFileName(reqName);
-    for (const sf of specs.specFiles) {
-      if (sf.code === reqCode && /\bREQ-/.test(basename(sf.filePath))) {
-        for (const acId of sf.acIds) sourceAcIds.add(acId);
-      }
-    }
-  }
-
-  // Collect full universe of properties from source DESIGN files
+  // Collect property IDs from source DESIGN files (to distinguish from ACs in output)
   const sourcePropertyIds = new Set<string>();
   for (const designName of sourceDesigns) {
     const designCode = extractCodeFromFileName(designName);
@@ -285,30 +274,11 @@ async function fixTaskMatrix(
     }
   }
 
-  // All referenced IDs (from IMPLEMENTS + TESTS)
-  const allRefIds = new Set([...acToTasks.keys(), ...idToTestTasks.keys()]);
-
-  // Compute uncovered
-  const uncovered: string[] = [];
-  for (const acId of sourceAcIds) {
-    if (!allRefIds.has(acId)) uncovered.push(acId);
-  }
-  for (const propId of sourcePropertyIds) {
-    if (!allRefIds.has(propId)) uncovered.push(propId);
-  }
-  uncovered.sort(compareIds);
-
   // Group ACs and properties by REQ file
   const allIdsForMatrix = [...new Set([...acToTasks.keys(), ...idToTestTasks.keys()])];
   const grouped = groupByReqFile(allIdsForMatrix, codeToReqFile);
 
-  const newSection = generateTaskSection(
-    grouped,
-    acToTasks,
-    idToTestTasks,
-    sourcePropertyIds,
-    uncovered
-  );
+  const newSection = generateTaskSection(grouped, acToTasks, idToTestTasks, sourcePropertyIds);
   const newContent = replaceTraceabilitySection(content, newSection);
   if (newContent === content) return false;
 
@@ -406,8 +376,7 @@ function generateTaskSection(
   grouped: Map<string, string[]>,
   acToTasks: Map<string, string[]>,
   idToTestTasks: Map<string, string[]>,
-  propertyIds: Set<string>,
-  uncovered: string[]
+  propertyIds: Set<string>
 ): string {
   const lines: string[] = [];
   const reqFiles = [...grouped.keys()].sort();
@@ -443,11 +412,7 @@ function generateTaskSection(
     lines.push('');
   }
 
-  // UNCOVERED line
-  const uncoveredStr = uncovered.length > 0 ? uncovered.join(', ') : '(none)';
-  lines.push(`UNCOVERED: ${uncoveredStr}`);
-
-  return lines.join('\n');
+  return lines.join('\n').trimEnd();
 }
 
 // --- Shared utilities ---

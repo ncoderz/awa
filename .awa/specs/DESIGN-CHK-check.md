@@ -189,7 +189,7 @@ function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
 
 ### CHK-MatrixFixer
 
-Regenerates Requirements Traceability sections in DESIGN and TASK files. For DESIGN files, inverts component IMPLEMENTS and property VALIDATES lines to build AC→Component(Property) entries. For TASK files, inverts task IMPLEMENTS and TESTS lines to build AC→Task(Test) entries plus UNCOVERED.
+Regenerates Requirements Traceability sections in DESIGN and TASK files. For DESIGN files, inverts component IMPLEMENTS and property VALIDATES lines to build AC→Component(Property) entries. For TASK files, inverts task IMPLEMENTS and TESTS lines to build AC→Task(Test) entries.
 
 IMPLEMENTS: CHK-23_AC-1, CHK-23_AC-2
 
@@ -281,7 +281,7 @@ interface RawCheckOptions {
 - CHK_P-11 [DESIGN Matrix Idempotence]: Running fix twice on a DESIGN file produces identical output
   VALIDATES: CHK-23_AC-1
 
-- CHK_P-12 [TASK Matrix Completeness]: Generated TASK matrix UNCOVERED line lists exactly the ACs and properties from source REQ/DESIGN files that lack IMPLEMENTS/TESTS coverage
+- CHK_P-12 [TASK Matrix Idempotence]: Running fix twice on a TASK file produces identical output
   VALIDATES: CHK-23_AC-2
 
 ## Error Handling

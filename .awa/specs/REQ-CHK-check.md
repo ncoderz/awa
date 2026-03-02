@@ -241,7 +241,7 @@ AS A developer, I WANT the check command to regenerate Requirements Traceability
 ACCEPTANCE CRITERIA
 
 - CHK-23_AC-1 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Requirements Traceability section in each DESIGN file by inverting component IMPLEMENTS and property VALIDATES lines
-- CHK-23_AC-2 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Requirements Traceability section in each TASK file by inverting task IMPLEMENTS and TESTS lines, including an UNCOVERED line for any ACs or properties without coverage
+- CHK-23_AC-2 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Requirements Traceability section in each TASK file by inverting task IMPLEMENTS and TESTS lines
 
 DEPENDS ON: CHK-2
 

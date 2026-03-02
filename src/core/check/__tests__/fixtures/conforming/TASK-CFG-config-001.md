@@ -61,5 +61,3 @@ Phase 4: T-CFG-021 can run parallel with T-CFG-020
 - CFG-1_AC-2 → T-CFG-011 (T-CFG-012)
 - CFG-2_AC-1 → T-CFG-020 (T-CFG-021)
 - CFG_P-1 → T-CFG-012
-
-UNCOVERED: (none)

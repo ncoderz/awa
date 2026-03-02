@@ -16,5 +16,3 @@ BRK-1 → (none)
 ### REQ-BRK-broken.md
 
 - BRK-1_AC-1 → T-BRK-001 (—)
-
-UNCOVERED: BRK-1_AC-1
