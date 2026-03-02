@@ -96,5 +96,3 @@ Phase 4: T-TCLI-030, T-TCLI-031, T-TCLI-032 can all run parallel
 - TCLI_P-1 → T-TCLI-024
 - TCLI_P-2 → T-TCLI-016
 - TCLI_P-3 → T-TCLI-020, T-TCLI-021
-
-UNCOVERED: (none)

@@ -116,8 +116,7 @@ sections:
     description: >
       Trace matrix grouped by source REQ file. Each H3 is a REQ file path,
       containing bullet entries mapping ACs to tasks and tests, followed by
-      properties to tests. Ends with UNCOVERED listing any ACs or properties
-      without task/test coverage.
+      properties to tests.
     children:
       - heading: ".*"
         level: 3
@@ -128,10 +127,6 @@ sections:
           Followed by bullet list of AC and property trace entries.
           AC format: - {AC-ID} → {Task} ({Test})
           Property format: - {Property-ID} → {Test}
-    contains:
-      - pattern: "^UNCOVERED:"
-        label: "UNCOVERED declaration"
-        description: "Lists AC or property IDs that lack task/test coverage, or (none)."
 
 sections-prohibited:
   - "**"
@@ -207,4 +202,3 @@ example: |
   - CFG-2_AC-1 → T-CFG-020 (T-CFG-021)
   - CFG_P-1 → T-CFG-012
 
-  UNCOVERED: (none)

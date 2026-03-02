@@ -439,14 +439,13 @@ ACCEPTANCE CRITERIA
       expect(taskContent).toContain('- CFG-1_AC-1 → T-CFG-010 (T-CFG-013)');
       expect(taskContent).toContain('- CFG-1_AC-2 → T-CFG-011');
       expect(taskContent).toContain('- CFG_P-1 → T-CFG-012');
-      expect(taskContent).toContain('UNCOVERED: (none)');
       // Old content should be gone
       expect(taskContent).not.toContain('PLACEHOLDER');
       expect(taskContent).not.toContain('old content');
     });
 
     // @awa-test: CHK_P-12
-    test('reports uncovered ACs and properties', async () => {
+    test('only includes ACs referenced by task IMPLEMENTS/TESTS lines', async () => {
       const taskPath = join(testDir, '.awa', 'tasks', 'TASK-X-x-001.md');
       await mkdir(join(testDir, '.awa', 'tasks'), { recursive: true });
       await writeFile(
@@ -545,8 +544,13 @@ UNCOVERED: old
       await fixMatrices(specs, ['IMPLEMENTS:', 'VALIDATES:']);
       const content = await readFile(taskPath, 'utf-8');
 
-      // X-1_AC-2 and X_P-1 are not referenced by any task
-      expect(content).toContain('UNCOVERED: X_P-1, X-1_AC-2');
+      // Only X-1_AC-1 is referenced by a task, so only it appears in the matrix
+      expect(content).toContain('- X-1_AC-1 → T-X-010');
+      // X-1_AC-2 and X_P-1 are not referenced by any task — they should NOT appear
+      expect(content).not.toContain('X-1_AC-2');
+      expect(content).not.toContain('X_P-1');
+      // No UNCOVERED line
+      expect(content).not.toContain('UNCOVERED');
     });
 
     // @awa-test: CHK_P-12
@@ -585,8 +589,6 @@ X-1 → (none)
 ### placeholder
 
 - old
-
-UNCOVERED: old
 `
       );
 
