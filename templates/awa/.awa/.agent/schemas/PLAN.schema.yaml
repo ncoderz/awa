@@ -113,6 +113,11 @@ example: |
   - [ ] Add unit tests for ConfigValidator edge cases
   - [ ] Verify integration test still passes end-to-end
 
+  ### Documentation
+
+  - [ ] Update docs/configuration.md with new pipeline stages
+  - [ ] No README changes needed (no user-facing behavior change)
+
   ## Risks
 
   - Merge logic has implicit ordering assumptions that may break when extracted

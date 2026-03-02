@@ -5,7 +5,10 @@ description: >
   Each task has an ID (T-{CODE}-{nnn}), a description, and a target file path.
   Phases group tasks by execution order; requirement phases carry [MUST]/[SHOULD]/[COULD]
   priority markers and include GOAL, TEST CRITERIA, IMPLEMENTS, and TESTS lines.
-  Setup/foundation/polish phases must NOT include IMPLEMENTS or TESTS.
+  Setup/foundation/polish/documentation phases must NOT include IMPLEMENTS or TESTS.
+  A Documentation phase is required after Polish. It lists doc files to update
+  (README.md, docs/) for user-facing changes. If no doc updates are needed,
+  include a single task stating so (e.g., "No doc changes — internal only").
 line-limit: 500
 
 sections:
@@ -31,8 +34,10 @@ sections:
     repeatable: true
     description: >
       Numbered phases in execution order. Requirement phases append a priority
-      marker: [MUST], [SHOULD], or [COULD]. Setup/foundation/polish phases
-      have no priority marker. Each phase contains checkbox task items.
+      marker: [MUST], [SHOULD], or [COULD]. Setup/foundation/polish/documentation
+      phases have no priority marker. A Documentation phase is required as the
+      final phase listing doc files to update for user-facing changes, or
+      stating no changes needed. Each phase contains checkbox task items.
     contains:
       # Tasks as checkbox items: "- [ ] T-{CODE}-{nnn} ... → path"
       - list:
@@ -175,6 +180,11 @@ example: |
 
   - [ ] T-CFG-030 Integration test: load → validate → use → tests/config/integration.test.ts
     TESTS: CFG-1_AC-1, CFG-2_AC-1
+
+  ## Phase 6: Documentation
+
+  - [ ] T-CFG-040 Update CLI reference with new config options → docs/configuration.md
+  - [ ] T-CFG-041 No README changes needed (internal refactor) → README.md
 
   ---
 

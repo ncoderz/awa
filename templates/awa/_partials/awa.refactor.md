@@ -43,5 +43,6 @@ You SHALL run `awa check` after refactoring to verify all traceability markers a
 You SHALL ensure tests pass before and after refactoring.
 You SHALL make incremental changes, not wholesale rewrites.
 You SHALL NOT change public interfaces without explicit approval.
+You SHALL update user-facing documentation when implementation changes user-facing behavior, CLI, API, or configuration.
 You SHALL clarify scope and risks with user before major refactors.
 You MAY use todos and tools as needed.

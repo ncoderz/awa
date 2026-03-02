@@ -120,9 +120,14 @@ Each phase should be independently testable after completion.
 ### Final Phase: Polish
 
 - Integration tests across requirements
-- Documentation updates
 - Cross-cutting concerns
 - No requirement labels
+
+### Documentation Phase
+
+- Documentation update tasks for any changed user-facing behavior, CLI, API, or configuration
+- If no user-facing changes, include a single task: "No doc changes — internal only"
+- No requirement labels, no IMPLEMENTS lines
 
 ## Validation Checklist
 
@@ -136,6 +141,7 @@ Before output, verify:
 - [ ] Dependencies match DESIGN component order
 - [ ] Each requirement phase has clear test criteria
 - [ ] Trace summary accounts for all ACs and Ps
+- [ ] Documentation phase present with doc update tasks or explicit "no changes" task
 
 ## Outputs
 
