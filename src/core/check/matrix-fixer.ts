@@ -26,22 +26,17 @@ export async function fixMatrices(
   specs: SpecParseResult,
   crossRefPatterns: readonly string[]
 ): Promise<FixResult> {
-  const codeToReqFile = buildCodeToReqFileMap(specs.specFiles);
+  const reqFileMaps = buildReqFileMaps(specs.specFiles);
   const fileResults: FileFixResult[] = [];
 
   for (const specFile of specs.specFiles) {
     const fileName = basename(specFile.filePath);
 
     if (fileName.startsWith('DESIGN-')) {
-      const changed = await fixDesignMatrix(specFile.filePath, codeToReqFile, crossRefPatterns);
+      const changed = await fixDesignMatrix(specFile.filePath, reqFileMaps, crossRefPatterns);
       fileResults.push({ filePath: specFile.filePath, changed });
     } else if (fileName.startsWith('TASK-')) {
-      const changed = await fixTaskMatrix(
-        specFile.filePath,
-        codeToReqFile,
-        specs,
-        crossRefPatterns
-      );
+      const changed = await fixTaskMatrix(specFile.filePath, reqFileMaps, specs, crossRefPatterns);
       fileResults.push({ filePath: specFile.filePath, changed });
     }
   }
@@ -52,21 +47,79 @@ export async function fixMatrices(
   };
 }
 
-// --- Code prefix → REQ filename map ---
+// --- ID → REQ filename maps ---
 
-function buildCodeToReqFileMap(specFiles: readonly SpecFile[]): Map<string, string> {
-  const map = new Map<string, string>();
-  for (const sf of specFiles) {
-    if (/\bREQ-/.test(basename(sf.filePath)) && sf.code) {
-      map.set(sf.code, basename(sf.filePath));
-    }
-  }
-  return map;
+interface ReqFileMaps {
+  /** Maps each requirement ID and AC ID to the REQ file that defines it. */
+  readonly idToReqFile: Map<string, string>;
+  /** Maps code prefix to sorted list of REQ filenames (fallback for property IDs). */
+  readonly codeToReqFiles: Map<string, string[]>;
 }
 
-function getCodePrefix(id: string): string {
-  const match = /^([A-Z][A-Z0-9]*)[-_]/.exec(id);
-  return match?.[1] ?? '';
+/**
+ * Build maps from requirement/AC IDs and code prefixes to REQ filenames.
+ * The per-ID map correctly handles multiple REQ files sharing the same code
+ * prefix (e.g. REQ-ARC-flows.md and REQ-ARC-security.md both using ARC-* IDs).
+ */
+function buildReqFileMaps(specFiles: readonly SpecFile[]): ReqFileMaps {
+  const idToReqFile = new Map<string, string>();
+  const codeToReqFilesSet = new Map<string, Set<string>>();
+
+  for (const sf of specFiles) {
+    const fileName = basename(sf.filePath);
+    if (!/\bREQ-/.test(fileName)) continue;
+
+    // Map each requirement ID and AC ID to this REQ file
+    for (const reqId of sf.requirementIds) {
+      idToReqFile.set(reqId, fileName);
+    }
+    for (const acId of sf.acIds) {
+      idToReqFile.set(acId, fileName);
+    }
+
+    // Build code → REQ files multimap for property ID fallback
+    if (sf.code) {
+      const existing = codeToReqFilesSet.get(sf.code) ?? new Set<string>();
+      existing.add(fileName);
+      codeToReqFilesSet.set(sf.code, existing);
+    }
+  }
+
+  // Convert sets to sorted arrays for deterministic output
+  const codeToReqFiles = new Map<string, string[]>();
+  for (const [code, files] of codeToReqFilesSet) {
+    codeToReqFiles.set(code, [...files].sort());
+  }
+
+  return { idToReqFile, codeToReqFiles };
+}
+
+/**
+ * Resolve an ID to its REQ file.
+ * - Requirement IDs and AC IDs: direct lookup via idToReqFile
+ * - AC IDs not found directly: strip _AC-N suffix and look up parent requirement
+ * - Property IDs (CODE_P-N): code prefix fallback via codeToReqFiles
+ *   (when one REQ file for the code, it's unambiguous; with multiple, uses first sorted)
+ */
+function resolveReqFile(id: string, maps: ReqFileMaps): string | undefined {
+  // Direct lookup (works for both requirement IDs and AC IDs)
+  const direct = maps.idToReqFile.get(id);
+  if (direct) return direct;
+
+  // For AC IDs, try parent requirement: strip _AC-N suffix
+  const acMatch = /^(.+)_AC-\d+$/.exec(id);
+  if (acMatch?.[1]) {
+    return maps.idToReqFile.get(acMatch[1]);
+  }
+
+  // For property IDs (CODE_P-N), fall back to code prefix
+  const propMatch = /^([A-Z][A-Z0-9]*)_P-\d+$/.exec(id);
+  if (propMatch?.[1]) {
+    const files = maps.codeToReqFiles.get(propMatch[1]);
+    return files?.[0];
+  }
+
+  return undefined;
 }
 
 // --- DESIGN matrix ---
@@ -83,7 +136,7 @@ interface PropertyInfo {
 
 async function fixDesignMatrix(
   filePath: string,
-  codeToReqFile: Map<string, string>,
+  reqFileMaps: ReqFileMaps,
   crossRefPatterns: readonly string[]
 ): Promise<boolean> {
   let content: string;
@@ -117,7 +170,7 @@ async function fixDesignMatrix(
 
   // Group ACs by REQ file
   const allAcIds = [...acToComponents.keys()];
-  const grouped = groupByReqFile(allAcIds, codeToReqFile);
+  const grouped = groupByReqFile(allAcIds, reqFileMaps);
 
   const newSection = generateDesignSection(grouped, acToComponents, acToProperties);
   const newContent = replaceTraceabilitySection(content, newSection);
@@ -230,7 +283,7 @@ interface TaskInfo {
 
 async function fixTaskMatrix(
   filePath: string,
-  codeToReqFile: Map<string, string>,
+  reqFileMaps: ReqFileMaps,
   specs: SpecParseResult,
   crossRefPatterns: readonly string[]
 ): Promise<boolean> {
@@ -276,7 +329,7 @@ async function fixTaskMatrix(
 
   // Group ACs and properties by REQ file
   const allIdsForMatrix = [...new Set([...acToTasks.keys(), ...idToTestTasks.keys()])];
-  const grouped = groupByReqFile(allIdsForMatrix, codeToReqFile);
+  const grouped = groupByReqFile(allIdsForMatrix, reqFileMaps);
 
   const newSection = generateTaskSection(grouped, acToTasks, idToTestTasks, sourcePropertyIds);
   const newContent = replaceTraceabilitySection(content, newSection);
@@ -417,11 +470,10 @@ function generateTaskSection(
 
 // --- Shared utilities ---
 
-function groupByReqFile(ids: string[], codeToReqFile: Map<string, string>): Map<string, string[]> {
+function groupByReqFile(ids: string[], maps: ReqFileMaps): Map<string, string[]> {
   const groups = new Map<string, string[]>();
   for (const id of ids) {
-    const code = getCodePrefix(id);
-    const reqFile = codeToReqFile.get(code);
+    const reqFile = resolveReqFile(id, maps);
     if (!reqFile) continue; // Skip IDs we can't resolve to a REQ file
     const existing = groups.get(reqFile) ?? [];
     existing.push(id);

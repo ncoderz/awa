@@ -279,6 +279,114 @@ IMPLEMENTS: GEN-1_AC-1, CLI-1_AC-1
       expect(content).toContain('- GEN-1_AC-1 → GEN-FileGenerator (GEN_P-1)');
     });
 
+    test('handles multiple REQ files sharing the same code prefix', async () => {
+      const designPath = join(specDir, 'DESIGN-ARC-security.md');
+      await writeFile(
+        designPath,
+        `# Design Specification
+
+## Overview
+
+Test design with shared code prefix.
+
+## Components and Interfaces
+
+### ARC-SecurityChecker
+
+Checks security.
+
+IMPLEMENTS: ARC-30_AC-1, ARC-30_AC-2
+
+### ARC-FlowEngine
+
+Runs flows.
+
+IMPLEMENTS: ARC-10_AC-1
+
+## Correctness Properties
+
+- ARC_P-1 [Security Invariant]: Security property
+  VALIDATES: ARC-30_AC-1
+
+## Requirements Traceability
+
+### placeholder
+
+- old
+`
+      );
+
+      // Two REQ files sharing the ARC code prefix
+      const reqSecurity = join(specDir, 'REQ-ARC-security.md');
+      await writeFile(
+        reqSecurity,
+        `### ARC-30: User Identity [MUST]
+
+ACCEPTANCE CRITERIA
+
+- ARC-30_AC-1 [ubiquitous]: The system SHALL verify identity
+- ARC-30_AC-2 [event]: WHEN login THEN system SHALL authenticate
+`
+      );
+
+      const reqFlows = join(specDir, 'REQ-ARC-flows.md');
+      await writeFile(
+        reqFlows,
+        `### ARC-10: Minting Flows [MUST]
+
+ACCEPTANCE CRITERIA
+
+- ARC-10_AC-1 [event]: WHEN minting THEN system SHALL create token
+`
+      );
+
+      const specs = makeSpecs([
+        {
+          filePath: reqSecurity,
+          code: 'ARC',
+          requirementIds: ['ARC-30'],
+          acIds: ['ARC-30_AC-1', 'ARC-30_AC-2'],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [],
+        },
+        {
+          filePath: reqFlows,
+          code: 'ARC',
+          requirementIds: ['ARC-10'],
+          acIds: ['ARC-10_AC-1'],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [],
+        },
+        {
+          filePath: designPath,
+          code: 'ARC',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: ['ARC_P-1'],
+          componentNames: ['ARC-SecurityChecker', 'ARC-FlowEngine'],
+          crossRefs: [],
+          componentImplements: new Map([
+            ['ARC-SecurityChecker', ['ARC-30_AC-1', 'ARC-30_AC-2']],
+            ['ARC-FlowEngine', ['ARC-10_AC-1']],
+          ]),
+        },
+      ]);
+
+      await fixMatrices(specs, ['IMPLEMENTS:', 'VALIDATES:']);
+      const content = await readFile(designPath, 'utf-8');
+
+      // Each REQ file should have its own heading — NOT all under one file
+      expect(content).toContain('### REQ-ARC-security.md');
+      expect(content).toContain('### REQ-ARC-flows.md');
+      // ACs should be under the correct headings
+      expect(content).toContain('- ARC-30_AC-1 → ARC-SecurityChecker');
+      expect(content).toContain('- ARC-10_AC-1 → ARC-FlowEngine');
+      // Should NOT have placeholder content
+      expect(content).not.toContain('placeholder');
+    });
+
     test('no-ops when no Requirements Traceability section exists', async () => {
       const designPath = join(specDir, 'DESIGN-X-x.md');
       const original = `# Design Specification
@@ -442,6 +550,142 @@ ACCEPTANCE CRITERIA
       // Old content should be gone
       expect(taskContent).not.toContain('PLACEHOLDER');
       expect(taskContent).not.toContain('old content');
+    });
+
+    test('handles multiple REQ files sharing the same code prefix', async () => {
+      const taskPath = join(testDir, '.awa', 'tasks', 'TASK-ARC-security-001.md');
+      await mkdir(join(testDir, '.awa', 'tasks'), { recursive: true });
+      await writeFile(
+        taskPath,
+        `# Implementation Tasks
+
+FEATURE: Security
+SOURCE: REQ-ARC-security.md, REQ-ARC-flows.md, DESIGN-ARC-security.md
+
+## Phase 1: Security [MUST]
+
+GOAL: Implement security
+TEST CRITERIA: Security works
+
+- [ ] T-ARC-010 [ARC-30] Implement identity → src/security.ts
+  IMPLEMENTS: ARC-30_AC-1
+- [ ] T-ARC-011 [ARC-10] Implement flows → src/flows.ts
+  IMPLEMENTS: ARC-10_AC-1
+- [ ] T-ARC-012 [P] [ARC-30] Test security property → tests/security.test.ts
+  TESTS: ARC_P-1
+
+---
+
+## Dependencies
+
+ARC-30 → (none)
+ARC-10 → (none)
+
+## Parallel Opportunities
+
+Phase 1: T-ARC-010, T-ARC-011 can run parallel
+
+## Requirements Traceability
+
+### placeholder
+
+- old
+`
+      );
+
+      const reqSecurity = join(specDir, 'REQ-ARC-security.md');
+      await writeFile(
+        reqSecurity,
+        `### ARC-30: User Identity [MUST]
+
+ACCEPTANCE CRITERIA
+
+- ARC-30_AC-1 [ubiquitous]: The system SHALL verify identity
+`
+      );
+
+      const reqFlows = join(specDir, 'REQ-ARC-flows.md');
+      await writeFile(
+        reqFlows,
+        `### ARC-10: Minting Flows [MUST]
+
+ACCEPTANCE CRITERIA
+
+- ARC-10_AC-1 [event]: WHEN minting THEN system SHALL create token
+`
+      );
+
+      const designPath = join(specDir, 'DESIGN-ARC-security.md');
+      await writeFile(
+        designPath,
+        `# Design
+
+## Correctness Properties
+
+- ARC_P-1 [Security Invariant]: Security property
+  VALIDATES: ARC-30_AC-1
+
+## Requirements Traceability
+
+### REQ-ARC-security.md
+
+- stub
+`
+      );
+
+      const specs = makeSpecs([
+        {
+          filePath: reqSecurity,
+          code: 'ARC',
+          requirementIds: ['ARC-30'],
+          acIds: ['ARC-30_AC-1'],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [],
+        },
+        {
+          filePath: reqFlows,
+          code: 'ARC',
+          requirementIds: ['ARC-10'],
+          acIds: ['ARC-10_AC-1'],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [],
+        },
+        {
+          filePath: designPath,
+          code: 'ARC',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: ['ARC_P-1'],
+          componentNames: [],
+          crossRefs: [],
+        },
+        {
+          filePath: taskPath,
+          code: 'ARC',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: [],
+          crossRefs: [
+            { type: 'implements', ids: ['ARC-30_AC-1'], filePath: taskPath, line: 14 },
+            { type: 'implements', ids: ['ARC-10_AC-1'], filePath: taskPath, line: 16 },
+          ],
+        },
+      ]);
+
+      await fixMatrices(specs, ['IMPLEMENTS:', 'VALIDATES:']);
+      const content = await readFile(taskPath, 'utf-8');
+
+      // Each REQ file should have its own heading — NOT all under REQ-ARC-security.md
+      expect(content).toContain('### REQ-ARC-security.md');
+      expect(content).toContain('### REQ-ARC-flows.md');
+      // ACs should be under correct headings
+      expect(content).toContain('- ARC-30_AC-1 → T-ARC-010');
+      expect(content).toContain('- ARC-10_AC-1 → T-ARC-011');
+      // Should NOT have placeholder
+      expect(content).not.toContain('placeholder');
     });
 
     // @awa-test: CHK_P-12
