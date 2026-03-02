@@ -124,6 +124,19 @@ Other data-producing commands (`check`, `trace`, `features`, `test`) don't offer
 - [ ] Add/update unit tests for all new and changed options
 - [ ] Run `awa check` to validate traceability
 
+### Phase 10: Update awa templates
+
+The bundled templates document CLI usage and must stay in sync.
+
+- [ ] `templates/awa/_partials/awa.usage.md`: replace `--all` with `--all-targets` in generate/diff option tables and examples
+- [ ] `templates/awa/_partials/awa.usage.md`: replace `--format <format>` with `--json` in check option table
+- [ ] `templates/awa/_partials/awa.usage.md`: add `--summary` to check, trace, features, test option tables
+- [ ] `templates/awa/_partials/awa.usage.md`: add `--refresh`, `--overlay` to test option table
+- [ ] `templates/awa/_partials/awa.usage.md`: add `--overlay`, `--summary` to features option table
+- [ ] `templates/awa/_partials/awa.usage.md`: standardize `--json` descriptions across all tables
+- [ ] `templates/awa/_partials/awa.check.md`: replace `awa check --format json` with `awa check --json`
+- [ ] Run `awa template diff .` to verify templates are consistent with the project
+
 ## Risks
 
 - `--format` still works but hidden from help — users reading old docs may wonder why it's not shown (mitigation: keep it working silently, no deprecation warning)
@@ -145,8 +158,10 @@ Other data-producing commands (`check`, `trace`, `features`, `test`) don't offer
 - [ ] `--format` on `check` hidden from help but still functional
 - [ ] `--all` renamed to `--all-targets` on template commands; `trace --all` unchanged
 - [ ] ARCHITECTURE.md matches actual CLI flags
+- [ ] Bundled awa templates (`_partials/awa.usage.md`, `_partials/awa.check.md`) match actual CLI flags
 - [ ] All existing tests pass
 - [ ] `awa check` passes
+- [ ] `awa template diff .` shows no unintended drift
 
 ## Open Questions
 
@@ -167,8 +182,11 @@ Other data-producing commands (`check`, `trace`, `features`, `test`) don't offer
 - REQ: [.awa/specs/REQ-TTST-template-test.md](.awa/specs/REQ-TTST-template-test.md)
 - REQ: [.awa/specs/REQ-DISC-feature-discovery.md](.awa/specs/REQ-DISC-feature-discovery.md)
 - Architecture: [.awa/specs/ARCHITECTURE.md](.awa/specs/ARCHITECTURE.md)
+- Template: [templates/awa/_partials/awa.usage.md](templates/awa/_partials/awa.usage.md)
+- Template: [templates/awa/_partials/awa.check.md](templates/awa/_partials/awa.check.md)
 
 ## Change Log
 
 - 001 (2026-03-02): Initial plan from CLI parameter audit
 - 002 (2026-03-02): Resolved open questions — hide `--format` from help, add `--summary` to all commands (Phase 8), rename `--all` to `--all-targets` on template commands (Phase 7)
+- 003 (2026-03-02): Added Phase 10 for bundled awa template updates (`awa.usage.md`, `awa.check.md`)
