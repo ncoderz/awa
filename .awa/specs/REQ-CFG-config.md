@@ -114,8 +114,3 @@ ACCEPTANCE CRITERIA
 - Config file creation wizard
 - Config file validation command
 - Multiple config file merging
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial requirements based on architecture
-- 1.1.0 (2026-02-24): Added CFG-3_AC-7 (`delete`), CFG-3_AC-8 (`list-unknown`), CFG-3_AC-9 (`preset`), CFG-3_AC-10 (`remove-features`)

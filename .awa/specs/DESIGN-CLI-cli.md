@@ -399,7 +399,3 @@ PRINCIPLES:
 
 - commander (latest): CLI framework — argument parsing, help with positional args, subcommands
 - smol-toml (1.x): TOML parser — lightweight, spec-compliant
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Split from DESIGN-AWA-cli.md

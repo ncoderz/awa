@@ -294,10 +294,6 @@ This is the overview section.
 \`\`\`typescript
 interface Foo {}
 \`\`\`
-
-## Change Log
-
-- 1.0.0: Initial version
 `
     );
 
@@ -312,7 +308,6 @@ interface Foo {}
           required: true,
           contains: [{ 'code-block': true as const, label: 'code block' }],
         },
-        { heading: 'Change Log', level: 2, required: true },
       ],
     });
 

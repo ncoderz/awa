@@ -123,7 +123,3 @@ Tests cover: alias invokes the same handler as generate; hint appears when confi
 ### REQ-OVL-overlays.md
 
 - OVL-2_AC-1 → INIT-ConfigHint
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial design for PLAN-001

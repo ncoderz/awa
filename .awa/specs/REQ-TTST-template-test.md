@@ -122,8 +122,3 @@ ACCEPTANCE CRITERIA
 
 - Template files use Eta syntax for conditional rendering
 - Fixture TOML files follow `.awa.toml` configuration format
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial requirements
-- 1.1.0 (2026-03-02): Added TTST-9 (`--refresh`), TTST-10 (`--json`), TTST-11 (`--overlay`), TTST-12 (`--summary`)

@@ -247,7 +247,3 @@ PRINCIPLES:
 
 - diff (latest): Unified diff generation — cross-platform text comparison
 - isbinaryfile (latest): Binary file detection — null-byte heuristic
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Split from DESIGN-AWA-cli.md

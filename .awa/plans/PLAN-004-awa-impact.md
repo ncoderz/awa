@@ -175,7 +175,3 @@ If DIFF-1.3 were removed:
 - PLAN-002: .awa/plans/PLAN-002-awa-trace.md (TraceIndex model)
 - Code-spec checker: src/core/check/code-spec-checker.ts (orphan detection patterns)
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

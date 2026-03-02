@@ -84,11 +84,18 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
   - A single test may verify multiple ACs or properties
   - Update DESIGN file Correctness Property checkmark when fully implemented
 
+7. UPDATE DOCUMENTATION
+  - If user-facing behavior changed: update user docs
+  - If CLI commands or options changed: update CLI reference docs
+  - If project structure changed: update ARCHITECTURE.md
+  - If no user-facing changes: skip this step
+
 ## Outputs
 
 - source code files with appropriate markers
 - test files with appropriate markers
 - associated project configuration files if needed
+- updated documentation if necessary
 
 ## Constraints
 
@@ -164,5 +171,6 @@ You MUST add traceability markers (`@awa-component`, `@awa-impl`, `@awa-test`) t
 You MUST ensure every feature implementation traces to at least one acceptance criterion.
 You MUST ensure every test file traces to at least one design property.
 You MUST run `awa check` after implementation to verify all traceability markers resolve to spec IDs and no acceptance criteria are left uncovered.
+You SHALL update user-facing documentation when implementation changes user-facing behavior, CLI, API, or configuration.
 You SHALL clarify open points with user.
 You MAY use todos and tools as needed.

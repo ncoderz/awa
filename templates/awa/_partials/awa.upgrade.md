@@ -55,7 +55,6 @@ Upgrade the specified specs to conform to their schemas and traceability rules.
 ## Rules
 
 You SHALL avoid destructive edits; propose clarifications when unsure.
-You SHALL add to any change log sections as needed.
 You SHALL follow schema structure strictly (section order, nesting).
 You SHALL obey schema render expectations (omit optional empty sections, avoid prohibited patterns).
 You SHALL upgrade existing trace IDs if necessary.

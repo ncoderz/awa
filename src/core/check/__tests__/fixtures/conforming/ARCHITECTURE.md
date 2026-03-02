@@ -127,8 +127,3 @@ STATUS: Alpha — Core functionality implemented. API may change without notice.
 - `npm test` — Run test suite
 - `npm run lint` — Run linter
 - `npm run build` — Build for production
-
-## Change Log
-
-- 1.0.0 (2025-01-10): Initial architecture
-- 1.1.0 (2025-01-15): Added diff command

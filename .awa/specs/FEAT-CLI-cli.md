@@ -51,8 +51,3 @@ Before regenerating, a developer runs `awa template generate . --dry-run` to see
 ### Scenario 7: Cleaning up stale files
 
 A template update removes support for an agent. The developer runs `awa template generate . --delete` to generate new files and also remove obsolete files listed in the template's delete list, after confirming each deletion.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

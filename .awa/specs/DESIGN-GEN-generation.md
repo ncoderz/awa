@@ -412,7 +412,3 @@ PRINCIPLES:
 - @clack/core (latest): Custom prompt primitives — destructive-styled delete multiselect
 - chalk (5.x): Terminal colors — ESM-native, no dependencies
 - fast-check (3.x): Property-based testing — generators, shrinking
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Split from DESIGN-AWA-cli.md

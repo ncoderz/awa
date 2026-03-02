@@ -124,7 +124,3 @@ ACCEPTANCE CRITERIA
 - Conditional presets based on environment
 - Preset discovery from multiple config files
 - Interactive preset selection
-
-## Change Log
-
-- 1.0.0 (2025-12-12): Initial requirements for feature presets and remove-features

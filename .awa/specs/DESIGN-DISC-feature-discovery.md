@@ -183,7 +183,3 @@ PRINCIPLES:
 - DISC-7_AC-1 → DISC-Reporter (DISC_P-3)
 - DISC-8_AC-1 → DISC-FeaturesCommand
 - DISC-9_AC-1 → DISC-Reporter
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial design

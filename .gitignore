@@ -12,6 +12,7 @@ coverage/
 .env
 .env.local
 .venv/
+.awa/.agent/rules/system-info.md
 
 # OS
 .DS_Store

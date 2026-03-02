@@ -75,10 +75,6 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 ### OLD CONTENT
 
 - OLD → OLD
-
-## Change Log
-
-- 1.0.0: Initial
 `
       );
 
@@ -135,9 +131,6 @@ ACCEPTANCE CRITERIA
       expect(content).toContain('- CFG-1_AC-2 → CFG-ConfigLoader (CFG_P-1)');
       // Should NOT contain old content
       expect(content).not.toContain('OLD');
-      // Should preserve Change Log
-      expect(content).toContain('## Change Log');
-      expect(content).toContain('1.0.0: Initial');
     });
 
     // @awa-test: CHK_P-11

@@ -224,8 +224,3 @@ PRINCIPLES:
 - TTST-10_AC-1 → TTST-Reporter
 - TTST-11_AC-1 → TTST-TestCommand
 - TTST-12_AC-1 → TTST-TestCommand
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial design
-- 2.0.0 (2026-02-28): Schema upgrade — restructured to match DESIGN schema

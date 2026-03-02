@@ -55,8 +55,3 @@ The `_delete.txt` has a feature-gated section for `copilot`. When diffing with `
 ### Scenario 7: Binary file differences
 
 A template includes a binary asset. The asset in the target differs from the generated version. The diff reports "binary files differ" without attempting a textual comparison.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

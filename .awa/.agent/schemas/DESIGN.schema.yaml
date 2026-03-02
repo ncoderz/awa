@@ -201,11 +201,6 @@ sections:
         level: 3
         description: "External libraries used. Format: - name (version): purpose."
 
-  # Change Log section (optional)
-  - heading: "Change Log"
-    level: 2
-    description: "Version history. Format: - {version} ({date}): {changes}"
-
 sections-prohibited:
   - "**"
   - "~~"
@@ -354,8 +349,3 @@ example: |
   - citty (latest): CLI framework
   - smol-toml (1.x): TOML parser
 
-  ## Change Log
-
-  - 1.0.0 (2025-01-10): Initial design
-
-  - 1.0.0 (2025-01-10): Initial design

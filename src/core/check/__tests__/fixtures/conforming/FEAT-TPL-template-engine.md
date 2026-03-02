@@ -37,7 +37,3 @@ Prior art includes tools like cookiecutter (Python), degit (JS), and Yeoman. The
 - ETA: The template rendering library used by awa
 - FEATURE FLAG: A string identifier that enables conditional template content
 - PARTIAL: A template file prefixed with `_` that can be included by other templates
-
-## Change Log
-
-- 1.0.0 (2025-01-10): Initial feature context

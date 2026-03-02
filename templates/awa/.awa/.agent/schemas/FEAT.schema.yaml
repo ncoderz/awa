@@ -70,10 +70,6 @@ sections:
     level: 2
     description: "Recommendations, best practices, or explanatory content that is not testable."
 
-  - heading: "Change Log"
-    level: 2
-    description: "Version history. Format: - {version} ({date}): {changes}"
-
 sections-prohibited:
   - "SHALL "
   - "SHOULD "
@@ -137,7 +133,3 @@ example: |
   - ETA: The template rendering library used by awa
   - FEATURE FLAG: A string identifier that enables conditional template content
   - PARTIAL: A template file prefixed with `_` that can be included by other templates
-
-  ## Change Log
-
-  - 1.0.0 (2025-01-10): Initial feature context

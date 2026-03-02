@@ -36,8 +36,3 @@ A GitHub Actions workflow runs `awa template test --template ./templates/awa`. E
 ### Scenario 4: Feature preset testing
 
 A fixture uses `preset = ["full"]` and `remove-features = ["vibe"]` to test that preset expansion and feature removal work correctly through the same pipeline as generation.
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial feature context
-- 2.0.0 (2026-02-28): Schema upgrade — added INFORMATIVE marker, Conceptual Model, Scenarios sections

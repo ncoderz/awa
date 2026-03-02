@@ -46,8 +46,3 @@ A CI pipeline runs `awa template test` to verify template fixtures. The `templat
 ### Scenario 5: Diffing against target
 
 A developer runs `awa template diff .` to check for drift between templates and their project. The command now clearly belongs to template operations.
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial feature context for CLI restructure
-

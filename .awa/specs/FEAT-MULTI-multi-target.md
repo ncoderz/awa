@@ -52,7 +52,3 @@ A developer runs `awa template generate --target nonexistent`. The tool errors w
 ### Scenario 6: Backward compatibility
 
 A developer's existing `.awa.toml` has no targets. Running `awa template generate .` works exactly as before — no behavioral change.
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial feature context for multi-target configuration

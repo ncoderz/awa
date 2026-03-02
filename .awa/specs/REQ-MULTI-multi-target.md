@@ -153,7 +153,3 @@ ACCEPTANCE CRITERIA
 
 - Overlay support within targets (deferred to PLAN-003)
 - JSON output for multi-target results (deferred to PLAN-009)
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial requirements specification

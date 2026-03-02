@@ -190,7 +190,3 @@ PRINCIPLES:
 
 - eta (3.x): Template engine — fast, TypeScript-native, partials
 - degit (2.x): Git fetcher — shallow clones without .git
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Split from DESIGN-AWA-cli.md

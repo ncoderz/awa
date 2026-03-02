@@ -82,7 +82,3 @@ automatically, so no command-line flags are needed in day-to-day use.
 - MERGED VIEW: The temporary flat directory combining base and overlays
 - OVERLAY SOURCE: A local path or Git repository reference for an overlay
 - LAST WINS: The rule that when two overlays provide the same file, the later one takes precedence
-
-## Change Log
-
-- 1.0.0 (2025-01-01): Initial feature context

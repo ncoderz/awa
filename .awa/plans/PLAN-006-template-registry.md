@@ -212,7 +212,3 @@ Search results for "python":
 - Config loader: src/core/config.ts (smol-toml parsing patterns)
 - Homebrew tap model: https://docs.brew.sh/Taps (inspiration for lightweight registry)
 - PLAN-001: .awa/plans/PLAN-001-killer-features-planning.md
-
-## Change Log
-
-- 001 (2026-03-01): Initial plan

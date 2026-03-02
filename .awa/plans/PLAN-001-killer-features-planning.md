@@ -145,9 +145,3 @@ See PLAN-002 for the merged scope.
 - [x] PLAN-008 created: `awa context` (merged into PLAN-002)
 - [x] PLAN-009 created: `awa review`
 - [x] PLAN-010 created: LSP / IDE integration
-
-## Change Log
-
-- 001 (2026-03-01): Initial meta-plan from brainstorm session
-- 002 (2026-03-01): All 9 detail plans created (PLAN-002 through PLAN-010)
-- 003 (2026-03-01): Merged PLAN-008 (context) into PLAN-002 (trace) — shared 70% implementation

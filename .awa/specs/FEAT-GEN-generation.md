@@ -67,8 +67,3 @@ When the developer generates with `--features copilot --delete`, the file is NOT
 ### Scenario 9: Interactive tool selection
 
 A developer runs `awa template generate .` with no feature flags. The CLI presents a multiselect of available tools (copilot, claude, cursor, etc.). The developer selects the ones they use, and those become the active features for this generation run.
-
-## Change Log
-
-- 1.0.0 (2026-02-24): Initial feature context derived from code and requirements
-- 1.1.0 (2026-02-27): Schema upgrade — replaced bold formatting with CAPITALS

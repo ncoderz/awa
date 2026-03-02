@@ -95,9 +95,3 @@ ACCEPTANCE CRITERIA
 
 - Backward-compatible aliases at the root level for diff, features, or test
 - New commands beyond the existing set
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial requirements for CLI restructure
-- 1.1.0 (2026-03-01): Changed TCLI-2 from template alias to top-level init convenience command
-

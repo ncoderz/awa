@@ -149,7 +149,3 @@ Test individual components in isolation
 
 - citty (latest): CLI framework
 - smol-toml (1.x): TOML parser
-
-## Change Log
-
-- 1.0.0 (2025-01-10): Initial design

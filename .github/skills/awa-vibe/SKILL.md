@@ -51,12 +51,14 @@ Pause at each stage transition unless user requests autonomous mode:
 - "Feature context captured. Proceed to requirements?"
 - "Requirements captured. Proceed to design?"
 - "Design complete. Proceed to implementation?"
+- "Implementation complete. Update documentation?"
 
 ## Outputs
 
 - Specs as needed (ARCHITECTURE, FEAT, REQ, DESIGN, TASK)
 - Implemented code with traceability markers
 - Tests covering acceptance criteria
+- Updated documentation if user-facing behavior changed
 
 ## Rules
 
@@ -66,4 +68,5 @@ You SHALL maintain traceability throughout.
 You SHOULD keep each stage minimal; avoid overengineering.
 You SHOULD ask clarifying questions early, not mid-implementation.
 You MAY collapse stages for trivial changes.
+You SHALL update user-facing documentation when implementation changes user-facing behavior, CLI, API, or configuration.
 You MAY use todos and tools as needed.

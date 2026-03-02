@@ -216,7 +216,3 @@ PRINCIPLES:
 
 - OVL-2_AC-1 → JSON-GenerateCommand
 - OVL-7_AC-1 → JSON-DiffCommand
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial design for JSON output

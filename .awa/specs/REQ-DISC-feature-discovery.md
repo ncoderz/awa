@@ -97,8 +97,3 @@ ACCEPTANCE CRITERIA
 
 - Detecting feature flags in complex Eta expressions beyond includes/indexOf
 - Validating that discovered flags are actually reachable from top-level templates
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial requirements
-- 1.1.0 (2026-03-02): Added DISC-8 (`--overlay`), DISC-9 (`--summary`)

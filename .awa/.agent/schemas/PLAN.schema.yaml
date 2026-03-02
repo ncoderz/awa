@@ -83,11 +83,6 @@ sections:
       Links to related artifacts: REQ, DESIGN, TASK, FEAT, code files,
       external docs. Format: - {artifact}: {path or description}
 
-  # Change Log section (optional)
-  - heading: "Change Log"
-    level: 2
-    description: "Version history. Format: - {version} ({date}): {changes}"
-
 sections-prohibited:
   - "**"
 
@@ -118,6 +113,11 @@ example: |
   - [ ] Add unit tests for ConfigValidator edge cases
   - [ ] Verify integration test still passes end-to-end
 
+  ### Documentation
+
+  - [ ] Update docs/configuration.md with new pipeline stages
+  - [ ] No README changes needed (no user-facing behavior change)
+
   ## Risks
 
   - Merge logic has implicit ordering assumptions that may break when extracted
@@ -144,8 +144,3 @@ example: |
   - REQ: .awa/specs/REQ-CFG-config.md
   - DESIGN: .awa/specs/DESIGN-CFG-config.md
   - Code: src/core/config.ts
-
-  ## Change Log
-
-  - 001 (2025-06-15): Initial plan
-  - 002 (2025-06-18): Completed parsing extraction

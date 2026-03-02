@@ -112,7 +112,3 @@ DEPENDS ON: OVL-1
 
 - File deletion via overlay (removing a base file by presence in overlay)
 - Line-level patching or diff-style merging within a single file
-
-## Change Log
-
-- 1.0.0 (2025-01-01): Initial requirements

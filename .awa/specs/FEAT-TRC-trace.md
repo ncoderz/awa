@@ -45,7 +45,3 @@ A developer wants more code context around markers when assembling content. They
 - CHAIN: The resolved path of nodes (requirement, AC, component, code, test) for an ID
 - CONTENT ASSEMBLY: Extracting actual file sections for assembled output
 - TOKEN BUDGET: Maximum estimated tokens for content mode output
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial feature context

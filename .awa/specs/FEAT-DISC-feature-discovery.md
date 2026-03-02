@@ -40,7 +40,3 @@ A developer has presets defined in `.awa.toml`. Running `awa template features` 
 - FEATURE FLAG: A string identifier that enables conditional template content
 - PRESET: A named group of feature flags defined in `.awa.toml`
 - TEMPLATE RESOLUTION: The process of locating and caching a template from a local path or Git URL
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial feature context

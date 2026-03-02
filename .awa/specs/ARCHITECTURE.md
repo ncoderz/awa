@@ -543,8 +543,3 @@ NOTE: These commands use the local development version via `npm run`. For the in
 | `npm run format` | Format code with Biome |
 | `npm run typecheck` | TypeScript type checking |
 | `npm run clean` | Clean build artifacts |
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial architecture
-- 2.12.0 (2026-03-01): Reframed Project Purpose and System Overview to lead with SDD traceability as the core USP; templating repositioned as bootstrap delivery mechanism

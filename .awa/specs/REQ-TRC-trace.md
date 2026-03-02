@@ -145,8 +145,3 @@ ACCEPTANCE CRITERIA
 - Interactive TUI or REPL mode
 - IDE integration
 - Modification of artifacts (read-only operation)
-
-## Change Log
-
-- 1.0.0 (2026-03-01): Initial requirements
-- 1.1.0 (2026-03-02): Added TRC-12 (`--summary`)

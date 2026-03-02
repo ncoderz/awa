@@ -174,7 +174,3 @@ ACCEPTANCE CRITERIA
 - Custom Eta filters or helpers
 - Private Git repository authentication configuration
 - Template versioning within a single repository
-
-## Change Log
-
-- 1.0.0 (2025-12-11): Initial requirements based on architecture

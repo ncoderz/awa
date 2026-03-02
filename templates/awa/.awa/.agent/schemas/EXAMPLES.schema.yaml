@@ -39,11 +39,6 @@ sections:
         label: "code or CLI demonstration"
         description: "Fenced code block with language tag (bash, typescript, etc.)."
 
-  # Change Log section (optional)
-  - heading: "Change Log"
-    level: 2
-    description: "Version history. Format: - {version} ({date}): {changes}"
-
 sections-prohibited:
   - "SHALL "
   - "SHOULD "
@@ -92,7 +87,3 @@ example: |
   ```bash
   awa template generate --template owner/repo --features copilot
   ```
-
-  ## Change Log
-
-  - 1.0.0 (2025-01-10): Initial examples

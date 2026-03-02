@@ -28,7 +28,3 @@ A developer runs `awa init .` in a project with no `.awa.toml`. After generation
 ### Scenario 4: Feature-flag passthrough
 
 `awa init . --features copilot claude` behaves identically to `awa template generate . --features copilot claude`.
-
-## Change Log
-
-- 1.0.0 (2026-02-28): Initial feature context for PLAN-001
