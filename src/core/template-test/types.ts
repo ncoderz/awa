@@ -70,4 +70,8 @@ export interface RawTestOptions {
   template?: string;
   config?: string;
   updateSnapshots: boolean;
+  refresh?: boolean;
+  json?: boolean;
+  summary?: boolean;
+  overlay?: string[];
 }

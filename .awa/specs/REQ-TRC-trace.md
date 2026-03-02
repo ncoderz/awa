@@ -121,6 +121,14 @@ ACCEPTANCE CRITERIA
 - TRC-11_AC-1 [conditional]: IF `--no-code` is specified THEN the system SHALL exclude implementation locations from output
 - TRC-11_AC-2 [conditional]: IF `--no-tests` is specified THEN the system SHALL exclude test locations from output
 
+### TRC-12: Summary Output [SHOULD]
+
+AS A CI engineer, I WANT a compact one-line summary, SO THAT pipeline logs are concise.
+
+ACCEPTANCE CRITERIA
+
+- TRC-12_AC-1 [conditional]: IF `--summary` is specified THEN the system SHALL output a single line with chain count and not-found count and suppress interactive output
+
 ## Assumptions
 
 - Traceability markers follow the `@awa-impl`, `@awa-test`, `@awa-component` conventions
@@ -141,3 +149,4 @@ ACCEPTANCE CRITERIA
 ## Change Log
 
 - 1.0.0 (2026-03-01): Initial requirements
+- 1.1.0 (2026-03-02): Added TRC-12 (`--summary`)

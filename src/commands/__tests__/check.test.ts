@@ -5,6 +5,8 @@
 // @awa-test: CHK_P-5
 // @awa-test: CHK-12_AC-1, CHK-13_AC-1, CHK-14_AC-1, CHK-15_AC-1
 // @awa-test: CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
+// @awa-test: CHK-9_AC-2, CHK-9_AC-3
+// @awa-test: CHK-24_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

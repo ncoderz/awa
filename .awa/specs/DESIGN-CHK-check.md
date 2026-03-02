@@ -150,7 +150,7 @@ function checkSpecAgainstSpec(
 
 Formats and outputs validation findings in text or JSON format.
 
-IMPLEMENTS: CHK-9_AC-1
+IMPLEMENTS: CHK-9_AC-1, CHK-9_AC-2, CHK-9_AC-3
 
 ```typescript
 function report(findings: Finding[], format: 'text' | 'json'): void;
@@ -181,7 +181,7 @@ function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[
 
 Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code. Runs matrix generation by default after checks complete (skip with `--no-fix`).
 
-IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-16_AC-1, CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
+IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-16_AC-1, CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3, CHK-24_AC-1
 
 ```typescript
 function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
@@ -320,6 +320,10 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
+### REQ-CFG-config.md
+
+- CFG-1_AC-4 → CHK-MarkerScanner
+
 ### REQ-CHK-check.md
 
 - CHK-1_AC-1 → CHK-MarkerScanner
@@ -332,6 +336,8 @@ PRINCIPLES:
 - CHK-7_AC-1 → CHK-SpecSpecChecker
 - CHK-8_AC-1 → CHK-CheckCommand (CHK_P-5)
 - CHK-9_AC-1 → CHK-Reporter
+- CHK-9_AC-2 → CHK-Reporter
+- CHK-9_AC-3 → CHK-Reporter
 - CHK-10_AC-1 → CHK-CheckCommand
 - CHK-11_AC-1 → CHK-MarkerScanner
 - CHK-12_AC-1 → CHK-SpecParser
@@ -339,15 +345,19 @@ PRINCIPLES:
 - CHK-14_AC-1 → CHK-CodeSpecChecker
 - CHK-15_AC-1 → CHK-SpecSpecChecker
 - CHK-16_AC-1 → CHK-RuleLoader
+- CHK-16_AC-1 → CHK-CheckCommand
+- CHK-17_AC-1 → CHK-CheckCommand
+- CHK-17_AC-2 → CHK-CheckCommand
+- CHK-17_AC-3 → CHK-CheckCommand
 - CHK-18_AC-1 → CHK-CodeSpecChecker (CHK_P-6)
 - CHK-19_AC-1 → CHK-CodeSpecChecker (CHK_P-7)
 - CHK-20_AC-1 → CHK-CodeSpecChecker (CHK_P-8)
+- CHK-21_AC-1 → CHK-CodeSpecChecker (CHK_P-10)
 - CHK-21_AC-1 → CHK-SpecSpecChecker (CHK_P-10)
 - CHK-22_AC-1 → CHK-CodeSpecChecker (CHK_P-9)
-- CHK-23_AC-1 → CHK-CheckCommand (CHK_P-11)
 - CHK-23_AC-1 → CHK-MatrixFixer (CHK_P-11)
-- CHK-23_AC-2 → CHK-CheckCommand (CHK_P-12)
 - CHK-23_AC-2 → CHK-MatrixFixer (CHK_P-12)
+- CHK-24_AC-1 → CHK-CheckCommand
 
 ## Change Log
 

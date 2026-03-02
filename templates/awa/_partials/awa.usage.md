@@ -119,10 +119,10 @@ Generate configuration files from templates. `init` is a top-level convenience c
 | `--delete` | Enable deletion of files listed in template |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
-| `--all` | Process all named targets from config |
+| `--all-targets` | Process all named targets from config |
 | `--target <name>` | Process a specific named target |
 | `--overlay <path...>` | Overlay directory paths (repeatable) |
-| `--json` | JSON output to stdout (implies --dry-run) |
+| `--json` | Output results as JSON (implies --dry-run) |
 | `--summary` | Compact one-line counts summary |
 
 ### awa template diff [target]
@@ -139,11 +139,11 @@ Compare generated template output against an existing target directory. Exit cod
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
 | `--list-unknown` | Include files in target not present in templates |
-| `--all` | Process all named targets from config |
+| `--all-targets` | Process all named targets from config |
 | `--target <name>` | Process a specific named target |
 | `-w, --watch` | Watch template directory and re-diff on change |
 | `--overlay <path...>` | Overlay directory paths (repeatable) |
-| `--json` | JSON output to stdout |
+| `--json` | Output results as JSON |
 | `--summary` | Compact one-line counts summary |
 
 ### awa check
@@ -154,7 +154,8 @@ Check traceability chain integrity and spec schema conformance. Exit code 0 = cl
 |--------|-------------|
 | `-c, --config <path>` | Path to configuration file |
 | `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
-| `--format <format>` | Output format: `text` (default) or `json` |
+| `--json` | Output results as JSON |
+| `--summary` | Compact one-line counts summary |
 | `--allow-warnings` | Allow warnings without failing |
 | `--spec-only` | Run only spec-level checks; skip code-to-spec traceability |
 
@@ -179,7 +180,8 @@ Navigate the traceability chain and assemble context from specs, code, and tests
 | `--depth <n>` | Maximum traversal depth |
 | `--no-code` | Exclude source code (spec-only context) |
 | `--no-tests` | Exclude test files |
-| `--json` | JSON output |
+| `--json` | Output results as JSON |
+| `--summary` | Compact one-line counts summary |
 | `-A/-B/-C <n>` | Lines of context after/before/both around a code marker (`--content` only) |
 
 ### awa template test
@@ -191,6 +193,10 @@ Run template test fixtures. Exit code 0 = all pass, 1 = failures.
 | `-t, --template <source>` | Template source — local path or Git repo |
 | `-c, --config <path>` | Path to configuration file |
 | `--update-snapshots` | Update stored snapshots with current output |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths (repeatable) |
+| `--json` | Output results as JSON |
+| `--summary` | Compact one-line counts summary |
 
 Discovers `*.toml` fixtures in `_tests/`, renders per fixture, verifies expected files, compares against snapshots.
 
@@ -203,7 +209,9 @@ Discover feature flags available in a template.
 | `-t, --template <source>` | Template source — local path or Git repo |
 | `-c, --config <path>` | Path to configuration file |
 | `--refresh` | Force re-fetch of cached Git templates |
-| `--json` | JSON output |
+| `--overlay <path...>` | Overlay directory paths (repeatable) |
+| `--json` | Output results as JSON |
+| `--summary` | Compact one-line counts summary |
 
 ### Global Options
 
@@ -259,9 +267,9 @@ Feature resolution order: start with `--features`, expand `--preset` (append, de
 
 Multi-target usage:
 
-    awa template generate --all                  # process all targets
+    awa template generate --all-targets           # process all targets
     awa template generate --target claude        # process one target
-    awa template diff --all                      # diff all targets
+    awa template diff --all-targets              # diff all targets
 
 ## Template Sources
 

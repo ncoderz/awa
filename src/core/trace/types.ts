@@ -110,6 +110,7 @@ export interface TraceCommandOptions {
   readonly content: boolean;
   readonly list: boolean;
   readonly json: boolean;
+  readonly summary?: boolean;
   readonly maxTokens?: number;
   readonly depth?: number;
   readonly scope?: string;

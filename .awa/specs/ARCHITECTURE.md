@@ -433,7 +433,7 @@ CONSTRAINTS
 - Uses Node.js 24 built-in `fs.glob` for file discovery (no external glob dependency)
 - All behavior configurable via `[check]` section in `.awa.toml`
 - Default configuration matches the bundled awa workflow conventions
-- CLI `--ignore` patterns append to config ignore (not replace)
+- CLI `--spec-ignore` / `--code-ignore` patterns append to config ignore (not replace)
 - Orphaned markers and broken cross-refs are errors; uncovered ACs and orphaned specs are warnings
 - Warnings are treated as errors by default (exit code 1); `--allow-warnings` or `[check].allow-warnings = true` restores previous behavior
 - Exit code 0 = clean, 1 = errors or warnings found (unless `--allow-warnings`), 2 = internal error

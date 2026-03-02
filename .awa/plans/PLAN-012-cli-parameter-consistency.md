@@ -1,6 +1,6 @@
 # CLI Parameter Consistency
 
-STATUS: in-progress
+STATUS: done
 DIRECTION: lateral
 
 ## Context
@@ -61,81 +61,81 @@ Other data-producing commands (`check`, `trace`, `features`, `test`) don't offer
 
 ### Phase 1: Add `--json` to `check` (align with other commands)
 
-- [ ] Add `--json` boolean flag to `check` command in CLI definition
-- [ ] Wire `--json` to set `format: 'json'` in `RawCheckOptions`
-- [ ] Keep `--format` working for backward compatibility but hide it from `--help` output (use commander's `.hideHelp()` on the option)
-- [ ] When both `--json` and `--format` are provided, `--json` wins
-- [ ] Update check command help description for `--json`: "Output results as JSON"
+- [x] Add `--json` boolean flag to `check` command in CLI definition
+- [x] Wire `--json` to set `format: 'json'` in `RawCheckOptions`
+- [x] Keep `--format` working for backward compatibility but hide it from `--help` output (use commander's `.hideHelp()` on the option)
+- [x] When both `--json` and `--format` are provided, `--json` wins
+- [x] Update check command help description for `--json`: "Output results as JSON"
 
 ### Phase 2: Add `--refresh` to `test` command
 
-- [ ] Add `--refresh` option to `template test` in CLI definition
-- [ ] Add `refresh` field to `RawTestOptions` type
-- [ ] Pass `refresh` value to `templateResolver.resolve()` call in `test.ts` (currently hardcoded `false`)
+- [x] Add `--refresh` option to `template test` in CLI definition
+- [x] Add `refresh` field to `RawTestOptions` type
+- [x] Pass `refresh` value to `templateResolver.resolve()` call in `test.ts` (currently hardcoded `false`)
 
 ### Phase 3: Add `--json` to `test` command
 
-- [ ] Add `--json` option to `template test` in CLI definition
-- [ ] Add `json` field to `RawTestOptions` type
-- [ ] Add JSON formatting to test reporter (output `TestSuiteResult` as JSON)
-- [ ] Suppress interactive output (`intro`/`outro`) when `--json` is active
+- [x] Add `--json` option to `template test` in CLI definition
+- [x] Add `json` field to `RawTestOptions` type
+- [x] Add JSON formatting to test reporter (output `TestSuiteResult` as JSON)
+- [x] Suppress interactive output (`intro`/`outro`) when `--json` is active
 
 ### Phase 4: Add `--overlay` to `features` and `test` commands
 
-- [ ] Add `--overlay <path...>` to `template features` CLI definition
-- [ ] Wire overlay resolution in `features` command before template scanning
-- [ ] Add `--overlay <path...>` to `template test` CLI definition
-- [ ] Wire overlay resolution in `test` command before test execution
+- [x] Add `--overlay <path...>` to `template features` CLI definition
+- [x] Wire overlay resolution in `features` command before template scanning
+- [x] Add `--overlay <path...>` to `template test` CLI definition
+- [x] Wire overlay resolution in `test` command before test execution
 
 ### Phase 5: Standardize `--json` descriptions
 
-- [ ] Standardize all `--json` descriptions to "Output results as JSON"
-- [ ] For `generate`, keep existing suffix: "Output results as JSON (implies --dry-run)"
-- [ ] Update `trace` from "Output as JSON" → "Output results as JSON"
+- [x] Standardize all `--json` descriptions to "Output results as JSON"
+- [x] For `generate`, keep existing suffix: "Output results as JSON (implies --dry-run)"
+- [x] Update `trace` from "Output as JSON" → "Output results as JSON"
 
 ### Phase 6: Fix stale ARCHITECTURE.md reference
 
-- [ ] Update ARCHITECTURE.md check engine constraints: replace `--ignore` with `--spec-ignore`/`--code-ignore`
+- [x] Update ARCHITECTURE.md check engine constraints: replace `--ignore` with `--spec-ignore`/`--code-ignore`
 
 ### Phase 7: Rename `--all` to `--all-targets` on template commands (BREAKING)
 
-- [ ] Rename `--all` to `--all-targets` on `generate`, `init`, and `diff` commands
-- [ ] Update batch-runner and any code that reads `options.all` for template commands to use `options.allTargets`
-- [ ] Update `RawCliOptions` type: rename `all` to `allTargets`
-- [ ] Keep `trace --all` unchanged (its meaning is native to trace)
-- [ ] Update help descriptions, README, and spec docs to reflect the rename
-- [ ] Update `.awa.toml` examples if any reference `--all`
+- [x] Rename `--all` to `--all-targets` on `generate`, `init`, and `diff` commands
+- [x] Update batch-runner and any code that reads `options.all` for template commands to use `options.allTargets`
+- [x] Update `RawCliOptions` type: rename `all` to `allTargets`
+- [x] Keep `trace --all` unchanged (its meaning is native to trace)
+- [x] Update help descriptions, README, and spec docs to reflect the rename
+- [x] Update `.awa.toml` examples if any reference `--all`
 
 ### Phase 8: Add `--summary` to `check`, `trace`, `features`, `test`
 
-- [ ] Add `--summary` flag to `check` command — output compact one-line pass/fail count
-- [ ] Add `--summary` flag to `trace` command — output compact one-line chain count
-- [ ] Add `--summary` flag to `template features` command — output compact one-line feature count
-- [ ] Add `--summary` flag to `template test` command — output compact one-line pass/fail count
-- [ ] Use consistent description: "Output compact one-line summary"
+- [x] Add `--summary` flag to `check` command — output compact one-line pass/fail count
+- [x] Add `--summary` flag to `trace` command — output compact one-line chain count
+- [x] Add `--summary` flag to `template features` command — output compact one-line feature count
+- [x] Add `--summary` flag to `template test` command — output compact one-line pass/fail count
+- [x] Use consistent description: "Output compact one-line summary"
 
 ### Phase 9: Update specs and tests
 
-- [ ] Update REQ-CHK-check.md for `--json` and `--summary` flags
-- [ ] Update REQ-TTST-template-test.md for `--refresh`, `--json`, `--overlay`, `--summary`
-- [ ] Update REQ-DISC-feature-discovery.md for `--overlay`, `--summary`
-- [ ] Update REQ-CLI-cli.md / REQ-TCLI-template-cli.md for `--all-targets` rename
-- [ ] Update REQ-TRC-trace.md for `--summary`
-- [ ] Add/update unit tests for all new and changed options
-- [ ] Run `awa check` to validate traceability
+- [x] Update REQ-CHK-check.md for `--json` and `--summary` flags
+- [x] Update REQ-TTST-template-test.md for `--refresh`, `--json`, `--overlay`, `--summary`
+- [x] Update REQ-DISC-feature-discovery.md for `--overlay`, `--summary`
+- [x] Update REQ-CLI-cli.md / REQ-TCLI-template-cli.md for `--all-targets` rename
+- [x] Update REQ-TRC-trace.md for `--summary`
+- [x] Add/update unit tests for all new and changed options
+- [x] Run `awa check` to validate traceability
 
 ### Phase 10: Update awa templates
 
 The bundled templates document CLI usage and must stay in sync.
 
-- [ ] `templates/awa/_partials/awa.usage.md`: replace `--all` with `--all-targets` in generate/diff option tables and examples
-- [ ] `templates/awa/_partials/awa.usage.md`: replace `--format <format>` with `--json` in check option table
-- [ ] `templates/awa/_partials/awa.usage.md`: add `--summary` to check, trace, features, test option tables
-- [ ] `templates/awa/_partials/awa.usage.md`: add `--refresh`, `--overlay` to test option table
-- [ ] `templates/awa/_partials/awa.usage.md`: add `--overlay`, `--summary` to features option table
-- [ ] `templates/awa/_partials/awa.usage.md`: standardize `--json` descriptions across all tables
-- [ ] `templates/awa/_partials/awa.check.md`: replace `awa check --format json` with `awa check --json`
-- [ ] Run `awa template diff .` to verify templates are consistent with the project
+- [x] `templates/awa/_partials/awa.usage.md`: replace `--all` with `--all-targets` in generate/diff option tables and examples
+- [x] `templates/awa/_partials/awa.usage.md`: replace `--format <format>` with `--json` in check option table
+- [x] `templates/awa/_partials/awa.usage.md`: add `--summary` to check, trace, features, test option tables
+- [x] `templates/awa/_partials/awa.usage.md`: add `--refresh`, `--overlay` to test option table
+- [x] `templates/awa/_partials/awa.usage.md`: add `--overlay`, `--summary` to features option table
+- [x] `templates/awa/_partials/awa.usage.md`: standardize `--json` descriptions across all tables
+- [x] `templates/awa/_partials/awa.check.md`: replace `awa check --format json` with `awa check --json`
+- [x] Run `awa template diff .` to verify templates are consistent with the project
 
 ## Risks
 
@@ -150,18 +150,18 @@ The bundled templates document CLI usage and must stay in sync.
 
 ## Completion Criteria
 
-- [ ] All commands that produce structured output accept `--json`
-- [ ] All commands that produce structured output accept `--summary`
-- [ ] All commands that resolve templates accept `--refresh`
-- [ ] All commands that resolve templates accept `--overlay`
-- [ ] `--json` description is consistent across all commands ("Output results as JSON")
-- [ ] `--format` on `check` hidden from help but still functional
-- [ ] `--all` renamed to `--all-targets` on template commands; `trace --all` unchanged
-- [ ] ARCHITECTURE.md matches actual CLI flags
-- [ ] Bundled awa templates (`_partials/awa.usage.md`, `_partials/awa.check.md`) match actual CLI flags
-- [ ] All existing tests pass
-- [ ] `awa check` passes
-- [ ] `awa template diff .` shows no unintended drift
+- [x] All commands that produce structured output accept `--json`
+- [x] All commands that produce structured output accept `--summary`
+- [x] All commands that resolve templates accept `--refresh`
+- [x] All commands that resolve templates accept `--overlay`
+- [x] `--json` description is consistent across all commands ("Output results as JSON")
+- [x] `--format` on `check` hidden from help but still functional
+- [x] `--all` renamed to `--all-targets` on template commands; `trace --all` unchanged
+- [x] ARCHITECTURE.md matches actual CLI flags
+- [x] Bundled awa templates (`_partials/awa.usage.md`, `_partials/awa.check.md`) match actual CLI flags
+- [x] All existing tests pass
+- [x] `awa check` passes
+- [x] `awa template diff .` shows no unintended drift
 
 ## Open Questions
 

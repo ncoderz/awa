@@ -1,11 +1,17 @@
 // @awa-component: TTST-Reporter
 // @awa-impl: TTST-6_AC-1
+// @awa-impl: TTST-10_AC-1
 
 import chalk from 'chalk';
 import type { FixtureResult, TestSuiteResult } from './types.js';
 
 // @awa-impl: TTST-6_AC-1
-export function report(result: TestSuiteResult): void {
+export function report(result: TestSuiteResult, options?: { json?: boolean }): void {
+  if (options?.json) {
+    reportJson(result);
+    return;
+  }
+
   console.log('');
 
   for (const fixture of result.results) {
@@ -21,6 +27,28 @@ export function report(result: TestSuiteResult): void {
     console.log(chalk.red(`  Failed: ${result.failed}`));
   }
   console.log('');
+}
+
+function reportJson(result: TestSuiteResult): void {
+  const output = {
+    total: result.total,
+    passed: result.passed,
+    failed: result.failed,
+    results: result.results.map((r) => ({
+      name: r.name,
+      passed: r.passed,
+      ...(r.error ? { error: r.error } : {}),
+      fileResults: r.fileResults.map((f) => ({
+        path: f.path,
+        found: f.found,
+      })),
+      snapshotResults: r.snapshotResults.map((s) => ({
+        path: s.path,
+        status: s.status,
+      })),
+    })),
+  };
+  console.log(JSON.stringify(output, null, 2));
 }
 
 function reportFixture(fixture: FixtureResult): void {

@@ -463,7 +463,7 @@ describe('diffCommand', () => {
       vi.mocked(diffEngine.diff).mockResolvedValue(mockResult);
 
       const exitCode = await diffCommand({
-        all: true,
+        allTargets: true,
         config: undefined,
         refresh: false,
       });
@@ -542,7 +542,7 @@ describe('diffCommand', () => {
         .mockResolvedValueOnce(modifiedResult);
 
       const exitCode = await diffCommand({
-        all: true,
+        allTargets: true,
         config: undefined,
         refresh: false,
       });

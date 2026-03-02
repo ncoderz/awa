@@ -85,6 +85,10 @@ templates/awa/
 |--------|-------------|
 | `-t, --template <source>` | Template source — local path or Git repo |
 | `-c, --config <path>` | Path to configuration file |
+| `--refresh` | Force re-fetch of cached Git templates |
+| `--overlay <path...>` | Overlay directory paths applied over base template (repeatable) |
 | `--update-snapshots` | Update stored snapshots with current rendered output |
+| `--json` | Output results as JSON |
+| `--summary` | Output compact one-line summary |
 
 See the [CLI Reference](/reference/cli/) for the complete command reference.

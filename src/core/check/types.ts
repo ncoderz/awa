@@ -145,6 +145,8 @@ export interface RawCheckOptions {
   readonly specIgnore?: string[];
   readonly codeIgnore?: string[];
   readonly format?: string;
+  readonly json?: boolean;
+  readonly summary?: boolean;
   readonly config?: string;
   readonly allowWarnings?: boolean;
   readonly specOnly?: boolean;

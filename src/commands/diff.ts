@@ -166,8 +166,8 @@ export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
     // Batch mode: --all or --target
-    if (cliOptions.all || cliOptions.target) {
-      const mode = cliOptions.all ? 'all' : 'single';
+    if (cliOptions.allTargets || cliOptions.target) {
+      const mode = cliOptions.allTargets ? 'all' : 'single';
       const targets = batchRunner.resolveTargets(cliOptions, fileConfig, mode, cliOptions.target);
 
       // @awa-impl: MULTI-12_AC-1

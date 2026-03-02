@@ -203,24 +203,114 @@ Test generate and diff commands with mocked BatchRunner.
 
 ## Requirements Traceability
 
+### REQ-CFG-config.md
+
+- CFG-1_AC-1 → MULTI-TargetResolver
+- CFG-1_AC-2 → MULTI-TargetResolver
+- CFG-1_AC-3 → MULTI-TargetResolver
+- CFG-1_AC-4 → MULTI-TargetResolver
+- CFG-2_AC-1 → MULTI-TargetResolver
+- CFG-2_AC-2 → MULTI-TargetResolver
+- CFG-2_AC-3 → MULTI-TargetResolver
+- CFG-3_AC-1 → MULTI-TargetResolver
+- CFG-3_AC-2 → MULTI-TargetResolver
+- CFG-3_AC-3 → MULTI-TargetResolver
+- CFG-3_AC-4 → MULTI-TargetResolver
+- CFG-3_AC-5 → MULTI-TargetResolver
+- CFG-3_AC-6 → MULTI-TargetResolver
+- CFG-3_AC-7 → MULTI-TargetResolver
+- CFG-3_AC-8 → MULTI-TargetResolver
+- CFG-3_AC-9 → MULTI-TargetResolver
+- CFG-3_AC-10 → MULTI-TargetResolver
+- CFG-4_AC-1 → MULTI-TargetResolver
+- CFG-4_AC-2 → MULTI-TargetResolver
+- CFG-4_AC-3 → MULTI-TargetResolver
+- CFG-4_AC-4 → MULTI-TargetResolver
+- CFG-5_AC-1 → MULTI-TargetResolver
+- CFG-6_AC-1 → MULTI-TargetResolver
+- CFG-6_AC-2 → MULTI-TargetResolver
+
+### REQ-CHK-check.md
+
+- CHK-1_AC-2 → MULTI-GenerateCommand
+- CHK-1_AC-3 → MULTI-GenerateCommand
+- CHK-5_AC-2 → MULTI-GenerateCommand
+- CHK-5_AC-3 → MULTI-GenerateCommand
+- CHK-16_AC-1 → MULTI-TargetResolver
+
+### REQ-CLI-cli.md
+
+- CLI-1_AC-4 → MULTI-TargetResolver
+- CLI-2_AC-2 → MULTI-TargetResolver
+- CLI-2_AC-3 → MULTI-TargetResolver
+- CLI-2_AC-4 → MULTI-TargetResolver
+- CLI-4_AC-3 → MULTI-TargetResolver
+- CLI-7_AC-2 → MULTI-TargetResolver
+
+### REQ-DIFF-diff.md
+
+- DIFF-5_AC-1 → MULTI-DiffCommand
+- DIFF-5_AC-2 → MULTI-DiffCommand
+- DIFF-5_AC-3 → MULTI-DiffCommand
+
+### REQ-FP-feature-presets.md
+
+- FP-1_AC-1 → MULTI-TargetResolver
+- FP-1_AC-2 → MULTI-TargetResolver
+- FP-1_AC-3 → MULTI-TargetResolver
+- FP-1_AC-4 → MULTI-TargetResolver
+- FP-3_AC-1 → MULTI-TargetResolver
+- FP-3_AC-2 → MULTI-TargetResolver
+- FP-3_AC-3 → MULTI-TargetResolver
+- FP-5_AC-1 → MULTI-TargetResolver
+- FP-5_AC-2 → MULTI-TargetResolver
+- FP-5_AC-3 → MULTI-TargetResolver
+
+### REQ-INIT-init-alias.md
+
+- INIT-5_AC-1 → MULTI-GenerateCommand
+
+### REQ-JSON-json-output.md
+
+- JSON-1_AC-1 → MULTI-GenerateCommand
+- JSON-2_AC-1 → MULTI-DiffCommand
+- JSON-5_AC-1 → MULTI-GenerateCommand
+- JSON-5_AC-1 → MULTI-DiffCommand
+- JSON-6_AC-1 → MULTI-GenerateCommand
+- JSON-6_AC-1 → MULTI-DiffCommand
+- JSON-7_AC-1 → MULTI-GenerateCommand
+- JSON-8_AC-1 → MULTI-GenerateCommand
+- JSON-8_AC-1 → MULTI-DiffCommand
+
 ### REQ-MULTI-multi-target.md
 
 - MULTI-1_AC-1 → MULTI-TargetResolver
 - MULTI-2_AC-1 → MULTI-TargetResolver
 - MULTI-3_AC-1 → MULTI-TargetResolver (MULTI_P-1)
 - MULTI-4_AC-1 → MULTI-BatchRunner (MULTI_P-2)
-- MULTI-4_AC-1 → MULTI-GenerateCommand (MULTI_P-2)
+- MULTI-4_AC-1 → MULTI-Reporter (MULTI_P-2)
 - MULTI-4_AC-2 → MULTI-BatchRunner
+- MULTI-4_AC-2 → MULTI-Reporter
 - MULTI-5_AC-1 → MULTI-BatchRunner
+- MULTI-5_AC-1 → MULTI-Reporter
 - MULTI-5_AC-2 → MULTI-TargetResolver
 - MULTI-6_AC-1 → MULTI-GenerateCommand
 - MULTI-6_AC-1 → MULTI-DiffCommand
 - MULTI-7_AC-1 → MULTI-DiffCommand
+- MULTI-8_AC-1 → MULTI-BatchRunner
 - MULTI-8_AC-1 → MULTI-Reporter
 - MULTI-9_AC-1 → MULTI-BatchRunner
+- MULTI-9_AC-1 → MULTI-Reporter
 - MULTI-10_AC-1 → MULTI-GenerateCommand
 - MULTI-11_AC-1 → MULTI-BatchRunner
+- MULTI-11_AC-1 → MULTI-Reporter
 - MULTI-12_AC-1 → MULTI-DiffCommand (MULTI_P-3)
+
+### REQ-OVL-overlays.md
+
+- OVL-2_AC-1 → MULTI-GenerateCommand
+- OVL-7_AC-1 → MULTI-DiffCommand
+- OVL-8_AC-1 → MULTI-TargetResolver
 
 ## Change Log
 

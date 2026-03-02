@@ -2,6 +2,10 @@
 // @awa-test: TTST_P-3
 // @awa-test: TTST-6_AC-1
 // @awa-test: TTST-7_AC-1
+// @awa-test: TTST-9_AC-1
+// @awa-test: TTST-10_AC-1
+// @awa-test: TTST-11_AC-1
+// @awa-test: TTST-12_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

@@ -142,17 +142,17 @@ features = ["copilot", "code", "vibe"]
 Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config. Target `features` replaces root `features` entirely (same as CLI override behavior).
 
 ```bash
-awa generate --all                   # process all targets
+awa generate --all-targets           # process all targets
 awa generate --target claude         # process one target
-awa diff --all                       # diff all targets
+awa diff --all-targets               # diff all targets
 awa diff --target copilot            # diff one target
 ```
 
 **Behavior notes:**
 
-- `--all` and `--target` suppress interactive prompting (non-interactive batch mode)
-- `--all` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override
-- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all`
+- `--all-targets` and `--target` suppress interactive prompting (non-interactive batch mode)
+- `--all-targets` ignores the CLI positional `[output]` argument; `--target` allows CLI positional to override
+- `--force`, `--dry-run`, and `--delete` apply globally to all targets when using `--all-targets`
 - Boolean flags (`force`, `dry-run`, `delete`, `refresh`) are NOT per-target — they apply globally from root/CLI
 
 ## Config File Location

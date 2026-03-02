@@ -184,6 +184,15 @@ ACCEPTANCE CRITERIA
 - CLI-14_AC-1 [ubiquitous]: The system SHALL accept `--remove-features <flag...>` as a variadic option
 - CLI-14_AC-2 [event]: WHEN multiple `--remove-features` options are provided THEN the system SHALL collect all values
 
+### CLI-15: All-Targets Option [MUST]
+
+AS A developer, I WANT to process all named targets with a single flag, SO THAT I can generate or diff all config targets at once.
+
+ACCEPTANCE CRITERIA
+
+- CLI-15_AC-1 [ubiquitous]: The system SHALL accept `--all-targets` flag to process all named targets from config
+- CLI-15_AC-2 [ubiquitous]: The system SHALL accept `--target <name>` to process a specific named target
+
 ## Assumptions
 
 - Users have Node.js 24 or later installed
@@ -205,3 +214,4 @@ ACCEPTANCE CRITERIA
 
 - 1.0.0 (2025-12-11): Initial requirements based on architecture
 - 1.1.0 (2026-02-24): Added CLI-12 (`--delete`), CLI-13 (`--preset`), CLI-14 (`--remove-features`)
+- 1.2.0 (2026-03-02): Added CLI-15 (`--all-targets`, `--target`) — renamed from `--all` to avoid semantic overload with `trace --all`

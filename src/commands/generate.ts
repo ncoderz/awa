@@ -146,8 +146,8 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
     }
 
     // Batch mode: --all or --target
-    if (cliOptions.all || cliOptions.target) {
-      const mode = cliOptions.all ? 'all' : 'single';
+    if (cliOptions.allTargets || cliOptions.target) {
+      const mode = cliOptions.allTargets ? 'all' : 'single';
       const targets = batchRunner.resolveTargets(cliOptions, fileConfig, mode, cliOptions.target);
 
       for (const { targetName, options } of targets) {

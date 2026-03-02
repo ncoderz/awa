@@ -79,7 +79,7 @@
 // @awa-impl: TCLI-5_AC-3
 // @awa-impl: TCLI-5_AC-4
 
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
 import { diffCommand } from '../commands/diff.js';
@@ -149,7 +149,9 @@ function configureGenerateCommand(cmd: Command): Command {
       .option('-c, --config <path>', 'Path to configuration file')
       // @awa-impl: CLI-8_AC-1
       .option('--refresh', 'Force refresh of cached Git templates', false)
-      .option('--all', 'Process all named targets from config', false)
+      // @awa-impl: CLI-15_AC-1
+      .option('--all-targets', 'Process all named targets from config', false)
+      // @awa-impl: CLI-15_AC-2
       .option('--target <name>', 'Process a specific named target from config')
       // @awa-impl: OVL-1_AC-1
       .option(
@@ -173,7 +175,8 @@ function configureGenerateCommand(cmd: Command): Command {
           delete: options.delete,
           config: options.config,
           refresh: options.refresh,
-          all: options.all,
+          all: options.allTargets,
+          allTargets: options.allTargets,
           target: options.target,
           overlay: options.overlay || [],
           json: options.json,
@@ -213,7 +216,9 @@ template
   .option('--refresh', 'Force refresh of cached Git templates', false)
   // @awa-impl: DIFF-7_AC-11
   .option('--list-unknown', 'Include target-only files in diff results', false)
-  .option('--all', 'Process all named targets from config', false)
+  // @awa-impl: CLI-15_AC-1
+  .option('--all-targets', 'Process all named targets from config', false)
+  // @awa-impl: CLI-15_AC-2
   .option('--target <name>', 'Process a specific named target from config')
   .option('-w, --watch', 'Watch template directory for changes and re-run diff', false)
   // @awa-impl: OVL-7_AC-1
@@ -234,7 +239,8 @@ template
       config: options.config,
       refresh: options.refresh,
       listUnknown: options.listUnknown,
-      all: options.all,
+      all: options.allTargets,
+      allTargets: options.allTargets,
       target: options.target,
       watch: options.watch,
       overlay: options.overlay || [],
@@ -258,7 +264,11 @@ program
   .option('--spec-ignore <pattern...>', 'Glob patterns to exclude from spec file scanning')
   .option('--code-ignore <pattern...>', 'Glob patterns to exclude from code file scanning')
   // @awa-impl: CHK-9_AC-1
-  .option('--format <format>', 'Output format (text or json)', 'text')
+  .option('--json', 'Output results as JSON', false)
+  .addOption(
+    new Option('--format <format>', 'Output format (text or json)').default('text').hideHelp()
+  )
+  .option('--summary', 'Output compact one-line summary', false)
   .option(
     '--allow-warnings',
     'Allow warnings without failing (default: warnings are errors)',
@@ -279,6 +289,8 @@ program
       specIgnore: options.specIgnore,
       codeIgnore: options.codeIgnore,
       format: options.format,
+      json: options.json,
+      summary: options.summary,
       allowWarnings: options.allowWarnings,
       specOnly: options.specOnly,
       fix: options.fix,
@@ -296,13 +308,17 @@ template
   .option('-t, --template <source>', 'Template source (local path or Git repository)')
   .option('-c, --config <path>', 'Path to configuration file')
   .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   .option('--json', 'Output results as JSON', false)
+  .option('--summary', 'Output compact one-line summary', false)
   .action(async (options) => {
     const exitCode = await featuresCommand({
       template: options.template,
       config: options.config,
       refresh: options.refresh,
       json: options.json,
+      summary: options.summary,
+      overlay: options.overlay || [],
     });
     process.exit(exitCode);
   });
@@ -315,11 +331,19 @@ template
   .option('-t, --template <source>', 'Template source (local path or Git repository)')
   .option('-c, --config <path>', 'Path to configuration file')
   .option('--update-snapshots', 'Update stored snapshots with current rendered output', false)
+  .option('--refresh', 'Force refresh of cached Git templates', false)
+  .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
+  .option('--json', 'Output results as JSON', false)
+  .option('--summary', 'Output compact one-line summary', false)
   .action(async (options) => {
     const testOptions: RawTestOptions = {
       template: options.template,
       config: options.config,
       updateSnapshots: options.updateSnapshots,
+      refresh: options.refresh,
+      json: options.json,
+      summary: options.summary,
+      overlay: options.overlay || [],
     };
 
     const exitCode = await testCommand(testOptions);
@@ -346,7 +370,8 @@ program
   .option('--direction <dir>', 'Traversal direction: both, forward, reverse', 'both')
   .option('--no-code', 'Exclude source code (spec-only context)')
   .option('--no-tests', 'Exclude test files')
-  .option('--json', 'Output as JSON', false)
+  .option('--json', 'Output results as JSON', false)
+  .option('--summary', 'Output compact one-line summary', false)
   .option('-A <n>', 'Lines of context after a code marker (--content only; default: 20)')
   .option('-B <n>', 'Lines of context before a code marker (--content only; default: 5)')
   .option('-C <n>', 'Lines of context before and after (--content only; overrides -A and -B)')
@@ -360,6 +385,7 @@ program
       content: options.content,
       list: options.list,
       json: options.json,
+      summary: options.summary,
       maxTokens: options.maxTokens !== undefined ? Number(options.maxTokens) : undefined,
       depth: options.depth !== undefined ? Number(options.depth) : undefined,
       scope: options.scope,

@@ -98,7 +98,9 @@ AS A CI engineer, I WANT JSON output, SO THAT validation results can be parsed p
 
 ACCEPTANCE CRITERIA
 
-- CHK-9_AC-1 [conditional]: IF `--format json` is specified THEN the system SHALL output results as valid JSON to stdout
+- CHK-9_AC-1 [conditional]: IF `--json` is specified THEN the system SHALL output results as valid JSON to stdout
+- CHK-9_AC-2 [conditional]: IF `--format json` is specified THEN the system SHALL treat it as equivalent to `--json` for backward compatibility
+- CHK-9_AC-3 [conditional]: IF both `--json` and `--format` are specified THEN `--json` SHALL take precedence
 
 DEPENDS ON: CHK-3
 
@@ -243,6 +245,14 @@ ACCEPTANCE CRITERIA
 
 DEPENDS ON: CHK-2
 
+### CHK-24: Summary Output [SHOULD]
+
+AS A CI engineer, I WANT a compact one-line summary, SO THAT pipeline logs are concise.
+
+ACCEPTANCE CRITERIA
+
+- CHK-24_AC-1 [conditional]: IF `--summary` is specified THEN the system SHALL output a single line with error and warning counts and suppress interactive output
+
 ## Assumptions
 
 - Spec files are Markdown with identifiable patterns for IDs
@@ -268,3 +278,4 @@ DEPENDS ON: CHK-2
 - 1.3.0 (2026-03-02): Added CHK-20 (uncovered property), CHK-21 (unlinked AC), CHK-22 (IMPLEMENTS ↔ @awa-impl consistency)
 - 1.4.0 (2026-03-02): Added CHK-23 (matrix generation via --fix)
 - 1.5.0 (2026-03-02): CHK-23 inverted default — fix is now default, --no-fix to skip
+- 1.6.0 (2026-03-02): CHK-9 updated — `--json` boolean flag replaces `--format json`, `--format` kept for backward compatibility; added CHK-24 (`--summary`)

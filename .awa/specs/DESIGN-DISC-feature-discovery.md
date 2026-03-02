@@ -75,7 +75,7 @@ class FeatureScanner {
 
 Orchestrates the features workflow: loads config, resolves template source via the shared template resolver, invokes scanner, and passes results to the reporter.
 
-IMPLEMENTS: DISC-4_AC-1, DISC-5_AC-1
+IMPLEMENTS: DISC-4_AC-1, DISC-5_AC-1, DISC-8_AC-1
 
 ```typescript
 interface FeaturesCommandOptions {
@@ -92,7 +92,7 @@ function featuresCommand(options: FeaturesCommandOptions): Promise<number>;
 
 Formats and outputs scan results. In JSON mode, outputs a structured JSON object. In table mode, renders a human-readable list with chalk formatting. Includes preset definitions from config when available.
 
-IMPLEMENTS: DISC-6_AC-1, DISC-7_AC-1
+IMPLEMENTS: DISC-6_AC-1, DISC-7_AC-1, DISC-9_AC-1
 
 ```typescript
 interface ReportOptions {
@@ -181,6 +181,8 @@ PRINCIPLES:
 - DISC-5_AC-1 → DISC-FeaturesCommand (DISC_P-4)
 - DISC-6_AC-1 → DISC-Reporter (DISC_P-3)
 - DISC-7_AC-1 → DISC-Reporter (DISC_P-3)
+- DISC-8_AC-1 → DISC-FeaturesCommand
+- DISC-9_AC-1 → DISC-Reporter
 
 ## Change Log
 
