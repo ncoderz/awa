@@ -76,13 +76,11 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
   - Implement interface as specified in DESIGN
   - Add @awa-impl marker above code satisfying each AC
   - One AC may require multiple @awa-impl markers across files
-  - Update REQ file AC checkmark when fully implemented
 
 6. FOR EACH TEST
   - Property tests (@awa-test: {CODE}_P-{n}): Use property-based testing framework
   - Acceptance tests (@awa-test: {CODE}-{n}[.{p}]_AC-{m}): Use example-based assertions
   - A single test may verify multiple ACs or properties
-  - Update DESIGN file Correctness Property checkmark when fully implemented
 
 7. UPDATE DOCUMENTATION
   - If user-facing behavior changed: update user docs
