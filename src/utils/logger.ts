@@ -94,10 +94,6 @@ export class Logger {
       console.log(chalk.blue(`  Skipped (user): ${result.skippedUser}`));
     }
 
-    if (result.skippedEmpty > 0) {
-      console.log(chalk.dim(`  Skipped (empty): ${result.skippedEmpty}`));
-    }
-
     console.log('');
   }
 
