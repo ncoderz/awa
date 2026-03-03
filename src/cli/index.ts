@@ -46,19 +46,19 @@
 // @awa-impl: DIFF-7_AC-11
 // @awa-impl: DIFF-7_AC-12
 // @awa-impl: DIFF-7_AC-13
-// @awa-impl: FP-2_AC-1
-// @awa-impl: FP-2_AC-2
-// @awa-impl: FP-2_AC-4
-// @awa-impl: FP-4_AC-1
-// @awa-impl: FP-4_AC-2
-// @awa-impl: FP-4_AC-3
-// @awa-impl: FP-4_AC-5
+// @awa-impl: CFG-8_AC-1
+// @awa-impl: CFG-8_AC-2
+// @awa-impl: CFG-8_AC-4
+// @awa-impl: CFG-10_AC-1
+// @awa-impl: CFG-10_AC-2
+// @awa-impl: CFG-10_AC-3
+// @awa-impl: CFG-10_AC-5
 // @awa-impl: GEN-10_AC-1
 // @awa-impl: GEN-10_AC-2
-// @awa-impl: INIT-1_AC-1
-// @awa-impl: INIT-2_AC-1
-// @awa-impl: INIT-3_AC-1
-// @awa-impl: INIT-4_AC-1
+// @awa-impl: GEN-13_AC-1
+// @awa-impl: GEN-14_AC-1
+// @awa-impl: GEN-15_AC-1
+// @awa-impl: GEN-16_AC-1
 // @awa-impl: CLI-41_AC-1
 // @awa-impl: CLI-41_AC-2
 // @awa-impl: CLI-41_AC-3
@@ -125,7 +125,7 @@ const template = new Command('template').description(
 );
 
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
-// @awa-impl: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
+// @awa-impl: GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1
 // @awa-impl: CLI-41_AC-4, CLI-42_AC-1, CLI-42_AC-2
 
 /** Configure a generate/init command with shared options and action handler. */

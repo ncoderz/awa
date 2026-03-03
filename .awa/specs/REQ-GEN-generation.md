@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document defines requirements for the awa CLI file generation system, including directory structure mirroring, file writing, conflict resolution with interactive prompts, and dry-run simulation mode.
+This document defines requirements for the awa CLI file generation system, including directory structure mirroring, file writing, conflict resolution with interactive prompts, dry-run simulation mode, and the `awa init` convenience alias.
 
 ## Glossary
 
@@ -10,6 +10,8 @@ This document defines requirements for the awa CLI file generation system, inclu
 - CONFLICT: A situation where an output file already exists
 - DRY RUN: Simulation mode that reports actions without making changes
 - DIRECTORY MIRRORING: Recreating template directory structure in output
+- ALIAS: A secondary command that invokes the same handler with the same options as the primary command
+- CONFIG HINT: A non-blocking informational message suggesting config file creation
 
 ## Stakeholders
 
@@ -181,17 +183,70 @@ ACCEPTANCE CRITERIA
 
 DEPENDS ON: CLI-12
 
+### GEN-13: Init Alias Registration [MUST]
+
+AS A developer, I WANT to run `awa init` as an alternative to `awa template generate`, SO THAT the CLI uses familiar onboarding vocabulary.
+
+> `init` is registered as a top-level command sharing the same handler as `template generate`.
+
+ACCEPTANCE CRITERIA
+
+- GEN-13_AC-1 [ubiquitous]: The system SHALL register `init` as a top-level command under `awa`
+
+### GEN-14: Option Parity [MUST]
+
+AS A developer, I WANT `awa init` to accept all options that `awa template generate` accepts, SO THAT I can use any option with either command name.
+
+> Both commands share the same handler configuration, so option parity is structural.
+
+ACCEPTANCE CRITERIA
+
+- GEN-14_AC-1 [ubiquitous]: The `init` command SHALL accept all options defined on the `template generate` command
+
+### GEN-15: Behavioural Identity [MUST]
+
+AS A developer, I WANT `awa init <args>` to produce the same result as `awa template generate <args>`, SO THAT the choice of command name has no observable effect.
+
+> Identical handler ensures identical behaviour.
+
+ACCEPTANCE CRITERIA
+
+- GEN-15_AC-1 [ubiquitous]: `awa init <args>` SHALL produce output identical to `awa template generate <args>` for the same arguments
+
+### GEN-16: Help Visibility [MUST]
+
+AS A developer, I WANT both `init` and `generate` to appear in help output, SO THAT I can discover both names.
+
+> Commander automatically renders aliases in the command list.
+
+ACCEPTANCE CRITERIA
+
+- GEN-16_AC-1 [event]: WHEN the user invokes `awa --help` THEN the help output SHALL list `init` as a top-level command
+
+### GEN-17: Config-Not-Found Hint [SHOULD]
+
+AS A developer, I WANT an informational hint when no config file is found, SO THAT I know how to save my options for next time.
+
+> Non-blocking info message surfaced only when no `.awa.toml` is present and no `--config` was provided.
+
+ACCEPTANCE CRITERIA
+
+- GEN-17_AC-1 [conditional]: IF no `.awa.toml` is found AND `--config` was not provided THEN the system SHALL log an info-level hint suggesting config file creation
+
 ## Assumptions
 
 - File system supports UTF-8 filenames
 - User has write permissions to output directory
 - Sufficient disk space for generated files
+- Users invoke the CLI from a terminal environment
 
 ## Constraints
 
 - Interactive prompts limited to @clack/prompts for consistency with architecture
 - No partial file writes (atomic write or skip)
 - No backup of overwritten files
+- No behaviour changes to `generate` beyond hint addition
+- `generate` must remain fully functional and undeprecated
 
 ## Out of Scope
 
@@ -200,3 +255,5 @@ DEPENDS ON: CLI-12
 - Merge conflict resolution
 - Post-generation hooks or scripts
 - File permission preservation from templates
+- Making `init` the primary command and `generate` the alias
+- Interactive config creation wizard

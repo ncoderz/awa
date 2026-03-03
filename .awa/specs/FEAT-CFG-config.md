@@ -17,11 +17,19 @@ The merge works as follows:
 - Missing config file: not an error; the tool proceeds with CLI arguments and built-in defaults.
 - Explicit config path (`--config`): points to a specific file; error if missing.
 
-The supported config options mirror the CLI surface: `output`, `template`, `features`, `force`, `dry-run`, `delete`, `refresh`, `list-unknown`, `preset`, and `remove-features`. A `[presets]` table enables named feature bundles (covered in the feature presets feature).
+The supported config options mirror the CLI surface: `output`, `template`, `features`, `force`, `dry-run`, `delete`, `refresh`, `list-unknown`, `preset`, and `remove-features`.
+
+A `[presets]` table enables named feature bundles. Presets introduce two complementary mechanisms:
+
+1. PRESETS — named bundles of features defined in `[presets]`. Activating a preset adds all its features to the final set. Multiple presets merge via set union.
+
+2. REMOVE-FEATURES — a subtraction mechanism that removes specific features from the final computed set, regardless of origin.
+
+The feature resolution order is: `final features = (base features ∪ preset features) \ remove-features`. The result is deduplicated. Referencing a non-existent preset is an error; removing a feature not in the set is silently ignored.
 
 ## Scope Boundary
 
-TOML config file parsing, CLI override merging, preset definitions.
+TOML config file parsing, CLI override merging, preset definitions, feature resolution.
 
 ## Scenarios
 
@@ -48,3 +56,31 @@ A developer runs awa in a directory without `.awa.toml`. The tool proceeds norma
 ### Scenario 6: Malformed config
 
 A developer has a typo in `.awa.toml` (e.g., unclosed string). The tool displays a descriptive TOML parse error with the line number and exits.
+
+### Scenario 7: Defining and using a preset
+
+A team defines presets in `.awa.toml`:
+```toml
+features = ["architect", "code"]
+
+[presets]
+tools = ["copilot", "claude", "cursor"]
+full = ["copilot", "claude", "cursor", "windsurf", "gemini"]
+```
+Running `awa template generate . --preset tools` resolves features to `["architect", "code", "copilot", "claude", "cursor"]`.
+
+### Scenario 8: Multiple presets
+
+Running `--preset tools --preset full` merges both presets via union. Since `full` is a superset of `tools`, the result is their union with base features.
+
+### Scenario 9: Removing a feature
+
+A developer uses the `full` preset but wants to exclude `windsurf`:
+```bash
+awa template generate . --preset full --remove-features windsurf
+```
+The final features include everything from `full` except `windsurf`.
+
+### Scenario 10: Config-level presets
+
+A team sets `preset = ["tools"]` in `.awa.toml` so the `tools` preset is always active. Developers can override with `--preset full` on the CLI, which replaces the config's preset list.

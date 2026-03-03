@@ -1,8 +1,8 @@
 // @awa-component: GEN-GenerateCommand
 // @awa-component: JSON-GenerateCommand
-// @awa-component: INIT-ConfigHint
+// @awa-component: GEN-ConfigHint
 // @awa-component: MULTI-GenerateCommand
-// @awa-impl: INIT-5_AC-1
+// @awa-impl: GEN-17_AC-1
 // @awa-impl: MULTI-6_AC-1
 // @awa-impl: MULTI-10_AC-1
 // @awa-impl: CLI-16_AC-2
@@ -139,7 +139,7 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
-    // @awa-impl: INIT-5_AC-1
+    // @awa-impl: GEN-17_AC-1
     // Non-blocking hint when no config file is present and --config was not provided
     if (!cliOptions.config && fileConfig === null) {
       logger.info('Tip: create .awa.toml to save your options for next time.');

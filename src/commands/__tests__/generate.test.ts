@@ -1,14 +1,14 @@
 // @awa-component: JSON-GenerateCommand
 // @awa-test: JSON_P-3
 // @awa-test: JSON_P-4
-// @awa-test: INIT-1_AC-1
-// @awa-test: INIT-2_AC-1
-// @awa-test: INIT-3_AC-1
-// @awa-test: INIT-4_AC-1
-// @awa-test: INIT-5_AC-1
-// @awa-test: INIT_P-1
+// @awa-test: GEN-13_AC-1
+// @awa-test: GEN-14_AC-1
+// @awa-test: GEN-15_AC-1
+// @awa-test: GEN-16_AC-1
+// @awa-test: GEN-17_AC-1
+// @awa-test: GEN_P-7
 // @awa-test: MULTI-5_AC-1, MULTI-10_AC-1
-// @awa-test: INIT_P-2
+// @awa-test: GEN_P-8
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { GenerationResult } from '../../types/index.js';
@@ -101,10 +101,10 @@ describe('generateCommand', () => {
     vi.clearAllMocks();
   });
 
-  // @awa-test: INIT-1_AC-1
-  // @awa-test: INIT-2_AC-1
-  // @awa-test: INIT-3_AC-1
-  // @awa-test: INIT_P-1
+  // @awa-test: GEN-13_AC-1
+  // @awa-test: GEN-14_AC-1
+  // @awa-test: GEN-15_AC-1
+  // @awa-test: GEN_P-7
   test('invokes generateCommand successfully with standard options', async () => {
     await generateCommand({
       output: './output',
@@ -123,8 +123,8 @@ describe('generateCommand', () => {
     expect(fileGenerator.generate).toHaveBeenCalled();
   });
 
-  // @awa-test: INIT-3_AC-1
-  // @awa-test: INIT_P-1
+  // @awa-test: GEN-15_AC-1
+  // @awa-test: GEN_P-7
   test('produces identical output regardless of which command name is used (generate vs init)', async () => {
     // Both "generate" and "init" invoke generateCommand — verify it resolves correctly
     const cliOptions = {
@@ -148,8 +148,8 @@ describe('generateCommand', () => {
     );
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('logs config hint when no config file is found and --config not provided', async () => {
     vi.mocked(configLoader.load).mockResolvedValue(null);
     vi.mocked(configLoader.merge).mockReturnValue(DEFAULT_RESOLVED_OPTIONS);
@@ -168,8 +168,8 @@ describe('generateCommand', () => {
     expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('.awa.toml'));
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('does NOT log config hint when --config is provided', async () => {
     vi.mocked(configLoader.load).mockResolvedValue(null);
     vi.mocked(configLoader.merge).mockReturnValue(DEFAULT_RESOLVED_OPTIONS);
@@ -193,8 +193,8 @@ describe('generateCommand', () => {
     expect(hintCalls).toHaveLength(0);
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('does NOT log config hint when config file was found', async () => {
     // configLoader.load returns non-null (file was found)
     vi.mocked(configLoader.load).mockResolvedValue({ output: './output' });

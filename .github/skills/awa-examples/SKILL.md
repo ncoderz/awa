@@ -47,7 +47,7 @@ You SHALL provide concrete, detailed, reproducible examples (code, CLI, config).
 You SHALL include context for each example explaining when to use it and what it demonstrates.
 You SHALL use the same {CODE} as the corresponding FEAT/REQ for the feature.
 You SHALL mark the document as INFORMATIVE (not normative).
-You SHALL split into multiple files (-001, -002, ...) if a single file would exceed 500 lines.
+You SHALL split into multiple files (-001, -002, ...) if a single file would exceed the line-limit.
 You SHALL NOT use normative language (SHALL/SHOULD/MAY) — that belongs in REQ documents.
 You SHALL NOT define acceptance criteria or traceability IDs — that belongs in REQ documents.
 You SHALL NOT describe design decisions or implementation details — that belongs in DESIGN documents.

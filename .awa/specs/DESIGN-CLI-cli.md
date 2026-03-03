@@ -46,7 +46,7 @@ src/
 
 Parses CLI arguments using commander, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands with positional arguments displayed in help output.
 
-IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4, CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5, GEN-10_AC-1, GEN-10_AC-2, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface RawCliOptions {
@@ -72,7 +72,7 @@ interface ArgumentParser {
 
 Loads TOML configuration from file, merges with CLI arguments (CLI wins), and produces resolved options with defaults applied. Parses the `[presets]` table for named feature bundles.
 
-IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CLI-31_AC-1, CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, FP-1_AC-1, FP-1_AC-2, FP-1_AC-3, FP-1_AC-4, FP-3_AC-1, FP-3_AC-2, FP-3_AC-3, FP-5_AC-1, FP-5_AC-2, FP-5_AC-3, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
+IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CLI-31_AC-1, CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, CFG-7_AC-1, CFG-7_AC-2, CFG-7_AC-3, CFG-7_AC-4, CFG-9_AC-1, CFG-9_AC-2, CFG-9_AC-3, CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
 
 ```typescript
 interface FileConfig {
@@ -113,7 +113,7 @@ interface ConfigLoader {
 
 Computes the final feature set from base features, activated presets, and removals. Validates that referenced preset names exist in the presets table.
 
-IMPLEMENTS: FP-2_AC-3, FP-6_AC-1, FP-6_AC-2, FP-6_AC-3, FP-6_AC-4, FP-6_AC-5, FP-7_AC-1, FP-7_AC-2, FP-4_AC-4
+IMPLEMENTS: CFG-8_AC-3, CFG-12_AC-1, CFG-12_AC-2, CFG-12_AC-3, CFG-12_AC-4, CFG-12_AC-5, CFG-13_AC-1, CFG-13_AC-2, CFG-10_AC-4
 
 ```typescript
 interface PresetDefinitions {
@@ -152,19 +152,19 @@ interface FeatureResolver {
   VALIDATES: CFG-4_AC-4
 
 - CLI_P-3 [Preset Validation]: Referencing a non-existent preset name results in an error
-  VALIDATES: FP-2_AC-3
+  VALIDATES: CFG-8_AC-3
 
 - CLI_P-4 [Feature Resolution Order]: Final features = (baseFeatures union presetFeatures) minus removeFeatures
-  VALIDATES: FP-6_AC-1, FP-6_AC-2, FP-6_AC-3, FP-6_AC-4
+  VALIDATES: CFG-12_AC-1, CFG-12_AC-2, CFG-12_AC-3, CFG-12_AC-4
 
 - CLI_P-5 [Feature Deduplication]: Final feature set contains no duplicates
-  VALIDATES: FP-6_AC-5, FP-7_AC-2
+  VALIDATES: CFG-12_AC-5, CFG-13_AC-2
 
 - CLI_P-6 [Preset Union]: Multiple presets are merged via set union
-  VALIDATES: FP-7_AC-1
+  VALIDATES: CFG-13_AC-1
 
 - CLI_P-7 [Silent Removal]: Removing a non-existent feature does not cause an error
-  VALIDATES: FP-4_AC-4
+  VALIDATES: CFG-10_AC-4
 
 ## Error Handling
 
@@ -233,6 +233,32 @@ PRINCIPLES:
 - CFG-5_AC-2 → CLI-ArgumentParser
 - CFG-6_AC-1 → CFG-ConfigLoader
 - CFG-6_AC-2 → CFG-ConfigLoader
+- CFG-7_AC-1 → CFG-ConfigLoader
+- CFG-7_AC-2 → CFG-ConfigLoader
+- CFG-7_AC-3 → CFG-ConfigLoader
+- CFG-7_AC-4 → CFG-ConfigLoader
+- CFG-8_AC-1 → CLI-ArgumentParser
+- CFG-8_AC-2 → CLI-ArgumentParser
+- CFG-8_AC-3 → FP-FeatureResolver (CLI_P-3)
+- CFG-8_AC-4 → CLI-ArgumentParser
+- CFG-9_AC-1 → CFG-ConfigLoader
+- CFG-9_AC-2 → CFG-ConfigLoader
+- CFG-9_AC-3 → CFG-ConfigLoader
+- CFG-10_AC-1 → CLI-ArgumentParser
+- CFG-10_AC-2 → CLI-ArgumentParser
+- CFG-10_AC-3 → CLI-ArgumentParser
+- CFG-10_AC-4 → FP-FeatureResolver (CLI_P-7)
+- CFG-10_AC-5 → CLI-ArgumentParser
+- CFG-11_AC-1 → CFG-ConfigLoader
+- CFG-11_AC-2 → CFG-ConfigLoader
+- CFG-11_AC-3 → CFG-ConfigLoader
+- CFG-12_AC-1 → FP-FeatureResolver (CLI_P-4)
+- CFG-12_AC-2 → FP-FeatureResolver (CLI_P-4)
+- CFG-12_AC-3 → FP-FeatureResolver (CLI_P-4)
+- CFG-12_AC-4 → FP-FeatureResolver (CLI_P-4)
+- CFG-12_AC-5 → FP-FeatureResolver (CLI_P-5)
+- CFG-13_AC-1 → FP-FeatureResolver (CLI_P-6)
+- CFG-13_AC-2 → FP-FeatureResolver (CLI_P-5)
 
 ### REQ-CLI-cli.md
 
@@ -323,46 +349,14 @@ PRINCIPLES:
 - DISC-4_AC-1 → CLI-ArgumentParser
 - DISC-5_AC-1 → CLI-ArgumentParser
 
-### REQ-FP-feature-presets.md
-
-- FP-1_AC-1 → CFG-ConfigLoader
-- FP-1_AC-2 → CFG-ConfigLoader
-- FP-1_AC-3 → CFG-ConfigLoader
-- FP-1_AC-4 → CFG-ConfigLoader
-- FP-2_AC-1 → CLI-ArgumentParser
-- FP-2_AC-2 → CLI-ArgumentParser
-- FP-2_AC-3 → FP-FeatureResolver (CLI_P-3)
-- FP-2_AC-4 → CLI-ArgumentParser
-- FP-3_AC-1 → CFG-ConfigLoader
-- FP-3_AC-2 → CFG-ConfigLoader
-- FP-3_AC-3 → CFG-ConfigLoader
-- FP-4_AC-1 → CLI-ArgumentParser
-- FP-4_AC-2 → CLI-ArgumentParser
-- FP-4_AC-3 → CLI-ArgumentParser
-- FP-4_AC-4 → FP-FeatureResolver (CLI_P-7)
-- FP-4_AC-5 → CLI-ArgumentParser
-- FP-5_AC-1 → CFG-ConfigLoader
-- FP-5_AC-2 → CFG-ConfigLoader
-- FP-5_AC-3 → CFG-ConfigLoader
-- FP-6_AC-1 → FP-FeatureResolver (CLI_P-4)
-- FP-6_AC-2 → FP-FeatureResolver (CLI_P-4)
-- FP-6_AC-3 → FP-FeatureResolver (CLI_P-4)
-- FP-6_AC-4 → FP-FeatureResolver (CLI_P-4)
-- FP-6_AC-5 → FP-FeatureResolver (CLI_P-5)
-- FP-7_AC-1 → FP-FeatureResolver (CLI_P-6)
-- FP-7_AC-2 → FP-FeatureResolver (CLI_P-5)
-
 ### REQ-GEN-generation.md
 
 - GEN-10_AC-1 → CLI-ArgumentParser
 - GEN-10_AC-2 → CLI-ArgumentParser
-
-### REQ-INIT-init-alias.md
-
-- INIT-1_AC-1 → CLI-ArgumentParser
-- INIT-2_AC-1 → CLI-ArgumentParser
-- INIT-3_AC-1 → CLI-ArgumentParser
-- INIT-4_AC-1 → CLI-ArgumentParser
+- GEN-13_AC-1 → CLI-ArgumentParser
+- GEN-14_AC-1 → CLI-ArgumentParser
+- GEN-15_AC-1 → CLI-ArgumentParser
+- GEN-16_AC-1 → CLI-ArgumentParser
 
 ### REQ-JSON-json-output.md
 

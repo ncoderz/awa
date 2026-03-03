@@ -52,7 +52,7 @@ src/
 
 A commander parent command that acts as a namespace for template-related subcommands. Does not have its own action handler — displays help when invoked without a subcommand.
 
-IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4, CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5, GEN-10_AC-1, GEN-10_AC-2, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface TemplateGroup {
@@ -67,7 +67,7 @@ interface TemplateGroup {
 
 The root `awa` command that wires together the template group, top-level init convenience command, and top-level awa commands.
 
-IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4, CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5, GEN-10_AC-1, GEN-10_AC-2, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface RootProgram {
@@ -137,6 +137,20 @@ Verify command tree structure by inspecting commander Command instances.
 
 - CFG-5_AC-2 → CLI-TemplateGroup
 - CFG-5_AC-2 → CLI-RootProgram
+- CFG-8_AC-1 → CLI-TemplateGroup
+- CFG-8_AC-1 → CLI-RootProgram
+- CFG-8_AC-2 → CLI-TemplateGroup
+- CFG-8_AC-2 → CLI-RootProgram
+- CFG-8_AC-4 → CLI-TemplateGroup
+- CFG-8_AC-4 → CLI-RootProgram
+- CFG-10_AC-1 → CLI-TemplateGroup
+- CFG-10_AC-1 → CLI-RootProgram
+- CFG-10_AC-2 → CLI-TemplateGroup
+- CFG-10_AC-2 → CLI-RootProgram
+- CFG-10_AC-3 → CLI-TemplateGroup
+- CFG-10_AC-3 → CLI-RootProgram
+- CFG-10_AC-5 → CLI-TemplateGroup
+- CFG-10_AC-5 → CLI-RootProgram
 
 ### REQ-CLI-cli.md
 
@@ -290,40 +304,20 @@ Verify command tree structure by inspecting commander Command instances.
 - DISC-5_AC-1 → CLI-TemplateGroup
 - DISC-5_AC-1 → CLI-RootProgram
 
-### REQ-FP-feature-presets.md
-
-- FP-2_AC-1 → CLI-TemplateGroup
-- FP-2_AC-1 → CLI-RootProgram
-- FP-2_AC-2 → CLI-TemplateGroup
-- FP-2_AC-2 → CLI-RootProgram
-- FP-2_AC-4 → CLI-TemplateGroup
-- FP-2_AC-4 → CLI-RootProgram
-- FP-4_AC-1 → CLI-TemplateGroup
-- FP-4_AC-1 → CLI-RootProgram
-- FP-4_AC-2 → CLI-TemplateGroup
-- FP-4_AC-2 → CLI-RootProgram
-- FP-4_AC-3 → CLI-TemplateGroup
-- FP-4_AC-3 → CLI-RootProgram
-- FP-4_AC-5 → CLI-TemplateGroup
-- FP-4_AC-5 → CLI-RootProgram
-
 ### REQ-GEN-generation.md
 
 - GEN-10_AC-1 → CLI-TemplateGroup
 - GEN-10_AC-1 → CLI-RootProgram
 - GEN-10_AC-2 → CLI-TemplateGroup
 - GEN-10_AC-2 → CLI-RootProgram
-
-### REQ-INIT-init-alias.md
-
-- INIT-1_AC-1 → CLI-TemplateGroup
-- INIT-1_AC-1 → CLI-RootProgram
-- INIT-2_AC-1 → CLI-TemplateGroup
-- INIT-2_AC-1 → CLI-RootProgram
-- INIT-3_AC-1 → CLI-TemplateGroup
-- INIT-3_AC-1 → CLI-RootProgram
-- INIT-4_AC-1 → CLI-TemplateGroup
-- INIT-4_AC-1 → CLI-RootProgram
+- GEN-13_AC-1 → CLI-TemplateGroup
+- GEN-13_AC-1 → CLI-RootProgram
+- GEN-14_AC-1 → CLI-TemplateGroup
+- GEN-14_AC-1 → CLI-RootProgram
+- GEN-15_AC-1 → CLI-TemplateGroup
+- GEN-15_AC-1 → CLI-RootProgram
+- GEN-16_AC-1 → CLI-TemplateGroup
+- GEN-16_AC-1 → CLI-RootProgram
 
 ### REQ-JSON-json-output.md
 

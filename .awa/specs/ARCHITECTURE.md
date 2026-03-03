@@ -26,13 +26,11 @@ Run `awa spec codes` for the live inventory. The table below defines scope bound
 
 | Code | Feature | Scope Boundary |
 |------|---------|----------------|
-| CFG | config | TOML config file parsing, CLI override merging, preset definitions. |
+| CFG | config | TOML config file parsing, CLI override merging, preset definitions, feature resolution. |
 | CLI | cli | Top-level CLI argument parsing, option definitions, help output. Traceability validation — spec schemas, marker scann... |
 | DIFF | diff | Template-vs-target comparison, unified diff output, exit codes. |
 | DISC | feature-discovery | Scanning templates for feature flags; reporting available flags and presets. |
-| FP | feature-presets | Preset resolution, feature flag combination, removal logic. |
-| GEN | generation | File generation from templates — conflict resolution, dry-run, force, delete list. |
-| INIT | init-alias | awa init convenience alias for awa template generate. |
+| GEN | generation | File generation from templates — conflict resolution, dry-run, force, delete list, init alias convenience command. |
 | JSON | json-output | Structured JSON and summary output modes for generate, diff, check, features. |
 | MULTI | multi-target | Per-agent target configs, batch runner, --all-targets / --target. |
 | OVL | overlays | Overlay resolution, merged template directory, cleanup. |

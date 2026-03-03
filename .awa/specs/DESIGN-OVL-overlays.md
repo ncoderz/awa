@@ -95,7 +95,7 @@ Extended with a repeatable `--overlay <path>` option on both the generate and
 diff subcommands. The parsed value is forwarded as `overlay: string[]` in
 RawCliOptions.
 
-IMPLEMENTS: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-2_AC-3, CLI-6_AC-2, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-11, DISC-4_AC-1, DISC-5_AC-1, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-2_AC-3, CLI-6_AC-2, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-11, DISC-4_AC-1, DISC-5_AC-1, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 .option('--overlay <path...>', 'Overlay directory paths (repeatable)')
@@ -242,12 +242,12 @@ Test generate and diff commands with mocked overlay module.
 - DISC-4_AC-1 → CLI-ArgumentParser
 - DISC-5_AC-1 → CLI-ArgumentParser
 
-### REQ-INIT-init-alias.md
+### REQ-GEN-generation.md
 
-- INIT-1_AC-1 → CLI-ArgumentParser
-- INIT-2_AC-1 → CLI-ArgumentParser
-- INIT-3_AC-1 → CLI-ArgumentParser
-- INIT-4_AC-1 → CLI-ArgumentParser
+- GEN-13_AC-1 → CLI-ArgumentParser
+- GEN-14_AC-1 → CLI-ArgumentParser
+- GEN-15_AC-1 → CLI-ArgumentParser
+- GEN-16_AC-1 → CLI-ArgumentParser
 
 ### REQ-JSON-json-output.md
 

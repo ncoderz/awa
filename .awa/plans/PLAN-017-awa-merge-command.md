@@ -92,7 +92,7 @@ For file types where the target has no corresponding file, the source file is si
 
 ## Risks
 
-- Content merging may produce files exceeding the 500-line limit; users need to split manually
+- Content merging may produce files exceeding the 800-line limit; users need to split manually
 - Merged REQ files may have non-sequential requirement numbers until renumber is run
 - FEAT file merging may produce awkward combined narrative that needs manual editing
 - Git history: combined content in a single file loses the git history of the appended source

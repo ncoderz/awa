@@ -25,7 +25,7 @@ Each rule file is a YAML document with three top-level keys:
 target-files: ".awa/specs/REQ-*.md"   # Required: glob matching spec files
 sections: [...]                         # Required: section structure rules
 sections-prohibited: [...]              # Optional: formatting patterns to reject
-line-limit: 500                         # Optional: max lines per matching file
+line-limit: 800                         # Optional: max lines per matching file
 ```
 
 ### `target-files`
@@ -199,7 +199,7 @@ Code blocks (fenced with `` ``` ``) are excluded from prohibited pattern scannin
 An optional maximum line count for matching files. When set, files exceeding this limit produce a warning. Omit to allow any length.
 
 ```yaml
-line-limit: 500
+line-limit: 800
 ```
 
 ## Finding Codes

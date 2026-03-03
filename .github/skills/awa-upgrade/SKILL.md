@@ -64,5 +64,5 @@ You SHALL follow schema structure strictly (section order, nesting).
 You SHALL obey schema render expectations (omit optional empty sections, avoid prohibited patterns).
 You SHALL upgrade existing trace IDs if necessary.
 You SHALL upgrade existing filenames if necessary.
-You SHALL respect the 500-line limit; split logically if needed.
+You SHALL respect the file line-limits; split logically if needed.
 You MAY use todos and tools as needed.

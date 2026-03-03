@@ -3,11 +3,11 @@ target-files: ".awa/specs/EXAMPLE-*.md"
 description: >
   Concrete usage examples for a feature. Detailed, hands-on, reproducible.
   Use the same {CODE} as the corresponding FEAT/REQ for the feature.
-  Number files sequentially (-001, -002, ...) when splitting at the 500-line limit.
+  Number files sequentially (-001, -002, ...) when splitting at the line-limit.
   Each example must have a title, context, and code/demonstration block.
   Marked [INFORMATIVE]. Prohibited: normative language (SHALL/SHOULD/MAY),
   acceptance criteria, traceability IDs, design decisions.
-line-limit: 500
+line-limit: 800
 
 sections:
   # Top-level heading with INFORMATIVE marker
