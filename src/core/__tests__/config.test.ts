@@ -1,5 +1,5 @@
 // @awa-component: CFG-ConfigLoader
-// @awa-test: CFG_P-1, CFG_P-2
+// @awa-test: CLI_P-1, CLI_P-2
 // @awa-test: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
 // @awa-test: CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3
 // @awa-test: CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10
