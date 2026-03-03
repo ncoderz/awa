@@ -72,8 +72,8 @@ function collectFilePaths(
   // @awa-impl: RENUM-5_AC-1, RENUM-5_AC-3
   for (const specFile of specs.specFiles) {
     const name = basename(specFile.filePath);
-    // Include REQ, DESIGN, FEAT, TASK, EXAMPLES, PLAN files matching the code
-    const prefixes = ['REQ', 'DESIGN', 'FEAT', 'TASK', 'EXAMPLES', 'PLAN'];
+    // Include REQ, DESIGN, FEAT, TASK, EXAMPLE, PLAN files matching the code
+    const prefixes = ['REQ', 'DESIGN', 'FEAT', 'TASK', 'EXAMPLE', 'PLAN'];
     for (const prefix of prefixes) {
       if (name.startsWith(`${prefix}-${code}-`)) {
         paths.add(specFile.filePath);

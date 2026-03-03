@@ -149,7 +149,7 @@ async function parseSpecFile(
 function extractCodePrefix(filePath: string): string {
   const name = basename(filePath, '.md');
   // Extract CODE from patterns like REQ-CODE-feature, DESIGN-CODE-feature, FEAT-CODE-feature
-  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLES|API)-([A-Z][A-Z0-9]*)-/.exec(name);
+  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLE|API)-([A-Z][A-Z0-9]*)-/.exec(name);
   if (match?.[1]) return match[1];
   // Fallback: ARCHITECTURE.md has no code prefix
   return '';

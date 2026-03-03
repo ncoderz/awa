@@ -17,6 +17,10 @@ Key abstractions:
 
 Users think of trace as a search tool: give it an ID and it shows everything related. Give it a task file and it assembles the context an AI agent needs. Give it `--all` and it dumps the full traceability map.
 
+## Scope Boundary
+
+Traceability chain navigation — ID lookup, content assembly, token budgets.
+
 ## Scenarios
 
 ### Scenario 1: Tracing an Acceptance Criterion

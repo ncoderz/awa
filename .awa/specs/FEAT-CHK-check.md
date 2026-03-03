@@ -15,6 +15,10 @@ This makes the traceability system an honour system — useful for humans readin
 
 The tool is fully configurable — users with custom templates can define their own marker names, spec globs, and code globs. Defaults match the bundled awa workflow. Output can be text (human) or JSON (CI).
 
+## Scope Boundary
+
+Traceability validation — spec schemas, marker scanning, AC coverage, cross-refs.
+
 ## Scenarios
 
 ### Scenario 1: Clean project

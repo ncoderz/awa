@@ -14,7 +14,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │   └── schemas/
   │       ├── ARCHITECTURE.schema.yaml
   │       ├── FEAT.schema.yaml
-  │       ├── EXAMPLES.schema.yaml
+  │       ├── EXAMPLE.schema.yaml
   │       ├── REQ.schema.yaml
   │       ├── DESIGN.schema.yaml
   │       ├── API.schema.yaml
@@ -25,7 +25,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md
-  │   ├── EXAMPLES-{CODE}-{feature-name}-{nnn}.md
+  │   ├── EXAMPLE-{CODE}-{feature-name}-{nnn}.md
   │   ├── REQ-{CODE}-{feature-name}.md
   │   ├── DESIGN-{CODE}-{feature-name}.md
   │   └── API-{CODE}-{api-name}.tsp
@@ -42,7 +42,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 <file_descriptions>
 - ARCHITECTURE.md: High-level architecture overview of the project.
 - FEAT-{CODE}-{feature-name}.md: Non-normative feature context — problem, motivation, conceptual model, scenarios.
-- EXAMPLES-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
+- EXAMPLE-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
 - REQ-{CODE}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
 - DESIGN-{CODE}-{feature-name}.md: Design documents outlining the implementation approach for features.
 - API-{CODE}-{api-name}.tsp: TypeSpec files defining major APIs.

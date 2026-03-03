@@ -518,7 +518,7 @@ function extractIdsFromText(text: string): string[] {
 
 function extractCodeFromFileName(fileName: string): string {
   // Extract CODE from REQ-CODE-feature.md or DESIGN-CODE-feature.md
-  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLES|API|TASK)-([A-Z][A-Z0-9]*)-/.exec(fileName);
+  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLE|API|TASK)-([A-Z][A-Z0-9]*)-/.exec(fileName);
   return match?.[1] ?? '';
 }
 

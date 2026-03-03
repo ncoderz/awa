@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/ncoderz/awa/actions/workflows/test.yaml/badge.svg)](https://github.com/ncoderz/awa/actions/workflows/test.yaml)
 [![npm version](https://img.shields.io/npm/v/@ncoderz/awa.svg)](https://www.npmjs.com/package/@ncoderz/awa)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](LICENSE)
 
 `Structured, traceable AI development.`
 
@@ -148,7 +148,7 @@ npm run build
 
 ## License
 
-© 2025-26 ncoderz Ltd. Released under the [MIT License](LICENSE).
+© 2025-26 ncoderz Ltd. Released under the [BSD 3-Clause License](LICENSE).
 
 ## Acknowledgments
 

@@ -15,6 +15,10 @@ The JSON structure mirrors the existing result types. Generate output contains a
 
 Stdout carries only the JSON payload; stderr carries error messages. This separation lets shell pipelines capture JSON cleanly.
 
+## Scope Boundary
+
+Structured JSON and summary output modes for generate, diff, check, features.
+
 ## Scenarios
 
 ### Scenario 1: CI Drift Detection

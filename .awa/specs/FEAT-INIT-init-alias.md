@@ -10,6 +10,10 @@ New users expect `awa init` as the entry point for setting up a project. The wor
 
 An optional first-run hint surfaces when no `.awa.toml` configuration file is found and no `--config` flag is provided. This non-blocking info message suggests running `awa init .` to generate a configuration — lowering the barrier for first-time users without interrupting existing workflows.
 
+## Scope Boundary
+
+awa init convenience alias for awa template generate.
+
 ## Scenarios
 
 ### Scenario 1: New user runs `awa init .`

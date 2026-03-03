@@ -25,7 +25,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
 <file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
 <file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
@@ -81,13 +81,11 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
   - Implement interface as specified in DESIGN
   - Add @awa-impl marker above code satisfying each AC
   - One AC may require multiple @awa-impl markers across files
-  - Update REQ file AC checkmark when fully implemented
 
 6. FOR EACH TEST
   - Property tests (@awa-test: {CODE}_P-{n}): Use property-based testing framework
   - Acceptance tests (@awa-test: {CODE}-{n}[.{p}]_AC-{m}): Use example-based assertions
   - A single test may verify multiple ACs or properties
-  - Update DESIGN file Correctness Property checkmark when fully implemented
 
 7. UPDATE DOCUMENTATION
   - If user-facing behavior changed: update user docs

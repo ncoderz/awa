@@ -21,10 +21,14 @@ Key abstractions:
 - SCOPE: Renumbering can target a single feature code (e.g. `awa renumber CHK`) or all feature codes at once (`awa renumber --all`). When targeting all, the tool discovers every feature code from the REQ files and renumbers each independently.
 - RENUMBER MAP: A mapping from old IDs to new IDs, derived by walking the authoritative spec document (REQ file) in order and assigning sequential numbers starting from 1.
 - ID FAMILY: All derived IDs that share a root requirement number. When `CHK-5` becomes `CHK-3`, the entire family moves: subrequirements like `CHK-5.1` become `CHK-3.1`, acceptance criteria are renumbered to match, and associated properties shift accordingly.
-- PROPAGATION: The renumber map is applied across all artifact types — REQ, DESIGN, FEAT, TASK, EXAMPLES, and source/test files with traceability markers. Cross-references (e.g. DESIGN implementation links, dependency lines) are updated too.
+- PROPAGATION: The renumber map is applied across all artifact types — REQ, DESIGN, FEAT, TASK, EXAMPLE, and source/test files with traceability markers. Cross-references (e.g. DESIGN implementation links, dependency lines) are updated too.
 - DRY RUN: Users can preview the renumber map and affected files before committing changes.
 
 The tool works best when the REQ file is the single source of truth for ID ordering. DESIGN, TASK, and code files are consumers of those IDs, and the tool rewrites them to follow whatever the REQ file declares.
+
+## Scope Boundary
+
+Traceability ID renumbering, gap removal, propagation to specs and code.
 
 ## Scenarios
 

@@ -19,6 +19,10 @@ Users think of fixtures as "if I ran `awa template generate` with these flags, I
 
 The testing pipeline reuses the same generator and feature-resolver as `awa template generate`, so test behavior matches production behavior exactly.
 
+## Scope Boundary
+
+Template test fixtures — TOML parsing, rendering, snapshot comparison.
+
 ## Scenarios
 
 ### Scenario 1: Basic fixture

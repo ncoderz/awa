@@ -12,17 +12,37 @@ SDD CORE (primary USP)
 
 - CHECK ENGINE: Traceability validation — spec schema checks, marker scanning, AC coverage, cross-ref integrity
 - TRACE ENGINE: Traceability chain navigation — assembles context from specs, code, and tests for AI
+- CODES ENGINE: Feature code inventory — scans REQ/FEAT files to list all codes with scope summaries
 
 TEMPLATE BOOTSTRAP (delivery mechanism)
 
 - CLI LAYER: Command parsing, argument validation, user prompts
 - CONFIGURATION LOADER: TOML config file parsing, CLI override merging
 - TEMPLATE RESOLVER: Resolve template source (local path or Git repo)
-- OVERLAY RESOLVER: Resolve overlay sources and build merged temp directory
-- TEMPLATE ENGINE: Template loading, rendering with conditional logic
-- FILE GENERATOR: Output file creation, directory management, conflict resolution
-- DIFF ENGINE: Template comparison against target directory with diff reporting
-- TEST RUNNER: Template testing — fixture discovery, rendering per fixture, file existence assertion, snapshot comparison
+
+## Feature Codes
+
+Run `awa spec codes` for the live inventory. The table below defines scope boundaries.
+
+| Code | Feature | Scope Boundary |
+|------|---------|----------------|
+| CFG | config | TOML config file parsing, CLI override merging, preset definitions. |
+| CHK | check | Traceability validation — spec schemas, marker scanning, AC coverage, cross-refs. |
+| CLI | cli | Top-level CLI argument parsing, option definitions, help output. |
+| DIFF | diff | Template-vs-target comparison, unified diff output, exit codes. |
+| DISC | feature-discovery | Scanning templates for feature flags; reporting available flags and presets. |
+| FP | feature-presets | Preset resolution, feature flag combination, removal logic. |
+| GEN | generation | File generation from templates — conflict resolution, dry-run, force, delete list. |
+| INIT | init-alias | awa init convenience alias for awa template generate. |
+| JSON | json-output | Structured JSON and summary output modes for generate, diff, check, features. |
+| MULTI | multi-target | Per-agent target configs, batch runner, --all-targets / --target. |
+| OVL | overlays | Overlay resolution, merged template directory, cleanup. |
+| RCOD | recode | Prefix rewriting of traceability IDs from one feature code to another with offset numbering. |
+| RENUM | renumber | Traceability ID renumbering, gap removal, propagation to specs and code. |
+| TCLI | template-cli | awa template subcommand group — generate, diff, features, test nesting. |
+| TPL | templates | Template engine (Eta), partials, conditional output, empty-file markers. |
+| TRC | trace | Traceability chain navigation — ID lookup, content assembly, token budgets. |
+| TTST | template-test | Template test fixtures — TOML parsing, rendering, snapshot comparison. |
 
 ## Technology Stack
 
@@ -98,8 +118,14 @@ awa/
 │   ├── commands/          # Command implementations
 │   │   ├── generate.ts    # Generate command orchestration
 │   │   ├── diff.ts        # Diff command orchestration
-│   │   ├── check.ts    # Validate command orchestration
-│   │   └── test.ts     # Template test command orchestration
+│   │   ├── check.ts       # Validate command orchestration
+│   │   ├── test.ts        # Template test command orchestration
+│   │   ├── trace.ts       # Trace command orchestration
+│   │   ├── renumber.ts    # Renumber command orchestration
+│   │   ├── recode.ts      # Recode command orchestration
+│   │   ├── merge.ts       # Merge command orchestration
+│   │   ├── codes.ts       # Feature codes command orchestration
+│   │   └── features.ts    # Features command orchestration
 │   ├── core/              # Core business logic
 │   │   ├── batch-runner.ts # Multi-target batch processing
 │   │   ├── config.ts      # Configuration loader
@@ -112,6 +138,24 @@ awa/
 │   │   ├── resolver.ts    # Conflict and delete resolution
 │   │   ├── template-resolver.ts  # Template source resolver
 │   │   ├── template.ts    # Template engine wrapper
+│   │   ├── codes/         # Feature code discovery
+│   │   │   ├── types.ts           # Code metadata types
+│   │   │   ├── scanner.ts         # Scans REQ/FEAT files for codes
+│   │   │   └── reporter.ts        # Table/JSON/summary formatting
+│   │   ├── recode/        # Feature code prefix rewriting
+│   │   │   ├── types.ts           # RecodeResult, RecodeCommandOptions
+│   │   │   ├── map-builder.ts     # Builds recode map with offset numbering
+│   │   │   └── reporter.ts        # Text/JSON output formatting
+│   │   ├── merge/         # Feature code merging (recode + rename + cleanup)
+│   │   │   ├── types.ts           # MergeResult, MergeCommandOptions
+│   │   │   ├── spec-mover.ts      # File rename planning, heading updates, conflict detection
+│   │   │   └── reporter.ts        # Text/JSON output formatting
+│   │   ├── renumber/      # ID renumbering and propagation
+│   │   │   ├── types.ts           # RenumberMap, AffectedFile, Replacement
+│   │   │   ├── map-builder.ts     # Builds renumber map from spec scan
+│   │   │   ├── propagator.ts      # Two-pass placeholder replacement
+│   │   │   ├── malformed-detector.ts # Detects malformed IDs
+│   │   │   └── reporter.ts        # Text/JSON output formatting
 │   │   ├── template-test/ # Template testing
 │   │   │   ├── types.ts           # Fixture and result types
 │   │   │   ├── fixture-loader.ts  # Discovers and parses _tests/*.toml
@@ -165,14 +209,18 @@ RESPONSIBILITIES
 - Invoke configuration loader then core commands
 - Display help and version info
 - Group template-related commands under `template` subcommand: `generate`/`init`, `diff`, `features`, `test`
-- Provide top-level commands for awa-specific operations: `check`, `trace`
+- Group spec-related commands under `spec` subcommand: `trace`, `renumber`, `recode`, `merge`, `codes`
+- Provide top-level commands for awa-specific operations: `check`
+- Maintain backward-compat aliases: `awa trace` → `awa spec trace`, `awa renumber` → `awa spec renumber`
 
 
 CONSTRAINTS
 
 - Uses commander for command definition with nested subcommands
 - Template commands accessed via `awa template <cmd>` (e.g. `awa template generate .`)
-- `awa check` and `awa trace` remain top-level commands
+- Spec commands accessed via `awa spec <cmd>` (e.g. `awa spec trace CHK-1`, `awa spec recode SRC TGT`, `awa spec merge SRC TGT`)
+- `awa check` remains a top-level command
+- `awa trace` and `awa renumber` exist as backward-compat aliases for `awa spec trace` and `awa spec renumber`
 - Output directory is an optional positional argument (can come from CLI or config)
 - `--features` accepts variadic string values
 - `--config` specifies alternate config file path

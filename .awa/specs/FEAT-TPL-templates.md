@@ -27,6 +27,10 @@ Two special output conventions control file creation:
 
 Template CACHING works for Git sources: fetched repositories are stored in `~/.cache/awa/templates/` and reused on subsequent runs. The `--refresh` flag forces a re-fetch. Local paths are used directly with no caching.
 
+## Scope Boundary
+
+Template engine (Eta), partials, conditional output, empty-file markers.
+
 ## Scenarios
 
 ### Scenario 1: Local template development

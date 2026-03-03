@@ -199,7 +199,7 @@ When `--content` is active, sections are included in this priority order (used f
 | 5 | Source code | Files with matching `@awa-impl` markers |
 | 6 | Test code | Files with matching `@awa-test` markers |
 | 7 | Architecture | Relevant component from ARCHITECTURE.md |
-| 8 (lowest) | Examples | Relevant EXAMPLES file sections |
+| 8 (lowest) | Examples | Relevant EXAMPLE file sections |
 
 ## Steps
 

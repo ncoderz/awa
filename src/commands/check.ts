@@ -7,6 +7,7 @@
 // @awa-impl: CHK-24_AC-1
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
+import { fixCodesTable } from '../core/check/codes-fixer.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
 import { fixMatrices } from '../core/check/matrix-fixer.js';
 import { report } from '../core/check/reporter.js';
@@ -46,6 +47,27 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       ? { findings: [] as const }
       : checkCodeAgainstSpec(markers, specs, config);
     const specSpecResult = checkSpecAgainstSpec(specs, markers, config);
+
+    // Run fix BEFORE schema check: regenerate traceability matrices and Feature Codes table
+    // so that schema line-limit validation sees the post-generation content (default; skip with --no-fix)
+    if (config.fix) {
+      const fixResult = await fixMatrices(specs, config.crossRefPatterns);
+      if (fixResult.filesFixed > 0) {
+        logger.info(`Fixed traceability matrices in ${fixResult.filesFixed} file(s)`);
+      }
+
+      const codesFixResult = await fixCodesTable(specs, config);
+      if (codesFixResult.filesFixed > 0) {
+        logger.info('Fixed Feature Codes table in ARCHITECTURE.md');
+      }
+      if (codesFixResult.emptyScopeCodes.length > 0) {
+        logger.warn(
+          `Feature codes missing Scope Boundary: ${codesFixResult.emptyScopeCodes.join(', ')}`
+        );
+      }
+    }
+
+    // Schema check runs after fix so line-limit sees generated tables
     const schemaResult =
       config.schemaEnabled && ruleSets.length > 0
         ? await checkSchemasAsync(specs.specFiles, ruleSets)
@@ -74,14 +96,6 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       console.log(`errors: ${errors}, warnings: ${warnings}`);
     } else {
       report(allFindings, config.format);
-    }
-
-    // Run fix: regenerate traceability matrices in DESIGN and TASK files (default; skip with --no-fix)
-    if (config.fix) {
-      const fixResult = await fixMatrices(specs, config.crossRefPatterns);
-      if (fixResult.filesFixed > 0) {
-        logger.info(`Fixed traceability matrices in ${fixResult.filesFixed} file(s)`);
-      }
     }
 
     // Exit code: 0 = clean, 1 = any errors present

@@ -1,6 +1,6 @@
 # awa codes Command
 
-STATUS: not-started
+STATUS: completed
 DIRECTION: top-down
 
 ## Context
@@ -13,40 +13,40 @@ This plan covers three pieces: the command itself, a Feature Code Registry in AR
 
 ### `spec` Subcommand Group Setup
 
-- [ ] Create `awa spec` subcommand group in `src/cli/index.ts` (same pattern as `template` group)
-- [ ] Move existing `trace` command under `awa spec trace`
-- [ ] Move existing `renumber` command under `awa spec renumber`
-- [ ] Add backward-compat aliases: `awa trace` → `awa spec trace`, `awa renumber` → `awa spec renumber` (same approach as `awa init` → `awa template generate`)
+- [x] Create `awa spec` subcommand group in `src/cli/index.ts` (same pattern as `template` group)
+- [x] Move existing `trace` command under `awa spec trace`
+- [x] Move existing `renumber` command under `awa spec renumber`
+- [x] Add backward-compat aliases: `awa trace` → `awa spec trace`, `awa renumber` → `awa spec renumber` (same approach as `awa init` → `awa template generate`)
 
 ### Command Implementation
 
-- [ ] Add `codes` as a subcommand under `awa spec` group (alongside `trace`, `renumber`, `recode`, `merge`)
-- [ ] Scan all REQ files to discover feature codes (glob `.awa/specs/REQ-*.md`, extract `{CODE}` from filename)
-- [ ] For each code, extract: code, feature name (from filename), requirement count, FEAT file first paragraph (scope summary)
-- [ ] Output a table: `CODE | Feature | Reqs | Scope`
-- [ ] Support `--json` for machine-readable output
-- [ ] Sort output alphabetically by code
-- [ ] Register under `spec` subcommand group in `src/cli/index.ts` (same pattern as `template` group)
-- [ ] Implement in `src/commands/codes.ts` (thin orchestrator)
-- [ ] Core logic in `src/core/codes/scanner.ts` (reuse spec file globbing from check engine)
+- [x] Add `codes` as a subcommand under `awa spec` group (alongside `trace`, `renumber`, `recode`, `merge`)
+- [x] Scan all REQ files to discover feature codes (glob `.awa/specs/REQ-*.md`, extract `{CODE}` from filename)
+- [x] For each code, extract: code, feature name (from filename), requirement count, FEAT file first paragraph (scope summary)
+- [x] Output a table: `CODE | Feature | Reqs | Scope`
+- [x] Support `--json` for machine-readable output
+- [x] Sort output alphabetically by code
+- [x] Register under `spec` subcommand group in `src/cli/index.ts` (same pattern as `template` group)
+- [x] Implement in `src/commands/codes.ts` (thin orchestrator)
+- [x] Core logic in `src/core/codes/scanner.ts` (reuse spec file globbing from check engine)
 
 ### Skill Modifications (Template Changes)
 
-- [ ] Modify `awa-feature` skill: add mandatory step "Run `awa codes` (or list FEAT files) to see all existing feature codes. If the new capability logically extends an existing feature, use that feature's CODE. Ask the user if uncertain."
-- [ ] Modify `awa-requirements` skill: add same mandatory pre-step before choosing a CODE
-- [ ] Add to both skills: "When extending an existing feature, append requirements to the existing REQ file or create an additional REQ file under the same CODE"
+- [x] Modify `awa-feature` skill: add mandatory step "Run `awa codes` (or list FEAT files) to see all existing feature codes. If the new capability logically extends an existing feature, use that feature's CODE. Ask the user if uncertain."
+- [x] Modify `awa-requirements` skill: add same mandatory pre-step before choosing a CODE
+- [x] Add to both skills: "When extending an existing feature, append requirements to the existing REQ file or create an additional REQ file under the same CODE"
 
 ### ARCHITECTURE.md Registry
 
-- [ ] Add a "Feature Codes" section to ARCHITECTURE.md with a table of all current codes and their scope boundaries
-- [ ] Define boundary guidance (e.g., "CLI covers all command parsing; individual commands get their own code only if they have independent core logic")
-- [ ] Keep the table concise — code, scope, boundary rule per row
+- [x] Add a "Feature Codes" section to ARCHITECTURE.md with a table of all current codes and their scope boundaries
+- [x] Define boundary guidance (e.g., "CLI covers all command parsing; individual commands get their own code only if they have independent core logic")
+- [x] Keep the table concise — code, scope, boundary rule per row
 
 ### Testing
 
-- [ ] Unit tests for codes scanner (discovers codes, extracts metadata, handles empty project)
-- [ ] Integration test for `awa codes` CLI invocation (text and JSON output)
-- [ ] Snapshot test for table formatting
+- [x] Unit tests for codes scanner (discovers codes, extracts metadata, handles empty project)
+- [x] Integration test for `awa codes` CLI invocation (text and JSON output)
+- [x] Snapshot test for table formatting
 
 ## Risks
 
@@ -62,12 +62,12 @@ This plan covers three pieces: the command itself, a Feature Code Registry in AR
 
 ## Completion Criteria
 
-- [ ] `awa spec codes` lists all feature codes with requirement counts
-- [ ] `awa spec codes --json` outputs valid JSON
-- [ ] FEAT and REQ skills include mandatory code audit step
-- [ ] ARCHITECTURE.md has a Feature Codes table
-- [ ] All tests pass
-- [ ] `awa check --spec-only` passes
+- [x] `awa spec codes` lists all feature codes with requirement counts
+- [x] `awa spec codes --json` outputs valid JSON
+- [x] FEAT and REQ skills include mandatory code audit step
+- [x] ARCHITECTURE.md has a Feature Codes table
+- [x] All tests pass
+- [x] `awa check --spec-only` passes
 
 ## Open Questions
 

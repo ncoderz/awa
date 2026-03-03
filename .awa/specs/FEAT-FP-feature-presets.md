@@ -32,6 +32,10 @@ Key rules:
 - CLI arrays replace config arrays entirely (standard merge rule).
 - Multiple presets are merged via set union.
 
+## Scope Boundary
+
+Preset resolution, feature flag combination, removal logic.
+
 ## Scenarios
 
 ### Scenario 1: Defining and using a preset

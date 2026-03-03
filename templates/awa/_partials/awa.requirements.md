@@ -21,7 +21,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
 <file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="true" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
 <file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="code" required="if reverse workflow" />
 
@@ -37,12 +37,13 @@ If deriving from existing code (reverse workflow), analyze the codebase to extra
 
 ## Rules
 
+You SHALL ensure the {CODE} matches the corresponding FEAT {CODE} for the same feature if one exists.
+You SHALL run `awa spec codes` to help choose the {CODE} extending existing one if logical.
 You SHALL read the corresponding FEAT document before writing requirements.
 You SHALL solidify requirements with respect to architecture, feature context, and existing requirements.
 You SHALL create set of requirements in EARS format (INCOSE-compliant) based on the feature context.
 You SHALL identify existing requirements to update, or new requirements to create.
 You SHALL consider edge cases, UX, technical constraints, success criteria.
-You SHALL ensure the 3-letter {CODE} used in the filename is unique within the project.
 You SHOULD focus on requirements which will later be turned into a design.
 You SHOULD keep requirements at a manageable level of detail.
 You SHALL ensure requirement IDs and AC IDs follow the format defined in the traceability chain (e.g. `{CODE}-{n}`, `{CODE}-{n}_AC-{m}`, `{CODE}-{n}.{p}_AC-{m}`).

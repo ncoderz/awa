@@ -34,7 +34,7 @@ y = target artifact (what x is validated against) = requirement(s).
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
 <file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
+<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
 <file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if relevant" />

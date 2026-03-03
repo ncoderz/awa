@@ -15,7 +15,7 @@ const FIXTURES_DIR = resolve(import.meta.dirname, 'fixtures');
 function makeSpecFile(filePath: string, relPath: string): SpecFile {
   return {
     filePath,
-    code: relPath.match(/(?:REQ|DESIGN|TASK|FEAT|EXAMPLES|ALIGN)-([A-Z]+)/)?.[1] ?? 'TEST',
+    code: relPath.match(/(?:REQ|DESIGN|TASK|FEAT|EXAMPLE|ALIGN)-([A-Z]+)/)?.[1] ?? 'TEST',
     requirementIds: [],
     acIds: [],
     propertyIds: [],
@@ -160,9 +160,9 @@ describe('Schema fixture validation', () => {
       expect(result.findings).toHaveLength(0);
     });
 
-    test('EXAMPLES fixture passes EXAMPLES rules', async () => {
+    test('EXAMPLE fixture passes EXAMPLE rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLES-'));
+      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 
@@ -290,9 +290,9 @@ describe('Schema fixture validation', () => {
       expect(missingContent.length).toBeGreaterThanOrEqual(3);
     });
 
-    test('EXAMPLES fixture: missing INFORMATIVE marker and code block', async () => {
+    test('EXAMPLE fixture: missing INFORMATIVE marker and code block', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLES-'));
+      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 

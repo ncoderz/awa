@@ -17,7 +17,7 @@ Remove the Change Log section definition from all schemas that define it, in bot
 - [x] Remove Change Log section from DESIGN.schema.yaml (both locations)
 - [x] Remove Change Log section from REQ.schema.yaml (both locations)
 - [x] Remove Change Log section from FEAT.schema.yaml (both locations)
-- [x] Remove Change Log section from EXAMPLES.schema.yaml (both locations)
+- [x] Remove Change Log section from EXAMPLE.schema.yaml (both locations)
 - [x] Remove Change Log section from PLAN.schema.yaml (both locations)
 - [x] Remove Change Log from `example:` blocks within those schemas
 

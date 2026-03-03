@@ -253,6 +253,17 @@ ACCEPTANCE CRITERIA
 
 - CHK-24_AC-1 [conditional]: IF `--summary` is specified THEN the system SHALL output a single line with error and warning counts and suppress interactive output
 
+### CHK-25: Feature Codes Table Generation [MUST]
+
+AS A developer, I WANT the check command to regenerate the Feature Codes table in ARCHITECTURE.md from spec data, SO THAT the table stays in sync as features are added or removed.
+
+ACCEPTANCE CRITERIA
+
+- CHK-25_AC-1 [conditional]: UNLESS `--no-fix` is specified THEN the system SHALL regenerate the Feature Codes table in ARCHITECTURE.md using codes discovered from REQ files and scope text from the FEAT/REQ/DESIGN fallback chain
+- CHK-25_AC-2 [state]: WHEN a code has no discoverable scope text THEN the system SHALL warn with the code identifier
+
+DEPENDS ON: CHK-2
+
 ## Assumptions
 
 - Spec files are Markdown with identifiable patterns for IDs

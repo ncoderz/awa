@@ -205,6 +205,23 @@ function fixMatrices(
 ): Promise<FixResult>;
 ```
 
+### CHK-CodesFixer
+
+Regenerates the Feature Codes table in ARCHITECTURE.md from spec data. Discovers codes from REQ files via scanCodes(), extracts scope text using the FEAT Scope Boundary → FEAT first paragraph → REQ first paragraph → DESIGN first paragraph fallback chain, and replaces the ## Feature Codes section content.
+
+IMPLEMENTS: CHK-25_AC-1, CHK-25_AC-2
+
+```typescript
+interface CodesFixResult extends FixResult {
+  readonly emptyScopeCodes: readonly string[];
+}
+
+function fixCodesTable(
+  specs: SpecParseResult,
+  config: Pick<CheckConfig, 'specGlobs' | 'specIgnore'>
+): Promise<CodesFixResult>;
+```
+
 ## Data Models
 
 ### Core Types
@@ -358,3 +375,5 @@ PRINCIPLES:
 - CHK-23_AC-1 → CHK-MatrixFixer (CHK_P-11)
 - CHK-23_AC-2 → CHK-MatrixFixer (CHK_P-12)
 - CHK-24_AC-1 → CHK-CheckCommand
+- CHK-25_AC-1 → CHK-CodesFixer
+- CHK-25_AC-2 → CHK-CodesFixer

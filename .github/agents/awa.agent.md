@@ -1,6 +1,6 @@
 ---
-description: "awa 1.6.0"
-tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
+description: "awa 1.7.2"
+tools: [vscode/extensions, vscode/openSimpleBrowser, vscode/vscodeAPI, execute/getTerminalOutput, execute/createAndRunTask, execute/testFailure, execute/runInTerminal, read/terminalSelection, read/terminalLastCommand, read/problems, read/readFile, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/usages, search/searchSubagent, web/fetch, web/githubRepo, playwright/browser_click, playwright/browser_close, playwright/browser_console_messages, playwright/browser_drag, playwright/browser_evaluate, playwright/browser_file_upload, playwright/browser_fill_form, playwright/browser_handle_dialog, playwright/browser_hover, playwright/browser_install, playwright/browser_navigate, playwright/browser_navigate_back, playwright/browser_network_requests, playwright/browser_press_key, playwright/browser_resize, playwright/browser_run_code, playwright/browser_select_option, playwright/browser_snapshot, playwright/browser_tabs, playwright/browser_take_screenshot, playwright/browser_type, playwright/browser_wait_for, todo]
 ---
 
 # Prime Directive
@@ -19,7 +19,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │   └── schemas/
   │       ├── ARCHITECTURE.schema.yaml
   │       ├── FEAT.schema.yaml
-  │       ├── EXAMPLES.schema.yaml
+  │       ├── EXAMPLE.schema.yaml
   │       ├── REQ.schema.yaml
   │       ├── DESIGN.schema.yaml
   │       ├── API.schema.yaml
@@ -30,7 +30,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md
-  │   ├── EXAMPLES-{CODE}-{feature-name}-{nnn}.md
+  │   ├── EXAMPLE-{CODE}-{feature-name}-{nnn}.md
   │   ├── REQ-{CODE}-{feature-name}.md
   │   ├── DESIGN-{CODE}-{feature-name}.md
   │   └── API-{CODE}-{api-name}.tsp
@@ -47,7 +47,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 <file_descriptions>
 - ARCHITECTURE.md: High-level architecture overview of the project.
 - FEAT-{CODE}-{feature-name}.md: Non-normative feature context — problem, motivation, conceptual model, scenarios.
-- EXAMPLES-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
+- EXAMPLE-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
 - REQ-{CODE}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
 - DESIGN-{CODE}-{feature-name}.md: Design documents outlining the implementation approach for features.
 - API-{CODE}-{api-name}.tsp: TypeSpec files defining major APIs.

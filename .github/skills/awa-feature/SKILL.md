@@ -41,13 +41,13 @@ If deriving from existing code or requirements (reverse workflow), analyze the c
 
 ## Rules
 
+You SHALL run `awa spec codes` to help choose the {CODE} extending existing one if logical.
 You SHALL describe the problem, motivation, and conceptual model for the feature.
 You SHALL provide concrete usage scenarios that illustrate the feature in action.
 You SHALL mark the document as INFORMATIVE (not normative).
 You SHALL NOT use normative language (SHALL/SHOULD/MAY) — that belongs in REQ documents.
 You SHALL NOT define acceptance criteria or traceability IDs — that belongs in REQ documents.
 You SHALL NOT describe design decisions or implementation details — that belongs in DESIGN documents.
-You SHALL ensure the {CODE} matches the corresponding REQ {CODE} for the same feature.
 You SHALL use clear, accessible language; define jargon in a glossary if needed.
 You SHALL support reverse workflow: deriving feature context from existing code or requirements when requested.
 You SHALL clarify open points with user.

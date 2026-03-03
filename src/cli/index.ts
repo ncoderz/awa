@@ -82,13 +82,19 @@
 import { Command, Option } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
+import { codesCommand } from '../commands/codes.js';
 import { diffCommand } from '../commands/diff.js';
 import { featuresCommand } from '../commands/features.js';
 import { generateCommand } from '../commands/generate.js';
+import { mergeCommand } from '../commands/merge.js';
+import { recodeCommand } from '../commands/recode.js';
 import { renumberCommand } from '../commands/renumber.js';
 import { testCommand } from '../commands/test.js';
 import { traceCommand } from '../commands/trace.js';
 import type { RawCheckOptions } from '../core/check/types.js';
+import type { CodesCommandOptions } from '../core/codes/types.js';
+import type { MergeCommandOptions } from '../core/merge/types.js';
+import type { RecodeCommandOptions } from '../core/recode/types.js';
 import type { RenumberCommandOptions } from '../core/renumber/types.js';
 import type { RawTestOptions } from '../core/template-test/types.js';
 import type { TraceCommandOptions } from '../core/trace/types.js';
@@ -355,84 +361,168 @@ template
 // Add template group to root program
 program.addCommand(template);
 
+// ── spec subcommand group ──
+const spec = new Command('spec').description(
+  'Spec operations (trace, renumber, recode, merge, codes)'
+);
+
 // @awa-impl: TRC-8_AC-1
 // @awa-impl: TCLI-3_AC-2, TCLI-3_AC-4
-program
-  .command('trace')
-  .description('Explore traceability chains and assemble context from specs, code, and tests')
-  .argument('[ids...]', 'Traceability ID(s) to trace')
-  .option('--all', 'Trace all known IDs in the project', false)
-  .option('--task <path>', 'Resolve IDs from a task file')
-  .option('--file <path>', "Resolve IDs from a source file's markers")
-  .option('--content', 'Output actual file sections instead of locations', false)
-  .option('--list', 'Output file paths only (no content or tree)', false)
-  .option('--max-tokens <n>', 'Cap content output size (implies --content)')
-  .option('--depth <n>', 'Maximum traversal depth')
-  .option('--scope <code>', 'Limit results to a feature code')
-  .option('--direction <dir>', 'Traversal direction: both, forward, reverse', 'both')
-  .option('--no-code', 'Exclude source code (spec-only context)')
-  .option('--no-tests', 'Exclude test files')
-  .option('--json', 'Output results as JSON', false)
-  .option('--summary', 'Output compact one-line summary', false)
-  .option('-A <n>', 'Lines of context after a code marker (--content only; default: 20)')
-  .option('-B <n>', 'Lines of context before a code marker (--content only; default: 5)')
-  .option('-C <n>', 'Lines of context before and after (--content only; overrides -A and -B)')
-  .option('-c, --config <path>', 'Path to configuration file')
-  .action(async (ids: string[], options) => {
-    const traceOptions: TraceCommandOptions = {
-      ids,
-      all: options.all,
-      task: options.task,
-      file: options.file,
-      content: options.content,
-      list: options.list,
-      json: options.json,
-      summary: options.summary,
-      maxTokens: options.maxTokens !== undefined ? Number(options.maxTokens) : undefined,
-      depth: options.depth !== undefined ? Number(options.depth) : undefined,
-      scope: options.scope,
-      direction: options.direction,
-      noCode: options.code === false,
-      noTests: options.tests === false,
-      beforeContext:
-        options.C !== undefined
-          ? Number(options.C)
-          : options.B !== undefined
-            ? Number(options.B)
-            : undefined,
-      afterContext:
-        options.C !== undefined
-          ? Number(options.C)
-          : options.A !== undefined
-            ? Number(options.A)
-            : undefined,
-      config: options.config,
-    };
 
-    const exitCode = await traceCommand(traceOptions);
-    process.exit(exitCode);
-  });
+/** Configure a trace command with shared options and action handler. */
+function configureTraceCommand(cmd: Command): Command {
+  return cmd
+    .description('Explore traceability chains and assemble context from specs, code, and tests')
+    .argument('[ids...]', 'Traceability ID(s) to trace')
+    .option('--all', 'Trace all known IDs in the project', false)
+    .option('--task <path>', 'Resolve IDs from a task file')
+    .option('--file <path>', "Resolve IDs from a source file's markers")
+    .option('--content', 'Output actual file sections instead of locations', false)
+    .option('--list', 'Output file paths only (no content or tree)', false)
+    .option('--max-tokens <n>', 'Cap content output size (implies --content)')
+    .option('--depth <n>', 'Maximum traversal depth')
+    .option('--scope <code>', 'Limit results to a feature code')
+    .option('--direction <dir>', 'Traversal direction: both, forward, reverse', 'both')
+    .option('--no-code', 'Exclude source code (spec-only context)')
+    .option('--no-tests', 'Exclude test files')
+    .option('--json', 'Output results as JSON', false)
+    .option('--summary', 'Output compact one-line summary', false)
+    .option('-A <n>', 'Lines of context after a code marker (--content only; default: 20)')
+    .option('-B <n>', 'Lines of context before a code marker (--content only; default: 5)')
+    .option('-C <n>', 'Lines of context before and after (--content only; overrides -A and -B)')
+    .option('-c, --config <path>', 'Path to configuration file')
+    .action(async (ids: string[], options) => {
+      const traceOptions: TraceCommandOptions = {
+        ids,
+        all: options.all,
+        task: options.task,
+        file: options.file,
+        content: options.content,
+        list: options.list,
+        json: options.json,
+        summary: options.summary,
+        maxTokens: options.maxTokens !== undefined ? Number(options.maxTokens) : undefined,
+        depth: options.depth !== undefined ? Number(options.depth) : undefined,
+        scope: options.scope,
+        direction: options.direction,
+        noCode: options.code === false,
+        noTests: options.tests === false,
+        beforeContext:
+          options.C !== undefined
+            ? Number(options.C)
+            : options.B !== undefined
+              ? Number(options.B)
+              : undefined,
+        afterContext:
+          options.C !== undefined
+            ? Number(options.C)
+            : options.A !== undefined
+              ? Number(options.A)
+              : undefined,
+        config: options.config,
+      };
 
-program
-  .command('renumber')
-  .description('Renumber traceability IDs to match document order')
-  .argument('[code]', 'Feature code to renumber (e.g. CHK, TRC)')
-  .option('--all', 'Renumber all feature codes', false)
+      const exitCode = await traceCommand(traceOptions);
+      process.exit(exitCode);
+    });
+}
+
+configureTraceCommand(spec.command('trace'));
+
+/** Configure a renumber command with shared options and action handler. */
+function configureRenumberCommand(cmd: Command): Command {
+  return cmd
+    .description('Renumber traceability IDs to match document order')
+    .argument('[code]', 'Feature code to renumber (e.g. CHK, TRC)')
+    .option('--all', 'Renumber all feature codes', false)
+    .option('--dry-run', 'Preview changes without modifying files', false)
+    .option('--json', 'Output results as JSON', false)
+    .option('-c, --config <path>', 'Path to configuration file')
+    .action(async (code: string | undefined, options) => {
+      const renumberOptions: RenumberCommandOptions = {
+        code,
+        all: options.all,
+        dryRun: options.dryRun,
+        json: options.json,
+        config: options.config,
+      };
+
+      const exitCode = await renumberCommand(renumberOptions);
+      process.exit(exitCode);
+    });
+}
+
+configureRenumberCommand(spec.command('renumber'));
+
+spec
+  .command('recode')
+  .description('Recode traceability IDs from one feature code to another and rename spec files')
+  .argument('<source>', 'Source feature code to recode from (e.g. CHK)')
+  .argument('<target>', 'Target feature code to recode into (e.g. CLI)')
   .option('--dry-run', 'Preview changes without modifying files', false)
   .option('--json', 'Output results as JSON', false)
+  .option('--renumber', 'Renumber target code after recode', false)
   .option('-c, --config <path>', 'Path to configuration file')
-  .action(async (code: string | undefined, options) => {
-    const renumberOptions: RenumberCommandOptions = {
-      code,
-      all: options.all,
+  .action(async (source: string, target: string, options) => {
+    const recodeOptions: RecodeCommandOptions = {
+      sourceCode: source,
+      targetCode: target,
       dryRun: options.dryRun,
       json: options.json,
+      renumber: options.renumber,
       config: options.config,
     };
 
-    const exitCode = await renumberCommand(renumberOptions);
+    const exitCode = await recodeCommand(recodeOptions);
     process.exit(exitCode);
   });
+
+spec
+  .command('merge')
+  .description('Merge one feature code into another (recode + content merge + cleanup)')
+  .argument('<source>', 'Source feature code to merge from (e.g. CHK)')
+  .argument('<target>', 'Target feature code to merge into (e.g. CLI)')
+  .option('--dry-run', 'Preview changes without modifying files', false)
+  .option('--json', 'Output results as JSON', false)
+  .option('--renumber', 'Renumber target code after merge', false)
+  .option('-c, --config <path>', 'Path to configuration file')
+  .action(async (source: string, target: string, options) => {
+    const mergeOptions: MergeCommandOptions = {
+      sourceCode: source,
+      targetCode: target,
+      dryRun: options.dryRun,
+      json: options.json,
+      renumber: options.renumber,
+      config: options.config,
+    };
+
+    const exitCode = await mergeCommand(mergeOptions);
+    process.exit(exitCode);
+  });
+
+spec
+  .command('codes')
+  .description('List all feature codes with requirement counts and scope summaries')
+  .option('--json', 'Output results as JSON', false)
+  .option('--summary', 'Output compact one-line summary', false)
+  .option('-c, --config <path>', 'Path to configuration file')
+  .action(async (options) => {
+    const codesOptions: CodesCommandOptions = {
+      json: options.json,
+      summary: options.summary,
+      config: options.config,
+    };
+
+    const exitCode = await codesCommand(codesOptions);
+    process.exit(exitCode);
+  });
+
+// Add spec group to root program
+program.addCommand(spec);
+
+// Backward-compat aliases: `awa trace` → `awa spec trace`, `awa renumber` → `awa spec renumber`
+configureTraceCommand(program.command('trace'));
+configureRenumberCommand(program.command('renumber'));
 
 // Fire update check asynchronously (non-blocking) before parse
 let updateCheckPromise: Promise<UpdateCheckResult | null> | null = null;

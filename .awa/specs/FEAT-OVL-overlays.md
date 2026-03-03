@@ -36,6 +36,10 @@ Key abstractions:
 - MERGED VIEW: temporary directory combining base + overlays (last overlay wins)
 - OVERLAY SOURCE: a local path or Git repository reference to an overlay directory
 
+## Scope Boundary
+
+Overlay resolution, merged template directory, cleanup.
+
 ## Scenarios
 
 ### Scenario 1: Override a Single Partial

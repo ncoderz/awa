@@ -25,6 +25,10 @@ The resulting CLI structure:
 
 All existing options for each command remain unchanged — only the command path changes.
 
+## Scope Boundary
+
+awa template subcommand group — generate, diff, features, test nesting.
+
 ## Scenarios
 
 ### Scenario 1: Generating agent files

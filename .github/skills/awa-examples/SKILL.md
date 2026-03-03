@@ -11,7 +11,7 @@ description: Create or update usage examples for a feature. Use this when asked 
  <read path=".awa/.agent/awa.core.md" required="true" error="on not found" />
  <read path=".awa/rules/*.md" required="true" />
  <read path=".awa/specs/ARCHITECTURE.md" required="if exists" />
- <read path=".awa/.agent/schemas/EXAMPLES.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/EXAMPLE.schema.yaml" required="true" error="on not found" />
 </tool>
 
 ## User Input
@@ -28,7 +28,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 <file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
 <file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" required="if updating" />
+<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if updating" />
 <file type="code" required="if relevant" />
 
 ## Action
@@ -39,7 +39,7 @@ If deriving from existing code (reverse workflow), extract representative usage 
 
 ## Outputs
 
-<file path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" />
+<file path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" />
 
 ## Rules
 

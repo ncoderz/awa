@@ -22,6 +22,10 @@ Options fall into several categories:
 
 Options may come from CLI arguments, from an `.awa.toml` configuration file, or from both — with CLI always winning on conflicts.
 
+## Scope Boundary
+
+Top-level CLI argument parsing, option definitions, help output.
+
 ## Scenarios
 
 ### Scenario 1: First-time generation

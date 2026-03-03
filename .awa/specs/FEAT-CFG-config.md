@@ -19,6 +19,10 @@ The merge works as follows:
 
 The supported config options mirror the CLI surface: `output`, `template`, `features`, `force`, `dry-run`, `delete`, `refresh`, `list-unknown`, `preset`, and `remove-features`. A `[presets]` table enables named feature bundles (covered in the feature presets feature).
 
+## Scope Boundary
+
+TOML config file parsing, CLI override merging, preset definitions.
+
 ## Scenarios
 
 ### Scenario 1: Project-level defaults

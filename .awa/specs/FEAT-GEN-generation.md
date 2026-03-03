@@ -25,6 +25,10 @@ File generation is a pipeline with several stages:
 
 An important concept is the INTERACTIVE MULTI-TOOL SELECTION: when the `generate` command is run without any tool-related feature flags, the user is presented with an interactive multiselect prompt showing available tools (copilot, claude, cursor, windsurf, etc.). This makes first-run onboarding smoother.
 
+## Scope Boundary
+
+File generation from templates — conflict resolution, dry-run, force, delete list.
+
 ## Scenarios
 
 ### Scenario 1: Clean generation
