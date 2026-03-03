@@ -46,7 +46,7 @@ src/
 
 Parses CLI arguments using commander, validates inputs, and produces a raw options object for downstream processing. Supports both `generate` and `diff` subcommands with positional arguments displayed in help output.
 
-IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7, TCLI-2_AC-1, TCLI-2_AC-2, TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4, TCLI-4_AC-1, TCLI-4_AC-2, TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+IMPLEMENTS: CFG-5_AC-2, CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5, CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6, CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2, CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13, DISC-4_AC-1, DISC-5_AC-1, FP-2_AC-1, FP-2_AC-2, FP-2_AC-4, FP-4_AC-1, FP-4_AC-2, FP-4_AC-3, FP-4_AC-5, GEN-10_AC-1, GEN-10_AC-2, INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 ```typescript
 interface RawCliOptions {
@@ -280,6 +280,28 @@ PRINCIPLES:
 - CLI-25_AC-1 → CLI-ArgumentParser
 - CLI-31_AC-1 → CFG-ConfigLoader
 
+### REQ-CLI-template-cli.md
+
+- CLI-41_AC-1 → CLI-ArgumentParser
+- CLI-41_AC-2 → CLI-ArgumentParser
+- CLI-41_AC-3 → CLI-ArgumentParser
+- CLI-41_AC-4 → CLI-ArgumentParser
+- CLI-41_AC-5 → CLI-ArgumentParser
+- CLI-41_AC-6 → CLI-ArgumentParser
+- CLI-41_AC-7 → CLI-ArgumentParser
+- CLI-42_AC-1 → CLI-ArgumentParser
+- CLI-42_AC-2 → CLI-ArgumentParser
+- CLI-43_AC-1 → CLI-ArgumentParser
+- CLI-43_AC-2 → CLI-ArgumentParser
+- CLI-43_AC-3 → CLI-ArgumentParser
+- CLI-43_AC-4 → CLI-ArgumentParser
+- CLI-44_AC-1 → CLI-ArgumentParser
+- CLI-44_AC-2 → CLI-ArgumentParser
+- CLI-45_AC-1 → CLI-ArgumentParser
+- CLI-45_AC-2 → CLI-ArgumentParser
+- CLI-45_AC-3 → CLI-ArgumentParser
+- CLI-45_AC-4 → CLI-ArgumentParser
+
 ### REQ-DIFF-diff.md
 
 - DIFF-7_AC-1 → CLI-ArgumentParser
@@ -354,28 +376,6 @@ PRINCIPLES:
 - MULTI-2_AC-1 → CFG-ConfigLoader
 - MULTI-3_AC-1 → CFG-ConfigLoader
 - MULTI-5_AC-2 → CFG-ConfigLoader
-
-### REQ-TCLI-template-cli.md
-
-- TCLI-1_AC-1 → CLI-ArgumentParser
-- TCLI-1_AC-2 → CLI-ArgumentParser
-- TCLI-1_AC-3 → CLI-ArgumentParser
-- TCLI-1_AC-4 → CLI-ArgumentParser
-- TCLI-1_AC-5 → CLI-ArgumentParser
-- TCLI-1_AC-6 → CLI-ArgumentParser
-- TCLI-1_AC-7 → CLI-ArgumentParser
-- TCLI-2_AC-1 → CLI-ArgumentParser
-- TCLI-2_AC-2 → CLI-ArgumentParser
-- TCLI-3_AC-1 → CLI-ArgumentParser
-- TCLI-3_AC-2 → CLI-ArgumentParser
-- TCLI-3_AC-3 → CLI-ArgumentParser
-- TCLI-3_AC-4 → CLI-ArgumentParser
-- TCLI-4_AC-1 → CLI-ArgumentParser
-- TCLI-4_AC-2 → CLI-ArgumentParser
-- TCLI-5_AC-1 → CLI-ArgumentParser
-- TCLI-5_AC-2 → CLI-ArgumentParser
-- TCLI-5_AC-3 → CLI-ArgumentParser
-- TCLI-5_AC-4 → CLI-ArgumentParser
 
 ### REQ-TRC-trace.md
 

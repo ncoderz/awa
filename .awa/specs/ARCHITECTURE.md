@@ -38,7 +38,6 @@ Run `awa spec codes` for the live inventory. The table below defines scope bound
 | OVL | overlays | Overlay resolution, merged template directory, cleanup. |
 | RCOD | recode | Prefix rewriting of traceability IDs from one feature code to another with offset numbering. |
 | RENUM | renumber | Traceability ID renumbering, gap removal, propagation to specs and code. |
-| TCLI | template-cli | awa template subcommand group — generate, diff, features, test nesting. |
 | TPL | templates | Template engine (Eta), partials, conditional output, empty-file markers. |
 | TRC | trace | Traceability chain navigation — ID lookup, content assembly, token budgets. |
 | TTST | template-test | Template test fixtures — TOML parsing, rendering, snapshot comparison. |

@@ -24,6 +24,11 @@ Options fall into several categories:
 
 Options may come from CLI arguments, from an `.awa.toml` configuration file, or from both — with CLI always winning on conflicts.
 
+Commands split into two groups based on what they operate on:
+
+- TEMPLATE COMMANDS: Operate on template files — generating output, comparing output, discovering features, and testing fixtures. These are subcommands of `awa template`.
+- SPEC COMMANDS: Operate on awa specs and code traceability — checking integrity, navigating chains, recoding IDs, and merging features. These are subcommands of `awa spec` (with some top-level aliases).
+
 `awa check` is a deterministic verification tool that checks two dimensions of the traceability chain:
 
 1. CODE-TO-SPEC: Traceability markers in source files resolve to real spec IDs, and spec acceptance criteria have test coverage.
@@ -33,7 +38,7 @@ The tool is fully configurable — users with custom templates can define their 
 
 ## Scope Boundary
 
-Top-level CLI argument parsing, option definitions, help output. Traceability validation — spec schemas, marker scanning, AC coverage, cross-refs.
+Top-level CLI argument parsing, option definitions, help output. Traceability validation — spec schemas, marker scanning, AC coverage, cross-refs. Template subcommand group — generate, diff, features, test nesting.
 
 ## Scenarios
 
@@ -96,3 +101,11 @@ A spec file contains an ID with an underscore where a hyphen is expected (e.g., 
 ### Scenario 15: Duplicate references
 
 Two different source files both reference the same acceptance criterion ID via `@awa-impl`. `awa check` reports a warning about the duplicate implementation reference, helping developers spot accidental copy-paste or unclear ownership of acceptance criteria.
+
+### Scenario 16: Discovering available features
+
+A developer runs `awa template features --json` to list available feature flags in the current template. The grouping under `template` immediately signals this is about template inspection.
+
+### Scenario 17: Running template tests
+
+A CI pipeline runs `awa template test` to verify template fixtures. The `template` prefix provides context in build logs.

@@ -174,6 +174,29 @@ describe('propagate', () => {
     expect(result.affectedFiles).toHaveLength(0);
     expect(result.totalReplacements).toBe(0);
   });
+
+  it('replaces IDs in spec files belonging to other feature codes', async () => {
+    // A DESIGN file for another feature (BAR) that references FOO IDs
+    // in a traceability matrix — not via formal crossRefs
+    const otherSpecPath = join(testDir, 'DESIGN-BAR-other.md');
+    await writeFile(
+      otherSpecPath,
+      '| Component | IMPLEMENTS |\n| --- | --- |\n| BAR-Engine | FOO-3_AC-1 |\n',
+      'utf-8'
+    );
+
+    const map = makeMap('FOO', [['FOO-3_AC-1', 'FOO-1_AC-1']]);
+    // The BAR spec file has no crossRefs to FOO — it just has inline text
+    const specs = makeSpecs([makeSpecFile(otherSpecPath, 'BAR')]);
+    const markers = makeMarkers([]);
+
+    const result = await propagate(map, specs, markers, false);
+
+    expect(result.totalReplacements).toBe(1);
+    const content = await readFile(otherSpecPath, 'utf-8');
+    expect(content).toContain('FOO-1_AC-1');
+    expect(content).not.toContain('FOO-3_AC-1');
+  });
 });
 
 // --- Property-Based Tests ---

@@ -15,7 +15,7 @@ import { executeMoves } from '../../core/merge/content-merger.js';
 import { formatJson, formatText } from '../../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../../core/merge/spec-mover.js';
 import { MergeError } from '../../core/merge/types.js';
-import { buildRecodeMap } from '../../core/recode/map-builder.js';
+import { buildRecodeMap, hasAnySpecFile } from '../../core/recode/map-builder.js';
 import { propagate } from '../../core/renumber/propagator.js';
 import { scan } from '../../core/trace/scanner.js';
 import { logger } from '../../utils/logger.js';
@@ -93,6 +93,8 @@ function mockDefaults() {
   vi.mocked(formatJson).mockReturnValue('{"sourceCode":"SRC"}');
 
   vi.mocked(fixCodesTable).mockResolvedValue(undefined as never);
+
+  vi.mocked(hasAnySpecFile).mockReturnValue(true);
 
   return { specs };
 }
@@ -192,6 +194,21 @@ describe('mergeCommand', () => {
 
     expect(exitCode).toBe(2);
     expect(logger.error).toHaveBeenCalledWith('No REQ file found for source code: NOPE');
+  });
+
+  it('returns exit code 2 when target code has no spec files', async () => {
+    mockDefaults();
+    vi.mocked(hasAnySpecFile).mockReturnValue(false);
+
+    const exitCode = await mergeCommand({
+      sourceCode: 'SRC',
+      targetCode: 'NOPE',
+    });
+
+    expect(exitCode).toBe(2);
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.stringContaining('No spec files found for target code: NOPE')
+    );
   });
 
   it('reports moved files in result', async () => {

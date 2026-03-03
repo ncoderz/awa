@@ -4,7 +4,7 @@ import { formatJson, formatText } from '../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../core/merge/spec-mover.js';
 import type { MergeCommandOptions, MergeResult } from '../core/merge/types.js';
 import { MergeError } from '../core/merge/types.js';
-import { buildRecodeMap } from '../core/recode/map-builder.js';
+import { buildRecodeMap, hasAnySpecFile } from '../core/recode/map-builder.js';
 import { RecodeError } from '../core/recode/types.js';
 import { propagate } from '../core/renumber/propagator.js';
 import { scan } from '../core/trace/scanner.js';
@@ -29,6 +29,14 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
 
     const { markers, specs } = await scan(options.config);
     const dryRun = options.dryRun === true;
+
+    // Merge requires the target code to already exist
+    if (!hasAnySpecFile(specs.specFiles, options.targetCode)) {
+      throw new MergeError(
+        'TARGET_NOT_FOUND',
+        `No spec files found for target code: ${options.targetCode}. Use \`awa spec recode\` to rename a code to a new one.`
+      );
+    }
 
     // Phase 1: Recode — build offset map and propagate ID changes across all files.
     // buildRecodeMap finds the highest target IDs and offsets source IDs past them,
@@ -57,9 +65,13 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
       dryRun
     );
 
-    // Phase 3: Find stale references (re-scan non-source files)
+    // Phase 3: Find stale references — exclude moved source files
+    // and files the propagator already handled (or would handle in dry-run)
     const movedSourcePaths = new Set(moves.map((m) => m.sourceFile));
-    const nonSourceFiles = specs.specFiles.filter((sf) => !movedSourcePaths.has(sf.filePath));
+    const propagatedPaths = new Set(affectedFiles.map((af) => af.filePath));
+    const nonSourceFiles = specs.specFiles.filter(
+      (sf) => !movedSourcePaths.has(sf.filePath) && !propagatedPaths.has(sf.filePath)
+    );
     const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
 
     const noChange = recodeNoChange && moves.length === 0;

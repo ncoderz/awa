@@ -62,9 +62,12 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
     // Execute renames (move files + update headings)
     await executeRenames(renames, options.sourceCode, options.targetCode, dryRun);
 
-    // Phase 4: Find stale references
+    // Phase 4: Find stale references — exclude renamed source files
+    // and files the propagator already handled (or would handle in dry-run)
+    const propagatedPaths = new Set(affectedFiles.map((af) => af.filePath));
     const nonSourceFiles = specs.specFiles.filter(
-      (sf) => !renames.some((r) => r.oldPath === sf.filePath)
+      (sf) =>
+        !renames.some((r) => r.oldPath === sf.filePath) && !propagatedPaths.has(sf.filePath)
     );
     const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
 

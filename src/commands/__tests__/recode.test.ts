@@ -187,23 +187,6 @@ describe('recodeCommand', () => {
     expect(logger.error).toHaveBeenCalledWith('No REQ file found for source code: NOPE');
   });
 
-  // @awa-test: RCOD-3_AC-2
-  it('returns exit code 2 when target code not found', async () => {
-    mockDefaults();
-    const { RecodeError } = await import('../../core/recode/types.js');
-    vi.mocked(buildRecodeMap).mockImplementation(() => {
-      throw new RecodeError('TARGET_NOT_FOUND', 'No REQ file found for target code: NOPE');
-    });
-
-    const exitCode = await recodeCommand({
-      sourceCode: 'SRC',
-      targetCode: 'NOPE',
-    });
-
-    expect(exitCode).toBe(2);
-    expect(logger.error).toHaveBeenCalledWith('No REQ file found for target code: NOPE');
-  });
-
   it('returns exit code 2 when rename conflict detected', async () => {
     mockDefaults();
     vi.mocked(detectConflicts).mockReturnValue(['.awa/specs/REQ-TGT-feature.md']);

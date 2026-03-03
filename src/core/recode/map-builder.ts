@@ -24,23 +24,23 @@ export function buildRecodeMap(
   targetCode: string,
   specs: SpecParseResult
 ): RecodeMapBuildResult {
-  const sourceReq = findSpecFile(specs.specFiles, sourceCode, 'REQ');
-  if (!sourceReq) {
-    throw new RecodeError('SOURCE_NOT_FOUND', `No REQ file found for source code: ${sourceCode}`);
-  }
-
-  const targetReq = findSpecFile(specs.specFiles, targetCode, 'REQ');
-  if (!targetReq) {
-    throw new RecodeError('TARGET_NOT_FOUND', `No REQ file found for target code: ${targetCode}`);
+  // Validate that at least one spec file exists for the source code
+  if (!hasAnySpecFile(specs.specFiles, sourceCode)) {
+    throw new RecodeError(
+      'SOURCE_NOT_FOUND',
+      `No spec files found for source code: ${sourceCode}`
+    );
   }
 
   const entries = new Map<string, string>();
 
-  // Find highest existing requirement number in target
-  const reqOffset = findHighestReqNumber(targetReq);
-
-  // Walk source REQ file in document order, mapping IDs with offset
-  buildRequirementEntries(sourceCode, targetCode, sourceReq, reqOffset, entries);
+  // Walk source REQ file in document order, mapping IDs with offset (if REQ files exist)
+  const sourceReq = findSpecFile(specs.specFiles, sourceCode, 'REQ');
+  if (sourceReq) {
+    const targetReq = findSpecFile(specs.specFiles, targetCode, 'REQ');
+    const reqOffset = targetReq ? findHighestReqNumber(targetReq) : 0;
+    buildRequirementEntries(sourceCode, targetCode, sourceReq, reqOffset, entries);
+  }
 
   // Handle properties: find highest target property number, map source properties
   // @awa-impl: RCOD-1_AC-4
@@ -218,5 +218,18 @@ function findSpecFile(
   return specFiles.find((sf) => {
     const name = basename(sf.filePath);
     return name.startsWith(`${prefix}-${code}-`);
+  });
+}
+
+/** Known spec file prefixes that carry a feature code. */
+const SPEC_PREFIXES = ['FEAT', 'REQ', 'DESIGN', 'EXAMPLE', 'API', 'TASK'] as const;
+
+/**
+ * Check whether at least one spec file exists for the given feature code.
+ */
+export function hasAnySpecFile(specFiles: readonly SpecFile[], code: string): boolean {
+  return specFiles.some((sf) => {
+    const name = basename(sf.filePath);
+    return SPEC_PREFIXES.some((prefix) => name.startsWith(`${prefix}-${code}-`));
   });
 }

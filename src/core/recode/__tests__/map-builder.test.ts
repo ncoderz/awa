@@ -262,7 +262,7 @@ describe('buildRecodeMap', () => {
     expect(map.entries.get('SRC-1_AC-1')).toBe('TGT-1_AC-1');
   });
 
-  it('throws SOURCE_NOT_FOUND when source has no REQ file', () => {
+  it('throws SOURCE_NOT_FOUND when source has no spec files', () => {
     const targetReq = makeSpecFile({
       filePath: '.awa/specs/REQ-TGT-feature.md',
       code: 'TGT',
@@ -272,20 +272,74 @@ describe('buildRecodeMap', () => {
     const specs = makeSpecs([targetReq]);
 
     expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow(RecodeError);
-    expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow('No REQ file found for source');
+    expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow(
+      'No spec files found for source'
+    );
   });
 
-  it('throws TARGET_NOT_FOUND when target has no REQ file', () => {
+  it('succeeds when target code does not exist (recode to new code)', () => {
     const sourceReq = makeSpecFile({
       filePath: '.awa/specs/REQ-SRC-feature.md',
       code: 'SRC',
-      requirementIds: ['SRC-1'],
-      acIds: [],
+      requirementIds: ['SRC-1', 'SRC-2'],
+      acIds: ['SRC-1_AC-1'],
     });
     const specs = makeSpecs([sourceReq]);
 
-    expect(() => buildRecodeMap('SRC', 'NOPE', specs)).toThrow(RecodeError);
-    expect(() => buildRecodeMap('SRC', 'NOPE', specs)).toThrow('No REQ file found for target');
+    const { map, noChange } = buildRecodeMap('SRC', 'NEW', specs);
+
+    expect(noChange).toBe(false);
+    // No target exists, offset is 0
+    expect(map.entries.get('SRC-1')).toBe('NEW-1');
+    expect(map.entries.get('SRC-2')).toBe('NEW-2');
+    expect(map.entries.get('SRC-1_AC-1')).toBe('NEW-1_AC-1');
+  });
+
+  it('succeeds when source has only FEAT file (no REQ)', () => {
+    const sourceFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-SRC-feature.md',
+      code: 'SRC',
+    });
+    const targetFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-TGT-feature.md',
+      code: 'TGT',
+    });
+    const specs = makeSpecs([sourceFeat, targetFeat]);
+
+    const { map, noChange } = buildRecodeMap('SRC', 'TGT', specs);
+
+    expect(noChange).toBe(true);
+    expect(map.entries.size).toBe(0);
+  });
+
+  it('maps properties and components when only DESIGN files exist (no REQ)', () => {
+    const sourceFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-SRC-feature.md',
+      code: 'SRC',
+    });
+    const sourceDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-SRC-feature.md',
+      code: 'SRC',
+      propertyIds: ['SRC_P-1', 'SRC_P-2'],
+      componentNames: ['SRC-Engine'],
+    });
+    const targetFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-TGT-feature.md',
+      code: 'TGT',
+    });
+    const targetDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-TGT-feature.md',
+      code: 'TGT',
+      propertyIds: ['TGT_P-1'],
+    });
+    const specs = makeSpecs([sourceFeat, sourceDesign, targetFeat, targetDesign]);
+
+    const { map, noChange } = buildRecodeMap('SRC', 'TGT', specs);
+
+    expect(noChange).toBe(false);
+    expect(map.entries.get('SRC_P-1')).toBe('TGT_P-2');
+    expect(map.entries.get('SRC_P-2')).toBe('TGT_P-3');
+    expect(map.entries.get('SRC-Engine')).toBe('TGT-Engine');
   });
 
   it('handles complex scenario with all ID types', () => {
@@ -355,6 +409,29 @@ describe('buildRecodeMap', () => {
     expect(map.entries.get('SRC-1')).toBe('TGT-2');
     expect(map.entries.get('SRC-1_AC-1')).toBe('TGT-2_AC-1');
     // No property or component entries
+    expect(map.entries.size).toBe(2);
+  });
+
+  it('skips source REQ gracefully when missing', () => {
+    const sourceDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-SRC-feature.md',
+      code: 'SRC',
+      propertyIds: ['SRC_P-1'],
+      componentNames: ['SRC-Runner'],
+    });
+    const targetDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-TGT-feature.md',
+      code: 'TGT',
+      propertyIds: [],
+    });
+    const specs = makeSpecs([sourceDesign, targetDesign]);
+
+    const { map, noChange } = buildRecodeMap('SRC', 'TGT', specs);
+
+    expect(noChange).toBe(false);
+    expect(map.entries.get('SRC_P-1')).toBe('TGT_P-1');
+    expect(map.entries.get('SRC-Runner')).toBe('TGT-Runner');
+    // No requirement entries
     expect(map.entries.size).toBe(2);
   });
 });

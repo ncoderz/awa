@@ -1,6 +1,6 @@
 // @awa-component: CLI-ArgumentParser
-// @awa-component: TCLI-TemplateGroup
-// @awa-component: TCLI-RootProgram
+// @awa-component: CLI-TemplateGroup
+// @awa-component: CLI-RootProgram
 // @awa-impl: CLI-1_AC-1
 // @awa-impl: CLI-1_AC-2
 // @awa-impl: CLI-1_AC-3
@@ -59,25 +59,25 @@
 // @awa-impl: INIT-2_AC-1
 // @awa-impl: INIT-3_AC-1
 // @awa-impl: INIT-4_AC-1
-// @awa-impl: TCLI-1_AC-1
-// @awa-impl: TCLI-1_AC-2
-// @awa-impl: TCLI-1_AC-3
-// @awa-impl: TCLI-1_AC-4
-// @awa-impl: TCLI-1_AC-5
-// @awa-impl: TCLI-1_AC-6
-// @awa-impl: TCLI-1_AC-7
-// @awa-impl: TCLI-2_AC-1
-// @awa-impl: TCLI-2_AC-2
-// @awa-impl: TCLI-3_AC-1
-// @awa-impl: TCLI-3_AC-2
-// @awa-impl: TCLI-3_AC-3
-// @awa-impl: TCLI-3_AC-4
-// @awa-impl: TCLI-4_AC-1
-// @awa-impl: TCLI-4_AC-2
-// @awa-impl: TCLI-5_AC-1
-// @awa-impl: TCLI-5_AC-2
-// @awa-impl: TCLI-5_AC-3
-// @awa-impl: TCLI-5_AC-4
+// @awa-impl: CLI-41_AC-1
+// @awa-impl: CLI-41_AC-2
+// @awa-impl: CLI-41_AC-3
+// @awa-impl: CLI-41_AC-4
+// @awa-impl: CLI-41_AC-5
+// @awa-impl: CLI-41_AC-6
+// @awa-impl: CLI-41_AC-7
+// @awa-impl: CLI-42_AC-1
+// @awa-impl: CLI-42_AC-2
+// @awa-impl: CLI-43_AC-1
+// @awa-impl: CLI-43_AC-2
+// @awa-impl: CLI-43_AC-3
+// @awa-impl: CLI-43_AC-4
+// @awa-impl: CLI-44_AC-1
+// @awa-impl: CLI-44_AC-2
+// @awa-impl: CLI-45_AC-1
+// @awa-impl: CLI-45_AC-2
+// @awa-impl: CLI-45_AC-3
+// @awa-impl: CLI-45_AC-4
 
 import { Command, Option } from 'commander';
 import { PACKAGE_INFO } from '../_generated/package_info.js';
@@ -110,7 +110,7 @@ import { shouldCheck, writeCache } from '../utils/update-check-cache.js';
 const version = PACKAGE_INFO.version;
 
 // @awa-impl: CLI-1_AC-2, CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
-// @awa-impl: TCLI-4_AC-1
+// @awa-impl: CLI-44_AC-1
 const program = new Command();
 
 program
@@ -118,15 +118,15 @@ program
   .description('awa - tool for generating AI coding agent configuration files')
   .version(version, '-v, --version', 'Display version number');
 
-// @awa-impl: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-4_AC-2
-// @awa-impl: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
+// @awa-impl: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-44_AC-2
+// @awa-impl: CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
 const template = new Command('template').description(
   'Template operations (generate, diff, features, test)'
 );
 
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
 // @awa-impl: INIT-1_AC-1, INIT-2_AC-1, INIT-3_AC-1, INIT-4_AC-1
-// @awa-impl: TCLI-1_AC-4, TCLI-2_AC-1, TCLI-2_AC-2
+// @awa-impl: CLI-41_AC-4, CLI-42_AC-1, CLI-42_AC-2
 
 /** Configure a generate/init command with shared options and action handler. */
 function configureGenerateCommand(cmd: Command): Command {
@@ -198,12 +198,12 @@ function configureGenerateCommand(cmd: Command): Command {
 
 configureGenerateCommand(template.command('generate'));
 
-// @awa-impl: TCLI-2_AC-1, TCLI-2_AC-2
+// @awa-impl: CLI-42_AC-1, CLI-42_AC-2
 // Top-level init convenience command (delegates to same handler as template generate)
 configureGenerateCommand(program.command('init'));
 
 // @awa-impl: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10
-// @awa-impl: TCLI-1_AC-5
+// @awa-impl: CLI-41_AC-5
 template
   .command('diff')
   .description('Compare template output with existing target directory')
@@ -261,7 +261,7 @@ template
   });
 
 // @awa-impl: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1
-// @awa-impl: TCLI-3_AC-1, TCLI-3_AC-3
+// @awa-impl: CLI-43_AC-1, CLI-43_AC-3
 program
   .command('check')
   .description(
@@ -309,7 +309,7 @@ program
   });
 
 // @awa-impl: DISC-4_AC-1, DISC-5_AC-1
-// @awa-impl: TCLI-1_AC-6
+// @awa-impl: CLI-41_AC-6
 template
   .command('features')
   .description('Discover feature flags available in a template')
@@ -332,7 +332,7 @@ template
   });
 
 // @awa-impl: TTST-7_AC-1, TTST-5_AC-1
-// @awa-impl: TCLI-1_AC-7
+// @awa-impl: CLI-41_AC-7
 template
   .command('test')
   .description('Run template test fixtures to verify expected output')
@@ -367,7 +367,7 @@ const spec = new Command('spec').description(
 );
 
 // @awa-impl: TRC-8_AC-1
-// @awa-impl: TCLI-3_AC-2, TCLI-3_AC-4
+// @awa-impl: CLI-43_AC-2, CLI-43_AC-4
 
 /** Configure a trace command with shared options and action handler. */
 function configureTraceCommand(cmd: Command): Command {
