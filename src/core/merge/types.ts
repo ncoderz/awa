@@ -3,12 +3,11 @@
 import type { AffectedFile, RenumberMap } from '../renumber/types.js';
 
 /**
- * A file append operation: source content appended to target (or target created).
+ * A file move operation: source file renamed to target path (code changed).
  */
-export interface FileAppend {
+export interface FileMove {
   readonly sourceFile: string;
   readonly targetFile: string;
-  readonly created: boolean;
   readonly docType: string;
 }
 
@@ -21,7 +20,7 @@ export interface MergeResult {
   readonly map: RenumberMap;
   readonly affectedFiles: readonly AffectedFile[];
   readonly totalReplacements: number;
-  readonly appends: readonly FileAppend[];
+  readonly moves: readonly FileMove[];
   readonly staleRefs: readonly string[];
   readonly noChange: boolean;
 }
@@ -40,10 +39,7 @@ export interface MergeCommandOptions {
 
 // --- Error types ---
 
-export type MergeErrorCode =
-  | 'SOURCE_NOT_FOUND'
-  | 'TARGET_NOT_FOUND'
-  | 'SELF_MERGE';
+export type MergeErrorCode = 'SOURCE_NOT_FOUND' | 'TARGET_NOT_FOUND' | 'SELF_MERGE';
 
 export class MergeError extends Error {
   readonly errorCode: MergeErrorCode;

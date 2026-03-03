@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SpecFile } from '../../check/types.js';
-import { executeAppends, resolveTargetFile } from '../content-merger.js';
+import { executeMoves, resolveMovePath, updateHeading } from '../content-merger.js';
 
 // Mock fs operations
 vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
   writeFile: vi.fn(),
-  unlink: vi.fn(),
+  rename: vi.fn(),
 }));
 
-import { readFile, unlink, writeFile } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 
 // --- Helpers ---
 
@@ -25,226 +25,167 @@ function makeSpecFile(filePath: string, code: string): SpecFile {
   };
 }
 
-describe('resolveTargetFile', () => {
-  it('finds existing target REQ file', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/REQ-SRC-source.md', 'SRC'),
-      makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
+describe('resolveMovePath', () => {
+  it('replaces only the code in the filename', () => {
+    const result = resolveMovePath(
       '.awa/specs/REQ-SRC-source.md',
       'REQ',
       'SRC',
       'TGT',
-      specFiles
+      new Set(),
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/REQ-TGT-target.md',
-      exists: true,
-    });
+    expect(result).toBe('.awa/specs/REQ-TGT-source.md');
   });
 
-  it('finds existing target DESIGN file', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/DESIGN-SRC-source.md', 'SRC'),
-      makeSpecFile('.awa/specs/DESIGN-TGT-target.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/DESIGN-SRC-source.md',
-      'DESIGN',
-      'SRC',
-      'TGT',
-      specFiles
-    );
-
-    expect(result).toEqual({
-      path: '.awa/specs/DESIGN-TGT-target.md',
-      exists: true,
-    });
-  });
-
-  it('finds existing target FEAT file', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/FEAT-SRC-source.md', 'SRC'),
-      makeSpecFile('.awa/specs/FEAT-TGT-target.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/FEAT-SRC-source.md',
+  it('preserves the feature name when no conflict', () => {
+    const result = resolveMovePath(
+      '.awa/specs/FEAT-CHK-check.md',
       'FEAT',
-      'SRC',
-      'TGT',
-      specFiles
+      'CHK',
+      'CLI',
+      new Set(),
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/FEAT-TGT-target.md',
-      exists: true,
-    });
+    expect(result).toBe('.awa/specs/FEAT-CLI-check.md');
   });
 
-  it('derives target path when no target file exists', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/DESIGN-SRC-source.md', 'SRC'),
-      makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/DESIGN-SRC-source.md',
-      'DESIGN',
-      'SRC',
-      'TGT',
-      specFiles
+  it('adds -001 suffix when target path already exists', () => {
+    const existing = new Set(['.awa/specs/REQ-CLI-check.md']);
+    const result = resolveMovePath(
+      '.awa/specs/REQ-CHK-check.md',
+      'REQ',
+      'CHK',
+      'CLI',
+      existing,
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/DESIGN-TGT-target.md',
-      exists: false,
-    });
+    expect(result).toBe('.awa/specs/REQ-CLI-check-001.md');
   });
 
-  it('matches EXAMPLE files by sequence number', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/EXAMPLE-SRC-source-001.md', 'SRC'),
-      makeSpecFile('.awa/specs/EXAMPLE-TGT-target-001.md', 'TGT'),
-      makeSpecFile('.awa/specs/EXAMPLE-TGT-target-002.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/EXAMPLE-SRC-source-001.md',
-      'EXAMPLE',
-      'SRC',
-      'TGT',
-      specFiles
+  it('adds -002 suffix when -001 also conflicts', () => {
+    const existing = new Set(['.awa/specs/REQ-CLI-check.md', '.awa/specs/REQ-CLI-check-001.md']);
+    const result = resolveMovePath(
+      '.awa/specs/REQ-CHK-check.md',
+      'REQ',
+      'CHK',
+      'CLI',
+      existing,
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/EXAMPLE-TGT-target-001.md',
-      exists: true,
-    });
+    expect(result).toBe('.awa/specs/REQ-CLI-check-002.md');
   });
 
-  it('derives EXAMPLE path when no matching sequence exists', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/EXAMPLE-SRC-source-003.md', 'SRC'),
-      makeSpecFile('.awa/specs/EXAMPLE-TGT-target-001.md', 'TGT'),
-      makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/EXAMPLE-SRC-source-003.md',
-      'EXAMPLE',
-      'SRC',
-      'TGT',
-      specFiles
+  it('avoids conflicts with already-planned paths', () => {
+    const planned = new Set(['.awa/specs/REQ-CLI-check.md']);
+    const result = resolveMovePath(
+      '.awa/specs/REQ-CHK-check.md',
+      'REQ',
+      'CHK',
+      'CLI',
+      new Set(),
+      planned
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/EXAMPLE-TGT-target-003.md',
-      exists: false,
-    });
+    expect(result).toBe('.awa/specs/REQ-CLI-check-001.md');
   });
 
-  it('falls back to replacing code in filename when no target feature name', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/DESIGN-SRC-source.md', 'SRC'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/DESIGN-SRC-source.md',
-      'DESIGN',
-      'SRC',
-      'TGT',
-      specFiles
+  it('preserves numbered suffix for TASK files', () => {
+    const result = resolveMovePath(
+      '.awa/tasks/TASK-CHK-check-001.md',
+      'TASK',
+      'CHK',
+      'CLI',
+      new Set(),
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/DESIGN-TGT-source.md',
-      exists: false,
-    });
+    expect(result).toBe('.awa/tasks/TASK-CLI-check-001.md');
   });
 
-  it('handles API (.tsp) files', () => {
-    const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/API-SRC-source.tsp', 'SRC'),
-      makeSpecFile('.awa/specs/API-TGT-target.tsp', 'TGT'),
-    ];
-
-    const result = resolveTargetFile(
-      '.awa/specs/API-SRC-source.tsp',
-      'API',
-      'SRC',
-      'TGT',
-      specFiles
+  it('resolves conflict on numbered TASK file', () => {
+    const existing = new Set(['.awa/tasks/TASK-CLI-check-001.md']);
+    const result = resolveMovePath(
+      '.awa/tasks/TASK-CHK-check-001.md',
+      'TASK',
+      'CHK',
+      'CLI',
+      existing,
+      new Set()
     );
-
-    expect(result).toEqual({
-      path: '.awa/specs/API-TGT-target.tsp',
-      exists: true,
-    });
+    expect(result).toBe('.awa/tasks/TASK-CLI-check-001-001.md');
   });
 });
 
-describe('executeAppends', () => {
+describe('updateHeading', () => {
+  it('replaces source code in H1 heading', () => {
+    const content = '# CHK Check Requirements\n\nSome body text with CHK-1.';
+    const result = updateHeading(content, 'CHK', 'CLI');
+    expect(result).toBe('# CLI Check Requirements\n\nSome body text with CHK-1.');
+  });
+
+  it('does not modify content below the heading', () => {
+    const content = '# CHK Feature\n\n## CHK Details\n\nCHK-1 is important.';
+    const result = updateHeading(content, 'CHK', 'CLI');
+    expect(result.startsWith('# CLI Feature')).toBe(true);
+    expect(result).toContain('## CHK Details');
+  });
+
+  it('returns content unchanged if no H1 heading', () => {
+    const content = 'No heading here.\n\nJust text.';
+    const result = updateHeading(content, 'CHK', 'CLI');
+    expect(result).toBe(content);
+  });
+});
+
+describe('executeMoves', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('appends source content to existing target with separator', async () => {
+  it('renames source file to target code namespace', async () => {
     const specFiles: SpecFile[] = [
       makeSpecFile('.awa/specs/REQ-SRC-source.md', 'SRC'),
       makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
     ];
 
-    vi.mocked(readFile)
-      .mockResolvedValueOnce('# Source\n\nSRC content')
-      .mockResolvedValueOnce('# Target\n\nTGT content');
+    vi.mocked(readFile).mockResolvedValueOnce('# SRC Source\n\nSRC content');
+    vi.mocked(rename).mockResolvedValue(undefined);
     vi.mocked(writeFile).mockResolvedValue(undefined);
-    vi.mocked(unlink).mockResolvedValue(undefined);
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, false);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, false);
 
-    expect(appends).toHaveLength(1);
-    expect(appends[0]).toEqual({
+    expect(moves).toHaveLength(1);
+    expect(moves[0]).toEqual({
       sourceFile: '.awa/specs/REQ-SRC-source.md',
-      targetFile: '.awa/specs/REQ-TGT-target.md',
-      created: false,
+      targetFile: '.awa/specs/REQ-TGT-source.md',
       docType: 'REQ',
     });
 
+    expect(rename).toHaveBeenCalledWith(
+      '.awa/specs/REQ-SRC-source.md',
+      '.awa/specs/REQ-TGT-source.md'
+    );
+    // Heading updated: SRC → TGT
     expect(writeFile).toHaveBeenCalledWith(
-      '.awa/specs/REQ-TGT-target.md',
-      '# Target\n\nTGT content\n\n---\n\n# Source\n\nSRC content',
+      '.awa/specs/REQ-TGT-source.md',
+      '# TGT Source\n\nSRC content',
       'utf-8'
     );
-    expect(unlink).toHaveBeenCalledWith('.awa/specs/REQ-SRC-source.md');
   });
 
-  it('creates target file when it does not exist', async () => {
+  it('adds index suffix when target path clashes', async () => {
     const specFiles: SpecFile[] = [
-      makeSpecFile('.awa/specs/DESIGN-SRC-source.md', 'SRC'),
+      makeSpecFile('.awa/specs/REQ-SRC-target.md', 'SRC'),
       makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
     ];
 
-    vi.mocked(readFile).mockResolvedValueOnce('# Design\n\nDesign content');
+    vi.mocked(readFile).mockResolvedValueOnce('# SRC Target\n\ncontent');
+    vi.mocked(rename).mockResolvedValue(undefined);
     vi.mocked(writeFile).mockResolvedValue(undefined);
-    vi.mocked(unlink).mockResolvedValue(undefined);
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, false);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, false);
 
-    expect(appends).toHaveLength(1);
-    expect(appends[0]?.created).toBe(true);
-    expect(appends[0]?.targetFile).toBe('.awa/specs/DESIGN-TGT-target.md');
-
-    expect(writeFile).toHaveBeenCalledWith(
-      '.awa/specs/DESIGN-TGT-target.md',
-      '# Design\n\nDesign content',
-      'utf-8'
-    );
-    expect(unlink).toHaveBeenCalledWith('.awa/specs/DESIGN-SRC-source.md');
+    expect(moves).toHaveLength(1);
+    expect(moves[0]?.targetFile).toBe('.awa/specs/REQ-TGT-target-001.md');
   });
 
   it('skips file operations in dry-run mode', async () => {
@@ -253,12 +194,12 @@ describe('executeAppends', () => {
       makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
     ];
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, true);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, true);
 
-    expect(appends).toHaveLength(1);
+    expect(moves).toHaveLength(1);
     expect(readFile).not.toHaveBeenCalled();
+    expect(rename).not.toHaveBeenCalled();
     expect(writeFile).not.toHaveBeenCalled();
-    expect(unlink).not.toHaveBeenCalled();
   });
 
   it('handles multiple file types', async () => {
@@ -270,39 +211,39 @@ describe('executeAppends', () => {
       makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
     ];
 
-    // 3 source files: FEAT, REQ (append), DESIGN (create)
-    // FEAT and REQ: read source + read target
-    // DESIGN: read source only (no target)
     vi.mocked(readFile)
-      .mockResolvedValueOnce('FEAT source')
-      .mockResolvedValueOnce('FEAT target')
-      .mockResolvedValueOnce('REQ source')
-      .mockResolvedValueOnce('REQ target')
-      .mockResolvedValueOnce('DESIGN source');
+      .mockResolvedValueOnce('# SRC FEAT\ncontent')
+      .mockResolvedValueOnce('# SRC REQ\ncontent')
+      .mockResolvedValueOnce('# SRC DESIGN\ncontent');
+    vi.mocked(rename).mockResolvedValue(undefined);
     vi.mocked(writeFile).mockResolvedValue(undefined);
-    vi.mocked(unlink).mockResolvedValue(undefined);
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, false);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, false);
 
-    expect(appends).toHaveLength(3);
-    expect(appends.map((a) => a.docType).sort()).toEqual(['DESIGN', 'FEAT', 'REQ']);
+    expect(moves).toHaveLength(3);
+    expect(moves.map((m) => m.docType).sort()).toEqual(['DESIGN', 'FEAT', 'REQ']);
 
-    const featAppend = appends.find((a) => a.docType === 'FEAT');
-    expect(featAppend?.created).toBe(false);
-
-    const designAppend = appends.find((a) => a.docType === 'DESIGN');
-    expect(designAppend?.created).toBe(true);
+    // All should be renames with source feature name preserved
+    expect(moves.find((m) => m.docType === 'FEAT')?.targetFile).toBe(
+      '.awa/specs/FEAT-TGT-source.md'
+    );
+    expect(moves.find((m) => m.docType === 'REQ')?.targetFile).toBe('.awa/specs/REQ-TGT-source.md');
+    expect(moves.find((m) => m.docType === 'DESIGN')?.targetFile).toBe(
+      '.awa/specs/DESIGN-TGT-source.md'
+    );
   });
 
-  it('ignores non-merge file types (e.g. TASK)', async () => {
+  it('includes TASK files in moves', async () => {
     const specFiles: SpecFile[] = [
       makeSpecFile('.awa/tasks/TASK-SRC-source-001.md', 'SRC'),
       makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT'),
     ];
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, true);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, true);
 
-    expect(appends).toHaveLength(0);
+    expect(moves).toHaveLength(1);
+    expect(moves[0]?.docType).toBe('TASK');
+    expect(moves[0]?.targetFile).toBe('.awa/tasks/TASK-TGT-source-001.md');
   });
 
   it('ignores files from unrelated codes', async () => {
@@ -312,16 +253,29 @@ describe('executeAppends', () => {
       makeSpecFile('.awa/specs/REQ-OTHER-other.md', 'OTHER'),
     ];
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, true);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, true);
 
-    expect(appends).toHaveLength(1);
-    expect(appends[0]?.sourceFile).toBe('.awa/specs/REQ-SRC-source.md');
+    expect(moves).toHaveLength(1);
+    expect(moves[0]?.sourceFile).toBe('.awa/specs/REQ-SRC-source.md');
   });
 
   it('returns empty when source has no spec files', async () => {
     const specFiles: SpecFile[] = [makeSpecFile('.awa/specs/REQ-TGT-target.md', 'TGT')];
 
-    const appends = await executeAppends('SRC', 'TGT', specFiles, true);
-    expect(appends).toHaveLength(0);
+    const moves = await executeMoves('SRC', 'TGT', specFiles, true);
+    expect(moves).toHaveLength(0);
+  });
+
+  it('does not write when heading is unchanged', async () => {
+    const specFiles: SpecFile[] = [makeSpecFile('.awa/specs/REQ-SRC-source.md', 'SRC')];
+
+    // No SRC in heading
+    vi.mocked(readFile).mockResolvedValueOnce('# Some Title\n\ncontent');
+    vi.mocked(rename).mockResolvedValue(undefined);
+
+    await executeMoves('SRC', 'TGT', specFiles, false);
+
+    expect(rename).toHaveBeenCalled();
+    expect(writeFile).not.toHaveBeenCalled();
   });
 });

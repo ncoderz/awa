@@ -13,11 +13,10 @@ function makeResult(overrides: Partial<MergeResult> = {}): MergeResult {
       { filePath: 'file.ts', replacements: [{ line: 1, oldId: 'SRC-1', newId: 'TGT-3' }] },
     ],
     totalReplacements: 1,
-    appends: [
+    moves: [
       {
         sourceFile: '.awa/specs/REQ-SRC-feat.md',
         targetFile: '.awa/specs/REQ-TGT-feat.md',
-        created: false,
         docType: 'REQ',
       },
     ],
@@ -44,29 +43,25 @@ describe('formatText', () => {
     expect(text).toContain('1 ID(s) recoded');
   });
 
-  it('shows file appends with action type', () => {
+  it('shows file moves', () => {
     const result = makeResult({
-      appends: [
+      moves: [
         {
           sourceFile: '.awa/specs/REQ-SRC-feat.md',
           targetFile: '.awa/specs/REQ-TGT-feat.md',
-          created: false,
           docType: 'REQ',
         },
         {
           sourceFile: '.awa/specs/DESIGN-SRC-feat.md',
           targetFile: '.awa/specs/DESIGN-TGT-feat.md',
-          created: true,
           docType: 'DESIGN',
         },
       ],
     });
     const text = formatText(result, false);
-    expect(text).toContain('2 file(s) processed');
-    expect(text).toContain('REQ-SRC-feat.md → .awa/specs/REQ-TGT-feat.md (REQ, appended)');
-    expect(text).toContain(
-      'DESIGN-SRC-feat.md → .awa/specs/DESIGN-TGT-feat.md (DESIGN, created)'
-    );
+    expect(text).toContain('2 file(s) moved');
+    expect(text).toContain('REQ-SRC-feat.md → .awa/specs/REQ-TGT-feat.md (REQ)');
+    expect(text).toContain('DESIGN-SRC-feat.md → .awa/specs/DESIGN-TGT-feat.md (DESIGN)');
   });
 
   it('shows affected files', () => {
@@ -96,12 +91,11 @@ describe('formatJson', () => {
     expect(parsed.map['SRC-1']).toBe('TGT-3');
   });
 
-  it('includes appends with created flag', () => {
+  it('includes moves with docType', () => {
     const json = formatJson(makeResult());
     const parsed = JSON.parse(json);
-    expect(parsed.appends).toHaveLength(1);
-    expect(parsed.appends[0].sourceFile).toBe('.awa/specs/REQ-SRC-feat.md');
-    expect(parsed.appends[0].created).toBe(false);
+    expect(parsed.moves).toHaveLength(1);
+    expect(parsed.moves[0].sourceFile).toBe('.awa/specs/REQ-SRC-feat.md');
   });
 
   it('includes staleRefs', () => {

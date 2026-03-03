@@ -11,7 +11,7 @@ vi.mock('../../core/check/codes-fixer.js');
 vi.mock('../../utils/logger.js');
 
 import { fixCodesTable } from '../../core/check/codes-fixer.js';
-import { executeAppends } from '../../core/merge/content-merger.js';
+import { executeMoves } from '../../core/merge/content-merger.js';
 import { formatJson, formatText } from '../../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../../core/merge/spec-mover.js';
 import { MergeError } from '../../core/merge/types.js';
@@ -68,17 +68,15 @@ function mockDefaults() {
     totalReplacements: 1,
   });
 
-  vi.mocked(executeAppends).mockResolvedValue([
+  vi.mocked(executeMoves).mockResolvedValue([
     {
       sourceFile: '.awa/specs/REQ-SRC-feature.md',
       targetFile: '.awa/specs/REQ-TGT-feature.md',
-      created: false,
       docType: 'REQ',
     },
     {
       sourceFile: '.awa/specs/DESIGN-SRC-feature.md',
       targetFile: '.awa/specs/DESIGN-TGT-feature.md',
-      created: true,
       docType: 'DESIGN',
     },
   ]);
@@ -116,7 +114,7 @@ describe('mergeCommand', () => {
     expect(exitCode).toBe(1);
     expect(buildRecodeMap).toHaveBeenCalledWith('SRC', 'TGT', expect.anything());
     expect(propagate).toHaveBeenCalled();
-    expect(executeAppends).toHaveBeenCalledWith('SRC', 'TGT', expect.anything(), false);
+    expect(executeMoves).toHaveBeenCalledWith('SRC', 'TGT', expect.anything(), false);
     expect(formatText).toHaveBeenCalled();
   });
 
@@ -126,7 +124,7 @@ describe('mergeCommand', () => {
       map: { code: 'SRC', entries: new Map() },
       noChange: true,
     });
-    vi.mocked(executeAppends).mockResolvedValue([]);
+    vi.mocked(executeMoves).mockResolvedValue([]);
 
     const exitCode = await mergeCommand({
       sourceCode: 'SRC',
@@ -152,7 +150,7 @@ describe('mergeCommand', () => {
       expect.anything(),
       true
     );
-    expect(executeAppends).toHaveBeenCalledWith('SRC', 'TGT', expect.anything(), true);
+    expect(executeMoves).toHaveBeenCalledWith('SRC', 'TGT', expect.anything(), true);
   });
 
   it('outputs JSON when --json specified', async () => {
@@ -196,7 +194,7 @@ describe('mergeCommand', () => {
     expect(logger.error).toHaveBeenCalledWith('No REQ file found for source code: NOPE');
   });
 
-  it('reports appended and created files in result', async () => {
+  it('reports moved files in result', async () => {
     mockDefaults();
 
     await mergeCommand({
@@ -206,17 +204,15 @@ describe('mergeCommand', () => {
 
     expect(formatText).toHaveBeenCalledWith(
       expect.objectContaining({
-        appends: [
+        moves: [
           expect.objectContaining({
             sourceFile: '.awa/specs/REQ-SRC-feature.md',
             targetFile: '.awa/specs/REQ-TGT-feature.md',
-            created: false,
             docType: 'REQ',
           }),
           expect.objectContaining({
             sourceFile: '.awa/specs/DESIGN-SRC-feature.md',
             targetFile: '.awa/specs/DESIGN-TGT-feature.md',
-            created: true,
             docType: 'DESIGN',
           }),
         ],

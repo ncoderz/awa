@@ -28,13 +28,12 @@ export function formatText(result: MergeResult, dryRun: boolean): string {
     }
   }
 
-  // Section 2: File appends
-  if (result.appends.length > 0) {
+  // Section 2: File moves
+  if (result.moves.length > 0) {
     lines.push('');
-    lines.push(`  ${result.appends.length} file(s) processed:`);
-    for (const a of result.appends) {
-      const action = a.created ? 'created' : 'appended';
-      lines.push(`    ${a.sourceFile} → ${a.targetFile} (${a.docType}, ${action})`);
+    lines.push(`  ${result.moves.length} file(s) moved:`);
+    for (const m of result.moves) {
+      lines.push(`    ${m.sourceFile} → ${m.targetFile} (${m.docType})`);
     }
   }
 
@@ -70,11 +69,10 @@ export function formatJson(result: MergeResult): string {
     targetCode: result.targetCode,
     noChange: result.noChange,
     map: Object.fromEntries(result.map.entries),
-    appends: result.appends.map((a) => ({
-      sourceFile: a.sourceFile,
-      targetFile: a.targetFile,
-      created: a.created,
-      docType: a.docType,
+    moves: result.moves.map((m) => ({
+      sourceFile: m.sourceFile,
+      targetFile: m.targetFile,
+      docType: m.docType,
     })),
     staleRefs: result.staleRefs,
     affectedFiles: result.affectedFiles.map((f) => ({

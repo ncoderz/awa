@@ -1,5 +1,5 @@
 import { fixCodesTable } from '../core/check/codes-fixer.js';
-import { executeAppends } from '../core/merge/content-merger.js';
+import { executeMoves } from '../core/merge/content-merger.js';
 import { formatJson, formatText } from '../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../core/merge/spec-mover.js';
 import type { MergeCommandOptions, MergeResult } from '../core/merge/types.js';
@@ -15,8 +15,8 @@ import { logger } from '../utils/logger.js';
  *
  * Pipeline:
  *   1. Recode: build offset map (renumber source past target's highest IDs) + propagate.
- *   2. Append: for each source spec file (FEAT, REQ, DESIGN, API, EXAMPLE),
- *      append its content to the corresponding target file (or create it), then delete source.
+ *   2. Move: for each source spec file, rename it by changing only the code prefix.
+ *      When a filename clash occurs, an incrementing index suffix is appended.
  *   3. Stale-ref check: warn about leftover source-code references.
  *   4. Post-processing: optional renumber + ARCHITECTURE.md codes table fix.
  *
@@ -48,9 +48,9 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
       totalReplacements = result.totalReplacements;
     }
 
-    // Phase 2: Append source file contents to target files, then delete sources.
+    // Phase 2: Move source files to target code namespace (rename only).
     // Source files already contain recoded IDs after Phase 1.
-    const appends = await executeAppends(
+    const moves = await executeMoves(
       options.sourceCode,
       options.targetCode,
       specs.specFiles,
@@ -58,11 +58,11 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
     );
 
     // Phase 3: Find stale references (re-scan non-source files)
-    const appendedSourcePaths = new Set(appends.map((a) => a.sourceFile));
-    const nonSourceFiles = specs.specFiles.filter((sf) => !appendedSourcePaths.has(sf.filePath));
+    const movedSourcePaths = new Set(moves.map((m) => m.sourceFile));
+    const nonSourceFiles = specs.specFiles.filter((sf) => !movedSourcePaths.has(sf.filePath));
     const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
 
-    const noChange = recodeNoChange && appends.length === 0;
+    const noChange = recodeNoChange && moves.length === 0;
 
     const result: MergeResult = {
       sourceCode: options.sourceCode,
@@ -70,7 +70,7 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
       map,
       affectedFiles,
       totalReplacements,
-      appends,
+      moves,
       staleRefs,
       noChange,
     };

@@ -46,37 +46,43 @@ This combines all spec files, traceability IDs, code markers, and tests from the
 
 2. PREVIEW CHANGES
    - Run `awa spec merge <source> <target> --dry-run` to see planned operations
-   - Review the output: ID remap table, file merges, renames, deletions
+   - Review the output: ID remap table, file moves, renames
    - If output looks wrong, abort and investigate
 
 3. EXECUTE MERGE
    - Run `awa spec merge <source> <target>` to apply the merge
    - The command performs these phases automatically:
      a. **Recode IDs**: Source IDs are offset past target's highest IDs and rewritten
-     b. **Merge spec files**: For single-instance types (FEAT, REQ, DESIGN), content is appended to the target file; for multi-instance types (EXAMPLE, TASK), files are renamed
-     c. **Cleanup**: Source files are deleted after merge
-     d. **Stale reference check**: Remaining references to the source code are reported
+     b. **Move spec files**: All source files are renamed by changing only the code prefix (e.g. `REQ-CHK-check.md` → `REQ-CLI-check.md`). If a filename clashes with an existing target file, an index suffix is appended (`-001`, `-002`, …)
+     c. **Stale reference check**: Remaining references to the source code are reported
 
-4. FIX MERGED FILES
+4. CONSOLIDATE TARGET FILES
+   - List all spec files now under the target code namespace
+   - For each file type (FEAT, REQ, DESIGN, API, EXAMPLE), check if multiple files exist that should be combined
+   - Where two files of the same type cover closely related or overlapping content, merge them into one:
+     - Append the smaller file's content to the larger one
+     - Remove duplicate sections, but do not alter the wording of requirements or design components
+     - Ensure the merged file stays within schema line limits; split if needed
+   - Files that cover distinct topics should remain separate
+
+5. FIX MERGED FILES
    - Open every merged spec file and verify content coherence
    - Reorder content into logical order
-   - Merge blocks where logical, but otherwise do not modify wording
-   - Check that merged REQ files have consistent requirement structure
-   - Check that merged DESIGN files have non-overlapping component names
-   - Generally fix the files
+   - Check that REQ files have consistent requirement structure
+   - Check that DESIGN files have non-overlapping component names
+   - Ensure all files respect schema line limits; split if needed
 
-5. VALIDATE
+6. VALIDATE
    - Run `awa check` to verify new status
    - Fix any newly reported errors
    - If no errors reported, process is complete
 
 ## Outputs
 
-- Merged spec files under the target code namespace
-- Renamed multi-instance files (EXAMPLE, TASK) under the target code
+- Renamed spec files under the target code namespace
 - Updated code and test files with recoded traceability markers
 - Updated ARCHITECTURE.md feature codes table
-- Deleted source code spec files
+- Optionally consolidated target files where content overlaps
 
 ## Rules
 
