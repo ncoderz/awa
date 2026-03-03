@@ -1,5 +1,5 @@
 // @awa-component: FP-FeatureResolver
-// @awa-test: FP_P-1, FP_P-2, FP_P-3, FP_P-4, FP_P-5
+// @awa-test: CLI_P-3, CLI_P-4, CLI_P-5, CLI_P-6, CLI_P-7
 // @awa-test: FP-1_AC-1, FP-1_AC-2, FP-1_AC-3, FP-1_AC-4
 // @awa-test: FP-2_AC-1, FP-2_AC-2, FP-2_AC-3, FP-2_AC-4
 // @awa-test: FP-3_AC-1, FP-3_AC-2, FP-3_AC-3

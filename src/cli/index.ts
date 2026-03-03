@@ -85,9 +85,11 @@ import { checkCommand } from '../commands/check.js';
 import { diffCommand } from '../commands/diff.js';
 import { featuresCommand } from '../commands/features.js';
 import { generateCommand } from '../commands/generate.js';
+import { renumberCommand } from '../commands/renumber.js';
 import { testCommand } from '../commands/test.js';
 import { traceCommand } from '../commands/trace.js';
 import type { RawCheckOptions } from '../core/check/types.js';
+import type { RenumberCommandOptions } from '../core/renumber/types.js';
 import type { RawTestOptions } from '../core/template-test/types.js';
 import type { TraceCommandOptions } from '../core/trace/types.js';
 import type { RawCliOptions } from '../types/index.js';
@@ -408,6 +410,27 @@ program
     };
 
     const exitCode = await traceCommand(traceOptions);
+    process.exit(exitCode);
+  });
+
+program
+  .command('renumber')
+  .description('Renumber traceability IDs to match document order')
+  .argument('[code]', 'Feature code to renumber (e.g. CHK, TRC)')
+  .option('--all', 'Renumber all feature codes', false)
+  .option('--dry-run', 'Preview changes without modifying files', false)
+  .option('--json', 'Output results as JSON', false)
+  .option('-c, --config <path>', 'Path to configuration file')
+  .action(async (code: string | undefined, options) => {
+    const renumberOptions: RenumberCommandOptions = {
+      code,
+      all: options.all,
+      dryRun: options.dryRun,
+      json: options.json,
+      config: options.config,
+    };
+
+    const exitCode = await renumberCommand(renumberOptions);
     process.exit(exitCode);
   });
 

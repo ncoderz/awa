@@ -145,25 +145,25 @@ interface FeatureResolver {
 
 ## Correctness Properties
 
-- CFG_P-1 [CLI Override]: CLI arguments always override config file values for the same option
+- CLI_P-1 [CLI Override]: CLI arguments always override config file values for the same option
   VALIDATES: CFG-4_AC-1, CFG-4_AC-2
 
-- CFG_P-2 [Features Replace]: Features from CLI completely replace config features (no merge)
+- CLI_P-2 [Features Replace]: Features from CLI completely replace config features (no merge)
   VALIDATES: CFG-4_AC-4
 
-- FP_P-1 [Preset Validation]: Referencing a non-existent preset name results in an error
+- CLI_P-3 [Preset Validation]: Referencing a non-existent preset name results in an error
   VALIDATES: FP-2_AC-3
 
-- FP_P-2 [Feature Resolution Order]: Final features = (baseFeatures union presetFeatures) minus removeFeatures
+- CLI_P-4 [Feature Resolution Order]: Final features = (baseFeatures union presetFeatures) minus removeFeatures
   VALIDATES: FP-6_AC-1, FP-6_AC-2, FP-6_AC-3, FP-6_AC-4
 
-- FP_P-3 [Feature Deduplication]: Final feature set contains no duplicates
+- CLI_P-5 [Feature Deduplication]: Final feature set contains no duplicates
   VALIDATES: FP-6_AC-5, FP-7_AC-2
 
-- FP_P-4 [Preset Union]: Multiple presets are merged via set union
+- CLI_P-6 [Preset Union]: Multiple presets are merged via set union
   VALIDATES: FP-7_AC-1
 
-- FP_P-5 [Silent Removal]: Removing a non-existent feature does not cause an error
+- CLI_P-7 [Silent Removal]: Removing a non-existent feature does not cause an error
   VALIDATES: FP-4_AC-4
 
 ## Error Handling
@@ -225,10 +225,10 @@ PRINCIPLES:
 - CFG-3_AC-8 → CFG-ConfigLoader
 - CFG-3_AC-9 → CFG-ConfigLoader
 - CFG-3_AC-10 → CFG-ConfigLoader
-- CFG-4_AC-1 → CFG-ConfigLoader (CFG_P-1)
-- CFG-4_AC-2 → CFG-ConfigLoader (CFG_P-1)
+- CFG-4_AC-1 → CFG-ConfigLoader (CLI_P-1)
+- CFG-4_AC-2 → CFG-ConfigLoader (CLI_P-1)
 - CFG-4_AC-3 → CFG-ConfigLoader
-- CFG-4_AC-4 → CFG-ConfigLoader (CFG_P-2)
+- CFG-4_AC-4 → CFG-ConfigLoader (CLI_P-2)
 - CFG-5_AC-1 → CFG-ConfigLoader
 - CFG-5_AC-2 → CLI-ArgumentParser
 - CFG-6_AC-1 → CFG-ConfigLoader
@@ -312,7 +312,7 @@ PRINCIPLES:
 - FP-1_AC-4 → CFG-ConfigLoader
 - FP-2_AC-1 → CLI-ArgumentParser
 - FP-2_AC-2 → CLI-ArgumentParser
-- FP-2_AC-3 → FP-FeatureResolver (FP_P-1)
+- FP-2_AC-3 → FP-FeatureResolver (CLI_P-3)
 - FP-2_AC-4 → CLI-ArgumentParser
 - FP-3_AC-1 → CFG-ConfigLoader
 - FP-3_AC-2 → CFG-ConfigLoader
@@ -320,18 +320,18 @@ PRINCIPLES:
 - FP-4_AC-1 → CLI-ArgumentParser
 - FP-4_AC-2 → CLI-ArgumentParser
 - FP-4_AC-3 → CLI-ArgumentParser
-- FP-4_AC-4 → FP-FeatureResolver (FP_P-5)
+- FP-4_AC-4 → FP-FeatureResolver (CLI_P-7)
 - FP-4_AC-5 → CLI-ArgumentParser
 - FP-5_AC-1 → CFG-ConfigLoader
 - FP-5_AC-2 → CFG-ConfigLoader
 - FP-5_AC-3 → CFG-ConfigLoader
-- FP-6_AC-1 → FP-FeatureResolver (FP_P-2)
-- FP-6_AC-2 → FP-FeatureResolver (FP_P-2)
-- FP-6_AC-3 → FP-FeatureResolver (FP_P-2)
-- FP-6_AC-4 → FP-FeatureResolver (FP_P-2)
-- FP-6_AC-5 → FP-FeatureResolver (FP_P-3)
-- FP-7_AC-1 → FP-FeatureResolver (FP_P-4)
-- FP-7_AC-2 → FP-FeatureResolver (FP_P-3)
+- FP-6_AC-1 → FP-FeatureResolver (CLI_P-4)
+- FP-6_AC-2 → FP-FeatureResolver (CLI_P-4)
+- FP-6_AC-3 → FP-FeatureResolver (CLI_P-4)
+- FP-6_AC-4 → FP-FeatureResolver (CLI_P-4)
+- FP-6_AC-5 → FP-FeatureResolver (CLI_P-5)
+- FP-7_AC-1 → FP-FeatureResolver (CLI_P-6)
+- FP-7_AC-2 → FP-FeatureResolver (CLI_P-5)
 
 ### REQ-GEN-generation.md
 
