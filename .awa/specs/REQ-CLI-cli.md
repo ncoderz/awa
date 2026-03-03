@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document defines requirements for the awa CLI command-line interface layer, including argument parsing, command structure, help/version display, user interaction via interactive prompts, and the `awa check` command that verifies traceability chain integrity between code markers and spec files.
+This document defines requirements for the awa CLI command-line interface layer, including argument parsing, command structure, help/version display, user interaction via interactive prompts, the `awa check` command that verifies traceability chain integrity between code markers and spec files, and the `template` subcommand group that nests template-related commands.
 
 ## Glossary
 
@@ -13,11 +13,15 @@ This document defines requirements for the awa CLI command-line interface layer,
 - ORPHANED MARKER: A code marker referencing a spec ID that does not exist
 - UNCOVERED AC: An acceptance criterion in a spec with no corresponding `@awa-test` marker in code
 - CROSS-REFERENCE: A reference from one spec file to an ID in another (e.g., DESIGN IMPLEMENTS → REQ AC)
+- TEMPLATE COMMAND: A CLI command that operates on template files (generate, diff, features, test)
+- AWA COMMAND: A CLI command that operates on awa specs or code traceability (check, trace)
+- SUBCOMMAND GROUP: A parent command that acts as a namespace for child commands
 
 ## Stakeholders
 
-- DEVELOPER: Engineers using awa CLI to generate agent configuration files
+- DEVELOPER: Engineers using awa CLI to generate and manage agent configuration files
 - MAINTAINER: Engineers maintaining and extending awa CLI
+- CI PIPELINE: Automated build systems invoking awa commands
 
 ## Requirements
 
@@ -448,6 +452,70 @@ ACCEPTANCE CRITERIA
 
 DEPENDS ON: CLI-17
 
+### CLI-41: Template Subcommand Group [MUST]
+
+AS A developer, I WANT template commands grouped under `awa template`, SO THAT I can immediately distinguish template operations from awa operations.
+
+> Groups generate, diff, features, and test under a single parent command.
+
+ACCEPTANCE CRITERIA
+
+- CLI-41_AC-1 [ubiquitous]: The system SHALL provide a `template` parent command
+- CLI-41_AC-2 [ubiquitous]: The `template` command SHALL contain `generate`, `diff`, `features`, and `test` as subcommands
+- CLI-41_AC-3 [event]: WHEN the user invokes `awa template` without a subcommand THEN the system SHALL display help listing available template subcommands
+- CLI-41_AC-4 [ubiquitous]: The `generate` subcommand under `template` SHALL accept the same options as the current top-level `generate` command
+- CLI-41_AC-5 [ubiquitous]: The `diff` subcommand under `template` SHALL accept the same options as the current top-level `diff` command
+- CLI-41_AC-6 [ubiquitous]: The `features` subcommand under `template` SHALL accept the same options as the current top-level `features` command
+- CLI-41_AC-7 [ubiquitous]: The `test` subcommand under `template` SHALL accept the same options as the current top-level `test` command
+
+### CLI-42: Top-Level Init Convenience [MUST]
+
+AS A developer, I WANT `awa init` to work as a top-level convenience command equivalent to `awa template generate`, SO THAT new users have a short entry point without navigating the template subgroup.
+
+> Provides a top-level init command for onboarding ergonomics.
+
+ACCEPTANCE CRITERIA
+
+- CLI-42_AC-1 [ubiquitous]: The system SHALL provide `awa init` as a top-level command
+- CLI-42_AC-2 [ubiquitous]: The `init` command SHALL accept the same arguments and options as `awa template generate`
+
+### CLI-43: Top-Level Awa Commands [MUST]
+
+AS A developer, I WANT `check` and `trace` to remain top-level commands, SO THAT awa-specific operations are not nested under an unrelated parent.
+
+> Awa commands that operate on specs and traceability stay at the root level.
+
+ACCEPTANCE CRITERIA
+
+- CLI-43_AC-1 [ubiquitous]: The system SHALL provide `check` as a top-level command under `awa`
+- CLI-43_AC-2 [ubiquitous]: The system SHALL provide `trace` as a top-level command under `awa`
+- CLI-43_AC-3 [ubiquitous]: The `check` command SHALL accept the same options as the current implementation
+- CLI-43_AC-4 [ubiquitous]: The `trace` command SHALL accept the same options as the current implementation
+
+### CLI-44: Help and Discovery [MUST]
+
+AS A developer, I WANT `awa --help` to show both top-level commands and the template group, SO THAT I can discover all available commands.
+
+> Clear help output for the restructured command tree.
+
+ACCEPTANCE CRITERIA
+
+- CLI-44_AC-1 [event]: WHEN the user invokes `awa --help` THEN the output SHALL list `init`, `template`, `check`, and `trace` as available commands
+- CLI-44_AC-2 [event]: WHEN the user invokes `awa template --help` THEN the output SHALL list `generate`, `diff`, `features`, and `test` as available subcommands
+
+### CLI-45: Remove Top-Level Template Commands [MUST]
+
+AS A developer, I WANT the old top-level `generate`, `diff`, `features`, and `test` commands removed, SO THAT the CLI has a single clear structure.
+
+> Clean break — no deprecated aliases at the root level.
+
+ACCEPTANCE CRITERIA
+
+- CLI-45_AC-1 [ubiquitous]: The system SHALL NOT provide `generate` as a top-level command
+- CLI-45_AC-2 [ubiquitous]: The system SHALL NOT provide `diff` as a top-level command
+- CLI-45_AC-3 [ubiquitous]: The system SHALL NOT provide `features` as a top-level command
+- CLI-45_AC-4 [ubiquitous]: The system SHALL NOT provide `test` as a top-level command
+
 ## Assumptions
 
 - Users have Node.js 24 or later installed
@@ -463,6 +531,8 @@ DEPENDS ON: CLI-17
 - Must run in CI environments (no interactive prompts for check)
 - Must handle large codebases efficiently (respect ignore patterns)
 - Warnings affect exit code by default; use `--allow-warnings` to suppress
+- Must use commander's nested subcommand support
+- All existing command options remain unchanged — only the command path changes
 
 ## Out of Scope
 
@@ -472,3 +542,5 @@ DEPENDS ON: CLI-17
 - Automatic marker insertion or repair
 - Git integration (blame, history)
 - Runtime validation of marker correctness
+- Backward-compatible aliases at the root level for diff, features, or test
+- New commands beyond the existing set

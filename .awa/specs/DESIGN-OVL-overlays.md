@@ -210,9 +210,6 @@ Test generate and diff commands with mocked overlay module.
 - CLI-24_AC-1 → CLI-ArgumentParser
 - CLI-25_AC-1 → CLI-ArgumentParser
 - CLI-31_AC-1 → CFG-ConfigLoader
-
-### REQ-CLI-template-cli.md
-
 - CLI-41_AC-1 → CLI-ArgumentParser
 - CLI-41_AC-2 → CLI-ArgumentParser
 - CLI-41_AC-3 → CLI-ArgumentParser

@@ -1,7 +1,7 @@
 # Implementation Tasks
 
 FEATURE: Template CLI Subcommand
-SOURCE: REQ-CLI-template-cli.md, DESIGN-CLI-template-cli.md
+SOURCE: REQ-CLI-cli.md, DESIGN-CLI-cli.md
 
 ## Phase 1: Foundation
 
@@ -74,12 +74,6 @@ Phase 4: T-TCLI-030, T-TCLI-031, T-TCLI-032 can all run parallel
 
 ### REQ-CLI-cli.md
 
-- CLI_P-20 → T-TCLI-024
-- CLI_P-21 → T-TCLI-016
-- CLI_P-22 → T-TCLI-020, T-TCLI-021
-
-### REQ-CLI-template-cli.md
-
 - CLI-41_AC-1 → T-TCLI-010
 - CLI-41_AC-2 → T-TCLI-010
 - CLI-41_AC-3 → T-TCLI-016
@@ -99,3 +93,6 @@ Phase 4: T-TCLI-030, T-TCLI-031, T-TCLI-032 can all run parallel
 - CLI-45_AC-2 → T-TCLI-024
 - CLI-45_AC-3 → T-TCLI-024
 - CLI-45_AC-4 → T-TCLI-024
+- CLI_P-20 → T-TCLI-024
+- CLI_P-21 → T-TCLI-016
+- CLI_P-22 → T-TCLI-020, T-TCLI-021
