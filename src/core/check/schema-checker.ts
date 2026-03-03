@@ -86,10 +86,14 @@ export async function checkSchemasAsync(
     if (matchingRules.length === 0) continue;
 
     let content: string;
-    try {
-      content = await readFile(spec.filePath, 'utf-8');
-    } catch {
-      continue;
+    if (spec.content != null) {
+      content = spec.content;
+    } else {
+      try {
+        content = await readFile(spec.filePath, 'utf-8');
+      } catch {
+        continue;
+      }
     }
 
     const tree = parser.parse(content);

@@ -29,10 +29,14 @@ export async function fixCodesTable(
   }
 
   let content: string;
-  try {
-    content = await readFile(archFile.filePath, 'utf-8');
-  } catch {
-    return { filesFixed: 0, fileResults: [], emptyScopeCodes: [] };
+  if (archFile.content != null) {
+    content = archFile.content;
+  } else {
+    try {
+      content = await readFile(archFile.filePath, 'utf-8');
+    } catch {
+      return { filesFixed: 0, fileResults: [], emptyScopeCodes: [] };
+    }
   }
 
   // Check if ## Feature Codes section exists

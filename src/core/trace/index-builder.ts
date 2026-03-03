@@ -45,12 +45,7 @@ export function buildTraceIndex(specs: SpecParseResult, markers: MarkerScanResul
     ...specs.componentNames,
   ]);
 
-  // 5. Copy idLocations from specs (already a ReadonlyMap<string, {filePath, line}>)
-  const idLocations = new Map<string, CodeLocation>();
-  for (const [id, loc] of specs.idLocations) {
-    idLocations.set(id, loc);
-  }
-
+  // 5. Reuse idLocations directly from specs (never mutated after construction)
   return {
     reqToACs,
     acToDesignComponents,
@@ -61,7 +56,7 @@ export function buildTraceIndex(specs: SpecParseResult, markers: MarkerScanResul
     acToReq,
     componentToACs,
     propertyToACs,
-    idLocations,
+    idLocations: specs.idLocations,
     allIds,
   };
 }

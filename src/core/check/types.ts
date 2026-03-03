@@ -124,6 +124,8 @@ export interface SpecFile {
   readonly idLocations?: ReadonlyMap<string, { filePath: string; line: number }>;
   /** Maps component names to their IMPLEMENTS AC IDs. Populated for DESIGN files. */
   readonly componentImplements?: ReadonlyMap<string, readonly string[]>;
+  /** Raw file content, cached by spec-parser to avoid re-reads in downstream phases. */
+  readonly content?: string;
 }
 
 export interface SpecParseResult {

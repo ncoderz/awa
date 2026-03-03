@@ -143,6 +143,7 @@ async function parseSpecFile(
     crossRefs,
     idLocations,
     componentImplements,
+    content,
   };
 }
 

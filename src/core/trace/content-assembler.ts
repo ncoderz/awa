@@ -28,10 +28,13 @@ export async function assembleContent(
   const afterCtx = contextOptions?.afterContext ?? DEFAULT_AFTER_CONTEXT;
   const sections: ContentSection[] = [];
   const seen = new Set<string>();
+  // File content cache scoped to this invocation — avoids re-reading the same
+  // file when multiple trace IDs reference it.
+  const fileCache = new Map<string, string | null>();
 
   // Priority 1: Task file — full content
   if (taskPath) {
-    const content = await safeReadFile(taskPath);
+    const content = await cachedReadFile(fileCache, taskPath);
     if (content) {
       const lineCount = content.split('\n').length;
       sections.push({
@@ -52,6 +55,7 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           chain.requirement.location.filePath,
           chain.requirement.id,
           chain.requirement.location.line,
@@ -70,6 +74,7 @@ export async function assembleContent(
         // ACs are part of the requirement section — only add if different from requirement
         if (!chain.requirement || ac.location.filePath !== chain.requirement.location.filePath) {
           const section = await extractSpecSection(
+            fileCache,
             ac.location.filePath,
             ac.id,
             ac.location.line,
@@ -87,6 +92,7 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           comp.location.filePath,
           comp.id,
           comp.location.line,
@@ -103,6 +109,7 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractCodeSection(
+          fileCache,
           impl.location.filePath,
           impl.location.line,
           'implementation',
@@ -120,6 +127,7 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractCodeSection(
+          fileCache,
           t.location.filePath,
           t.location.line,
           'test',
@@ -137,6 +145,7 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           prop.location.filePath,
           prop.id,
           prop.location.line,
@@ -159,13 +168,14 @@ export async function assembleContent(
  * Reads from the H3 heading to the next H3 or H2 heading.
  */
 async function extractSpecSection(
+  fileCache: Map<string, string | null>,
   filePath: string,
   _id: string,
   line: number,
   type: ContentSection['type'],
   priority: number
 ): Promise<ContentSection | null> {
-  const content = await safeReadFile(filePath);
+  const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
 
   const lines = content.split('\n');
@@ -202,6 +212,7 @@ async function extractSpecSection(
  * Tries to find the enclosing function/block; falls back to +/- DEFAULT_CONTEXT_LINES.
  */
 async function extractCodeSection(
+  fileCache: Map<string, string | null>,
   filePath: string,
   line: number,
   type: ContentSection['type'],
@@ -209,7 +220,7 @@ async function extractCodeSection(
   beforeContext: number = DEFAULT_BEFORE_CONTEXT,
   afterContext: number = DEFAULT_AFTER_CONTEXT
 ): Promise<ContentSection | null> {
-  const content = await safeReadFile(filePath);
+  const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
 
   const lines = content.split('\n');
@@ -300,10 +311,17 @@ function findEnclosingBlock(
   return { start, end };
 }
 
-async function safeReadFile(filePath: string): Promise<string | null> {
+async function cachedReadFile(
+  cache: Map<string, string | null>,
+  filePath: string
+): Promise<string | null> {
+  if (cache.has(filePath)) return cache.get(filePath) ?? null;
+  let content: string | null;
   try {
-    return await readFile(filePath, 'utf-8');
+    content = await readFile(filePath, 'utf-8');
   } catch {
-    return null;
+    content = null;
   }
+  cache.set(filePath, content);
+  return content;
 }

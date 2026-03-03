@@ -33,10 +33,10 @@ export async function fixMatrices(
     const fileName = basename(specFile.filePath);
 
     if (fileName.startsWith('DESIGN-')) {
-      const changed = await fixDesignMatrix(specFile.filePath, reqFileMaps, crossRefPatterns);
+      const changed = await fixDesignMatrix(specFile.filePath, reqFileMaps, crossRefPatterns, specFile.content);
       fileResults.push({ filePath: specFile.filePath, changed });
     } else if (fileName.startsWith('TASK-')) {
-      const changed = await fixTaskMatrix(specFile.filePath, reqFileMaps, specs, crossRefPatterns);
+      const changed = await fixTaskMatrix(specFile.filePath, reqFileMaps, specs, crossRefPatterns, specFile.content);
       fileResults.push({ filePath: specFile.filePath, changed });
     }
   }
@@ -137,13 +137,18 @@ interface PropertyInfo {
 async function fixDesignMatrix(
   filePath: string,
   reqFileMaps: ReqFileMaps,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
+  cachedContent?: string
 ): Promise<boolean> {
   let content: string;
-  try {
-    content = await readFile(filePath, 'utf-8');
-  } catch {
-    return false;
+  if (cachedContent != null) {
+    content = cachedContent;
+  } else {
+    try {
+      content = await readFile(filePath, 'utf-8');
+    } catch {
+      return false;
+    }
   }
 
   const { components, properties } = parseDesignFileData(content, crossRefPatterns);
@@ -285,13 +290,18 @@ async function fixTaskMatrix(
   filePath: string,
   reqFileMaps: ReqFileMaps,
   specs: SpecParseResult,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
+  cachedContent?: string
 ): Promise<boolean> {
   let content: string;
-  try {
-    content = await readFile(filePath, 'utf-8');
-  } catch {
-    return false;
+  if (cachedContent != null) {
+    content = cachedContent;
+  } else {
+    try {
+      content = await readFile(filePath, 'utf-8');
+    } catch {
+      return false;
+    }
   }
 
   const { tasks, sourceDesigns } = parseTaskFileData(content, crossRefPatterns);

@@ -113,14 +113,18 @@ function applyReplacements(
     placeholderToNew.set(placeholder, newId);
   }
 
-  // Pass 1: Replace old IDs with placeholders (line by line for tracking)
-  const pass1Lines = lines.map((line, idx) => {
-    let modified = line;
+  // Single pass per line: replace old IDs with placeholders, then placeholders with new IDs.
+  // This avoids holding separate pass1Lines and pass2Lines arrays (reduces from 4× to 2× memory).
+  for (let idx = 0; idx < lines.length; idx++) {
+    let modified = lines[idx] as string;
+    const origLine = modified;
+
+    // Phase 1: Replace old IDs with placeholders and track replacements
     for (const [oldId, placeholder] of placeholders) {
       const regex = buildWholeIdRegex(oldId);
       // Count matches on original line for tracking
-      const origRegex = buildWholeIdRegex(oldId);
-      while (origRegex.exec(line) !== null) {
+      const trackRegex = buildWholeIdRegex(oldId);
+      while (trackRegex.exec(origLine) !== null) {
         replacements.push({
           line: idx + 1,
           oldId,
@@ -129,17 +133,14 @@ function applyReplacements(
       }
       modified = modified.replace(regex, placeholder);
     }
-    return modified;
-  });
 
-  // Pass 2: Replace placeholders with new IDs
-  const pass2Lines = pass1Lines.map((line) => {
-    let modified = line;
+    // Phase 2: Replace placeholders with new IDs
     for (const [placeholder, newId] of placeholderToNew) {
       modified = modified.replaceAll(placeholder, newId);
     }
-    return modified;
-  });
+
+    lines[idx] = modified;
+  }
 
   // Deduplicate replacements per line (same oldId on same line counted once)
   const seen = new Set<string>();
@@ -150,7 +151,7 @@ function applyReplacements(
     return true;
   });
 
-  return { newContent: pass2Lines.join('\n'), replacements: dedupedReplacements };
+  return { newContent: lines.join('\n'), replacements: dedupedReplacements };
 }
 
 /**

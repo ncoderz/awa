@@ -26,12 +26,10 @@ const EMPTY_FILE_MARKER = '<!-- AWA:EMPTY_FILE -->';
 export class TemplateEngine {
   private eta: Eta | null = null;
   private templateDir: string | null = null;
-  private compiledCache = new Map<string, unknown>();
 
   // @awa-impl: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
   configure(templateDir: string): void {
     this.templateDir = templateDir;
-    this.compiledCache.clear();
 
     // @awa-impl: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4
     // Configure Eta with partials support

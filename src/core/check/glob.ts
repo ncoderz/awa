@@ -30,13 +30,23 @@ export async function collectFiles(
   // For exclude callback, also match directory prefixes (e.g. "src" for "src/**")
   const dirPrefixes = ignore.filter((ig) => ig.endsWith('/**')).map((ig) => ig.slice(0, -3));
 
+  // Pre-compile ignore patterns to RegExp objects to avoid re-creating them on every callback invocation
+  const compiledIgnore = ignore.map((ig) => {
+    const regex = ig
+      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+      .replace(/\*\*/g, '<<GLOBSTAR>>')
+      .replace(/\*/g, '[^/]*')
+      .replace(/<<GLOBSTAR>>/g, '.*');
+    return new RegExp(`(^|/)${regex}($|/)`);
+  });
+
   for (const pattern of globs) {
     for await (const filePath of glob(pattern, {
-      exclude: (p) => dirPrefixes.includes(p) || ignore.some((ig) => matchSimpleGlob(p, ig)),
+      exclude: (p) => dirPrefixes.includes(p) || compiledIgnore.some((re) => re.test(p)),
     })) {
       // Post-filter: fs.glob exclude only receives directory names,
       // so we must also filter the yielded file paths
-      if (!ignore.some((ig) => matchSimpleGlob(filePath, ig))) {
+      if (!compiledIgnore.some((re) => re.test(filePath))) {
         files.push(filePath);
       }
     }
