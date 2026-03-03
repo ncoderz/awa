@@ -5,7 +5,7 @@ DIRECTION: top-down
 
 ## Context
 
-PLAN-015 added a Feature Codes table to ARCHITECTURE.md and the `awa spec codes` command. The table is manually maintained, which means it drifts as features are added or removed. `awa check` already auto-updates Requirements Traceability sections in DESIGN and TASK files via the matrix-fixer (CHK-23). The same pattern should apply to the Feature Codes table: `awa check` regenerates it entirely from spec data, keeping the authoritative table always current.
+PLAN-015 added a Feature Codes table to ARCHITECTURE.md and the `awa spec codes` command. The table is manually maintained, which means it drifts as features are added or removed. `awa check` already auto-updates Requirements Traceability sections in DESIGN and TASK files via the matrix-fixer (CLI-38). The same pattern should apply to the Feature Codes table: `awa check` regenerates it entirely from spec data, keeping the authoritative table always current.
 
 The Scope Boundary column is sourced from spec files via a fallback chain: FEAT `## Scope Boundary` section → FEAT first paragraph → REQ first paragraph → DESIGN first paragraph. The FEAT schema gains a new optional `## Scope Boundary` section for this purpose. When a code has no discoverable scope text, the fixer emits a warning.
 
@@ -61,8 +61,8 @@ The Scope Boundary column is sourced from spec files via a fallback chain: FEAT 
 
 ### Traceability
 
-- [x] Add CHK-25 requirement to REQ-CHK-check.md
-- [x] Add CHK-CodesFixer component to DESIGN-CHK-check.md
+- [x] Add CLI-40 requirement to REQ-CLI-cli.md
+- [x] Add CLI-CodesFixer component to DESIGN-CLI-check.md
 - [x] Add traceability markers to codes-fixer.ts and tests
 
 ## Risks
@@ -73,7 +73,7 @@ The Scope Boundary column is sourced from spec files via a fallback chain: FEAT 
 ## Dependencies
 
 - PLAN-015 (completed): `awa spec codes` command and Feature Codes table in ARCHITECTURE.md
-- Existing matrix-fixer infrastructure (CHK-23): pattern to follow
+- Existing matrix-fixer infrastructure (CLI-38): pattern to follow
 - `src/core/codes/scanner.ts`: reuse `scanCodes()` for live code discovery
 
 ## Completion Criteria
@@ -91,7 +91,7 @@ The Scope Boundary column is sourced from spec files via a fallback chain: FEAT 
 ## References
 
 - PLAN-015: .awa/plans/PLAN-015-awa-codes-command.md
-- Matrix fixer: src/core/check/matrix-fixer.ts (CHK-23)
+- Matrix fixer: src/core/check/matrix-fixer.ts (CLI-38)
 - Check command: src/commands/check.ts
 - Codes scanner: src/core/codes/scanner.ts
 - ARCHITECTURE.md Feature Codes section: .awa/specs/ARCHITECTURE.md

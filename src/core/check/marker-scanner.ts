@@ -1,7 +1,7 @@
-// @awa-component: CHK-MarkerScanner
-// @awa-impl: CHK-1_AC-1
-// @awa-impl: CHK-11_AC-1
-// @awa-impl: CHK-13_AC-1
+// @awa-component: CLI-MarkerScanner
+// @awa-impl: CLI-16_AC-1
+// @awa-impl: CLI-26_AC-1
+// @awa-impl: CLI-28_AC-1
 
 import { readFile } from 'node:fs/promises';
 import { collectFiles, matchSimpleGlob } from './glob.js';
@@ -22,7 +22,7 @@ const IGNORE_LINE_RE = /@awa-ignore\b/;
 const IGNORE_START_RE = /@awa-ignore-start\b/;
 const IGNORE_END_RE = /@awa-ignore-end\b/;
 
-// @awa-impl: CHK-1_AC-1
+// @awa-impl: CLI-16_AC-1
 export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult> {
   const files = await collectCodeFiles(config.codeGlobs, config.codeIgnore);
   const markers: CodeMarker[] = [];
@@ -42,7 +42,7 @@ export async function scanMarkers(config: CheckConfig): Promise<MarkerScanResult
   return { markers, findings };
 }
 
-// @awa-impl: CHK-11_AC-1
+// @awa-impl: CLI-26_AC-1
 function buildMarkerRegex(markerNames: readonly string[]): RegExp {
   const escaped = markerNames.map((m) => m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   // Match marker followed by colon, then capture the rest of the line (IDs)
@@ -160,7 +160,7 @@ function resolveMarkerType(markerName: string, configuredMarkers: readonly strin
   return 'impl';
 }
 
-// @awa-impl: CHK-13_AC-1
+// @awa-impl: CLI-28_AC-1
 async function collectCodeFiles(
   codeGlobs: readonly string[],
   ignore: readonly string[]

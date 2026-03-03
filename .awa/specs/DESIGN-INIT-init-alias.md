@@ -44,7 +44,7 @@ src/
 
 After config loading in `generateCommand`, if no config file was found (loader returned `null`) and no `--config` path was provided, logs a non-blocking info-level hint.
 
-IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 if (!cliOptions.config && fileConfig === null) {
@@ -96,12 +96,12 @@ Tests cover: alias invokes the same handler as generate; hint appears when confi
 
 ## Requirements Traceability
 
-### REQ-CHK-check.md
+### REQ-CLI-cli.md
 
-- CHK-1_AC-2 → INIT-ConfigHint
-- CHK-1_AC-3 → INIT-ConfigHint
-- CHK-5_AC-2 → INIT-ConfigHint
-- CHK-5_AC-3 → INIT-ConfigHint
+- CLI-16_AC-2 → INIT-ConfigHint
+- CLI-16_AC-3 → INIT-ConfigHint
+- CLI-20_AC-2 → INIT-ConfigHint
+- CLI-20_AC-3 → INIT-ConfigHint
 
 ### REQ-INIT-init-alias.md
 

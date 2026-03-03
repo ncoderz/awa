@@ -1,4 +1,4 @@
-// @awa-component: CHK-RuleLoader
+// @awa-component: CLI-RuleLoader
 
 /**
  * Types for declarative YAML rule files that define structural

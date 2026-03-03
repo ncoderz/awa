@@ -1,5 +1,5 @@
-// @awa-component: CHK-RuleLoader
-// @awa-test: CHK-16_AC-1
+// @awa-component: CLI-RuleLoader
+// @awa-test: CLI-31_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -19,7 +19,7 @@ describe('RuleLoader', () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads a valid rule file', async () => {
     await writeFile(
       join(testDir, 'REQ.schema.yaml'),
@@ -72,7 +72,7 @@ sections:
     expect(child.contains).toHaveLength(2);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads multiple rule files from directory', async () => {
     await writeFile(
       join(testDir, 'REQ.schema.yaml'),
@@ -99,13 +99,13 @@ sections:
     expect(globs).toEqual(['.awa/specs/DESIGN-*.md', '.awa/specs/REQ-*.md']);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('returns empty array when no rule files found', async () => {
     const rules = await loadRules(testDir);
     expect(rules).toHaveLength(0);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects rule file missing target-files', async () => {
     await writeFile(
       join(testDir, 'bad.schema.yaml'),
@@ -119,7 +119,7 @@ sections:
     await expect(loadRules(testDir)).rejects.toThrow("Missing or empty 'target-files'");
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('accepts rule file with no sections (non-markdown targets)', async () => {
     await writeFile(
       join(testDir, 'api.schema.yaml'),
@@ -132,7 +132,7 @@ sections:
     expect(rules[0]?.ruleFile.sections).toEqual([]);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects rule file with empty sections array', async () => {
     await writeFile(
       join(testDir, 'bad.schema.yaml'),
@@ -145,7 +145,7 @@ sections: []
     await expect(loadRules(testDir)).rejects.toThrow("'sections' must be a non-empty array");
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects section with invalid heading level', async () => {
     await writeFile(
       join(testDir, 'bad.schema.yaml'),
@@ -160,7 +160,7 @@ sections:
     await expect(loadRules(testDir)).rejects.toThrow('level must be 1-6');
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects invalid regex in pattern field', async () => {
     await writeFile(
       join(testDir, 'bad.schema.yaml'),
@@ -177,7 +177,7 @@ sections:
     await expect(loadRules(testDir)).rejects.toThrow('Invalid regex');
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads rule with table contains', async () => {
     await writeFile(
       join(testDir, 'table.schema.yaml'),
@@ -206,7 +206,7 @@ sections:
     }
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads rule with code-block contains', async () => {
     await writeFile(
       join(testDir, 'design.schema.yaml'),
@@ -227,7 +227,7 @@ sections:
     expect('code-block' in codeRule).toBe(true);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads sections-prohibited', async () => {
     await writeFile(
       join(testDir, 'req.schema.yaml'),
@@ -247,7 +247,7 @@ sections-prohibited:
   });
 
   describe('matchesTargetGlob', () => {
-    // @awa-test: CHK-16_AC-1
+    // @awa-test: CLI-31_AC-1
     test('matches simple glob patterns', () => {
       expect(matchesTargetGlob('.awa/specs/REQ-CHK-check.md', '.awa/specs/REQ-*.md')).toBe(true);
       expect(matchesTargetGlob('.awa/specs/DESIGN-CHK-check.md', '.awa/specs/REQ-*.md')).toBe(
@@ -255,14 +255,14 @@ sections-prohibited:
       );
     });
 
-    // @awa-test: CHK-16_AC-1
+    // @awa-test: CLI-31_AC-1
     test('matches recursive glob patterns', () => {
       expect(matchesTargetGlob('.awa/tasks/TASK-CHK-001.md', '.awa/tasks/TASK-*.md')).toBe(true);
       expect(matchesTargetGlob('other/TASK-X.md', '.awa/tasks/TASK-*.md')).toBe(false);
     });
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('loads rule with when condition and prohibited flag', async () => {
     await writeFile(
       join(testDir, 'task.schema.yaml'),
@@ -303,7 +303,7 @@ sections:
     }
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects when condition with invalid regex', async () => {
     await writeFile(
       join(testDir, 'bad-when.schema.yaml'),
@@ -322,7 +322,7 @@ sections:
     await expect(loadRules(testDir)).rejects.toThrow('Invalid regex');
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('rejects when condition without heading-matches or heading-not-matches', async () => {
     await writeFile(
       join(testDir, 'bad-when.schema.yaml'),

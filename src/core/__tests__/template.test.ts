@@ -6,7 +6,7 @@
 // @awa-test: TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3
 // @awa-test: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
 // @awa-test: TPL-11_AC-1, TPL-11_AC-2
-// @awa-test: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3
+// @awa-test: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

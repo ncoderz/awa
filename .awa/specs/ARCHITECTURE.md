@@ -27,8 +27,7 @@ Run `awa spec codes` for the live inventory. The table below defines scope bound
 | Code | Feature | Scope Boundary |
 |------|---------|----------------|
 | CFG | config | TOML config file parsing, CLI override merging, preset definitions. |
-| CHK | check | Traceability validation — spec schemas, marker scanning, AC coverage, cross-refs. |
-| CLI | cli | Top-level CLI argument parsing, option definitions, help output. |
+| CLI | cli | Top-level CLI argument parsing, option definitions, help output. Traceability validation — spec schemas, marker scann... |
 | DIFF | diff | Template-vs-target comparison, unified diff output, exit codes. |
 | DISC | feature-discovery | Scanning templates for feature flags; reporting available flags and presets. |
 | FP | feature-presets | Preset resolution, feature flag combination, removal logic. |
@@ -218,7 +217,7 @@ CONSTRAINTS
 
 - Uses commander for command definition with nested subcommands
 - Template commands accessed via `awa template <cmd>` (e.g. `awa template generate .`)
-- Spec commands accessed via `awa spec <cmd>` (e.g. `awa spec trace CHK-1`, `awa spec recode SRC TGT`, `awa spec merge SRC TGT`)
+- Spec commands accessed via `awa spec <cmd>` (e.g. `awa spec trace CLI-1`, `awa spec recode SRC TGT`, `awa spec merge SRC TGT`)
 - `awa check` remains a top-level command
 - `awa trace` and `awa renumber` exist as backward-compat aliases for `awa spec trace` and `awa spec renumber`
 - Output directory is an optional positional argument (can come from CLI or config)

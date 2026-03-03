@@ -168,7 +168,7 @@ interface Logger {
 
 Orchestrates the generation pipeline: resolve config, resolve template, generate files, handle conflicts, set exit code.
 
-IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 interface GenerateCommand {
@@ -271,13 +271,6 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
-### REQ-CHK-check.md
-
-- CHK-1_AC-2 → GEN-GenerateCommand
-- CHK-1_AC-3 → GEN-GenerateCommand
-- CHK-5_AC-2 → GEN-GenerateCommand
-- CHK-5_AC-3 → GEN-GenerateCommand
-
 ### REQ-CLI-cli.md
 
 - CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
@@ -289,6 +282,10 @@ PRINCIPLES:
 - CLI-12_AC-2 → GEN-FileGenerator
 - CLI-12_AC-3 → GEN-ConflictResolver
 - CLI-12_AC-3 → GEN-DeleteResolver
+- CLI-16_AC-2 → GEN-GenerateCommand
+- CLI-16_AC-3 → GEN-GenerateCommand
+- CLI-20_AC-2 → GEN-GenerateCommand
+- CLI-20_AC-3 → GEN-GenerateCommand
 
 ### REQ-DIFF-diff.md
 

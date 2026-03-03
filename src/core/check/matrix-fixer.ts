@@ -1,6 +1,6 @@
-// @awa-component: CHK-MatrixFixer
-// @awa-impl: CHK-23_AC-1
-// @awa-impl: CHK-23_AC-2
+// @awa-component: CLI-MatrixFixer
+// @awa-impl: CLI-38_AC-1
+// @awa-impl: CLI-38_AC-2
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';

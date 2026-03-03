@@ -1,4 +1,4 @@
-// @awa-component: CHK-CheckCommand
+// @awa-component: CLI-CheckCommand
 
 export class CheckError extends Error {
   constructor(

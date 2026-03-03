@@ -5,10 +5,10 @@
 // @awa-impl: INIT-5_AC-1
 // @awa-impl: MULTI-6_AC-1
 // @awa-impl: MULTI-10_AC-1
-// @awa-impl: CHK-1_AC-2
-// @awa-impl: CHK-1_AC-3
-// @awa-impl: CHK-5_AC-2
-// @awa-impl: CHK-5_AC-3
+// @awa-impl: CLI-16_AC-2
+// @awa-impl: CLI-16_AC-3
+// @awa-impl: CLI-20_AC-2
+// @awa-impl: CLI-20_AC-3
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
 import { batchRunner } from '../core/batch-runner.js';

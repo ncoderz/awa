@@ -1,12 +1,12 @@
-// @awa-component: CHK-Reporter
-// @awa-impl: CHK-9_AC-1
-// @awa-impl: CHK-9_AC-2
-// @awa-impl: CHK-9_AC-3
+// @awa-component: CLI-Reporter
+// @awa-impl: CLI-24_AC-1
+// @awa-impl: CLI-24_AC-2
+// @awa-impl: CLI-24_AC-3
 
 import chalk from 'chalk';
 import type { Finding } from './types.js';
 
-// @awa-impl: CHK-9_AC-1
+// @awa-impl: CLI-24_AC-1
 export function report(findings: readonly Finding[], format: 'text' | 'json'): void {
   if (format === 'json') {
     reportJson(findings);

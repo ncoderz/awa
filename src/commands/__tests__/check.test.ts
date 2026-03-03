@@ -1,12 +1,12 @@
-// @awa-component: CHK-CheckCommand
-// @awa-test: CHK-8_AC-1
-// @awa-test: CHK-10_AC-1
-// @awa-test: CHK-16_AC-1
-// @awa-test: CHK_P-5
-// @awa-test: CHK-12_AC-1, CHK-13_AC-1, CHK-14_AC-1, CHK-15_AC-1
-// @awa-test: CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
-// @awa-test: CHK-9_AC-2, CHK-9_AC-3
-// @awa-test: CHK-24_AC-1
+// @awa-component: CLI-CheckCommand
+// @awa-test: CLI-23_AC-1
+// @awa-test: CLI-25_AC-1
+// @awa-test: CLI-31_AC-1
+// @awa-test: CLI_P-12
+// @awa-test: CLI-27_AC-1, CLI-28_AC-1, CLI-29_AC-1, CLI-30_AC-1
+// @awa-test: CLI-32_AC-1, CLI-32_AC-2, CLI-32_AC-3
+// @awa-test: CLI-24_AC-2, CLI-24_AC-3
+// @awa-test: CLI-39_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -41,8 +41,8 @@ describe('checkCommand', () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  // @awa-test: CHK_P-5
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI_P-12
+  // @awa-test: CLI-23_AC-1
   test('returns exit code 0 when all markers resolve', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -91,8 +91,8 @@ test('works', () => {});
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK_P-5
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI_P-12
+  // @awa-test: CLI-23_AC-1
   test('returns exit code 1 when orphaned markers exist', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -111,7 +111,7 @@ export function ghost() {}
     expect(exitCode).toBe(1);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('works with default config (no .awa.toml)', async () => {
     // Should not throw even without config file
     const exitCode = await checkCommand({
@@ -122,7 +122,7 @@ export function ghost() {}
     expect(exitCode).toBeLessThanOrEqual(1);
   });
 
-  // @awa-test: CHK-10_AC-1
+  // @awa-test: CLI-25_AC-1
   test('respects --code-ignore patterns', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -145,7 +145,7 @@ export function ghost() {}
 
   // --- Schema validation integration tests ---
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: conforming Markdown produces no schema findings', async () => {
     // Create schema rules directory and rule file
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
@@ -219,7 +219,7 @@ test('works', () => {});
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: non-conforming Markdown produces schema findings', async () => {
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
     await mkdir(schemaDir, { recursive: true });
@@ -270,7 +270,7 @@ ACCEPTANCE CRITERIA
     expect(schemaCodes.length).toBeGreaterThan(0);
   });
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: schema-enabled = false skips schema checking', async () => {
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
     await mkdir(schemaDir, { recursive: true });
@@ -321,7 +321,7 @@ schema-enabled = false
 
   // --- allow-warnings tests ---
 
-  // @awa-test: CHK-17_AC-1, CHK-17_AC-3
+  // @awa-test: CLI-32_AC-1, CLI-32_AC-3
   test('returns exit code 1 when warnings exist and allow-warnings is false (default)', async () => {
     // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
@@ -335,7 +335,7 @@ schema-enabled = false
     expect(exitCode).toBe(1);
   });
 
-  // @awa-test: CHK-17_AC-1
+  // @awa-test: CLI-32_AC-1
   test('returns exit code 0 when only warnings exist and allow-warnings is true', async () => {
     // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
@@ -350,7 +350,7 @@ schema-enabled = false
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-17_AC-2
+  // @awa-test: CLI-32_AC-2
   test('reads allow-warnings from config file', async () => {
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
     await writeFile(
@@ -370,7 +370,7 @@ allow-warnings = true
 
   // --- Configurable globs and patterns tests ---
 
-  // @awa-test: CHK-12_AC-1
+  // @awa-test: CLI-27_AC-1
   test('uses custom spec-globs from config', async () => {
     // Put spec in a custom directory
     const customSpecDir = join(testDir, 'custom-specs');
@@ -428,7 +428,7 @@ spec-globs = ["custom-specs/**/*.md"]
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-13_AC-1
+  // @awa-test: CLI-28_AC-1
   test('uses custom code-globs from config', async () => {
     const customCodeDir = join(testDir, 'custom-code');
     await mkdir(customCodeDir, { recursive: true });
@@ -485,7 +485,7 @@ code-globs = ["custom-code/**/*.ts"]
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-14_AC-1
+  // @awa-test: CLI-29_AC-1
   test('uses custom id-pattern from config', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -548,7 +548,7 @@ test('works', () => {});
     expect(exitCode).toBeLessThanOrEqual(1);
   });
 
-  // @awa-test: CHK-15_AC-1
+  // @awa-test: CLI-30_AC-1
   test('uses custom cross-ref-patterns from config', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -707,7 +707,7 @@ spec-only = true
 
   // --- fix (default) tests ---
 
-  // @awa-test: CHK-23_AC-1
+  // @awa-test: CLI-38_AC-1
   test('fix (default) regenerates DESIGN traceability matrix', async () => {
     // @awa-ignore-start
     await writeFile(

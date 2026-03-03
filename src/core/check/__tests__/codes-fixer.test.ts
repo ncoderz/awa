@@ -1,6 +1,6 @@
-// @awa-component: CHK-CodesFixer
-// @awa-test: CHK-25_AC-1
-// @awa-test: CHK-25_AC-2
+// @awa-component: CLI-CodesFixer
+// @awa-test: CLI-40_AC-1
+// @awa-test: CLI-40_AC-2
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

@@ -1,5 +1,5 @@
-// @awa-component: CHK-SchemaChecker
-// @awa-impl: CHK-2_AC-1
+// @awa-component: CLI-SchemaChecker
+// @awa-impl: CLI-17_AC-1
 
 import { readFile } from 'node:fs/promises';
 import type { Code, Heading, List, PhrasingContent, Root, Table, TableRow } from 'mdast';

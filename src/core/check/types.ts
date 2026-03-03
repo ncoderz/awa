@@ -1,6 +1,6 @@
-// @awa-component: CHK-CheckCommand
+// @awa-component: CLI-CheckCommand
 
-// @awa-impl: CHK-16_AC-1
+// @awa-impl: CLI-31_AC-1
 export interface CheckConfig {
   readonly specGlobs: readonly string[];
   readonly codeGlobs: readonly string[];

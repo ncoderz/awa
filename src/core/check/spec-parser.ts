@@ -1,13 +1,13 @@
-// @awa-component: CHK-SpecParser
-// @awa-impl: CHK-2_AC-1
-// @awa-impl: CHK-12_AC-1
+// @awa-component: CLI-SpecParser
+// @awa-impl: CLI-17_AC-1
+// @awa-impl: CLI-27_AC-1
 
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { collectFiles } from './glob.js';
 import type { CheckConfig, CrossReference, SpecFile, SpecParseResult } from './types.js';
 
-// @awa-impl: CHK-2_AC-1
+// @awa-impl: CLI-17_AC-1
 export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> {
   const files = await collectSpecFiles(config.specGlobs, config.specIgnore);
   const specFiles: SpecFile[] = [];
@@ -166,7 +166,7 @@ function extractIdsFromText(text: string): string[] {
   return ids;
 }
 
-// @awa-impl: CHK-12_AC-1
+// @awa-impl: CLI-27_AC-1
 async function collectSpecFiles(
   specGlobs: readonly string[],
   ignore: readonly string[]

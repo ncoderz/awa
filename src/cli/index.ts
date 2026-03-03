@@ -260,7 +260,7 @@ template
     process.exit(exitCode);
   });
 
-// @awa-impl: CHK-8_AC-1, CHK-9_AC-1, CHK-10_AC-1
+// @awa-impl: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1
 // @awa-impl: TCLI-3_AC-1, TCLI-3_AC-3
 program
   .command('check')
@@ -268,10 +268,10 @@ program
     'Validate spec files against schemas and check traceability between code markers and specs'
   )
   .option('-c, --config <path>', 'Path to configuration file')
-  // @awa-impl: CHK-10_AC-1
+  // @awa-impl: CLI-25_AC-1
   .option('--spec-ignore <pattern...>', 'Glob patterns to exclude from spec file scanning')
   .option('--code-ignore <pattern...>', 'Glob patterns to exclude from code file scanning')
-  // @awa-impl: CHK-9_AC-1
+  // @awa-impl: CLI-24_AC-1
   .option('--json', 'Output results as JSON', false)
   .addOption(
     new Option('--format <format>', 'Output format (text or json)').default('text').hideHelp()

@@ -236,7 +236,7 @@ export class ConfigLoader {
         config['list-unknown'] = parsed['list-unknown'];
       }
 
-      // @awa-impl: CHK-16_AC-1
+      // @awa-impl: CLI-31_AC-1
       // Pass through [check] table as-is for check command to process
       if (parsed.check !== undefined) {
         if (

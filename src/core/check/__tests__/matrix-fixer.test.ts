@@ -1,8 +1,8 @@
-// @awa-component: CHK-MatrixFixer
-// @awa-test: CHK-23_AC-1
-// @awa-test: CHK-23_AC-2
-// @awa-test: CHK_P-11
-// @awa-test: CHK_P-12
+// @awa-component: CLI-MatrixFixer
+// @awa-test: CLI-38_AC-1
+// @awa-test: CLI-38_AC-2
+// @awa-test: CLI_P-18
+// @awa-test: CLI_P-19
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -46,7 +46,7 @@ describe('MatrixFixer', () => {
   // --- DESIGN matrix tests ---
 
   describe('DESIGN matrix generation', () => {
-    // @awa-test: CHK-23_AC-1
+    // @awa-test: CLI-38_AC-1
     test('generates traceability matrix from component IMPLEMENTS and property VALIDATES', async () => {
       const designPath = join(specDir, 'DESIGN-CFG-config.md');
       await writeFile(
@@ -133,7 +133,7 @@ ACCEPTANCE CRITERIA
       expect(content).not.toContain('OLD');
     });
 
-    // @awa-test: CHK_P-11
+    // @awa-test: CLI_P-18
     test('is idempotent — running twice produces same result', async () => {
       const designPath = join(specDir, 'DESIGN-X-x.md');
       await writeFile(
@@ -427,7 +427,7 @@ IMPLEMENTS: X-1_AC-1
   // --- TASK matrix tests ---
 
   describe('TASK matrix generation', () => {
-    // @awa-test: CHK-23_AC-2
+    // @awa-test: CLI-38_AC-2
     test('generates traceability matrix from task IMPLEMENTS and TESTS', async () => {
       const taskPath = join(testDir, '.awa', 'tasks', 'TASK-CFG-config-001.md');
       await mkdir(join(testDir, '.awa', 'tasks'), { recursive: true });
@@ -688,7 +688,7 @@ ACCEPTANCE CRITERIA
       expect(content).not.toContain('placeholder');
     });
 
-    // @awa-test: CHK_P-12
+    // @awa-test: CLI_P-19
     test('only includes ACs referenced by task IMPLEMENTS/TESTS lines', async () => {
       const taskPath = join(testDir, '.awa', 'tasks', 'TASK-X-x-001.md');
       await mkdir(join(testDir, '.awa', 'tasks'), { recursive: true });
@@ -797,7 +797,7 @@ UNCOVERED: old
       expect(content).not.toContain('UNCOVERED');
     });
 
-    // @awa-test: CHK_P-12
+    // @awa-test: CLI_P-19
     test('TASK matrix is idempotent', async () => {
       const taskPath = join(testDir, '.awa', 'tasks', 'TASK-X-x-001.md');
       await mkdir(join(testDir, '.awa', 'tasks'), { recursive: true });

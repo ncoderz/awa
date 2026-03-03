@@ -1,6 +1,6 @@
-// @awa-component: CHK-CodesFixer
-// @awa-impl: CHK-25_AC-1
-// @awa-impl: CHK-25_AC-2
+// @awa-component: CLI-CodesFixer
+// @awa-impl: CLI-40_AC-1
+// @awa-impl: CLI-40_AC-2
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';

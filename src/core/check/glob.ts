@@ -1,5 +1,5 @@
-// @awa-component: CHK-MarkerScanner
-// @awa-impl: CHK-13_AC-1
+// @awa-component: CLI-MarkerScanner
+// @awa-impl: CLI-28_AC-1
 
 import { glob } from 'node:fs/promises';
 

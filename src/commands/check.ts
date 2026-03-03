@@ -1,10 +1,10 @@
-// @awa-component: CHK-CheckCommand
-// @awa-impl: CHK-8_AC-1
-// @awa-impl: CHK-10_AC-1
-// @awa-impl: CHK-17_AC-1
-// @awa-impl: CHK-17_AC-2
-// @awa-impl: CHK-17_AC-3
-// @awa-impl: CHK-24_AC-1
+// @awa-component: CLI-CheckCommand
+// @awa-impl: CLI-23_AC-1
+// @awa-impl: CLI-25_AC-1
+// @awa-impl: CLI-32_AC-1
+// @awa-impl: CLI-32_AC-2
+// @awa-impl: CLI-32_AC-3
+// @awa-impl: CLI-39_AC-1
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { fixCodesTable } from '../core/check/codes-fixer.js';
@@ -21,7 +21,7 @@ import { configLoader } from '../core/config.js';
 import type { FileConfig } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
-// @awa-impl: CHK-8_AC-1
+// @awa-impl: CLI-23_AC-1
 export async function checkCommand(cliOptions: RawCheckOptions): Promise<number> {
   try {
     // Load config from file
@@ -111,7 +111,7 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
   }
 }
 
-// @awa-impl: CHK-10_AC-1, CHK-16_AC-1
+// @awa-impl: CLI-25_AC-1, CLI-31_AC-1
 function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOptions): CheckConfig {
   const section = fileConfig?.check;
 

@@ -57,11 +57,11 @@ src/
 
 ## Components and Interfaces
 
-### CHK-MarkerScanner
+### CLI-MarkerScanner
 
 Scans code files matching configured globs for traceability markers. Extracts marker type, referenced ID, file path, and line number.
 
-IMPLEMENTS: CFG-1_AC-4, CHK-1_AC-1, CHK-11_AC-1, CHK-13_AC-1
+IMPLEMENTS: CFG-1_AC-4, CLI-16_AC-1, CLI-26_AC-1, CLI-28_AC-1
 
 ```typescript
 interface MarkerScanResult {
@@ -78,11 +78,11 @@ interface CodeMarker {
 function scanMarkers(config: CheckConfig): Promise<MarkerScanResult>;
 ```
 
-### CHK-SpecParser
+### CLI-SpecParser
 
 Parses spec files matching configured globs to extract requirement IDs, AC IDs, property IDs, and component names.
 
-IMPLEMENTS: CHK-2_AC-1, CHK-12_AC-1
+IMPLEMENTS: CLI-17_AC-1, CLI-27_AC-1
 
 ```typescript
 interface SpecParseResult {
@@ -114,11 +114,11 @@ interface CrossReference {
 function parseSpecs(config: CheckConfig): Promise<SpecParseResult>;
 ```
 
-### CHK-CodeSpecChecker
+### CLI-CodeSpecChecker
 
 Matches code markers against spec IDs. Reports orphaned markers (code references non-existent spec ID) and uncovered ACs (spec AC with no test marker).
 
-IMPLEMENTS: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-14_AC-1, CHK-18_AC-1, CHK-19_AC-1, CHK-20_AC-1, CHK-21_AC-1, CHK-22_AC-1
+IMPLEMENTS: CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-29_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1
 
 ```typescript
 interface CheckResult {
@@ -132,11 +132,11 @@ function checkCodeAgainstSpec(
 ): CheckResult;
 ```
 
-### CHK-SpecSpecChecker
+### CLI-SpecSpecChecker
 
 Validates cross-references between spec files. Reports broken IMPLEMENTS/VALIDATES references and orphaned spec files.
 
-IMPLEMENTS: CHK-5_AC-1, CHK-7_AC-1, CHK-15_AC-1, CHK-21_AC-1
+IMPLEMENTS: CLI-20_AC-1, CLI-22_AC-1, CLI-30_AC-1, CLI-36_AC-1
 
 ```typescript
 function checkSpecAgainstSpec(
@@ -146,52 +146,52 @@ function checkSpecAgainstSpec(
 ): CheckResult;
 ```
 
-### CHK-Reporter
+### CLI-Reporter
 
 Formats and outputs validation findings in text or JSON format.
 
-IMPLEMENTS: CHK-9_AC-1, CHK-9_AC-2, CHK-9_AC-3
+IMPLEMENTS: CLI-24_AC-1, CLI-24_AC-2, CLI-24_AC-3
 
 ```typescript
 function report(findings: Finding[], format: 'text' | 'json'): void;
 ```
 
-### CHK-RuleLoader
+### CLI-RuleLoader
 
 Loads and validates YAML rule files from the schema directory. Each rule file defines structural expectations for matching spec files.
 
-IMPLEMENTS: CHK-16_AC-1
+IMPLEMENTS: CLI-31_AC-1
 
 ```typescript
 function loadRules(schemaDir: string): Promise<LoadedRule[]>;
 function matchesTargetGlob(filePath: string, glob: string): boolean;
 ```
 
-### CHK-SchemaChecker
+### CLI-SchemaChecker
 
 Validates Markdown spec files against loaded YAML rules. Checks heading structure, required sections, content patterns, tables, and code blocks.
 
-IMPLEMENTS: CHK-2_AC-1
+IMPLEMENTS: CLI-17_AC-1
 
 ```typescript
 function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[]>;
 ```
 
-### CHK-CheckCommand
+### CLI-CheckCommand
 
 Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code. Runs matrix generation by default after checks complete (skip with `--no-fix`).
 
-IMPLEMENTS: CHK-8_AC-1, CHK-10_AC-1, CHK-16_AC-1, CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3, CHK-24_AC-1
+IMPLEMENTS: CLI-23_AC-1, CLI-25_AC-1, CLI-31_AC-1, CLI-32_AC-1, CLI-32_AC-2, CLI-32_AC-3, CLI-39_AC-1
 
 ```typescript
 function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
 ```
 
-### CHK-MatrixFixer
+### CLI-MatrixFixer
 
 Regenerates Requirements Traceability sections in DESIGN and TASK files. For DESIGN files, inverts component IMPLEMENTS and property VALIDATES lines to build AC→Component(Property) entries. For TASK files, inverts task IMPLEMENTS and TESTS lines to build AC→Task(Test) entries.
 
-IMPLEMENTS: CHK-23_AC-1, CHK-23_AC-2
+IMPLEMENTS: CLI-38_AC-1, CLI-38_AC-2
 
 ```typescript
 interface FixResult {
@@ -205,11 +205,11 @@ function fixMatrices(
 ): Promise<FixResult>;
 ```
 
-### CHK-CodesFixer
+### CLI-CodesFixer
 
 Regenerates the Feature Codes table in ARCHITECTURE.md from spec data. Discovers codes from REQ files via scanCodes(), extracts scope text using the FEAT Scope Boundary → FEAT first paragraph → REQ first paragraph → DESIGN first paragraph fallback chain, and replaces the ## Feature Codes section content.
 
-IMPLEMENTS: CHK-25_AC-1, CHK-25_AC-2
+IMPLEMENTS: CLI-40_AC-1, CLI-40_AC-2
 
 ```typescript
 interface CodesFixResult extends FixResult {
@@ -265,41 +265,41 @@ interface RawCheckOptions {
 
 ## Correctness Properties
 
-- CHK_P-1 [Orphan Detection Completeness]: Every code marker referencing a non-existent spec ID is reported as an error
-  VALIDATES: CHK-3_AC-1
+- CLI_P-8 [Orphan Detection Completeness]: Every code marker referencing a non-existent spec ID is reported as an error
+  VALIDATES: CLI-18_AC-1
 
-- CHK_P-2 [Coverage Detection Completeness]: Every spec AC without a corresponding `@awa-test` marker is reported as a warning
-  VALIDATES: CHK-4_AC-1
+- CLI_P-9 [Coverage Detection Completeness]: Every spec AC without a corresponding `@awa-test` marker is reported as a warning
+  VALIDATES: CLI-19_AC-1
 
-- CHK_P-3 [Cross-Reference Integrity]: Every DESIGN cross-reference pointing to a non-existent REQ ID is reported as an error
-  VALIDATES: CHK-5_AC-1
+- CLI_P-10 [Cross-Reference Integrity]: Every DESIGN cross-reference pointing to a non-existent REQ ID is reported as an error
+  VALIDATES: CLI-20_AC-1
 
-- CHK_P-4 [ID Format Enforcement]: Every marker ID not matching the configured pattern is reported as an error
-  VALIDATES: CHK-6_AC-1
+- CLI_P-11 [ID Format Enforcement]: Every marker ID not matching the configured pattern is reported as an error
+  VALIDATES: CLI-21_AC-1
 
-- CHK_P-5 [Exit Code Correctness]: Exit code is 0 when no errors exist, 1 when errors exist (warnings alone do not affect exit code)
-  VALIDATES: CHK-8_AC-1
+- CLI_P-12 [Exit Code Correctness]: Exit code is 0 when no errors exist, 1 when errors exist (warnings alone do not affect exit code)
+  VALIDATES: CLI-23_AC-1
 
-- CHK_P-6 [Component Coverage Detection]: Every DESIGN component without a corresponding `@awa-component` marker is reported as a warning
-  VALIDATES: CHK-18_AC-1
+- CLI_P-13 [Component Coverage Detection]: Every DESIGN component without a corresponding `@awa-component` marker is reported as a warning
+  VALIDATES: CLI-33_AC-1
 
-- CHK_P-7 [Implementation Coverage Detection]: Every spec AC without a corresponding `@awa-impl` marker is reported as a warning
-  VALIDATES: CHK-19_AC-1
+- CLI_P-14 [Implementation Coverage Detection]: Every spec AC without a corresponding `@awa-impl` marker is reported as a warning
+  VALIDATES: CLI-34_AC-1
 
-- CHK_P-8 [Property Coverage Detection]: Every DESIGN property without a corresponding `@awa-test` marker is reported as a warning
-  VALIDATES: CHK-20_AC-1
+- CLI_P-15 [Property Coverage Detection]: Every DESIGN property without a corresponding `@awa-test` marker is reported as a warning
+  VALIDATES: CLI-35_AC-1
 
-- CHK_P-9 [IMPLEMENTS Consistency]: Every mismatch between a component's DESIGN IMPLEMENTS list and code @awa-impl markers is reported as a warning
-  VALIDATES: CHK-22_AC-1
+- CLI_P-16 [IMPLEMENTS Consistency]: Every mismatch between a component's DESIGN IMPLEMENTS list and code @awa-impl markers is reported as a warning
+  VALIDATES: CLI-37_AC-1
 
-- CHK_P-10 [Unlinked AC Detection]: Every REQ AC not claimed by any DESIGN IMPLEMENTS is reported as an error
-  VALIDATES: CHK-21_AC-1
+- CLI_P-17 [Unlinked AC Detection]: Every REQ AC not claimed by any DESIGN IMPLEMENTS is reported as an error
+  VALIDATES: CLI-36_AC-1
 
-- CHK_P-11 [DESIGN Matrix Idempotence]: Running fix twice on a DESIGN file produces identical output
-  VALIDATES: CHK-23_AC-1
+- CLI_P-18 [DESIGN Matrix Idempotence]: Running fix twice on a DESIGN file produces identical output
+  VALIDATES: CLI-38_AC-1
 
-- CHK_P-12 [TASK Matrix Idempotence]: Running fix twice on a TASK file produces identical output
-  VALIDATES: CHK-23_AC-2
+- CLI_P-19 [TASK Matrix Idempotence]: Running fix twice on a TASK file produces identical output
+  VALIDATES: CLI-38_AC-2
 
 ## Error Handling
 
@@ -339,41 +339,41 @@ PRINCIPLES:
 
 ### REQ-CFG-config.md
 
-- CFG-1_AC-4 → CHK-MarkerScanner
+- CFG-1_AC-4 → CLI-MarkerScanner
 
-### REQ-CHK-check.md
+### REQ-CLI-cli.md
 
-- CHK-1_AC-1 → CHK-MarkerScanner
-- CHK-2_AC-1 → CHK-SpecParser
-- CHK-2_AC-1 → CHK-SchemaChecker
-- CHK-3_AC-1 → CHK-CodeSpecChecker (CHK_P-1)
-- CHK-4_AC-1 → CHK-CodeSpecChecker (CHK_P-2)
-- CHK-5_AC-1 → CHK-SpecSpecChecker (CHK_P-3)
-- CHK-6_AC-1 → CHK-CodeSpecChecker (CHK_P-4)
-- CHK-7_AC-1 → CHK-SpecSpecChecker
-- CHK-8_AC-1 → CHK-CheckCommand (CHK_P-5)
-- CHK-9_AC-1 → CHK-Reporter
-- CHK-9_AC-2 → CHK-Reporter
-- CHK-9_AC-3 → CHK-Reporter
-- CHK-10_AC-1 → CHK-CheckCommand
-- CHK-11_AC-1 → CHK-MarkerScanner
-- CHK-12_AC-1 → CHK-SpecParser
-- CHK-13_AC-1 → CHK-MarkerScanner
-- CHK-14_AC-1 → CHK-CodeSpecChecker
-- CHK-15_AC-1 → CHK-SpecSpecChecker
-- CHK-16_AC-1 → CHK-RuleLoader
-- CHK-16_AC-1 → CHK-CheckCommand
-- CHK-17_AC-1 → CHK-CheckCommand
-- CHK-17_AC-2 → CHK-CheckCommand
-- CHK-17_AC-3 → CHK-CheckCommand
-- CHK-18_AC-1 → CHK-CodeSpecChecker (CHK_P-6)
-- CHK-19_AC-1 → CHK-CodeSpecChecker (CHK_P-7)
-- CHK-20_AC-1 → CHK-CodeSpecChecker (CHK_P-8)
-- CHK-21_AC-1 → CHK-CodeSpecChecker (CHK_P-10)
-- CHK-21_AC-1 → CHK-SpecSpecChecker (CHK_P-10)
-- CHK-22_AC-1 → CHK-CodeSpecChecker (CHK_P-9)
-- CHK-23_AC-1 → CHK-MatrixFixer (CHK_P-11)
-- CHK-23_AC-2 → CHK-MatrixFixer (CHK_P-12)
-- CHK-24_AC-1 → CHK-CheckCommand
-- CHK-25_AC-1 → CHK-CodesFixer
-- CHK-25_AC-2 → CHK-CodesFixer
+- CLI-16_AC-1 → CLI-MarkerScanner
+- CLI-17_AC-1 → CLI-SpecParser
+- CLI-17_AC-1 → CLI-SchemaChecker
+- CLI-18_AC-1 → CLI-CodeSpecChecker (CLI_P-8)
+- CLI-19_AC-1 → CLI-CodeSpecChecker (CLI_P-9)
+- CLI-20_AC-1 → CLI-SpecSpecChecker (CLI_P-10)
+- CLI-21_AC-1 → CLI-CodeSpecChecker (CLI_P-11)
+- CLI-22_AC-1 → CLI-SpecSpecChecker
+- CLI-23_AC-1 → CLI-CheckCommand (CLI_P-12)
+- CLI-24_AC-1 → CLI-Reporter
+- CLI-24_AC-2 → CLI-Reporter
+- CLI-24_AC-3 → CLI-Reporter
+- CLI-25_AC-1 → CLI-CheckCommand
+- CLI-26_AC-1 → CLI-MarkerScanner
+- CLI-27_AC-1 → CLI-SpecParser
+- CLI-28_AC-1 → CLI-MarkerScanner
+- CLI-29_AC-1 → CLI-CodeSpecChecker
+- CLI-30_AC-1 → CLI-SpecSpecChecker
+- CLI-31_AC-1 → CLI-RuleLoader
+- CLI-31_AC-1 → CLI-CheckCommand
+- CLI-32_AC-1 → CLI-CheckCommand
+- CLI-32_AC-2 → CLI-CheckCommand
+- CLI-32_AC-3 → CLI-CheckCommand
+- CLI-33_AC-1 → CLI-CodeSpecChecker (CLI_P-13)
+- CLI-34_AC-1 → CLI-CodeSpecChecker (CLI_P-14)
+- CLI-35_AC-1 → CLI-CodeSpecChecker (CLI_P-15)
+- CLI-36_AC-1 → CLI-CodeSpecChecker (CLI_P-17)
+- CLI-36_AC-1 → CLI-SpecSpecChecker (CLI_P-17)
+- CLI-37_AC-1 → CLI-CodeSpecChecker (CLI_P-16)
+- CLI-38_AC-1 → CLI-MatrixFixer (CLI_P-18)
+- CLI-38_AC-2 → CLI-MatrixFixer (CLI_P-19)
+- CLI-39_AC-1 → CLI-CheckCommand
+- CLI-40_AC-1 → CLI-CodesFixer
+- CLI-40_AC-2 → CLI-CodesFixer

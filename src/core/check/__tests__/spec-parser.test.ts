@@ -1,5 +1,5 @@
-// @awa-component: CHK-SpecParser
-// @awa-test: CHK-2_AC-1
+// @awa-component: CLI-SpecParser
+// @awa-test: CLI-17_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -30,7 +30,7 @@ describe('SpecParser', () => {
     };
   }
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts requirement IDs from REQ files', async () => {
     await writeFile(
       join(testDir, 'REQ-CFG-config.md'),
@@ -66,7 +66,7 @@ ACCEPTANCE CRITERIA
     expect(result.acIds).toContain('CFG-2_AC-1');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts subrequirement IDs', async () => {
     await writeFile(
       join(testDir, 'REQ-ENG-engine.md'),
@@ -94,7 +94,7 @@ ACCEPTANCE CRITERIA
     expect(result.acIds).toContain('ENG-1.1_AC-1');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts property IDs from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -116,7 +116,7 @@ ACCEPTANCE CRITERIA
     expect(result.propertyIds).toContain('CFG_P-2');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts component names from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -144,7 +144,7 @@ IMPLEMENTS: CFG-2_AC-1
     expect(result.componentNames).toContain('CFG-Validator');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts cross-references', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -175,15 +175,15 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
     });
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts code prefix from filename', async () => {
     await writeFile(
       join(testDir, 'REQ-CHK-check.md'),
-      `### CHK-1: Marker Scanning [MUST]
+      `### CLI-16: Marker Scanning [MUST]
 
 ACCEPTANCE CRITERIA
 
-- CHK-1_AC-1 [ubiquitous]: The system SHALL scan
+- CLI-16_AC-1 [ubiquitous]: The system SHALL scan
 `
     );
 
@@ -192,7 +192,7 @@ ACCEPTANCE CRITERIA
     expect(result.specFiles[0]?.code).toBe('CHK');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('returns empty results for directory with no spec files', async () => {
     const result = await parseSpecs(makeConfig({ specGlobs: [`${testDir}/nonexistent/**/*.md`] }));
 
@@ -201,7 +201,7 @@ ACCEPTANCE CRITERIA
     expect(result.specFiles).toHaveLength(0);
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('all IDs aggregated in allIds set', async () => {
     await writeFile(
       join(testDir, 'REQ-X-x.md'),
@@ -233,7 +233,7 @@ IMPLEMENTS: X-1_AC-1
     expect(result.allIds).toContain('X-Loader');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('builds componentImplements map from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
@@ -268,7 +268,7 @@ IMPLEMENTS: X-2_AC-1
     expect(specFile.componentImplements?.get('X-Validator')).toEqual(['X-2_AC-1']);
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('componentImplements resets on non-component H2 heading', async () => {
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
