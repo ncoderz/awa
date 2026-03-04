@@ -107,6 +107,7 @@ import {
   type UpdateCheckResult,
 } from '../utils/update-check.js';
 import { shouldCheck, writeCache } from '../utils/update-check-cache.js';
+import { cliProvidedOption } from './option-source.js';
 
 const version = PACKAGE_INFO.version;
 
@@ -171,25 +172,26 @@ function configureGenerateCommand(cmd: Command): Command {
       .option('--json', 'Output results as JSON (implies --dry-run)', false)
       // @awa-impl: JSON-5_AC-1
       .option('--summary', 'Output compact one-line summary', false)
-      .action(async (output: string | undefined, options) => {
+      .action(async (output: string | undefined, options, command: Command) => {
         // @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
+        const allTargets = cliProvidedOption<boolean>(command, options, 'allTargets');
         const cliOptions: RawCliOptions = {
           output,
-          template: options.template,
-          features: options.features,
-          preset: options.preset,
-          removeFeatures: options.removeFeatures,
-          force: options.force,
-          dryRun: options.dryRun,
-          delete: options.delete,
-          config: options.config,
-          refresh: options.refresh,
-          all: options.allTargets,
-          allTargets: options.allTargets,
-          target: options.target,
-          overlay: options.overlay || [],
-          json: options.json,
-          summary: options.summary,
+          template: cliProvidedOption<string>(command, options, 'template'),
+          features: cliProvidedOption<string[]>(command, options, 'features'),
+          preset: cliProvidedOption<string[]>(command, options, 'preset'),
+          removeFeatures: cliProvidedOption<string[]>(command, options, 'removeFeatures'),
+          force: cliProvidedOption<boolean>(command, options, 'force'),
+          dryRun: cliProvidedOption<boolean>(command, options, 'dryRun'),
+          delete: cliProvidedOption<boolean>(command, options, 'delete'),
+          config: cliProvidedOption<string>(command, options, 'config'),
+          refresh: cliProvidedOption<boolean>(command, options, 'refresh'),
+          all: allTargets,
+          allTargets,
+          target: cliProvidedOption<string>(command, options, 'target'),
+          overlay: cliProvidedOption<string[]>(command, options, 'overlay'),
+          json: cliProvidedOption<boolean>(command, options, 'json'),
+          summary: cliProvidedOption<boolean>(command, options, 'summary'),
         };
 
         await generateCommand(cliOptions);
@@ -238,23 +240,24 @@ template
   .option('--summary', 'Output compact one-line summary', false)
   // @awa-impl: DIFF-7_AC-10
   // Note: --force and --dry-run are intentionally NOT accepted for diff command
-  .action(async (target: string | undefined, options) => {
+  .action(async (target: string | undefined, options, command: Command) => {
+    const allTargets = cliProvidedOption<boolean>(command, options, 'allTargets');
     const cliOptions: RawCliOptions = {
       output: target, // Use target as output for consistency
-      template: options.template,
-      features: options.features,
-      preset: options.preset,
-      removeFeatures: options.removeFeatures,
-      config: options.config,
-      refresh: options.refresh,
-      listUnknown: options.listUnknown,
-      all: options.allTargets,
-      allTargets: options.allTargets,
-      target: options.target,
-      watch: options.watch,
-      overlay: options.overlay || [],
-      json: options.json,
-      summary: options.summary,
+      template: cliProvidedOption<string>(command, options, 'template'),
+      features: cliProvidedOption<string[]>(command, options, 'features'),
+      preset: cliProvidedOption<string[]>(command, options, 'preset'),
+      removeFeatures: cliProvidedOption<string[]>(command, options, 'removeFeatures'),
+      config: cliProvidedOption<string>(command, options, 'config'),
+      refresh: cliProvidedOption<boolean>(command, options, 'refresh'),
+      listUnknown: cliProvidedOption<boolean>(command, options, 'listUnknown'),
+      all: allTargets,
+      allTargets,
+      target: cliProvidedOption<string>(command, options, 'target'),
+      watch: cliProvidedOption<boolean>(command, options, 'watch'),
+      overlay: cliProvidedOption<string[]>(command, options, 'overlay'),
+      json: cliProvidedOption<boolean>(command, options, 'json'),
+      summary: cliProvidedOption<boolean>(command, options, 'summary'),
     };
 
     const exitCode = await diffCommand(cliOptions);
@@ -292,17 +295,17 @@ program
     '--no-fix',
     'Skip regeneration of Requirements Traceability sections in DESIGN and TASK files',
   )
-  .action(async (options) => {
+  .action(async (options, command: Command) => {
     const cliOptions: RawCheckOptions = {
-      config: options.config,
-      specIgnore: options.specIgnore,
-      codeIgnore: options.codeIgnore,
-      format: options.format,
-      json: options.json,
-      summary: options.summary,
-      allowWarnings: options.allowWarnings,
-      specOnly: options.specOnly,
-      fix: options.fix,
+      config: cliProvidedOption<string>(command, options, 'config'),
+      specIgnore: cliProvidedOption<string[]>(command, options, 'specIgnore'),
+      codeIgnore: cliProvidedOption<string[]>(command, options, 'codeIgnore'),
+      format: cliProvidedOption<'text' | 'json'>(command, options, 'format'),
+      json: cliProvidedOption<boolean>(command, options, 'json'),
+      summary: cliProvidedOption<boolean>(command, options, 'summary'),
+      allowWarnings: cliProvidedOption<boolean>(command, options, 'allowWarnings'),
+      specOnly: cliProvidedOption<boolean>(command, options, 'specOnly'),
+      fix: cliProvidedOption<boolean>(command, options, 'fix'),
     };
 
     const exitCode = await checkCommand(cliOptions);
@@ -320,14 +323,14 @@ template
   .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   .option('--json', 'Output results as JSON', false)
   .option('--summary', 'Output compact one-line summary', false)
-  .action(async (options) => {
+  .action(async (options, command: Command) => {
     const exitCode = await featuresCommand({
-      template: options.template,
-      config: options.config,
-      refresh: options.refresh,
-      json: options.json,
-      summary: options.summary,
-      overlay: options.overlay || [],
+      template: cliProvidedOption<string>(command, options, 'template'),
+      config: cliProvidedOption<string>(command, options, 'config'),
+      refresh: cliProvidedOption<boolean>(command, options, 'refresh'),
+      json: cliProvidedOption<boolean>(command, options, 'json'),
+      summary: cliProvidedOption<boolean>(command, options, 'summary'),
+      overlay: cliProvidedOption<string[]>(command, options, 'overlay'),
     });
     process.exit(exitCode);
   });
@@ -344,15 +347,15 @@ template
   .option('--overlay <path...>', 'Overlay directory paths applied over base template (repeatable)')
   .option('--json', 'Output results as JSON', false)
   .option('--summary', 'Output compact one-line summary', false)
-  .action(async (options) => {
+  .action(async (options, command: Command) => {
     const testOptions: RawTestOptions = {
-      template: options.template,
-      config: options.config,
-      updateSnapshots: options.updateSnapshots,
-      refresh: options.refresh,
-      json: options.json,
-      summary: options.summary,
-      overlay: options.overlay || [],
+      template: cliProvidedOption<string>(command, options, 'template'),
+      config: cliProvidedOption<string>(command, options, 'config'),
+      updateSnapshots: cliProvidedOption<boolean>(command, options, 'updateSnapshots') ?? false,
+      refresh: cliProvidedOption<boolean>(command, options, 'refresh'),
+      json: cliProvidedOption<boolean>(command, options, 'json'),
+      summary: cliProvidedOption<boolean>(command, options, 'summary'),
+      overlay: cliProvidedOption<string[]>(command, options, 'overlay'),
     };
 
     const exitCode = await testCommand(testOptions);
