@@ -8,6 +8,7 @@ vi.mock('../../core/merge/content-merger.js');
 vi.mock('../../core/merge/spec-mover.js');
 vi.mock('../../core/merge/reporter.js');
 vi.mock('../../core/check/codes-fixer.js');
+vi.mock('../../core/spec-file-utils.js');
 vi.mock('../../utils/logger.js');
 
 import { fixCodesTable } from '../../core/check/codes-fixer.js';
@@ -15,8 +16,9 @@ import { executeMoves } from '../../core/merge/content-merger.js';
 import { formatJson, formatText } from '../../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../../core/merge/spec-mover.js';
 import { MergeError } from '../../core/merge/types.js';
-import { buildRecodeMap, hasAnySpecFile } from '../../core/recode/map-builder.js';
+import { buildRecodeMap } from '../../core/recode/map-builder.js';
 import { propagate } from '../../core/renumber/propagator.js';
+import { hasAnySpecFile } from '../../core/spec-file-utils.js';
 import { scan } from '../../core/trace/scanner.js';
 import { logger } from '../../utils/logger.js';
 import { mergeCommand } from '../merge.js';

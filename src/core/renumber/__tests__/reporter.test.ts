@@ -14,6 +14,7 @@ function makeResult(overrides?: Partial<RenumberResult>): RenumberResult {
     affectedFiles: [],
     totalReplacements: 0,
     malformedWarnings: [],
+    malformedCorrections: [],
     noChange: true,
     ...overrides,
   };

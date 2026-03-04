@@ -4,9 +4,10 @@ import { formatJson, formatText } from '../core/merge/reporter.js';
 import { findStaleRefs, validateMerge } from '../core/merge/spec-mover.js';
 import type { MergeCommandOptions, MergeResult } from '../core/merge/types.js';
 import { MergeError } from '../core/merge/types.js';
-import { buildRecodeMap, hasAnySpecFile } from '../core/recode/map-builder.js';
+import { buildRecodeMap } from '../core/recode/map-builder.js';
 import { RecodeError } from '../core/recode/types.js';
 import { propagate } from '../core/renumber/propagator.js';
+import { hasAnySpecFile } from '../core/spec-file-utils.js';
 import { scan } from '../core/trace/scanner.js';
 import { logger } from '../utils/logger.js';
 

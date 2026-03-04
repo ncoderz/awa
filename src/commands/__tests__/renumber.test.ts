@@ -13,7 +13,7 @@ vi.mock('../../core/renumber/malformed-detector.js');
 vi.mock('../../core/renumber/reporter.js');
 vi.mock('../../utils/logger.js');
 
-import { detectMalformed } from '../../core/renumber/malformed-detector.js';
+import { correctMalformed, detectMalformed } from '../../core/renumber/malformed-detector.js';
 import { buildRenumberMap } from '../../core/renumber/map-builder.js';
 import { propagate } from '../../core/renumber/propagator.js';
 import { formatJson, formatText } from '../../core/renumber/reporter.js';
@@ -59,6 +59,10 @@ function mockDefaults() {
     totalReplacements: 0,
   });
   vi.mocked(detectMalformed).mockReturnValue([]);
+  vi.mocked(correctMalformed).mockResolvedValue({
+    corrections: [],
+    remainingWarnings: [],
+  });
   vi.mocked(formatText).mockReturnValue('no changes');
   vi.mocked(formatJson).mockReturnValue('{}');
 }
@@ -223,5 +227,57 @@ describe('renumberCommand', () => {
 
     // Scenario 3: error → 2
     expect(await renumberCommand({})).toBe(2);
+  });
+
+  // @awa-test: RENUM-12_AC-3
+  it('does not call correctMalformed when flag is off', async () => {
+    vi.mocked(buildRenumberMap).mockReturnValue({
+      map: { code: 'FOO', entries: new Map([['FOO-3', 'FOO-1']]) },
+      noChange: false,
+    });
+    vi.mocked(detectMalformed).mockReturnValue([
+      { filePath: 'test.md', line: 1, token: 'FOO-1_AC-1/2' },
+    ]);
+
+    await renumberCommand({ code: 'FOO' });
+
+    expect(vi.mocked(correctMalformed)).not.toHaveBeenCalled();
+  });
+
+  it('calls correctMalformed when flag is on and warnings exist', async () => {
+    vi.mocked(buildRenumberMap).mockReturnValue({
+      map: { code: 'FOO', entries: new Map([['FOO-3', 'FOO-1']]) },
+      noChange: false,
+    });
+    vi.mocked(detectMalformed).mockReturnValue([
+      { filePath: 'test.md', line: 1, token: 'FOO-1_AC-1/2' },
+    ]);
+    vi.mocked(correctMalformed).mockResolvedValue({
+      corrections: [
+        {
+          filePath: 'test.md',
+          line: 1,
+          token: 'FOO-1_AC-1/2',
+          replacement: 'FOO-1_AC-1, FOO-1_AC-2',
+        },
+      ],
+      remainingWarnings: [],
+    });
+
+    await renumberCommand({ code: 'FOO', expandUnambiguousIds: true });
+
+    expect(vi.mocked(correctMalformed)).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call correctMalformed when flag is on but no warnings', async () => {
+    vi.mocked(buildRenumberMap).mockReturnValue({
+      map: { code: 'FOO', entries: new Map([['FOO-3', 'FOO-1']]) },
+      noChange: false,
+    });
+    vi.mocked(detectMalformed).mockReturnValue([]);
+
+    await renumberCommand({ code: 'FOO', expandUnambiguousIds: true });
+
+    expect(vi.mocked(correctMalformed)).not.toHaveBeenCalled();
   });
 });

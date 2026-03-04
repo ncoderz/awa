@@ -235,23 +235,36 @@ awa spec renumber DIFF                   # renumber a single feature code
 awa spec renumber --all                  # renumber all feature codes
 awa spec renumber DIFF --dry-run         # preview changes without modifying
 awa spec renumber DIFF --json            # JSON output
+awa spec renumber DIFF --expand-unambiguous-ids  # expand malformed shorthand
 awa renumber DIFF                        # backward-compat alias
 ```
 
-| Option                | Description                               |
-| --------------------- | ----------------------------------------- |
-| `[code]`              | Feature code to renumber (e.g. DIFF, TRC) |
-| `--all`               | Renumber all feature codes                |
-| `--dry-run`           | Preview changes without modifying files   |
-| `--json`              | Output results as JSON                    |
-| `-c, --config <path>` | Path to configuration file                |
+| Option                     | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| `[code]`                   | Feature code to renumber (e.g. DIFF, TRC)                    |
+| `--all`                    | Renumber all feature codes                                   |
+| `--dry-run`                | Preview changes without modifying files                      |
+| `--json`                   | Output results as JSON                                       |
+| `--expand-unambiguous-ids` | Expand unambiguous malformed ID shorthand before renumbering |
+| `-c, --config <path>`      | Path to configuration file                                   |
 
 The renumber command:
 
-- Scans specs and code for traceability IDs matching the given feature code
-- Builds a renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3)
-- Propagates all ID changes across spec files, source code, and tests
+- Scans **all** REQ and DESIGN spec files for the given feature code (multi-file support)
+- Builds a globally sequential renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3)
+- Propagates ID changes across all spec file types (ARCHITECTURE.md, FEAT, EXAMPLE, REQ, DESIGN, API, TASK, PLAN, ALIGN), source code, and tests
 - Detects and reports malformed IDs
+
+#### Malformed ID Expansion
+
+When `--expand-unambiguous-ids` is set, the command expands unambiguous malformed ID shorthand **before** applying the renumber map:
+
+| Pattern          | Example            | Action                                                 |
+| ---------------- | ------------------ | ------------------------------------------------------ |
+| Slash range      | `ARC-36_AC-8/9`    | Expanded to `ARC-36_AC-8, ARC-36_AC-9`                 |
+| Dot-dot AC range | `ARC-18_AC-14..16` | Expanded to `ARC-18_AC-14, ARC-18_AC-15, ARC-18_AC-16` |
+
+Expansions are reported separately from standard renumber replacements. In `--dry-run` mode, proposed expansions are shown without being applied.
 
 ### `awa spec recode <source> <target>`
 
@@ -277,7 +290,7 @@ awa spec recode CHK CLI --json           # JSON output
 
 The recode command:
 
-- Builds an offset map so source IDs don't collide with existing target IDs
+- Builds an offset map across **all** source REQ and DESIGN files so source IDs don't collide with existing target IDs
 - Propagates ID changes across all spec and code files
 - Renames source spec files to the target code namespace
 - Detects rename conflicts (use `awa spec merge` if target files already exist)

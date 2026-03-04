@@ -4,34 +4,33 @@
 // @awa-impl: RENUM-3_AC-1, RENUM-3_AC-2
 // @awa-impl: RENUM-4_AC-1, RENUM-4_AC-2
 
-import { basename } from 'node:path';
-
 import type { SpecFile, SpecParseResult } from '../check/types.js';
+import { findSpecFiles } from '../spec-file-utils.js';
 import type { MapBuildResult, RenumberMap } from './types.js';
 import { RenumberError } from './types.js';
 
 /**
- * Build a renumber map by walking REQ and DESIGN files in document order.
- * Assigns sequential numbers starting from 1 for requirements, subrequirements,
- * ACs, and properties.
+ * Build a renumber map by walking ALL REQ and DESIGN files in document order.
+ * Files are sorted alphabetically by basename. Requirements and properties are
+ * numbered globally across all files for the feature code.
  */
 // @awa-impl: RENUM-1_AC-1
 export function buildRenumberMap(code: string, specs: SpecParseResult): MapBuildResult {
-  const reqFile = findSpecFile(specs.specFiles, code, 'REQ');
-  if (!reqFile) {
+  const reqFiles = findSpecFiles(specs.specFiles, code, 'REQ');
+  if (reqFiles.length === 0) {
     throw new RenumberError('CODE_NOT_FOUND', `No REQ file found for feature code: ${code}`);
   }
 
   const entries = new Map<string, string>();
 
-  // Walk REQ file in document order for requirements, subrequirements, and ACs
-  buildRequirementEntries(code, reqFile, entries);
+  // Walk ALL REQ files in alphabetical order for requirements, subrequirements, and ACs
+  buildRequirementEntries(code, reqFiles, entries);
 
-  // Walk DESIGN file in document order for properties
+  // Walk ALL DESIGN files in alphabetical order for properties
   // @awa-impl: RENUM-4_AC-1, RENUM-4_AC-2
-  const designFile = findSpecFile(specs.specFiles, code, 'DESIGN');
-  if (designFile) {
-    buildPropertyEntries(code, designFile, entries);
+  const designFiles = findSpecFiles(specs.specFiles, code, 'DESIGN');
+  if (designFiles.length > 0) {
+    buildPropertyEntries(code, designFiles, entries);
   }
   // If no DESIGN file exists, skip property renumbering without error (RENUM-4_AC-2)
 
@@ -50,28 +49,35 @@ export function buildRenumberMap(code: string, specs: SpecParseResult): MapBuild
 }
 
 /**
- * Build renumber entries for requirements, subrequirements, and ACs from a REQ file.
+ * Build renumber entries for requirements, subrequirements, and ACs from all REQ files.
+ * Files are processed in the order given (already sorted alphabetically).
+ * IDs are numbered globally across all files.
  */
 // @awa-impl: RENUM-1_AC-2, RENUM-2_AC-1, RENUM-2_AC-2, RENUM-3_AC-1, RENUM-3_AC-2
 function buildRequirementEntries(
   code: string,
-  reqFile: SpecFile,
+  reqFiles: readonly SpecFile[],
   entries: Map<string, string>,
 ): void {
-  // Separate top-level requirements and subrequirements from document-order arrays
+  // Collect all requirements and subrequirements across files in order
   const topLevelReqs: string[] = [];
   const subReqsByParent = new Map<string, string[]>();
+  const allAcIds: string[] = [];
 
-  for (const id of reqFile.requirementIds) {
-    if (id.includes('.')) {
-      // Subrequirement: CODE-N.P
-      const dotIdx = id.lastIndexOf('.');
-      const parent = id.slice(0, dotIdx);
-      const subs = subReqsByParent.get(parent) ?? [];
-      subs.push(id);
-      subReqsByParent.set(parent, subs);
-    } else {
-      topLevelReqs.push(id);
+  for (const reqFile of reqFiles) {
+    for (const id of reqFile.requirementIds) {
+      if (id.includes('.')) {
+        const dotIdx = id.lastIndexOf('.');
+        const parent = id.slice(0, dotIdx);
+        const subs = subReqsByParent.get(parent) ?? [];
+        subs.push(id);
+        subReqsByParent.set(parent, subs);
+      } else {
+        topLevelReqs.push(id);
+      }
+    }
+    for (const acId of reqFile.acIds) {
+      allAcIds.push(acId);
     }
   }
 
@@ -103,7 +109,7 @@ function buildRequirementEntries(
 
   // Build AC mapping: group ACs by their parent (req or subreq)
   const acsByParent = new Map<string, string[]>();
-  for (const acId of reqFile.acIds) {
+  for (const acId of allAcIds) {
     const parent = acId.split('_AC-')[0] as string;
     const acs = acsByParent.get(parent) ?? [];
     acs.push(acId);
@@ -125,31 +131,21 @@ function buildRequirementEntries(
 }
 
 /**
- * Build renumber entries for properties from a DESIGN file.
+ * Build renumber entries for properties from all DESIGN files.
+ * Files are processed in the order given (already sorted alphabetically).
+ * Properties are numbered globally across all files.
  */
 function buildPropertyEntries(
   code: string,
-  designFile: SpecFile,
+  designFiles: readonly SpecFile[],
   entries: Map<string, string>,
 ): void {
-  for (let i = 0; i < designFile.propertyIds.length; i++) {
-    const oldId = designFile.propertyIds[i] as string;
-    const newNum = i + 1;
-    const newId = `${code}_P-${newNum}`;
-    entries.set(oldId, newId);
+  let counter = 0;
+  for (const designFile of designFiles) {
+    for (const oldId of designFile.propertyIds) {
+      counter++;
+      const newId = `${code}_P-${counter}`;
+      entries.set(oldId, newId);
+    }
   }
-}
-
-/**
- * Find a spec file by feature code and file type prefix (REQ, DESIGN, etc.).
- */
-function findSpecFile(
-  specFiles: readonly SpecFile[],
-  code: string,
-  prefix: string,
-): SpecFile | undefined {
-  return specFiles.find((sf) => {
-    const name = basename(sf.filePath);
-    return name.startsWith(`${prefix}-${code}-`);
-  });
 }

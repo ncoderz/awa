@@ -208,6 +208,106 @@ describe('buildRenumberMap', () => {
     // Property: BAR_P-4→BAR_P-1
     expect(map.entries.get('BAR_P-4')).toBe('BAR_P-1');
   });
+
+  // --- Multi-file tests ---
+
+  it('builds globally sequential IDs across multiple REQ files', () => {
+    const reqFileA = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-alpha.md',
+      code: 'FOO',
+      requirementIds: ['FOO-3', 'FOO-5'],
+      acIds: ['FOO-3_AC-1', 'FOO-5_AC-1'],
+    });
+    const reqFileB = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-beta.md',
+      code: 'FOO',
+      requirementIds: ['FOO-10', 'FOO-12'],
+      acIds: ['FOO-10_AC-1'],
+    });
+    const specs = makeSpecs([reqFileB, reqFileA]); // intentionally unordered
+
+    const { map, noChange } = buildRenumberMap('FOO', specs);
+
+    expect(noChange).toBe(false);
+    // Alpha file first (alphabetical), then beta
+    // FOO-3→FOO-1, FOO-5→FOO-2 (from alpha), FOO-10→FOO-3, FOO-12→FOO-4 (from beta)
+    expect(map.entries.get('FOO-3')).toBe('FOO-1');
+    expect(map.entries.get('FOO-5')).toBe('FOO-2');
+    expect(map.entries.get('FOO-10')).toBe('FOO-3');
+    expect(map.entries.get('FOO-12')).toBe('FOO-4');
+    // ACs updated with new parent prefix
+    expect(map.entries.get('FOO-3_AC-1')).toBe('FOO-1_AC-1');
+    expect(map.entries.get('FOO-5_AC-1')).toBe('FOO-2_AC-1');
+    expect(map.entries.get('FOO-10_AC-1')).toBe('FOO-3_AC-1');
+  });
+
+  it('builds globally sequential properties across multiple DESIGN files', () => {
+    const reqFile = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-feature.md',
+      code: 'FOO',
+      requirementIds: ['FOO-1'],
+      acIds: [],
+    });
+    const designA = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-FOO-alpha.md',
+      code: 'FOO',
+      propertyIds: ['FOO_P-5', 'FOO_P-8'],
+    });
+    const designB = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-FOO-beta.md',
+      code: 'FOO',
+      propertyIds: ['FOO_P-20'],
+    });
+    const specs = makeSpecs([reqFile, designB, designA]); // intentionally unordered
+
+    const { map } = buildRenumberMap('FOO', specs);
+
+    // Alpha first, then beta (alphabetical)
+    expect(map.entries.get('FOO_P-5')).toBe('FOO_P-1');
+    expect(map.entries.get('FOO_P-8')).toBe('FOO_P-2');
+    expect(map.entries.get('FOO_P-20')).toBe('FOO_P-3');
+  });
+
+  it('handles cross-file parent references for subrequirements', () => {
+    // Parent defined in file A, subrequirement defined in file B
+    const reqFileA = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-alpha.md',
+      code: 'FOO',
+      requirementIds: ['FOO-5'],
+      acIds: [],
+    });
+    const reqFileB = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-beta.md',
+      code: 'FOO',
+      requirementIds: ['FOO-5.3'],
+      acIds: ['FOO-5.3_AC-2'],
+    });
+    const specs = makeSpecs([reqFileA, reqFileB]);
+
+    const { map } = buildRenumberMap('FOO', specs);
+
+    // FOO-5→FOO-1, FOO-5.3→FOO-1.1 (parent renumbered from file A)
+    expect(map.entries.get('FOO-5')).toBe('FOO-1');
+    expect(map.entries.get('FOO-5.3')).toBe('FOO-1.1');
+    expect(map.entries.get('FOO-5.3_AC-2')).toBe('FOO-1.1_AC-1');
+  });
+
+  it('single REQ file still works (backward compatibility)', () => {
+    const reqFile = makeSpecFile({
+      filePath: '.awa/specs/REQ-FOO-feature.md',
+      code: 'FOO',
+      requirementIds: ['FOO-3', 'FOO-5'],
+      acIds: ['FOO-3_AC-1'],
+    });
+    const specs = makeSpecs([reqFile]);
+
+    const { map, noChange } = buildRenumberMap('FOO', specs);
+
+    expect(noChange).toBe(false);
+    expect(map.entries.get('FOO-3')).toBe('FOO-1');
+    expect(map.entries.get('FOO-5')).toBe('FOO-2');
+    expect(map.entries.get('FOO-3_AC-1')).toBe('FOO-1_AC-1');
+  });
 });
 
 // --- Property-Based Tests ---
