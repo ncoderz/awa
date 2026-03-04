@@ -9,6 +9,11 @@ import { scanCodes } from '../codes/scanner.js';
 import type { FixResult } from './matrix-fixer.js';
 import type { CheckConfig, SpecParseResult } from './types.js';
 
+/** Escape characters that would break a Markdown table cell. */
+function sanitizeCell(value: string): string {
+  return value.replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+}
+
 export interface CodesFixResult extends FixResult {
   /** Codes that have no scope boundary text. */
   readonly emptyScopeCodes: readonly string[];
@@ -63,11 +68,11 @@ export async function fixCodesTable(
   const emptyScopeCodes: string[] = [];
 
   for (const code of codesResult.codes) {
-    const scope = code.scope || '';
+    const scope = sanitizeCell(code.scope || '');
     if (!scope) {
       emptyScopeCodes.push(code.code);
     }
-    tableLines.push(`| ${code.code} | ${code.feature} | ${scope} |`);
+    tableLines.push(`| ${sanitizeCell(code.code)} | ${sanitizeCell(code.feature)} | ${scope} |`);
   }
 
   const newSection = tableLines.join('\n');
