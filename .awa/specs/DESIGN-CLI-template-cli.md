@@ -226,9 +226,6 @@ Verify command tree structure by inspecting commander Command instances.
 - CLI-24_AC-1 → CLI-RootProgram
 - CLI-25_AC-1 → CLI-TemplateGroup
 - CLI-25_AC-1 → CLI-RootProgram
-
-### REQ-CLI-template-cli.md
-
 - CLI-41_AC-1 → CLI-TemplateGroup
 - CLI-41_AC-1 → CLI-RootProgram
 - CLI-41_AC-2 → CLI-TemplateGroup (CLI_P-20)
