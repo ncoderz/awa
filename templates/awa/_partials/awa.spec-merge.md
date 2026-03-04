@@ -25,10 +25,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 <file type="requirements" path=".awa/specs/REQ-{TARGET_CODE}-*.md" required="if exists" />
 <file type="design" path=".awa/specs/DESIGN-{SOURCE_CODE}-*.md" required="if exists" />
 <file type="design" path=".awa/specs/DESIGN-{TARGET_CODE}-*.md" required="if exists" />
-<file type="api" path=".awa/tasks/API-{SOURCE_CODE}-*.tsp" required="if exists" />
-<file type="api" path=".awa/tasks/API-{TARGET_CODE}-*.tsp" required="if exists" />
-<file type="examples" path=".awa/tasks/EXAMPLE-{SOURCE_CODE}-*.md" required="if exists" />
-<file type="examples" path=".awa/tasks/EXAMPLE-{TARGET_CODE}-*.md" required="if exists" />
+<file type="api" path=".awa/specs/API-{SOURCE_CODE}-*.tsp" required="if exists" />
+<file type="api" path=".awa/specs/API-{TARGET_CODE}-*.tsp" required="if exists" />
+<file type="examples" path=".awa/specs/EXAMPLE-{SOURCE_CODE}-*.md" required="if exists" />
+<file type="examples" path=".awa/specs/EXAMPLE-{TARGET_CODE}-*.md" required="if exists" />
 <file type="tasks" path=".awa/tasks/TASK-{SOURCE_CODE}-*.md" required="if exists" />
 <file type="tasks" path=".awa/tasks/TASK-{TARGET_CODE}-*.md" required="if exists" />
 
