@@ -264,7 +264,7 @@ describe('renumberCommand', () => {
       remainingWarnings: [],
     });
 
-    await renumberCommand({ code: 'FOO', dangerouslyModifyMalformedIds: true });
+    await renumberCommand({ code: 'FOO', expandUnambiguousIds: true });
 
     expect(vi.mocked(correctMalformed)).toHaveBeenCalledTimes(1);
   });
@@ -276,7 +276,7 @@ describe('renumberCommand', () => {
     });
     vi.mocked(detectMalformed).mockReturnValue([]);
 
-    await renumberCommand({ code: 'FOO', dangerouslyModifyMalformedIds: true });
+    await renumberCommand({ code: 'FOO', expandUnambiguousIds: true });
 
     expect(vi.mocked(correctMalformed)).not.toHaveBeenCalled();
   });

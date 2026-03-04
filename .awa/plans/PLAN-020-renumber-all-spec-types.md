@@ -51,7 +51,7 @@ Observed in the ARC fixture:
 - Full-ID ranges: `ARC-20..ARC-25` — range of requirement IDs
 - Component + period: `ARC-ChunkedTransferManager.` — component name with punctuation
 
-These are already detected by `MalformedDetector` as warnings. Correction should only happen when the user explicitly opts in via `--dangerously-modify-malformed-ids`.
+These are already detected by `MalformedDetector` as warnings. Correction should only happen when the user explicitly opts in via `--expand-unambiguous-ids`.
 
 ## Steps
 
@@ -94,10 +94,10 @@ These are already detected by `MalformedDetector` as warnings. Correction should
 - [x] Update `buildRecodeMap` to iterate ALL target DESIGN files when computing `propOffset` (find highest property number across all target DESIGN files)
 - [x] `awa merge` benefits automatically — it calls `buildRecodeMap` (Phase 1) and `renumberCommand` (Phase 4)
 
-### Part 2: Malformed ID Correction via `--dangerously-modify-malformed-ids`
+### Part 2: Malformed ID Correction via `--expand-unambiguous-ids`
 
-- [x] Add `--dangerously-modify-malformed-ids` CLI flag to the renumber command (default: off)
-- [x] Add `dangerouslyModifyMalformedIds` to `RenumberCommandOptions`
+- [x] Add `--expand-unambiguous-ids` CLI flag to the renumber command (default: off)
+- [x] Add `expandUnambiguousIds` to `RenumberCommandOptions`
 - [x] When the flag is active, expand detected malformed IDs into concrete ID lists where the pattern is unambiguous:
   - Slash ranges (`ARC-36_AC-8/9`) → expand to `ARC-36_AC-8, ARC-36_AC-9`
   - Dot-dot ranges (`ARC-18_AC-14..16`) → expand to `ARC-18_AC-14, ARC-18_AC-15, ARC-18_AC-16`
@@ -132,14 +132,14 @@ These are already detected by `MalformedDetector` as warnings. Correction should
 - [x] Unit test: dot-dot range expansion (`ARC-18_AC-14..16` → three IDs)
 - [x] Unit test: trailing period left as warning (not corrected)
 - [x] Unit test: ambiguous patterns left as warnings
-- [x] Unit test: `--dangerously-modify-malformed-ids` flag off → no corrections applied
+- [x] Unit test: `--expand-unambiguous-ids` flag off → no corrections applied
 - [x] Integration test: ARC-like fixture with multiple REQ/DESIGN files; verify full map coverage and replacement across all file types — covered by propagator tests with ARCHITECTURE.md, FEAT, EXAMPLE, API, TASK, PLAN, ALIGN fixtures
 - [x] Ensure all existing renumber AND recode tests continue to pass
 
 ### Documentation
 
 - [x] No user-facing CLI changes for Part 1 — same command, now works correctly
-- [x] Document `--dangerously-modify-malformed-ids` flag in CLI help text
+- [x] Document `--expand-unambiguous-ids` flag in CLI help text
 - [x] Consider updating FEAT-RENUM-renumber.md with multi-file and malformed-correction scenarios — deferred: existing FEAT doc covers the feature adequately; scenarios are captured in the plan and tests
 
 ## Risks
@@ -147,7 +147,7 @@ These are already detected by `MalformedDetector` as warnings. Correction should
 - Numbering across files: the global sequential numbering means a file reorder (e.g., renaming a REQ file) changes the assigned numbers for IDs in other files. Mitigated by deterministic alphabetical sort — predictable and stable unless filenames change.
 - Large maps: a feature code with hundreds of IDs across many files will produce a large renumber map. The two-pass placeholder replacement already handles this, but performance should be validated on the ARC-scale fixture.
 - Single-file assumption in existing specs/design: the current REQ (RENUM-1_AC-1) says "walk the matching REQ file" (singular). The implementation change is a bug fix for real-world usage, but the requirement wording may need updating to say "matching REQ file(s)".
-- Malformed correction false positives: expanding slash/dot-dot ranges could be wrong if the shorthand was not intended as an ID range. Mitigated by requiring explicit opt-in via `--dangerously-modify-malformed-ids` and only correcting unambiguous patterns.
+- Malformed correction false positives: expanding slash/dot-dot ranges could be wrong if the shorthand was not intended as an ID range. Mitigated by requiring explicit opt-in via `--expand-unambiguous-ids` and only correcting unambiguous patterns.
 
 ## Dependencies
 
@@ -165,7 +165,7 @@ These are already detected by `MalformedDetector` as warnings. Correction should
 - [x] `awa merge` benefits from both fixes (recode Phase 1 + renumber Phase 4) — merge calls buildRecodeMap and renumberCommand which now handle multi-file
 - [x] Replacement count covers all files containing those IDs (not just 2) — verified by propagator tests across all file types
 - [x] Single-feature-code projects (e.g., awa's own specs) continue to work correctly — verified by backward-compat unit tests
-- [x] `--dangerously-modify-malformed-ids` expands unambiguous shorthand patterns (slash ranges, dot-dot AC ranges)
+- [x] `--expand-unambiguous-ids` expands unambiguous shorthand patterns (slash ranges, dot-dot AC ranges)
 - [x] Ambiguous malformed patterns remain as warnings only
 - [x] All existing renumber AND recode tests pass — 824 tests passing
 - [x] `npm run build && npm run test` passes
@@ -175,7 +175,7 @@ These are already detected by `MalformedDetector` as warnings. Correction should
 - [x] Should requirement numbering restart per REQ file or be globally sequential? — Globally sequential, so IDs remain unique across the feature code
 - [x] Should there be a way to control file ordering (e.g., explicit ordering in config) or is alphabetical sufficient? — Alphabetical is sufficient
 - [x] Should the requirement wording in REQ-RENUM-renumber.md be updated from "matching REQ file" to "matching REQ files"? — Yes, update to plural
-- [x] Should malformed ID modification be opt-in or opt-out? — Opt-in via `--dangerously-modify-malformed-ids` CLI flag
+- [x] Should malformed ID modification be opt-in or opt-out? — Opt-in via `--expand-unambiguous-ids` CLI flag
 
 ## References
 

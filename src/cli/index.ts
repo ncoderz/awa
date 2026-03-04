@@ -439,8 +439,8 @@ function configureRenumberCommand(cmd: Command): Command {
     .option('--dry-run', 'Preview changes without modifying files', false)
     .option('--json', 'Output results as JSON', false)
     .option(
-      '--dangerously-modify-malformed-ids',
-      'Correct unambiguous malformed IDs (slash ranges, dot-dot ranges, trailing periods)',
+      '--expand-unambiguous-ids',
+      'Expand unambiguous malformed ID shorthand (slash ranges, dot-dot ranges) before renumbering',
       false,
     )
     .option('-c, --config <path>', 'Path to configuration file')
@@ -451,7 +451,7 @@ function configureRenumberCommand(cmd: Command): Command {
         dryRun: options.dryRun,
         json: options.json,
         config: options.config,
-        dangerouslyModifyMalformedIds: options.dangerouslyModifyMalformedIds,
+        expandUnambiguousIds: options.expandUnambiguousIds,
       };
 
       const exitCode = await renumberCommand(renumberOptions);

@@ -48,7 +48,7 @@ export interface RenumberCommandOptions {
   readonly dryRun?: boolean;
   readonly json?: boolean;
   readonly config?: string;
-  readonly dangerouslyModifyMalformedIds?: boolean;
+  readonly expandUnambiguousIds?: boolean;
 }
 
 /**

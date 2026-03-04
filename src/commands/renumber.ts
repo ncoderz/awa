@@ -43,7 +43,7 @@ export async function renumberCommand(options: RenumberCommandOptions): Promise<
     }
 
     const dryRun = options.dryRun === true;
-    const fixMalformed = options.dangerouslyModifyMalformedIds === true;
+    const fixMalformed = options.expandUnambiguousIds === true;
     const results: RenumberResult[] = [];
     let hasChanges = false;
 

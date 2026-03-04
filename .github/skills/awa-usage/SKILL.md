@@ -205,9 +205,12 @@ Renumber traceability IDs to match document order, closing gaps in numbering seq
 | `--all` | Renumber all feature codes |
 | `--dry-run` | Preview changes without modifying files |
 | `--json` | Output results as JSON |
+| `--expand-unambiguous-ids` | Expand unambiguous malformed ID shorthand before renumbering |
 | `-c, --config <path>` | Path to configuration file |
 
-Scans specs and code for traceability IDs, builds a renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3), and propagates all ID changes across spec files, source code, and tests.
+Scans all REQ and DESIGN spec files for the given feature code, builds a globally sequential renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3), and propagates all ID changes across every spec file type (ARCHITECTURE.md, FEAT, EXAMPLE, REQ, DESIGN, API, TASK, PLAN, ALIGN), source code, and tests. Detects and reports malformed IDs.
+
+When `--expand-unambiguous-ids` is set, unambiguous malformed patterns are expanded before renumbering: slash ranges (`ARC-36_AC-8/9` → `ARC-36_AC-8, ARC-36_AC-9`) and dot-dot AC ranges (`ARC-18_AC-14..16` → `ARC-18_AC-14, ARC-18_AC-15, ARC-18_AC-16`). Ambiguous patterns (letter suffixes, full-ID ranges, trailing periods) remain as warnings only.
 
 ### awa spec recode <source> <target>
 
@@ -222,7 +225,7 @@ Recode traceability IDs from one feature code to another. Rewrites all IDs, rena
 | `--renumber` | Renumber target code after recode |
 | `-c, --config <path>` | Path to configuration file |
 
-Builds an offset map so source IDs don't collide with existing target IDs. Use `awa spec merge` if target spec files already exist.
+Builds an offset map across all source REQ and DESIGN files so source IDs don't collide with existing target IDs. Use `awa spec merge` if target spec files already exist.
 
 ### awa spec merge <source> <target>
 
