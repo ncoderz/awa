@@ -523,7 +523,7 @@ program.addCommand(spec);
 
 // Backward-compat aliases: `awa trace` → `awa spec trace`, `awa renumber` → `awa spec renumber`
 configureTraceCommand(program.command('trace'));
-configureRenumberCommand(program.command('renumber'));
+configureRenumberCommand(program.command('renumber', { hidden: true }));
 
 // Fire update check asynchronously (non-blocking) before parse
 let updateCheckPromise: Promise<UpdateCheckResult | null> | null = null;

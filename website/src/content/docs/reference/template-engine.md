@@ -19,9 +19,8 @@ Templates receive a context object `it` with a `features` array containing the r
 ### Feature Flags
 
 ```html
-<% if (it.features.includes('copilot')) { %>
-<%~ include('_partials/copilot.instructions', it) %>
-<% } %>
+<% if (it.features.includes('copilot')) { %> <%~ include('_partials/copilot.instructions', it) %> <%
+} %>
 ```
 
 Feature names are treated as plain strings. awa does not enforce a fixed list at render time.
@@ -29,27 +28,23 @@ Feature names are treated as plain strings. awa does not enforce a fixed list at
 ### Conditionals
 
 ```html
-<% if (it.features.includes('testing')) { %>
-## Testing
-This section appears only when 'testing' is enabled.
-<% } %>
+<% if (it.features.includes('testing')) { %> ## Testing This section appears only when 'testing' is
+enabled. <% } %>
 ```
 
 ### Loops
 
 ```html
-<% it.features.forEach(function(feature) { %>
-- <%= feature %>
-<% }) %>
+<% it.features.forEach(function(feature) { %> - <%= feature %> <% }) %>
 ```
 
 ### Output Tags
 
-| Tag | Behaviour |
-|-----|-----------|
-| `<%= expr %>` | Output, HTML-escaped |
-| `<%~ expr %>` | Output, raw (unescaped) |
-| `<% code %>` | Execute JavaScript, no output |
+| Tag           | Behaviour                     |
+| ------------- | ----------------------------- |
+| `<%= expr %>` | Output, HTML-escaped          |
+| `<%~ expr %>` | Output, raw (unescaped)       |
+| `<% code %>`  | Execute JavaScript, no output |
 
 ## Partials
 
@@ -145,6 +140,49 @@ my-templates/
 - Test template changes with `awa template diff . --template <path>` before writing changes
 - Use `--dry-run` and `--delete` together when validating cleanup behavior
 - Use `awa template test` with snapshot fixtures to catch template regressions in CI
+
+## Template Sources
+
+Templates can be loaded from local paths or remote Git repositories.
+
+### Local Path
+
+```bash
+awa init . --template ./my-templates
+awa init . --template /absolute/path/to/templates
+```
+
+### GitHub
+
+```bash
+# Shorthand
+awa init . --template owner/repo
+
+# With subdirectory
+awa init . --template owner/repo/templates
+
+# With branch or tag
+awa init . --template owner/repo#main
+awa init . --template owner/repo#v1.0.0
+
+# Full URL
+awa init . --template https://github.com/owner/repo
+```
+
+### GitLab / Bitbucket
+
+```bash
+awa init . --template gitlab:owner/repo
+awa init . --template bitbucket:owner/repo
+```
+
+### SSH
+
+```bash
+awa init . --template git@github.com:owner/repo
+```
+
+Remote templates are fetched via [degit](https://github.com/Rich-Harris/degit) and cached in `~/.cache/awa/templates/`. Use `--refresh` to re-fetch cached sources.
 
 ## Overlays
 

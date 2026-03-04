@@ -34,6 +34,8 @@ export default defineConfig({
           items: [
             { label: 'Overview', slug: 'guides/workflow' },
             { label: 'Traceability', slug: 'guides/traceability' },
+            { label: 'Skills', slug: 'guides/skills' },
+            { label: 'CI Integration', slug: 'guides/ci-integration' },
           ],
         },
         {

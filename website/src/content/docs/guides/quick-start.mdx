@@ -10,16 +10,8 @@ Get up and running with awa in just a few minutes.
 ## Install
 
 <Tabs>
-  <TabItem label="Global install">
-    ```bash
-    npm install -g @ncoderz/awa
-    ```
-  </TabItem>
-  <TabItem label="npx (no install)">
-    ```bash
-    npx @ncoderz/awa init
-    ```
-  </TabItem>
+  <TabItem label="Global install">```bash npm install -g @ncoderz/awa ```</TabItem>
+  <TabItem label="npx (no install)">```bash npx @ncoderz/awa init ```</TabItem>
 </Tabs>
 
 ## Generate Agent Configuration Files
@@ -141,6 +133,26 @@ awa trace FEAT-1
 ```
 
 These commands require spec files (`.awa/specs/`) to be present. See the [Workflow Guide](/guides/workflow/) for how to set up the full awa development workflow.
+
+### Spec Management Commands
+
+Once you're using the awa workflow, additional commands help manage your specifications:
+
+```bash
+# List all feature codes in your project
+awa spec codes
+
+# Renumber IDs to close gaps (e.g. after deleting requirements)
+awa spec renumber DIFF
+
+# Recode a feature code to a new name
+awa spec recode OLD NEW
+
+# Merge two feature codes into one
+awa spec merge SRC TGT
+```
+
+See the [CLI Reference](/reference/cli/) for full details on all spec management commands.
 
 ## Next Steps
 

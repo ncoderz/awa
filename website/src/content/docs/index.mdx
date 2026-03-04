@@ -23,52 +23,89 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 **awa** is an Agent Workflow for AIs. It provides a Spec-Driven Design (SDD) workflow with full end-to-end traceability, with tools to enforced consistency and help the AI follow the connections. It is also a powerful templating tool for agent configuration files.
 
+<br />
+<br />
 <CardGrid>
-  <Card title="Structured SDD Workflow" icon="rocket">
-    Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation. Every stage has a spec. Every spec has an ID.
+  <Card title="Structured Workflow" icon="rocket">
+    Architecture → Features → Requirements → Design → Tasks → Code & Tests → Documentation.
   </Card>
   <Card title="Full Traceability" icon="approve-check-circle">
-    Every line of code traces back to its requirement via `@awa-impl` and `@awa-test` markers. Nothing drifts silently.
+    Every line of code traces back to its requirement and acceptance criteria via `@awa-impl` and
+    `@awa-test` markers.
   </Card>
   <Card title="awa check" icon="magnifier">
-    Validates spec structure via YAML schemas and verifies all AC markers map to code and tests. AI can't hide broken coverage.
+    Consistency is enforced. Spec structure is validated against YAML schemas and all spec marker
+    mapping and consistency is checked.
   </Card>
   <Card title="awa trace" icon="open-book">
-    Assembles the traceability chain into context — specs, code, and tests — so AI navigates with confidence rather than guessing.
+    Assembles the marker traceability chain into context — specs, code, and tests — so AI navigates
+    with confidence rather than guessing.
   </Card>
-  <Card title="Template Bootstrap" icon="puzzle">
-    [Eta](https://eta.js.org/) templates with feature flags and presets generate agent configuration files for any AI tool — Copilot, Claude, Cursor, Windsurf, and more.
+  <Card title="Spec Management" icon="setting">
+    `awa spec merge` can fully tidy your specs with help of your AI without rewording or losing
+    consistency. You can recode, renumber and tidy your specs with confidence.
+  </Card>
+  <Card title="AI Bootstrap" icon="puzzle">
+    [Eta](https://eta.js.org/)-based templates with feature flags and presets generate agent
+    configuration files like `AGENTS.md` for any AI tool — Copilot, Claude, Cursor, Windsurf, and
+    more.
   </Card>
   <Card title="Template Diffs" icon="warning">
-    `awa template diff` shows exactly what has changed in your agent configuration files vs. the templates — before you commit to update.
+    `awa template diff` shows exactly what has changed in your agent configuration files vs. the
+    templates — before you commit to update.
   </Card>
   <Card title="Agent-Agnostic" icon="laptop">
-    One template set. All agents. Copilot, Claude, Cursor, Windsurf, and more from a single source of truth.
+    One template set. All agents. Copilot, Claude, Cursor, Windsurf, and more from a single source
+    of truth.
   </Card>
   <Card title="Git or Local" icon="external">
-    Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast re-runs.
+    Pull templates from GitHub, GitLab, Bitbucket, or use a local path. Cached locally for fast
+    re-runs.
+  </Card>
+  <Card title="A Little Unstable" icon="warning">
+    The tool has been developing fast. The `awa.upgrade` skill can be used to bring your project up
+    to date with the latest awa.
   </Card>
 </CardGrid>
 
 ## The Problem: AI Drift
 
-AI agents produce output that looks right but isn't connected. Requirements live in one place, implementation in another, tests in a third — nothing links them. The AI doesn't know when it has drifted from the original intent. You don't either, until something breaks.
+AI agents produce output that looks right but stuff is missing. Requirements and implementation drift from one-another, and are hard to resync. The AI doesn't know when it has drifted from the original intent. You don't either, until something breaks.
 
 Agent configuration files diverge too: copy-pasted between projects, modified by hand, silently out of date.
 
 ## How awa Solves It
 
-awa provides a structured SDD workflow with full traceability:
+awa provides a structured SDD workflow with full traceability using markers to link between specs, code, and tests:
 
 ```
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
-`awa check` enforces spec structure and validates that every acceptance criterion maps to code and tests. `awa trace` assembles context from the chain so AI can navigate rather than guess. Agent configuration files are bootstrapped from templates.
+Tooling enforces spec structure and validates that every spec marker is consistent and maps to code and tests.
+The AI can use `awa trace` to assemble context from the chain so AI can navigate rather than guess. Agent configuration files are bootstrapped from templates.
 
+<br />
+<br />
 <CardGrid>
-  <LinkCard title="Quick Start" description="Install awa and generate your first configuration." href="/guides/quick-start/" />
-  <LinkCard title="Workflow Guide" description="Understand the awa SDD workflow and traceability chain." href="/guides/workflow/" />
-  <LinkCard title="CLI Reference" description="All commands and options documented." href="/reference/cli/" />
-  <LinkCard title="Traceability Guide" description="Learn how markers keep your AI honest." href="/guides/traceability/" />
+  <LinkCard
+    title="Quick Start"
+    description="Install awa and generate your first configuration."
+    href="/guides/quick-start/"
+  />
+  <LinkCard
+    title="Workflow Guide"
+    description="Understand the awa SDD workflow and traceability chain."
+    href="/guides/workflow/"
+  />
+  <LinkCard
+    title="CLI Reference"
+    description="All commands and options documented."
+    href="/reference/cli/"
+  />
+  <LinkCard
+    title="Traceability Guide"
+    description="Learn how markers keep your AI honest."
+    href="/guides/traceability/"
+  />
 </CardGrid>

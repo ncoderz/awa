@@ -37,7 +37,12 @@ Agent configuration files are bootstrapped from **templates** with **feature fla
 - Requirements written in [EARS format](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) (INCOSE) — structured, testable, unambiguous
 - Every requirement has an ID; every line of code links back via `@awa-impl` and `@awa-test` markers
 - `awa check` validates spec structure via YAML schemas and flags uncovered acceptance criteria
+- `awa check` auto-fixes Requirements Traceability sections and the Feature Codes table
 - `awa trace` assembles context from specs, code, and tests for AI agents
+- `awa spec codes` lists all feature codes with requirement counts and scope summaries
+- `awa spec renumber` closes gaps in traceability ID numbering
+- `awa spec recode` rewrites IDs from one feature code to another
+- `awa spec merge` merges two feature codes into one (recode + content merge + cleanup)
 - Spec artifacts (requirements, designs, tasks, plans, rules) all live in `.awa/`
 
 ### Template Bootstrap

@@ -27,6 +27,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Action
 
 Create or update a non-normative feature context document as specified in the instruction above, following awa conventions.
+Consider existing specifications before making changes.
 
 If deriving from existing code or requirements (reverse workflow), analyze the codebase and specs to extract the problem statement, conceptual model, and usage scenarios.
 

@@ -153,13 +153,17 @@ Check traceability chain integrity and spec schema conformance. Exit code 0 = cl
 | Option | Description |
 |--------|-------------|
 | `-c, --config <path>` | Path to configuration file |
-| `--ignore <pattern...>` | Glob patterns to exclude (repeatable, appends to config) |
+| `--spec-ignore <pattern...>` | Glob patterns to exclude from spec file scanning (repeatable, appends to config) |
+| `--code-ignore <pattern...>` | Glob patterns to exclude from code file scanning (repeatable, appends to config) |
 | `--json` | Output results as JSON |
 | `--summary` | Compact one-line counts summary |
 | `--allow-warnings` | Allow warnings without failing |
 | `--spec-only` | Run only spec-level checks; skip code-to-spec traceability |
+| `--no-fix` | Skip auto-regeneration of Requirements Traceability sections and Feature Codes table |
 
-Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `spec-only`.
+Before running checks, `awa check` auto-regenerates Requirements Traceability sections in DESIGN and TASK files, and the Feature Codes table in ARCHITECTURE.md. Use `--no-fix` to skip this.
+
+Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `spec-only`, `id-pattern`, `cross-ref-patterns`.
 
 ### awa trace
 
@@ -182,7 +186,63 @@ Navigate the traceability chain and assemble context from specs, code, and tests
 | `--no-tests` | Exclude test files |
 | `--json` | Output results as JSON |
 | `--summary` | Compact one-line counts summary |
+| `--max-tokens <n>` | Cap content output size (implies `--content`) |
 | `-A/-B/-C <n>` | Lines of context after/before/both around a code marker (`--content` only) |
+| `-c, --config <path>` | Path to configuration file |
+
+### awa spec renumber [code]
+
+Renumber traceability IDs to match document order, closing gaps in numbering sequences. Exit code 0 = no changes, 1 = changes applied/previewed.
+
+| Option | Description |
+|--------|-------------|
+| `[code]` | Feature code to renumber (e.g. DIFF, TRC) |
+| `--all` | Renumber all feature codes |
+| `--dry-run` | Preview changes without modifying files |
+| `--json` | Output results as JSON |
+| `-c, --config <path>` | Path to configuration file |
+
+Scans specs and code for traceability IDs, builds a renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3), and propagates all ID changes across spec files, source code, and tests.
+
+### awa spec recode <source> <target>
+
+Recode traceability IDs from one feature code to another. Rewrites all IDs, renames spec files, and updates headings. Exit code 0 = no changes, 1 = changes applied/previewed.
+
+| Option | Description |
+|--------|-------------|
+| `<source>` | Source feature code to recode from |
+| `<target>` | Target feature code to recode into |
+| `--dry-run` | Preview changes without modifying files |
+| `--json` | Output results as JSON |
+| `--renumber` | Renumber target code after recode |
+| `-c, --config <path>` | Path to configuration file |
+
+Builds an offset map so source IDs don't collide with existing target IDs. Use `awa spec merge` if target spec files already exist.
+
+### awa spec merge <source> <target>
+
+Merge one feature code into another — combines recode, content merge, and cleanup. Exit code 0 = no changes, 1 = changes applied/previewed.
+
+| Option | Description |
+|--------|-------------|
+| `<source>` | Source feature code to merge from |
+| `<target>` | Target feature code to merge into |
+| `--dry-run` | Preview changes without modifying files |
+| `--json` | Output results as JSON |
+| `--renumber` | Renumber target code after merge |
+| `-c, --config <path>` | Path to configuration file |
+
+Pipeline: recode source IDs past target's highest → rename/move spec files → warn about stale source refs → optionally renumber. Use `merge` when both codes have existing spec files; use `recode` for a pure rename.
+
+### awa spec codes
+
+List all feature codes with requirement counts and scope summaries. Exit code 0 = success.
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Output results as JSON |
+| `--summary` | Compact one-line counts summary |
+| `-c, --config <path>` | Path to configuration file |
 
 ### awa template test
 
@@ -248,8 +308,11 @@ Create `.awa.toml` in the project root. CLI arguments always override config val
     spec-globs = [".awa/specs/**/*.md"]
     code-globs = ["src/**/*.{ts,js,tsx,jsx}"]
     markers = ["@awa-impl", "@awa-test", "@awa-component"]
-    ignore = ["node_modules/**", "dist/**"]
+    spec-ignore = []
+    code-ignore = ["node_modules/**", "dist/**", "vendor/**", "target/**", "build/**", "out/**", ".awa/**"]
     ignore-markers = []
+    id-pattern = "..."                      # regex for valid traceability IDs
+    cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]
     format = "text"
     schema-dir = ".awa/.agent/schemas"
     schema-enabled = true
@@ -293,3 +356,8 @@ Git templates are cached in `~/.cache/awa/templates/`. Use `--refresh` to re-fet
 | `awa check` | All checks pass | Errors found | Internal error |
 | `awa template test` | All fixtures pass | Failures found | Internal error |
 | `awa template features` | Success | Error | — |
+| `awa trace` | Chain found | ID not found / no context | Internal error |
+| `awa spec renumber` | No changes needed | Changes applied/previewed | Internal error |
+| `awa spec recode` | No changes needed | Changes applied/previewed | Error / stale refs |
+| `awa spec merge` | No changes needed | Changes applied/previewed | Error / stale refs |
+| `awa spec codes` | Success | — | Internal error |

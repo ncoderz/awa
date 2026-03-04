@@ -28,6 +28,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Action
 
 Create or update the requirements document(s) as specified in the instruction above, following awa conventions.
+Consider existing specifications before making changes.
 
 If deriving from existing code (reverse workflow), analyze the codebase to extract implicit requirements, acceptance criteria, and behavioral expectations.
 

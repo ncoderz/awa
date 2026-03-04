@@ -50,42 +50,42 @@ interval = 86400  # seconds between checks (default: 1 day)
 
 ## Options Reference
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `output` | string | — | Output directory for generated files |
-| `template` | string | bundled default | Template source — local path or Git repo |
-| `features` | string[] | `[]` | Feature flags to enable |
-| `overlay` | string[] | `[]` | Overlay directory paths applied over base template |
-| `force` | boolean | `false` | Overwrite existing files without prompting |
-| `dry-run` | boolean | `false` | Preview changes without writing files |
-| `delete` | boolean | `false` | Apply deletions from `_delete.txt` |
-| `refresh` | boolean | `false` | Force re-fetch of cached remote templates |
-| `list-unknown` | boolean | `false` | Include target-only files in `awa template diff` output |
+| Key            | Type     | Default         | Description                                             |
+| -------------- | -------- | --------------- | ------------------------------------------------------- |
+| `output`       | string   | —               | Output directory for generated files                    |
+| `template`     | string   | bundled default | Template source — local path or Git repo                |
+| `features`     | string[] | `[]`            | Feature flags to enable                                 |
+| `overlay`      | string[] | `[]`            | Overlay directory paths applied over base template      |
+| `force`        | boolean  | `false`         | Overwrite existing files without prompting              |
+| `dry-run`      | boolean  | `false`         | Preview changes without writing files                   |
+| `delete`       | boolean  | `false`         | Apply deletions from `_delete.txt`                      |
+| `refresh`      | boolean  | `false`         | Force re-fetch of cached remote templates               |
+| `list-unknown` | boolean  | `false`         | Include target-only files in `awa template diff` output |
 
 ### `[check]` Options
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `spec-globs` | string[] | *(see example below)* | Glob patterns for spec, task, plan, and align files |
-| `code-globs` | string[] | `["**/*.{ts,js,...,zig}"]` | Glob patterns for source files |
-| `markers` | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for |
-| `spec-ignore` | string[] | `[]` | Glob patterns to exclude from spec file scanning |
-| `code-ignore` | string[] | `["node_modules/**", "dist/**", ...]` | Glob patterns to exclude from code file scanning |
-| `ignore-markers` | string[] | `[]` | Marker IDs to exclude from orphan checks |
-| `format` | string | `"text"` | Output format (`text` or `json`) |
-| `id-pattern` | string | *(regex)* | Regex for valid traceability IDs |
-| `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]` | Keywords for spec cross-references |
-| `schema-dir` | string | `".awa/.agent/schemas"` | Directory containing `*.schema.yaml` schema rule files |
-| `schema-enabled` | boolean | `true` | Enable/disable schema structural validation |
-| `allow-warnings` | boolean | `false` | Allow warnings without failing (when `false`, warnings are promoted to errors) |
-| `spec-only` | boolean | `false` | Run only spec-level checks; skip code-to-spec traceability |
+| Key                  | Type     | Default                                        | Description                                                                    |
+| -------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------------------ |
+| `spec-globs`         | string[] | _(see example below)_                          | Glob patterns for spec, task, plan, and align files                            |
+| `code-globs`         | string[] | `["**/*.{ts,js,...,zig}"]`                     | Glob patterns for source files                                                 |
+| `markers`            | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for                                                       |
+| `spec-ignore`        | string[] | `[]`                                           | Glob patterns to exclude from spec file scanning                               |
+| `code-ignore`        | string[] | `["node_modules/**", "dist/**", ...]`          | Glob patterns to exclude from code file scanning                               |
+| `ignore-markers`     | string[] | `[]`                                           | Marker IDs to exclude from orphan checks                                       |
+| `format`             | string   | `"text"`                                       | Output format (`text` or `json`)                                               |
+| `id-pattern`         | string   | _(regex)_                                      | Regex for valid traceability IDs                                               |
+| `cross-ref-patterns` | string[] | `["IMPLEMENTS:", "VALIDATES:"]`                | Keywords for spec cross-references                                             |
+| `schema-dir`         | string   | `".awa/.agent/schemas"`                        | Directory containing `*.schema.yaml` schema rule files                         |
+| `schema-enabled`     | boolean  | `true`                                         | Enable/disable schema structural validation                                    |
+| `allow-warnings`     | boolean  | `false`                                        | Allow warnings without failing (when `false`, warnings are promoted to errors) |
+| `spec-only`          | boolean  | `false`                                        | Run only spec-level checks; skip code-to-spec traceability                     |
 
 ### `[update-check]` Options
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `enabled` | boolean | `true` | Enable/disable automatic update checks |
-| `interval` | number | `86400` | Minimum seconds between checks (default: 1 day) |
+| Key        | Type    | Default | Description                                     |
+| ---------- | ------- | ------- | ----------------------------------------------- |
+| `enabled`  | boolean | `true`  | Enable/disable automatic update checks          |
+| `interval` | number  | `86400` | Minimum seconds between checks (default: 1 day) |
 
 awa periodically checks the npm registry for newer versions and prints a warning after command output. The check runs asynchronously and does not slow down CLI startup.
 
@@ -106,8 +106,8 @@ lite = ["copilot", "claude"]
 Use presets from the CLI:
 
 ```bash
-awa generate . --preset full
-awa generate . --preset full --remove-features windsurf
+awa init . --preset full
+awa init . --preset full --remove-features windsurf
 ```
 
 ## Override with CLI
@@ -116,10 +116,10 @@ CLI arguments take precedence over config file values:
 
 ```bash
 # Even if .awa.toml has force = false, this will force overwrite
-awa generate . --force
+awa init . --force
 
 # Even if .awa.toml has features = ["copilot"], this replaces it
-awa generate . --features claude cursor
+awa init . --features claude cursor
 ```
 
 ## Multi-Target Configuration
@@ -142,10 +142,10 @@ features = ["copilot", "code", "vibe"]
 Each target section can specify: `output`, `template`, `features`, `preset`, `remove-features`. Unspecified fields inherit from the root config. Target `features` replaces root `features` entirely (same as CLI override behavior).
 
 ```bash
-awa generate --all-targets           # process all targets
-awa generate --target claude         # process one target
-awa diff --all-targets               # diff all targets
-awa diff --target copilot            # diff one target
+awa init --all-targets                      # process all targets
+awa init --target claude                    # process one target
+awa template diff --all-targets             # diff all targets
+awa template diff --target copilot          # diff one target
 ```
 
 **Behavior notes:**
@@ -159,10 +159,10 @@ awa diff --target copilot            # diff one target
 
 ```bash
 # Default: .awa.toml in current directory
-awa generate .
+awa init .
 
 # Custom path
-awa generate . --config ./configs/my-project.toml
+awa init . --config ./configs/my-project.toml
 ```
 
 ## Example Configurations
