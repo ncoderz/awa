@@ -253,6 +253,55 @@ list-unknown = true
       expect(resolved.listUnknown).toBe(true);
     });
 
+    it('should use config booleans when CLI booleans are undefined', () => {
+      const cliOptions = {
+        output: './output',
+      };
+
+      const fileConfig = {
+        force: true,
+        'dry-run': true,
+        delete: true,
+        refresh: true,
+        'list-unknown': true,
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.force).toBe(true);
+      expect(resolved.dryRun).toBe(true);
+      expect(resolved.delete).toBe(true);
+      expect(resolved.refresh).toBe(true);
+      expect(resolved.listUnknown).toBe(true);
+    });
+
+    it('should allow explicit CLI booleans to override config booleans', () => {
+      const cliOptions = {
+        output: './output',
+        force: false,
+        dryRun: false,
+        delete: false,
+        refresh: false,
+        listUnknown: false,
+      };
+
+      const fileConfig = {
+        force: true,
+        'dry-run': true,
+        delete: true,
+        refresh: true,
+        'list-unknown': true,
+      };
+
+      const resolved = loader.merge(cliOptions, fileConfig);
+
+      expect(resolved.force).toBe(false);
+      expect(resolved.dryRun).toBe(false);
+      expect(resolved.delete).toBe(false);
+      expect(resolved.refresh).toBe(false);
+      expect(resolved.listUnknown).toBe(false);
+    });
+
     // @awa-test: CFG-5_AC-1, CFG-5_AC-2
     it('should map dry-run from config to dryRun in resolved options', () => {
       const cliOptions = {
