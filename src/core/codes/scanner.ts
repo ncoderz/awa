@@ -5,6 +5,11 @@ import { collectFiles } from '../check/glob.js';
 import type { SpecFile } from '../check/types.js';
 import type { CodesResult, DocTypes, FeatureCode } from './types.js';
 
+interface FileRef {
+  readonly filePath: string;
+  readonly content?: string;
+}
+
 /**
  * Scan spec files to discover all feature codes with metadata.
  * Reuses the check engine's glob infrastructure for file discovery.
@@ -148,6 +153,8 @@ function extractFeatureNameGeneric(fileName: string): string {
  * 2. FEAT first paragraph after first `##`
  * 3. REQ first paragraph after first `##`
  * 4. DESIGN first paragraph after first `##`
+ *
+ * Reuses SpecFile.content when available to avoid redundant disk reads.
  */
 async function extractScopeSummaries(
   specFiles: readonly SpecFile[],
@@ -156,16 +163,23 @@ async function extractScopeSummaries(
 ): Promise<Map<string, string>> {
   const scopeMap = new Map<string, string>();
 
-  // Collect FEAT files for scope extraction
+  // Build code → FileRef maps from already-parsed specFiles first
+  const featByCode = buildFileRefMapFromSpecFiles(specFiles, 'FEAT');
+  const reqByCode = buildFileRefMapFromSpecFiles(specFiles, 'REQ');
+  const designByCode = buildFileRefMapFromSpecFiles(specFiles, 'DESIGN');
+
+  // Also discover FEAT files via glob that might not be in specFiles
   const scopeFeatFiles = await collectFiles(
     specGlobs.filter((g) => g.includes('FEAT-')),
     specIgnore,
   );
-
-  // Build code → file path maps for fallback
-  const featByCode = buildCodeMap(scopeFeatFiles, 'FEAT');
-  const reqByCode = buildCodeMapFromSpecFiles(specFiles, 'REQ');
-  const designByCode = buildCodeMapFromSpecFiles(specFiles, 'DESIGN');
+  for (const fp of scopeFeatFiles) {
+    const name = basename(fp, '.md');
+    const match = /^FEAT-([A-Z][A-Z0-9]*)-/.exec(name);
+    if (match?.[1] && !featByCode.has(match[1])) {
+      featByCode.set(match[1], { filePath: fp });
+    }
+  }
 
   // Collect all codes that need scope
   const allCodes = new Set<string>();
@@ -188,50 +202,45 @@ async function extractScopeSummaries(
 
 /**
  * Resolve scope text for a code using the fallback chain.
+ * Uses cached content from SpecFile when available; falls back to readFile.
  */
 async function resolveScope(
   code: string,
-  featByCode: Map<string, string>,
-  reqByCode: Map<string, string>,
-  designByCode: Map<string, string>,
+  featByCode: Map<string, FileRef>,
+  reqByCode: Map<string, FileRef>,
+  designByCode: Map<string, FileRef>,
 ): Promise<string> {
   // 1. Try FEAT ## Scope Boundary
-  const featPath = featByCode.get(code);
-  if (featPath) {
-    try {
-      const content = await readFile(featPath, 'utf-8');
+  const featRef = featByCode.get(code);
+  if (featRef) {
+    const content = await readContent(featRef);
+    if (content) {
       const scopeBoundary = extractScopeBoundary(content);
       if (scopeBoundary) return scopeBoundary;
 
       // 2. Fall back to FEAT first paragraph
       const firstParagraph = extractFirstParagraph(content);
       if (firstParagraph) return firstParagraph;
-    } catch {
-      // Skip unreadable files
     }
   }
 
   // 3. Fall back to REQ first paragraph
-  const reqPath = reqByCode.get(code);
-  if (reqPath) {
-    try {
-      const content = await readFile(reqPath, 'utf-8');
+  const reqRef = reqByCode.get(code);
+  if (reqRef) {
+    const content = await readContent(reqRef);
+    if (content) {
       const firstParagraph = extractFirstParagraph(content);
       if (firstParagraph) return firstParagraph;
-    } catch {
-      // Skip unreadable files
     }
   }
 
   // 4. Fall back to DESIGN first paragraph
-  const designPath = designByCode.get(code);
-  if (designPath) {
-    try {
-      const content = await readFile(designPath, 'utf-8');
+  const designRef = designByCode.get(code);
+  if (designRef) {
+    const content = await readContent(designRef);
+    if (content) {
       const firstParagraph = extractFirstParagraph(content);
       if (firstParagraph) return firstParagraph;
-    } catch {
-      // Skip unreadable files
     }
   }
 
@@ -239,32 +248,29 @@ async function resolveScope(
 }
 
 /**
- * Build code → file path map from a list of file paths for a given prefix.
+ * Read content from a FileRef, using cached content if available.
  */
-function buildCodeMap(filePaths: string[], prefix: string): Map<string, string> {
-  const map = new Map<string, string>();
-  const regex = new RegExp(`^${prefix}-([A-Z][A-Z0-9]*)-`);
-  for (const filePath of filePaths) {
-    const name = basename(filePath, '.md');
-    const match = regex.exec(name);
-    if (match?.[1] && !map.has(match[1])) {
-      map.set(match[1], filePath);
-    }
+async function readContent(ref: FileRef): Promise<string | undefined> {
+  if (ref.content != null) return ref.content;
+  try {
+    return await readFile(ref.filePath, 'utf-8');
+  } catch {
+    return undefined;
   }
-  return map;
 }
 
 /**
- * Build code → file path map from SpecFile entries for a given prefix.
+ * Build code → FileRef map from SpecFile entries for a given prefix,
+ * preserving cached content to avoid re-reads.
  */
-function buildCodeMapFromSpecFiles(
+function buildFileRefMapFromSpecFiles(
   specFiles: readonly SpecFile[],
   prefix: string,
-): Map<string, string> {
-  const map = new Map<string, string>();
+): Map<string, FileRef> {
+  const map = new Map<string, FileRef>();
   for (const sf of specFiles) {
     if (sf.code && basename(sf.filePath).startsWith(`${prefix}-`) && !map.has(sf.code)) {
-      map.set(sf.code, sf.filePath);
+      map.set(sf.code, { filePath: sf.filePath, content: sf.content });
     }
   }
   return map;
