@@ -11,7 +11,10 @@ import type { CheckConfig, SpecParseResult } from './types.js';
 
 /** Escape characters that would break a Markdown table cell. */
 function sanitizeCell(value: string): string {
-  return value.replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+  return value
+    .replace(/\|/g, '\\|')
+    .replace(/[\r\n]+/g, ' ')
+    .trim();
 }
 
 export interface CodesFixResult extends FixResult {
