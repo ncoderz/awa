@@ -10,9 +10,9 @@
 // @awa-test: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
 // @awa-test: CFG-7_AC-1, CFG-7_AC-4, CFG-9_AC-1, CFG-11_AC-1
 
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -52,7 +52,7 @@ list-unknown = true
       const config = await loader.load(configPath);
 
       expect(config).toEqual({
-        output: './out',
+        output: resolve(testDir, './out'),
         template: 'user/repo',
         features: ['planning', 'testing'],
         force: true,
@@ -135,7 +135,7 @@ list-unknown = true
       const config = await loader.load(configPath);
 
       expect(config).toEqual({
-        output: './output',
+        output: resolve(testDir, './output'),
       });
     });
 
@@ -146,6 +146,96 @@ list-unknown = true
       const config = await loader.load(configPath);
 
       expect(config).toEqual({});
+    });
+
+    it('should discover config from parent directories up to repo root', async () => {
+      const repoRoot = join(testDir, 'repo');
+      const nestedDir = join(repoRoot, 'a', 'b', 'c');
+
+      await mkdir(join(repoRoot, '.git'), { recursive: true });
+      await mkdir(nestedDir, { recursive: true });
+      await writeFile(
+        join(repoRoot, '.awa.toml'),
+        ['output = "./out"', 'template = "./template"'].join('\n'),
+      );
+
+      const originalCwd = process.cwd();
+      process.chdir(nestedDir);
+      try {
+        const config = await loader.load(null);
+        const expectedRepoRoot = await realpath(repoRoot);
+        expect(config).toEqual({
+          output: resolve(expectedRepoRoot, './out'),
+          template: resolve(expectedRepoRoot, './template'),
+        });
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it('should stop discovery at git root and not cross to parent directories', async () => {
+      const parentDir = join(testDir, 'parent');
+      const repoRoot = join(parentDir, 'repo');
+      const nestedDir = join(repoRoot, 'nested');
+
+      await mkdir(parentDir, { recursive: true });
+      await mkdir(join(repoRoot, '.git'), { recursive: true });
+      await mkdir(nestedDir, { recursive: true });
+      await writeFile(join(parentDir, '.awa.toml'), 'output = "./wrong"\n');
+
+      const originalCwd = process.cwd();
+      process.chdir(nestedDir);
+      try {
+        const config = await loader.load(null);
+        expect(config).toBeNull();
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it('should resolve config-relative paths from explicit config location', async () => {
+      const configDir = join(testDir, 'configs', 'project-a');
+      await mkdir(configDir, { recursive: true });
+
+      const explicitPath = join(configDir, 'custom.toml');
+      await writeFile(
+        explicitPath,
+        [
+          'output = "./out"',
+          'template = "./templates/awa"',
+          'overlay = ["./overlay"]',
+          '',
+          '[targets.copilot]',
+          'output = "./target-out"',
+          'template = "./target-template"',
+        ].join('\n'),
+      );
+
+      const config = await loader.load(explicitPath);
+
+      expect(config?.output).toBe(resolve(configDir, './out'));
+      expect(config?.template).toBe(resolve(configDir, './templates/awa'));
+      expect(config?.overlay).toEqual([resolve(configDir, './overlay')]);
+      expect(config?.targets?.copilot).toEqual({
+        output: resolve(configDir, './target-out'),
+        template: resolve(configDir, './target-template'),
+      });
+    });
+
+    it('should keep git-style template and overlay sources unchanged', async () => {
+      const configPath = join(testDir, '.awa.toml');
+      await writeFile(
+        configPath,
+        ['output = "./out"', 'template = "owner/repo"', 'overlay = ["owner/overlay-repo"]'].join(
+          '\n',
+        ),
+      );
+
+      const config = await loader.load(configPath);
+
+      expect(config?.output).toBe(resolve(testDir, './out'));
+      expect(config?.template).toBe('owner/repo');
+      expect(config?.overlay).toEqual(['owner/overlay-repo']);
     });
   });
 
@@ -394,7 +484,10 @@ overlay = ["./overlay1", "./overlay2"]
 
       const config = await loader.load(configPath);
 
-      expect(config?.overlay).toEqual(['./overlay1', './overlay2']);
+      expect(config?.overlay).toEqual([
+        resolve(testDir, './overlay1'),
+        resolve(testDir, './overlay2'),
+      ]);
     });
 
     it('should merge overlay from CLI over config', async () => {
@@ -462,7 +555,7 @@ overlay = ["./overlay1", "./overlay2"]
       // Should not throw - continues execution (CFG-6_AC-2)
       const config = await loader.load(configPath);
       expect(config).toBeDefined();
-      expect((config as Record<string, unknown>).output).toBe('./out');
+      expect((config as Record<string, unknown>).output).toBe(resolve(testDir, './out'));
     });
   });
 
@@ -488,11 +581,11 @@ features = ["copilot", "code", "vibe"]
 
       expect(config?.targets).toBeDefined();
       expect(config?.targets?.claude).toEqual({
-        output: '.',
+        output: resolve(testDir, '.'),
         features: ['claude', 'architect', 'code'],
       });
       expect(config?.targets?.copilot).toEqual({
-        output: '.',
+        output: resolve(testDir, '.'),
         features: ['copilot', 'code', 'vibe'],
       });
     });
@@ -510,7 +603,7 @@ output = "."
       const config = await loader.load(configPath);
 
       expect(config?.targets?.claude).toEqual({
-        output: '.',
+        output: resolve(testDir, '.'),
       });
     });
 
@@ -555,8 +648,8 @@ remove-features = ["debug"]
       const config = await loader.load(configPath);
 
       expect(config?.targets?.full).toEqual({
-        output: './out',
-        template: './custom-template',
+        output: resolve(testDir, './out'),
+        template: resolve(testDir, './custom-template'),
         features: ['a', 'b'],
         preset: ['full'],
         'remove-features': ['debug'],

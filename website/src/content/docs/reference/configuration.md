@@ -165,6 +165,10 @@ awa init .
 awa init . --config ./configs/my-project.toml
 ```
 
+When `--config` is omitted, awa searches upward from the current working directory for `.awa.toml` and stops at the repository root (`.git`).
+
+For values loaded from config (`output`, local `template`, local `overlay`, and target-level `output`/`template`), relative paths are resolved relative to the config file location, not the current working directory.
+
 ## Example Configurations
 
 ### Minimal

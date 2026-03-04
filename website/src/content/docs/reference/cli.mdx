@@ -61,6 +61,8 @@ awa init --target claude              # process a specific named target
 | `--json`                      | Output results as JSON to stdout (implies `--dry-run`)          |
 | `--summary`                   | Output compact one-line counts summary                          |
 
+If `--config` is omitted, awa discovers `.awa.toml` by searching upward from the current directory to the repo root (`.git`); relative paths in config are resolved from the config file location.
+
 ### `awa check`
 
 Validate spec files against schemas and check traceability between code markers and specs.
