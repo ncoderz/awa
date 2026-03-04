@@ -69,7 +69,7 @@ function formatChainTree(chain: TraceChain): string[] {
     lines.push('  ▼ Implementation');
     for (const impl of chain.implementations) {
       lines.push(
-        `  │  ${impl.location.filePath}:${impl.location.line}  (@awa-${impl.type === 'implementation' ? 'impl' : 'component'}: ${impl.id})`
+        `  │  ${impl.location.filePath}:${impl.location.line}  (@awa-${impl.type === 'implementation' ? 'impl' : 'component'}: ${impl.id})`,
       );
     }
   }

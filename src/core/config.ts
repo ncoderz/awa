@@ -30,22 +30,23 @@
 // @awa-impl: CLI-2_AC-4
 // @awa-impl: CLI-4_AC-3
 // @awa-impl: CLI-7_AC-2
-// @awa-impl: FP-1_AC-1
-// @awa-impl: FP-1_AC-2
-// @awa-impl: FP-1_AC-3
-// @awa-impl: FP-1_AC-4
-// @awa-impl: FP-3_AC-1
-// @awa-impl: FP-3_AC-2
-// @awa-impl: FP-3_AC-3
-// @awa-impl: FP-5_AC-1
-// @awa-impl: FP-5_AC-2
-// @awa-impl: FP-5_AC-3
+// @awa-impl: CFG-7_AC-1
+// @awa-impl: CFG-7_AC-2
+// @awa-impl: CFG-7_AC-3
+// @awa-impl: CFG-7_AC-4
+// @awa-impl: CFG-9_AC-1
+// @awa-impl: CFG-9_AC-2
+// @awa-impl: CFG-9_AC-3
+// @awa-impl: CFG-11_AC-1
+// @awa-impl: CFG-11_AC-2
+// @awa-impl: CFG-11_AC-3
 // @awa-impl: MULTI-1_AC-1
 // @awa-impl: MULTI-2_AC-1
 // @awa-impl: MULTI-3_AC-1
 // @awa-impl: MULTI-5_AC-2
 
 import { parse } from 'smol-toml';
+
 import {
   ConfigError,
   type FileConfig,
@@ -73,7 +74,7 @@ export class ConfigLoader {
       throw new ConfigError(
         `Configuration file not found: ${configPath}`,
         'FILE_NOT_FOUND',
-        configPath
+        configPath,
       );
     }
 
@@ -95,7 +96,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'output': expected string, got ${typeof parsed.output}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.output = parsed.output;
@@ -106,7 +107,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'template': expected string, got ${typeof parsed.template}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.template = parsed.template;
@@ -120,7 +121,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'features': expected array of strings`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.features = parsed.features;
@@ -131,7 +132,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'preset': expected array of strings`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.preset = parsed.preset;
@@ -145,7 +146,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'remove-features': expected array of strings`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config['remove-features'] = parsed['remove-features'];
@@ -156,7 +157,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'force': expected boolean, got ${typeof parsed.force}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.force = parsed.force;
@@ -167,7 +168,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'dry-run': expected boolean, got ${typeof parsed['dry-run']}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config['dry-run'] = parsed['dry-run'];
@@ -178,7 +179,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'delete': expected boolean, got ${typeof parsed.delete}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.delete = parsed.delete;
@@ -189,7 +190,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'refresh': expected boolean, got ${typeof parsed.refresh}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.refresh = parsed.refresh;
@@ -204,19 +205,19 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'presets': expected table of string arrays`,
             'INVALID_PRESET',
-            pathToLoad
+            pathToLoad,
           );
         }
 
         const defs: PresetDefinitions = {};
         for (const [presetName, value] of Object.entries(
-          parsed.presets as Record<string, unknown>
+          parsed.presets as Record<string, unknown>,
         )) {
           if (!Array.isArray(value) || !value.every((v) => typeof v === 'string')) {
             throw new ConfigError(
               `Invalid preset '${presetName}': expected array of strings`,
               'INVALID_PRESET',
-              pathToLoad
+              pathToLoad,
             );
           }
           defs[presetName] = value as string[];
@@ -230,13 +231,13 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'list-unknown': expected boolean, got ${typeof parsed['list-unknown']}`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config['list-unknown'] = parsed['list-unknown'];
       }
 
-      // @awa-impl: CHK-16_AC-1
+      // @awa-impl: CLI-31_AC-1
       // Pass through [check] table as-is for check command to process
       if (parsed.check !== undefined) {
         if (
@@ -247,7 +248,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'check': expected table`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.check = parsed.check as Record<string, unknown>;
@@ -259,7 +260,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'overlay': expected array of strings`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
         config.overlay = parsed.overlay;
@@ -274,7 +275,7 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'update-check': expected table`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
 
@@ -286,7 +287,7 @@ export class ConfigLoader {
             throw new ConfigError(
               `Invalid type for 'update-check.enabled': expected boolean, got ${typeof raw.enabled}`,
               'INVALID_TYPE',
-              pathToLoad
+              pathToLoad,
             );
           }
           updateCheckConfig.enabled = raw.enabled;
@@ -297,7 +298,7 @@ export class ConfigLoader {
             throw new ConfigError(
               `Invalid type for 'update-check.interval': expected number, got ${typeof raw.interval}`,
               'INVALID_TYPE',
-              pathToLoad
+              pathToLoad,
             );
           }
           updateCheckConfig.interval = raw.interval;
@@ -316,13 +317,13 @@ export class ConfigLoader {
           throw new ConfigError(
             `Invalid type for 'targets': expected table of target sections`,
             'INVALID_TYPE',
-            pathToLoad
+            pathToLoad,
           );
         }
 
         const targets: Record<string, TargetConfig> = {};
         for (const [targetName, targetValue] of Object.entries(
-          parsed.targets as Record<string, unknown>
+          parsed.targets as Record<string, unknown>,
         )) {
           if (
             targetValue === null ||
@@ -332,13 +333,13 @@ export class ConfigLoader {
             throw new ConfigError(
               `Invalid target '${targetName}': expected table`,
               'INVALID_TYPE',
-              pathToLoad
+              pathToLoad,
             );
           }
           targets[targetName] = this.parseTargetSection(
             targetValue as Record<string, unknown>,
             targetName,
-            pathToLoad
+            pathToLoad,
           );
         }
         config.targets = targets;
@@ -378,7 +379,7 @@ export class ConfigLoader {
       throw new ConfigError(
         `Failed to parse TOML configuration: ${error instanceof Error ? error.message : String(error)}`,
         'PARSE_ERROR',
-        pathToLoad
+        pathToLoad,
       );
     }
   }
@@ -397,7 +398,7 @@ export class ConfigLoader {
       throw new ConfigError(
         'Output directory is required. Provide it as a positional argument or in the config file.',
         'MISSING_OUTPUT',
-        null
+        null,
       );
     }
 
@@ -441,7 +442,7 @@ export class ConfigLoader {
   private parseTargetSection(
     section: Record<string, unknown>,
     targetName: string,
-    configPath: string
+    configPath: string,
   ): TargetConfig {
     const target: TargetConfig = {};
     const allowedKeys = new Set(['output', 'template', 'features', 'preset', 'remove-features']);
@@ -457,7 +458,7 @@ export class ConfigLoader {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.output': expected string, got ${typeof section.output}`,
           'INVALID_TYPE',
-          configPath
+          configPath,
         );
       }
       target.output = section.output;
@@ -468,7 +469,7 @@ export class ConfigLoader {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.template': expected string, got ${typeof section.template}`,
           'INVALID_TYPE',
-          configPath
+          configPath,
         );
       }
       target.template = section.template;
@@ -482,7 +483,7 @@ export class ConfigLoader {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.features': expected array of strings`,
           'INVALID_TYPE',
-          configPath
+          configPath,
         );
       }
       target.features = section.features;
@@ -493,7 +494,7 @@ export class ConfigLoader {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.preset': expected array of strings`,
           'INVALID_TYPE',
-          configPath
+          configPath,
         );
       }
       target.preset = section.preset;
@@ -507,7 +508,7 @@ export class ConfigLoader {
         throw new ConfigError(
           `Invalid type for 'targets.${targetName}.remove-features': expected array of strings`,
           'INVALID_TYPE',
-          configPath
+          configPath,
         );
       }
       target['remove-features'] = section['remove-features'];
@@ -523,7 +524,7 @@ export class ConfigLoader {
       throw new ConfigError(
         'No targets defined in configuration. Add [targets.<name>] sections to .awa.toml.',
         'NO_TARGETS',
-        null
+        null,
       );
     }
 
@@ -532,7 +533,7 @@ export class ConfigLoader {
       throw new ConfigError(
         `Unknown target: '${targetName}'. Available targets: ${Object.keys(targets).join(', ')}`,
         'UNKNOWN_TARGET',
-        null
+        null,
       );
     }
 

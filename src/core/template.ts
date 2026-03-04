@@ -18,6 +18,7 @@
 // @awa-impl: TPL-11_AC-2
 
 import { Eta } from 'eta';
+
 import { type RenderResult, type TemplateContext, TemplateError } from '../types/index.js';
 import { readTextFile } from '../utils/fs.js';
 
@@ -26,12 +27,10 @@ const EMPTY_FILE_MARKER = '<!-- AWA:EMPTY_FILE -->';
 export class TemplateEngine {
   private eta: Eta | null = null;
   private templateDir: string | null = null;
-  private compiledCache = new Map<string, unknown>();
 
   // @awa-impl: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
   configure(templateDir: string): void {
     this.templateDir = templateDir;
-    this.compiledCache.clear();
 
     // @awa-impl: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4
     // Configure Eta with partials support
@@ -51,7 +50,7 @@ export class TemplateEngine {
     if (!this.eta || !this.templateDir) {
       throw new TemplateError(
         'Template engine not configured. Call configure() first.',
-        'RENDER_ERROR'
+        'RENDER_ERROR',
       );
     }
 
@@ -82,7 +81,7 @@ export class TemplateEngine {
       throw new TemplateError(
         `Failed to render template ${templatePath}: ${error instanceof Error ? error.message : String(error)}`,
         'RENDER_ERROR',
-        templatePath
+        templatePath,
       );
     }
   }

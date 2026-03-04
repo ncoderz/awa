@@ -2,6 +2,7 @@
 // @awa-impl: TRC-2_AC-1, TRC-2_AC-2, TRC-2_AC-3
 
 import { readFile } from 'node:fs/promises';
+
 import type { TraceIndex } from './types.js';
 
 /** Result of resolving input to a list of trace IDs. */
@@ -34,7 +35,7 @@ export function resolveIds(ids: readonly string[], index: TraceIndex): InputReso
  */
 export async function resolveTaskFile(
   taskPath: string,
-  index: TraceIndex
+  index: TraceIndex,
 ): Promise<InputResolution> {
   let content: string;
   try {
@@ -104,7 +105,7 @@ export async function resolveTaskFile(
  */
 export async function resolveSourceFile(
   filePath: string,
-  index: TraceIndex
+  index: TraceIndex,
 ): Promise<InputResolution> {
   let content: string;
   try {

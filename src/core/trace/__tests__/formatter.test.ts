@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { formatJson, formatList, formatTree } from '../formatter.js';
 import type { TraceResult } from '../types.js';
 

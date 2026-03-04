@@ -27,13 +27,13 @@ export class BatchRunner {
     cli: RawCliOptions,
     fileConfig: FileConfig | null,
     mode: 'all' | 'single',
-    targetName?: string
+    targetName?: string,
   ): BatchTargetResult[] {
     if (!fileConfig) {
       throw new ConfigError(
         'No configuration file found. --all and --target require a config file with [targets.*] sections.',
         'NO_TARGETS',
-        null
+        null,
       );
     }
 
@@ -43,7 +43,7 @@ export class BatchRunner {
       throw new ConfigError(
         'No targets defined in configuration. Add [targets.<name>] sections to .awa.toml.',
         'NO_TARGETS',
-        null
+        null,
       );
     }
 
@@ -71,7 +71,7 @@ export class BatchRunner {
           throw new ConfigError(
             `Target '${name}' has no output directory. Specify 'output' in [targets.${name}] or in the root config.`,
             'MISSING_OUTPUT',
-            null
+            null,
           );
         }
         throw error;

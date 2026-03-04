@@ -2,6 +2,7 @@
 // @awa-impl: TRC-5_AC-1, TRC-5_AC-2, TRC-5_AC-3, TRC-5_AC-4, TRC-5_AC-5
 
 import { readFile } from 'node:fs/promises';
+
 import type { ContentSection, TraceResult } from './types.js';
 
 /** Default lines of context before a code marker. */
@@ -22,16 +23,19 @@ interface ContextLineOptions {
 export async function assembleContent(
   result: TraceResult,
   taskPath?: string,
-  contextOptions?: ContextLineOptions
+  contextOptions?: ContextLineOptions,
 ): Promise<ContentSection[]> {
   const beforeCtx = contextOptions?.beforeContext ?? DEFAULT_BEFORE_CONTEXT;
   const afterCtx = contextOptions?.afterContext ?? DEFAULT_AFTER_CONTEXT;
   const sections: ContentSection[] = [];
   const seen = new Set<string>();
+  // File content cache scoped to this invocation — avoids re-reading the same
+  // file when multiple trace IDs reference it.
+  const fileCache = new Map<string, string | null>();
 
   // Priority 1: Task file — full content
   if (taskPath) {
-    const content = await safeReadFile(taskPath);
+    const content = await cachedReadFile(fileCache, taskPath);
     if (content) {
       const lineCount = content.split('\n').length;
       sections.push({
@@ -52,11 +56,12 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           chain.requirement.location.filePath,
           chain.requirement.id,
           chain.requirement.location.line,
           'requirement',
-          2
+          2,
         );
         if (section) sections.push(section);
       }
@@ -70,11 +75,12 @@ export async function assembleContent(
         // ACs are part of the requirement section — only add if different from requirement
         if (!chain.requirement || ac.location.filePath !== chain.requirement.location.filePath) {
           const section = await extractSpecSection(
+            fileCache,
             ac.location.filePath,
             ac.id,
             ac.location.line,
             'requirement',
-            2
+            2,
           );
           if (section) sections.push(section);
         }
@@ -87,11 +93,12 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           comp.location.filePath,
           comp.id,
           comp.location.line,
           'design',
-          3
+          3,
         );
         if (section) sections.push(section);
       }
@@ -103,12 +110,13 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractCodeSection(
+          fileCache,
           impl.location.filePath,
           impl.location.line,
           'implementation',
           5,
           beforeCtx,
-          afterCtx
+          afterCtx,
         );
         if (section) sections.push(section);
       }
@@ -120,12 +128,13 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractCodeSection(
+          fileCache,
           t.location.filePath,
           t.location.line,
           'test',
           6,
           beforeCtx,
-          afterCtx
+          afterCtx,
         );
         if (section) sections.push(section);
       }
@@ -137,11 +146,12 @@ export async function assembleContent(
       if (!seen.has(key)) {
         seen.add(key);
         const section = await extractSpecSection(
+          fileCache,
           prop.location.filePath,
           prop.id,
           prop.location.line,
           'design',
-          3
+          3,
         );
         if (section) sections.push(section);
       }
@@ -159,13 +169,14 @@ export async function assembleContent(
  * Reads from the H3 heading to the next H3 or H2 heading.
  */
 async function extractSpecSection(
+  fileCache: Map<string, string | null>,
   filePath: string,
   _id: string,
   line: number,
   type: ContentSection['type'],
-  priority: number
+  priority: number,
 ): Promise<ContentSection | null> {
-  const content = await safeReadFile(filePath);
+  const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
 
   const lines = content.split('\n');
@@ -202,14 +213,15 @@ async function extractSpecSection(
  * Tries to find the enclosing function/block; falls back to +/- DEFAULT_CONTEXT_LINES.
  */
 async function extractCodeSection(
+  fileCache: Map<string, string | null>,
   filePath: string,
   line: number,
   type: ContentSection['type'],
   priority: number,
   beforeContext: number = DEFAULT_BEFORE_CONTEXT,
-  afterContext: number = DEFAULT_AFTER_CONTEXT
+  afterContext: number = DEFAULT_AFTER_CONTEXT,
 ): Promise<ContentSection | null> {
-  const content = await safeReadFile(filePath);
+  const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
 
   const lines = content.split('\n');
@@ -241,7 +253,7 @@ function findEnclosingBlock(
   lines: string[],
   lineIdx: number,
   beforeContext: number = DEFAULT_BEFORE_CONTEXT,
-  afterContext: number = DEFAULT_AFTER_CONTEXT
+  afterContext: number = DEFAULT_AFTER_CONTEXT,
 ): { start: number; end: number } {
   // Search upward for a function-like declaration
   let start = lineIdx;
@@ -300,10 +312,17 @@ function findEnclosingBlock(
   return { start, end };
 }
 
-async function safeReadFile(filePath: string): Promise<string | null> {
+async function cachedReadFile(
+  cache: Map<string, string | null>,
+  filePath: string,
+): Promise<string | null> {
+  if (cache.has(filePath)) return cache.get(filePath) ?? null;
+  let content: string | null;
   try {
-    return await readFile(filePath, 'utf-8');
+    content = await readFile(filePath, 'utf-8');
   } catch {
-    return null;
+    content = null;
   }
+  cache.set(filePath, content);
+  return content;
 }

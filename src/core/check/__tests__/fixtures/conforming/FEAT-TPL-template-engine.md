@@ -9,6 +9,7 @@ Developers need to generate AI agent configuration files across multiple project
 The template engine treats configuration files as templates that can be rendered with a set of feature flags. Users think of features as toggles — enable "copilot" to get GitHub Copilot config, enable "claude" for Claude config, etc. The engine resolves which template files to include, renders them with the active feature set, and writes the output.
 
 Key abstractions:
+
 - TEMPLATE: A file with optional Eta expressions
 - FEATURE FLAG: A named toggle that controls conditional rendering
 - PARTIAL: A reusable template fragment included by other templates

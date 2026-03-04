@@ -24,6 +24,10 @@
 .awa/.agent/schemas/REQ.schema.md
 .awa/.agent/schemas/TASK.schema.md
 
+# Old yaml schemas
+.awa/.agent/schemas/EXAMPLES.schema.yaml
+
+
 # @feature copilot
 .github/agents/awa.agent.md
 .github/prompts/awa.architecture.prompt.md

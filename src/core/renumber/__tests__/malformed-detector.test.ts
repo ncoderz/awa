@@ -1,6 +1,7 @@
 // @awa-test: RENUM-12_AC-1, RENUM-12_AC-2, RENUM-12_AC-3
 
 import { describe, expect, it } from 'vitest';
+
 import { detectMalformed } from '../malformed-detector.js';
 
 describe('detectMalformed', () => {

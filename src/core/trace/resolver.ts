@@ -10,7 +10,7 @@ import type { TraceChain, TraceIndex, TraceNode, TraceOptions, TraceResult } fro
 export function resolveTrace(
   index: TraceIndex,
   ids: readonly string[],
-  options: TraceOptions
+  options: TraceOptions,
 ): TraceResult {
   const chains: TraceChain[] = [];
   const notFound: string[] = [];
@@ -140,7 +140,7 @@ function resolveFromRequirement(
   index: TraceIndex,
   reqId: string,
   options: TraceOptions,
-  collectors: ChainCollectors
+  collectors: ChainCollectors,
 ): void {
   const loc = index.idLocations.get(reqId);
   if (loc) {
@@ -167,7 +167,7 @@ function resolveFromAC(
   index: TraceIndex,
   acId: string,
   options: TraceOptions,
-  collectors: ChainCollectors
+  collectors: ChainCollectors,
 ): void {
   const acLoc = index.idLocations.get(acId);
   if (acLoc) {
@@ -196,7 +196,7 @@ function resolveFromProperty(
   index: TraceIndex,
   propId: string,
   options: TraceOptions,
-  collectors: ChainCollectors
+  collectors: ChainCollectors,
 ): void {
   const propLoc = index.idLocations.get(propId);
   if (propLoc) {
@@ -237,7 +237,7 @@ function resolveFromComponent(
   index: TraceIndex,
   componentId: string,
   options: TraceOptions,
-  collectors: ChainCollectors
+  collectors: ChainCollectors,
 ): void {
   const compLoc = index.idLocations.get(componentId);
   if (compLoc) {
@@ -283,7 +283,7 @@ function resolveACDownstream(
   acId: string,
   options: TraceOptions,
   collectors: ChainCollectors,
-  currentDepth: number
+  currentDepth: number,
 ): void {
   // AC → design components
   const components = index.acToDesignComponents.get(acId) ?? [];

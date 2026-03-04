@@ -3,6 +3,7 @@
 // @awa-test: DISC-7_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { FeaturesReporter } from '../reporter.js';
 import type { ScanResult } from '../scanner.js';
 

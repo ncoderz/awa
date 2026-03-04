@@ -62,7 +62,7 @@ AS A developer, I WANT all references to renumbered IDs updated across every art
 
 ACCEPTANCE CRITERIA
 
-- RENUM-5_AC-1 [ubiquitous]: The system SHALL apply the renumber map to REQ, DESIGN, FEAT, TASK, EXAMPLES, and PLAN files matching the feature code
+- RENUM-5_AC-1 [ubiquitous]: The system SHALL apply the renumber map to REQ, DESIGN, FEAT, TASK, EXAMPLE, and PLAN files matching the feature code
 - RENUM-5_AC-2 [ubiquitous]: The system SHALL apply the renumber map to source and test files containing `@awa-impl`, `@awa-test`, and `@awa-component` markers referencing the affected IDs
 - RENUM-5_AC-3 [ubiquitous]: The system SHALL update DEPENDS ON, IMPLEMENTS, VALIDATES, and TESTS cross-reference lines that reference affected IDs
 

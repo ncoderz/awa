@@ -1,16 +1,17 @@
 // @awa-component: JSON-GenerateCommand
 // @awa-test: JSON_P-3
 // @awa-test: JSON_P-4
-// @awa-test: INIT-1_AC-1
-// @awa-test: INIT-2_AC-1
-// @awa-test: INIT-3_AC-1
-// @awa-test: INIT-4_AC-1
-// @awa-test: INIT-5_AC-1
-// @awa-test: INIT_P-1
+// @awa-test: GEN-13_AC-1
+// @awa-test: GEN-14_AC-1
+// @awa-test: GEN-15_AC-1
+// @awa-test: GEN-16_AC-1
+// @awa-test: GEN-17_AC-1
+// @awa-test: GEN_P-7
 // @awa-test: MULTI-5_AC-1, MULTI-10_AC-1
-// @awa-test: INIT_P-2
+// @awa-test: GEN_P-8
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import type { GenerationResult } from '../../types/index.js';
 
 // Mock dependencies BEFORE importing the module under test
@@ -30,6 +31,7 @@ vi.mock('../../core/feature-resolver.js');
 vi.mock('../../utils/logger.js');
 
 import { intro, outro } from '@clack/prompts';
+
 import { configLoader } from '../../core/config.js';
 import { featureResolver } from '../../core/feature-resolver.js';
 import { fileGenerator } from '../../core/generator.js';
@@ -101,10 +103,10 @@ describe('generateCommand', () => {
     vi.clearAllMocks();
   });
 
-  // @awa-test: INIT-1_AC-1
-  // @awa-test: INIT-2_AC-1
-  // @awa-test: INIT-3_AC-1
-  // @awa-test: INIT_P-1
+  // @awa-test: GEN-13_AC-1
+  // @awa-test: GEN-14_AC-1
+  // @awa-test: GEN-15_AC-1
+  // @awa-test: GEN_P-7
   test('invokes generateCommand successfully with standard options', async () => {
     await generateCommand({
       output: './output',
@@ -123,8 +125,8 @@ describe('generateCommand', () => {
     expect(fileGenerator.generate).toHaveBeenCalled();
   });
 
-  // @awa-test: INIT-3_AC-1
-  // @awa-test: INIT_P-1
+  // @awa-test: GEN-15_AC-1
+  // @awa-test: GEN_P-7
   test('produces identical output regardless of which command name is used (generate vs init)', async () => {
     // Both "generate" and "init" invoke generateCommand — verify it resolves correctly
     const cliOptions = {
@@ -144,12 +146,12 @@ describe('generateCommand', () => {
       expect.objectContaining({
         outputPath: './output',
         features: ['copilot'],
-      })
+      }),
     );
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('logs config hint when no config file is found and --config not provided', async () => {
     vi.mocked(configLoader.load).mockResolvedValue(null);
     vi.mocked(configLoader.merge).mockReturnValue(DEFAULT_RESOLVED_OPTIONS);
@@ -168,8 +170,8 @@ describe('generateCommand', () => {
     expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('.awa.toml'));
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('does NOT log config hint when --config is provided', async () => {
     vi.mocked(configLoader.load).mockResolvedValue(null);
     vi.mocked(configLoader.merge).mockReturnValue(DEFAULT_RESOLVED_OPTIONS);
@@ -188,13 +190,13 @@ describe('generateCommand', () => {
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
     const hintCalls = infoCalls.filter(
-      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml'),
     );
     expect(hintCalls).toHaveLength(0);
   });
 
-  // @awa-test: INIT-5_AC-1
-  // @awa-test: INIT_P-2
+  // @awa-test: GEN-17_AC-1
+  // @awa-test: GEN_P-8
   test('does NOT log config hint when config file was found', async () => {
     // configLoader.load returns non-null (file was found)
     vi.mocked(configLoader.load).mockResolvedValue({ output: './output' });
@@ -212,7 +214,7 @@ describe('generateCommand', () => {
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
     const hintCalls = infoCalls.filter(
-      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml'),
     );
     expect(hintCalls).toHaveLength(0);
   });
@@ -273,7 +275,7 @@ describe('generateCommand --json', () => {
     expect(fileGenerator.generate).toHaveBeenCalledWith(
       expect.objectContaining({
         dryRun: true,
-      })
+      }),
     );
   });
 
@@ -313,7 +315,7 @@ describe('generateCommand --json', () => {
         output: './output',
         features: ['copilot'],
         json: true,
-      })
+      }),
     ).rejects.toThrow('process.exit');
 
     expect(logger.error).toHaveBeenCalledWith('test error');
@@ -344,7 +346,7 @@ describe('generateCommand --summary', () => {
     vi.mocked(featureResolver.resolve).mockReturnValue(['copilot']);
     vi.mocked(fileGenerator.generate).mockResolvedValue(mockResult);
     vi.mocked(formatGenerationSummary).mockReturnValue(
-      'created: 1, overwritten: 0, skipped: 0, deleted: 0'
+      'created: 1, overwritten: 0, skipped: 0, deleted: 0',
     );
   });
 

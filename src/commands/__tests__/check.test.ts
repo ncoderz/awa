@@ -1,17 +1,19 @@
-// @awa-component: CHK-CheckCommand
-// @awa-test: CHK-8_AC-1
-// @awa-test: CHK-10_AC-1
-// @awa-test: CHK-16_AC-1
-// @awa-test: CHK_P-5
-// @awa-test: CHK-12_AC-1, CHK-13_AC-1, CHK-14_AC-1, CHK-15_AC-1
-// @awa-test: CHK-17_AC-1, CHK-17_AC-2, CHK-17_AC-3
-// @awa-test: CHK-9_AC-2, CHK-9_AC-3
-// @awa-test: CHK-24_AC-1
+// @awa-component: CLI-CheckCommand
+// @awa-test: CLI-23_AC-1
+// @awa-test: CLI-25_AC-1
+// @awa-test: CLI-31_AC-1
+// @awa-test: CLI_P-12
+// @awa-test: CLI-27_AC-1, CLI-28_AC-1, CLI-29_AC-1, CLI-30_AC-1
+// @awa-test: CLI-32_AC-1, CLI-32_AC-2, CLI-32_AC-3
+// @awa-test: CLI-24_AC-2, CLI-24_AC-3
+// @awa-test: CLI-39_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { checkCommand } from '../check.js';
 
 describe('checkCommand', () => {
@@ -41,8 +43,8 @@ describe('checkCommand', () => {
     await rm(testDir, { recursive: true, force: true });
   });
 
-  // @awa-test: CHK_P-5
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI_P-12
+  // @awa-test: CLI-23_AC-1
   test('returns exit code 0 when all markers resolve', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -51,7 +53,7 @@ describe('checkCommand', () => {
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -63,7 +65,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -71,14 +73,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -91,15 +93,15 @@ test('works', () => {});
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK_P-5
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI_P-12
+  // @awa-test: CLI-23_AC-1
   test('returns exit code 1 when orphaned markers exist', async () => {
     // @awa-ignore-start
     await writeFile(
       join(codeDir, 'broken.ts'),
       `// @awa-impl: GHOST-1_AC-1
 export function ghost() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -111,7 +113,7 @@ export function ghost() {}
     expect(exitCode).toBe(1);
   });
 
-  // @awa-test: CHK-16_AC-1
+  // @awa-test: CLI-31_AC-1
   test('works with default config (no .awa.toml)', async () => {
     // Should not throw even without config file
     const exitCode = await checkCommand({
@@ -122,14 +124,14 @@ export function ghost() {}
     expect(exitCode).toBeLessThanOrEqual(1);
   });
 
-  // @awa-test: CHK-10_AC-1
+  // @awa-test: CLI-25_AC-1
   test('respects --code-ignore patterns', async () => {
     // @awa-ignore-start
     await writeFile(
       join(codeDir, 'ignored.ts'),
       `// @awa-impl: GHOST-1_AC-1
 export function ghost() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -145,7 +147,7 @@ export function ghost() {}
 
   // --- Schema validation integration tests ---
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: conforming Markdown produces no schema findings', async () => {
     // Create schema rules directory and rule file
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
@@ -165,7 +167,7 @@ sections:
     contains:
       - pattern: "ACCEPTANCE CRITERIA"
         label: "AC section"
-`
+`,
     );
 
     // Create a conforming spec file
@@ -178,7 +180,7 @@ sections:
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
 
     // Also need code/tests to avoid orphan findings
@@ -192,7 +194,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -200,14 +202,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -219,7 +221,7 @@ test('works', () => {});
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: non-conforming Markdown produces schema findings', async () => {
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
     await mkdir(schemaDir, { recursive: true });
@@ -234,7 +236,7 @@ sections:
     contains:
       - pattern: "OVERVIEW"
         label: "Overview subsection"
-`
+`,
     );
 
     // Create a non-conforming spec file (missing "Requirements" H1 and "OVERVIEW" text)
@@ -247,7 +249,7 @@ sections:
 ACCEPTANCE CRITERIA
 
 - [ ] Y-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -270,7 +272,7 @@ ACCEPTANCE CRITERIA
     expect(schemaCodes.length).toBeGreaterThan(0);
   });
 
-  // @awa-test: CHK-8_AC-1
+  // @awa-test: CLI-23_AC-1
   test('schema validation: schema-enabled = false skips schema checking', async () => {
     const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
     await mkdir(schemaDir, { recursive: true });
@@ -283,7 +285,7 @@ sections:
   - heading: "Required Section"
     level: 1
     required: true
-`
+`,
     );
 
     // Create a spec file that does NOT conform (missing "Required Section")
@@ -294,7 +296,7 @@ sections:
       join(testDir, '.awa.toml'),
       `[check]
 schema-enabled = false
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -321,7 +323,7 @@ schema-enabled = false
 
   // --- allow-warnings tests ---
 
-  // @awa-test: CHK-17_AC-1, CHK-17_AC-3
+  // @awa-test: CLI-32_AC-1, CLI-32_AC-3
   test('returns exit code 1 when warnings exist and allow-warnings is false (default)', async () => {
     // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
@@ -335,7 +337,7 @@ schema-enabled = false
     expect(exitCode).toBe(1);
   });
 
-  // @awa-test: CHK-17_AC-1
+  // @awa-test: CLI-32_AC-1
   test('returns exit code 0 when only warnings exist and allow-warnings is true', async () => {
     // Create a spec file that will generate an orphaned-spec warning (code Z not referenced)
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
@@ -350,14 +352,14 @@ schema-enabled = false
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-17_AC-2
+  // @awa-test: CLI-32_AC-2
   test('reads allow-warnings from config file', async () => {
     await writeFile(join(specDir, 'REQ-Z-z.md'), '# Title\n');
     await writeFile(
       join(testDir, '.awa.toml'),
       `[check]
 allow-warnings = true
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -370,7 +372,7 @@ allow-warnings = true
 
   // --- Configurable globs and patterns tests ---
 
-  // @awa-test: CHK-12_AC-1
+  // @awa-test: CLI-27_AC-1
   test('uses custom spec-globs from config', async () => {
     // Put spec in a custom directory
     const customSpecDir = join(testDir, 'custom-specs');
@@ -382,7 +384,7 @@ allow-warnings = true
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(customSpecDir, 'DESIGN-X-x.md'),
@@ -394,7 +396,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -402,14 +404,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -417,7 +419,7 @@ test('works', () => {});
       join(testDir, '.awa.toml'),
       `[check]
 spec-globs = ["custom-specs/**/*.md"]
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -428,7 +430,7 @@ spec-globs = ["custom-specs/**/*.md"]
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-13_AC-1
+  // @awa-test: CLI-28_AC-1
   test('uses custom code-globs from config', async () => {
     const customCodeDir = join(testDir, 'custom-code');
     await mkdir(customCodeDir, { recursive: true });
@@ -439,7 +441,7 @@ spec-globs = ["custom-specs/**/*.md"]
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -451,7 +453,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -459,14 +461,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(customCodeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -474,7 +476,7 @@ test('works', () => {});
       join(testDir, '.awa.toml'),
       `[check]
 code-globs = ["custom-code/**/*.ts"]
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -485,7 +487,7 @@ code-globs = ["custom-code/**/*.ts"]
     expect(exitCode).toBe(0);
   });
 
-  // @awa-test: CHK-14_AC-1
+  // @awa-test: CLI-29_AC-1
   test('uses custom id-pattern from config', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -494,7 +496,7 @@ code-globs = ["custom-code/**/*.ts"]
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -506,7 +508,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -514,14 +516,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -541,14 +543,14 @@ test('works', () => {});
     if (jsonOutput) {
       const parsed = JSON.parse(jsonOutput as string);
       const idFormatErrors = parsed.findings.filter(
-        (f: { code: string }) => f.code === 'id-format-invalid'
+        (f: { code: string }) => f.code === 'id-format-invalid',
       );
       expect(idFormatErrors).toHaveLength(0);
     }
     expect(exitCode).toBeLessThanOrEqual(1);
   });
 
-  // @awa-test: CHK-15_AC-1
+  // @awa-test: CLI-30_AC-1
   test('uses custom cross-ref-patterns from config', async () => {
     await writeFile(
       join(specDir, 'REQ-X-x.md'),
@@ -557,7 +559,7 @@ test('works', () => {});
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -569,7 +571,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
     // @awa-ignore-start
     await writeFile(
@@ -577,14 +579,14 @@ IMPLEMENTS: X-1_AC-1
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -592,7 +594,7 @@ test('works', () => {});
       join(testDir, '.awa.toml'),
       `[check]
 cross-ref-patterns = ["IMPLEMENTS", "VALIDATES"]
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -614,7 +616,7 @@ cross-ref-patterns = ["IMPLEMENTS", "VALIDATES"]
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -626,7 +628,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -645,7 +647,7 @@ IMPLEMENTS: X-1_AC-1
       `### X-Loader
 
 IMPLEMENTS: GHOST-99_AC-1
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -680,20 +682,20 @@ IMPLEMENTS: GHOST-99_AC-1
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
       `### X-Loader
 
 IMPLEMENTS: X-1_AC-1
-`
+`,
     );
     await writeFile(
       join(testDir, '.awa.toml'),
       `[check]
 spec-only = true
-`
+`,
     );
 
     const exitCode = await checkCommand({
@@ -707,7 +709,7 @@ spec-only = true
 
   // --- fix (default) tests ---
 
-  // @awa-test: CHK-23_AC-1
+  // @awa-test: CLI-38_AC-1
   test('fix (default) regenerates DESIGN traceability matrix', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -717,7 +719,7 @@ spec-only = true
 ACCEPTANCE CRITERIA
 
 - [ ] X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(specDir, 'DESIGN-X-x.md'),
@@ -792,21 +794,21 @@ PRINCIPLES:
 ### OLD
 
 - old → old
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.ts'),
       `// @awa-component: X-Loader
 // @awa-impl: X-1_AC-1
 export function load() {}
-`
+`,
     );
     await writeFile(
       join(codeDir, 'loader.test.ts'),
       `// @awa-test: X_P-1
 // @awa-test: X-1_AC-1
 test('works', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -823,5 +825,120 @@ test('works', () => {});
     expect(designContent).toContain('### REQ-X-x.md');
     expect(designContent).toContain('- X-1_AC-1 → X-Loader (X_P-1)');
     expect(designContent).not.toContain('OLD');
+  });
+
+  test('schema line-limit checks run after fix generates tables', async () => {
+    // @awa-ignore-start
+    // Create a schema rule with a tight line-limit
+    const schemaDir = join(testDir, '.awa', '.agent', 'schemas');
+    await mkdir(schemaDir, { recursive: true });
+    await writeFile(
+      join(schemaDir, 'DESIGN.schema.yaml'),
+      `target-files: ".awa/specs/DESIGN-*.md"
+line-limit: 49
+`,
+    );
+
+    // Create a DESIGN file whose traceability section will be regenerated by fix.
+    // After fix regenerates the matrix, the file will exceed the 49-line limit.
+    const designLines = [
+      '# Design Specification',
+      '',
+      '## Overview',
+      '',
+      'Test.',
+      '',
+      '## Architecture',
+      '',
+      '### High-Level Architecture',
+      '',
+      '```mermaid',
+      'flowchart LR',
+      '  A --> B',
+      '```',
+      '',
+      '### Module Organization',
+      '',
+      '```',
+      'src/',
+      '```',
+      '',
+      '## Components and Interfaces',
+      '',
+      '### X-Loader',
+      '',
+      'Loads things.',
+      '',
+      'IMPLEMENTS: X-1_AC-1',
+      '',
+      '```typescript',
+      'function load(): void;',
+      '```',
+      '',
+      '## Data Models',
+      '',
+      '## Correctness Properties',
+      '',
+      '- X_P-1 [Prop]: Description',
+      '  VALIDATES: X-1_AC-1',
+      '',
+      '## Error Handling',
+      '',
+      '## Testing Strategy',
+      '',
+      '## Requirements Traceability',
+      '',
+      '### Placeholder',
+      '',
+      '- old → old',
+    ];
+    // 49 items + trailing newline = file is right at the boundary
+    expect(designLines.length).toBeLessThanOrEqual(49);
+
+    await writeFile(join(specDir, 'DESIGN-X-x.md'), `${designLines.join('\n')}\n`);
+    await writeFile(
+      join(specDir, 'REQ-X-x.md'),
+      `### X-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] X-1_AC-1 [event]: WHEN foo THEN bar
+`,
+    );
+    await writeFile(
+      join(codeDir, 'loader.ts'),
+      `// @awa-component: X-Loader
+// @awa-impl: X-1_AC-1
+export function load() {}
+`,
+    );
+    await writeFile(
+      join(codeDir, 'loader.test.ts'),
+      `// @awa-test: X_P-1
+// @awa-test: X-1_AC-1
+test('works', () => {});
+`,
+    );
+    // @awa-ignore-end
+
+    const exitCode = await checkCommand({
+      config: undefined,
+      format: 'json',
+    });
+
+    // The fix should have regenerated the matrix, pushing the file over the limit.
+    // The schema check must see the post-fix content and report the violation.
+    const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      .map((c: unknown[]) => c[0])
+      .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+    expect(jsonOutput).toBeDefined();
+    const parsed = JSON.parse(jsonOutput as string);
+    const lineLimitFindings = parsed.findings.filter(
+      (f: { code: string }) => f.code === 'schema-line-limit',
+    );
+    expect(lineLimitFindings.length).toBe(1);
+    expect(lineLimitFindings[0].message).toMatch(/exceeds limit of 49/);
+    // Should fail since line-limit warnings are promoted to errors by default
+    expect(exitCode).toBe(1);
   });
 });

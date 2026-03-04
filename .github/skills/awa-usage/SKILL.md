@@ -26,7 +26,7 @@ All spec artifacts live in `.awa/`:
     │   └── schemas/
     │       ├── ARCHITECTURE.schema.yaml
     │       ├── FEAT.schema.yaml
-    │       ├── EXAMPLES.schema.yaml
+    │       ├── EXAMPLE.schema.yaml
     │       ├── REQ.schema.yaml
     │       ├── DESIGN.schema.yaml
     │       ├── API.schema.yaml
@@ -37,7 +37,7 @@ All spec artifacts live in `.awa/`:
     ├── specs/
     │   ├── ARCHITECTURE.md                # System overview
     │   ├── FEAT-{CODE}-*.md               # Feature context and motivation
-    │   ├── EXAMPLES-{CODE}-*-{nnn}.md     # Usage examples per feature
+    │   ├── EXAMPLE-{CODE}-*-{nnn}.md     # Usage examples per feature
     │   ├── REQ-{CODE}-*.md                # Requirements (EARS format)
     │   ├── DESIGN-{CODE}-*.md             # Design and components
     │   └── API-{CODE}-*.tsp               # TypeSpec API definitions
@@ -64,7 +64,7 @@ All spec artifacts live in `.awa/`:
 | Code & Tests | Source files | Implementation with traceability markers |
 | Documentation | `README.md`, `docs/` | User-facing docs |
 
-Lateral artifacts (produced at any stage): EXAMPLES, PLAN, ALIGN reports.
+Lateral artifacts (produced at any stage): EXAMPLE, PLAN, ALIGN reports.
 
 The workflow is flexible. Start top-down (architecture → code), bottom-up (code → extract requirements), or lateral (docs, refactors, ad-hoc plans).
 

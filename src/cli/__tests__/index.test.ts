@@ -1,6 +1,6 @@
 // @awa-component: CLI-ArgumentParser
-// @awa-component: TCLI-TemplateGroup
-// @awa-component: TCLI-RootProgram
+// @awa-component: CLI-TemplateGroup
+// @awa-component: CLI-RootProgram
 // @awa-test: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-5
 // @awa-test: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
 // @awa-test: CLI-3_AC-1
@@ -18,12 +18,12 @@
 // @awa-test: GEN-10_AC-1, GEN-10_AC-2
 // @awa-test: DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7
 // @awa-test: DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-12, DIFF-7_AC-13
-// @awa-test: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3, TCLI-1_AC-4, TCLI-1_AC-5, TCLI-1_AC-6, TCLI-1_AC-7
-// @awa-test: TCLI-2_AC-1, TCLI-2_AC-2
-// @awa-test: TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4
-// @awa-test: TCLI-4_AC-1, TCLI-4_AC-2
-// @awa-test: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
-// @awa-test: TCLI_P-1, TCLI_P-2, TCLI_P-3
+// @awa-test: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7
+// @awa-test: CLI-42_AC-1, CLI-42_AC-2
+// @awa-test: CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
+// @awa-test: CLI-44_AC-1, CLI-44_AC-2
+// @awa-test: CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
+// @awa-test: CLI_P-20, CLI_P-21, CLI_P-22
 
 import { Command } from 'commander';
 import { describe, expect, it } from 'vitest';
@@ -45,14 +45,14 @@ function buildGenerateCommand(): Command {
     .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
     .option(
       '--remove-features <flag...>',
-      'Feature flags to remove (can be specified multiple times)'
+      'Feature flags to remove (can be specified multiple times)',
     )
     .option('--force', 'Force overwrite existing files without prompting', false)
     .option('--dry-run', 'Preview changes without modifying files', false)
     .option(
       '--delete',
       'Enable deletion of files listed in the delete list (default: warn only)',
-      false
+      false,
     )
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
@@ -60,7 +60,7 @@ function buildGenerateCommand(): Command {
     .option('--target <name>', 'Process a specific named target from config')
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON (implies --dry-run)', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -76,7 +76,7 @@ function buildDiffCommand(): Command {
     .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
     .option(
       '--remove-features <flag...>',
-      'Feature flags to remove (can be specified multiple times)'
+      'Feature flags to remove (can be specified multiple times)',
     )
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
@@ -85,7 +85,7 @@ function buildDiffCommand(): Command {
     .option('--target <name>', 'Process a specific named target from config')
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -100,7 +100,7 @@ function buildFeaturesCommand(): Command {
     .option('--refresh', 'Force refresh of cached Git templates', false)
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -116,7 +116,7 @@ function buildTestCommand(): Command {
     .option('--refresh', 'Force refresh of cached Git templates', false)
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -151,7 +151,7 @@ function buildTraceCommand(): Command {
 /** Build the template subcommand group. */
 function buildTemplateGroup(): Command {
   const template = new Command('template').description(
-    'Template operations (generate, diff, features, test)'
+    'Template operations (generate, diff, features, test)',
   );
   template.addCommand(buildGenerateCommand());
   template.addCommand(buildDiffCommand());
@@ -182,7 +182,7 @@ function buildProgram(): Command {
 
 describe('CLI Argument Parser', () => {
   describe('generate command', () => {
-    // @awa-test: CLI-1_AC-1, TCLI-1_AC-4
+    // @awa-test: CLI-1_AC-1, CLI-41_AC-4
     it('should provide generate as a subcommand under template', () => {
       const program = buildProgram();
       const templateCmd = program.commands.find((c) => c.name() === 'template');
@@ -364,7 +364,7 @@ describe('CLI Argument Parser', () => {
   });
 
   describe('root program', () => {
-    // @awa-test: CLI-1_AC-5, CLI-9_AC-1, CLI-9_AC-3, TCLI-4_AC-1
+    // @awa-test: CLI-1_AC-5, CLI-9_AC-1, CLI-9_AC-3, CLI-44_AC-1
     it('should display help with init, template, check, and trace commands', () => {
       const program = buildProgram();
       const helpText = program.helpInformation();
@@ -407,16 +407,16 @@ describe('CLI Argument Parser', () => {
     });
   });
 
-  // @awa-test: TCLI-1_AC-1, TCLI-1_AC-2, TCLI-1_AC-3
+  // @awa-test: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3
   describe('template subcommand group', () => {
-    // @awa-test: TCLI-1_AC-1
+    // @awa-test: CLI-41_AC-1
     it('should provide template as a top-level command', () => {
       const program = buildProgram();
       const templateCmd = program.commands.find((c) => c.name() === 'template');
       expect(templateCmd).toBeDefined();
     });
 
-    // @awa-test: TCLI-1_AC-2, TCLI-4_AC-2
+    // @awa-test: CLI-41_AC-2, CLI-44_AC-2
     it('should contain generate, diff, features, and test subcommands', () => {
       const template = buildTemplateGroup();
       const names = template.commands.map((c) => c.name());
@@ -426,7 +426,7 @@ describe('CLI Argument Parser', () => {
       expect(names).toContain('test');
     });
 
-    // @awa-test: TCLI-1_AC-3
+    // @awa-test: CLI-41_AC-3
     it('should display help when invoked without a subcommand', () => {
       const template = buildTemplateGroup();
       const helpText = template.helpInformation();
@@ -436,7 +436,7 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('test');
     });
 
-    // @awa-test: TCLI-1_AC-5
+    // @awa-test: CLI-41_AC-5
     it('diff subcommand should have expected options', () => {
       const cmd = buildDiffCommand();
       const helpText = cmd.helpInformation();
@@ -451,7 +451,7 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--summary');
     });
 
-    // @awa-test: TCLI-1_AC-6
+    // @awa-test: CLI-41_AC-6
     it('features subcommand should have expected options', () => {
       const cmd = buildFeaturesCommand();
       const helpText = cmd.helpInformation();
@@ -463,7 +463,7 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--summary');
     });
 
-    // @awa-test: TCLI-1_AC-7
+    // @awa-test: CLI-41_AC-7
     it('test subcommand should have expected options', () => {
       const cmd = buildTestCommand();
       const helpText = cmd.helpInformation();
@@ -476,14 +476,14 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--summary');
     });
 
-    // @awa-test: TCLI-2_AC-1, TCLI-2_AC-2
+    // @awa-test: CLI-42_AC-1, CLI-42_AC-2
     it('should provide init as a top-level command', () => {
       const program = buildProgram();
       const initCmd = program.commands.find((c) => c.name() === 'init');
       expect(initCmd).toBeDefined();
     });
 
-    // @awa-test: TCLI-2_AC-2
+    // @awa-test: CLI-42_AC-2
     it('init command should accept the same options as generate', () => {
       const initCmd = buildInitCommand();
       const genCmd = buildGenerateCommand();
@@ -493,9 +493,9 @@ describe('CLI Argument Parser', () => {
     });
   });
 
-  // @awa-test: TCLI-3_AC-1, TCLI-3_AC-2, TCLI-3_AC-3, TCLI-3_AC-4
+  // @awa-test: CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
   describe('top-level awa commands', () => {
-    // @awa-test: TCLI-3_AC-1, TCLI-3_AC-3
+    // @awa-test: CLI-43_AC-1, CLI-43_AC-3
     it('should provide check as a top-level command with expected options', () => {
       const program = buildProgram();
       const checkCmd = program.commands.find((c) => c.name() === 'check');
@@ -507,7 +507,7 @@ describe('CLI Argument Parser', () => {
       expect(helpText).toContain('--spec-only');
     });
 
-    // @awa-test: TCLI-3_AC-2, TCLI-3_AC-4
+    // @awa-test: CLI-43_AC-2, CLI-43_AC-4
     it('should provide trace as a top-level command with expected options', () => {
       const program = buildProgram();
       const traceCmd = program.commands.find((c) => c.name() === 'trace');
@@ -520,7 +520,7 @@ describe('CLI Argument Parser', () => {
     });
   });
 
-  // @awa-test: TCLI-5_AC-1, TCLI-5_AC-2, TCLI-5_AC-3, TCLI-5_AC-4
+  // @awa-test: CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
   describe('removed top-level commands', () => {
     it('should NOT have generate, diff, features, or test at root level', () => {
       const program = buildProgram();

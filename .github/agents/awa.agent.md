@@ -1,5 +1,5 @@
 ---
-description: "awa 1.6.0"
+description: "awa 1.7.2"
 tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
@@ -14,12 +14,13 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 </workflow>
 
 <file_structure>
+```
   .awa/
   ├── .agent/
   │   └── schemas/
   │       ├── ARCHITECTURE.schema.yaml
   │       ├── FEAT.schema.yaml
-  │       ├── EXAMPLES.schema.yaml
+  │       ├── EXAMPLE.schema.yaml
   │       ├── REQ.schema.yaml
   │       ├── DESIGN.schema.yaml
   │       ├── API.schema.yaml
@@ -30,7 +31,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md
-  │   ├── EXAMPLES-{CODE}-{feature-name}-{nnn}.md
+  │   ├── EXAMPLE-{CODE}-{feature-name}-{nnn}.md
   │   ├── REQ-{CODE}-{feature-name}.md
   │   ├── DESIGN-{CODE}-{feature-name}.md
   │   └── API-{CODE}-{api-name}.tsp
@@ -42,12 +43,13 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │   └── ALIGN-{x}-WITH-{y}-{nnn}.md
   └── rules/
       └── *.md
+```
 </file_structure>
 
 <file_descriptions>
 - ARCHITECTURE.md: High-level architecture overview of the project.
 - FEAT-{CODE}-{feature-name}.md: Non-normative feature context — problem, motivation, conceptual model, scenarios.
-- EXAMPLES-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
+- EXAMPLE-{CODE}-{feature-name}-{nnn}.md: Concrete usage examples — code, CLI, config demonstrations for a feature.
 - REQ-{CODE}-{feature-name}.md: Requirements in EARS format (INCOSE-compliant).
 - DESIGN-{CODE}-{feature-name}.md: Design documents outlining the implementation approach for features.
 - API-{CODE}-{api-name}.tsp: TypeSpec files defining major APIs.
@@ -58,6 +60,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 </file_descriptions>
 
 <traceability_chain>
+```
 {CODE}-{n} = requirement id, e.g. DIFF-1; subrequirement id = {CODE}-{n}.{p}, e.g. DIFF-1.1
 {CODE}-{n}[.{p}]_AC-{m} = acceptance criterion id, e.g. DIFF-1_AC-1 or DIFF-1.1_AC-2
 {CODE}_P-{n} = correctness property id, e.g. DIFF_P-2
@@ -89,10 +92,11 @@ DESIGN-{CODE}-{feature}.md
   └── @awa-test: {CODE}-{n}[.{p}]_AC-{m}    // verifies AC directly
 
 Markers create the trace, not file paths.
+```
 </traceability_chain>
 
 <file_size_limits>
-Any file exceeding schema defined line-limit, or otherwise 500 lines, MUST be split logically into multiple files unless impossible. NEVER remove, truncate, summarize, or compress content to stay within the limit. Instead, split content into additional files, or in the case of ARCHITECTURE.md, push details to other spec files.
+Any file exceeding schema defined line-limit, or otherwise 800 lines, MUST be split logically into multiple files unless impossible. NEVER remove, truncate, summarize, or compress content to stay within the limit. Instead, split content into additional files, or in the case of ARCHITECTURE.md, push details to other spec files.
 </file_size_limits>
 
 <core_principles>

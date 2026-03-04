@@ -1,8 +1,8 @@
-// @awa-component: CHK-SpecSpecChecker
-// @awa-impl: CHK-5_AC-1
-// @awa-impl: CHK-7_AC-1
-// @awa-impl: CHK-15_AC-1
-// @awa-impl: CHK-21_AC-1
+// @awa-component: CLI-SpecSpecChecker
+// @awa-impl: CLI-20_AC-1
+// @awa-impl: CLI-22_AC-1
+// @awa-impl: CLI-30_AC-1
+// @awa-impl: CLI-36_AC-1
 
 import type {
   CheckConfig,
@@ -12,15 +12,15 @@ import type {
   SpecParseResult,
 } from './types.js';
 
-// @awa-impl: CHK-5_AC-1, CHK-7_AC-1, CHK-21_AC-1
+// @awa-impl: CLI-20_AC-1, CLI-22_AC-1, CLI-36_AC-1
 export function checkSpecAgainstSpec(
   specs: SpecParseResult,
   markers: MarkerScanResult,
-  config: CheckConfig
+  config: CheckConfig,
 ): CheckResult {
   const findings: Finding[] = [];
 
-  // @awa-impl: CHK-5_AC-1
+  // @awa-impl: CLI-20_AC-1
   // Check cross-references resolve to real IDs
   for (const specFile of specs.specFiles) {
     for (const crossRef of specFile.crossRefs) {
@@ -39,7 +39,7 @@ export function checkSpecAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-21_AC-1
+  // @awa-impl: CLI-36_AC-1
   // G3: Check that every REQ AC is claimed by at least one DESIGN IMPLEMENTS
   const implementedAcIds = new Set<string>();
   for (const specFile of specs.specFiles) {
@@ -76,7 +76,7 @@ export function checkSpecAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-7_AC-1
+  // @awa-impl: CLI-22_AC-1
   // Check for orphaned spec files (CODE not referenced by any other spec or code)
   // Skip when specOnly — orphaned-spec detection depends on code markers to be meaningful
   if (!config.specOnly) {

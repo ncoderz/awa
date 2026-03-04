@@ -7,6 +7,7 @@
 
 import * as fc from 'fast-check';
 import { describe, it } from 'vitest';
+
 import { ConfigLoader } from '../core/config.js';
 import { ConflictResolver } from '../core/resolver.js';
 import { TemplateResolver } from '../core/template-resolver.js';
@@ -58,9 +59,9 @@ describe('Property-Based Tests', () => {
 
             // Otherwise config output should be used
             return resolved.output === fileConfig.output;
-          }
+          },
         ),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -76,7 +77,7 @@ describe('Property-Based Tests', () => {
             const loader = new ConfigLoader();
             const resolved = loader.merge(
               { output: './output', features: cliFeatures },
-              { output: './output', features: configFeatures }
+              { output: './output', features: configFeatures },
             );
 
             // Resolved features should exactly match CLI features
@@ -84,9 +85,9 @@ describe('Property-Based Tests', () => {
               resolved.features.length === cliFeatures.length &&
               resolved.features.every((f, i) => f === cliFeatures[i])
             );
-          }
+          },
         ),
-        { numRuns: 50 }
+        { numRuns: 50 },
       );
     });
   });
@@ -110,9 +111,9 @@ describe('Property-Based Tests', () => {
 
             // In dry-run mode, should always skip all without prompting
             return resolution.overwrite.length === 0 && resolution.skip.length === filePaths.length;
-          }
+          },
         ),
-        { numRuns: 50 }
+        { numRuns: 50 },
       );
     });
   });
@@ -142,9 +143,9 @@ describe('Property-Based Tests', () => {
               );
             }
             return resolution.overwrite.length === filePaths.length && resolution.skip.length === 0;
-          }
+          },
         ),
-        { numRuns: 50 }
+        { numRuns: 50 },
       );
     });
   });
@@ -158,7 +159,7 @@ describe('Property-Based Tests', () => {
             fc.constant('./templates'),
             fc.constant('../templates'),
             fc.constant('/absolute/path'),
-            fc.constant('~/home/path')
+            fc.constant('~/home/path'),
           ),
           (localPath) => {
             const resolver = new TemplateResolver();
@@ -166,9 +167,9 @@ describe('Property-Based Tests', () => {
 
             // Local paths should always be detected as local
             return type === 'local';
-          }
+          },
         ),
-        { numRuns: 20 }
+        { numRuns: 20 },
       );
     });
   });
@@ -182,7 +183,7 @@ describe('Property-Based Tests', () => {
             fc.constant('user/repo'),
             fc.constant('github:user/repo'),
             fc.constant('https://github.com/user/repo'),
-            fc.constant('git@github.com:user/repo')
+            fc.constant('git@github.com:user/repo'),
           ),
           (gitSource) => {
             const resolver = new TemplateResolver();
@@ -192,9 +193,9 @@ describe('Property-Based Tests', () => {
             const path2 = resolver.getCachePath(gitSource);
 
             return path1 === path2;
-          }
+          },
         ),
-        { numRuns: 20 }
+        { numRuns: 20 },
       );
     });
 
@@ -212,9 +213,9 @@ describe('Property-Based Tests', () => {
 
             // Different sources should generate different paths
             return path1 !== path2;
-          }
+          },
         ),
-        { numRuns: 50 }
+        { numRuns: 50 },
       );
     });
   });
@@ -227,15 +228,15 @@ describe('Property-Based Tests', () => {
             fc.constant('_hidden.md'),
             fc.constant('_private.txt'),
             fc.constant('_README.md'),
-            fc.constant('_.md')
+            fc.constant('_.md'),
           ),
           (filename) => {
             // Files starting with underscore should be excluded
             // This is verified by our walkDirectory function
             return filename.startsWith('_');
-          }
+          },
         ),
-        { numRuns: 20 }
+        { numRuns: 20 },
       );
     });
   });
@@ -262,7 +263,7 @@ describe('Property-Based Tests', () => {
             resolution.equal.includes('test.txt') && !resolution.overwrite.includes('test.txt')
           );
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
   });
@@ -281,7 +282,7 @@ describe('Property-Based Tests', () => {
           // Same input should always produce same output
           return type1 === type2;
         }),
-        { numRuns: 100 }
+        { numRuns: 100 },
       );
     });
 
@@ -323,9 +324,9 @@ describe('Property-Based Tests', () => {
 
             // Results should be identical
             return result1.output === result2.output;
-          }
+          },
         ),
-        { numRuns: 50 }
+        { numRuns: 50 },
       );
     });
 
@@ -343,9 +344,9 @@ describe('Property-Based Tests', () => {
             // All paths should be unique (no collisions) when sources are unique
             const uniquePaths = new Set(paths);
             return uniquePaths.size === sources.length;
-          }
+          },
         ),
-        { numRuns: 20 }
+        { numRuns: 20 },
       );
     });
   });

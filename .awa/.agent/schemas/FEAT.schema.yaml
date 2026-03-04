@@ -6,7 +6,7 @@ description: >
   to distinguish from normative REQ/DESIGN documents.
   Prohibited: normative language (SHALL/SHOULD/MAY), acceptance criteria,
   traceability IDs, design decisions, bold formatting.
-line-limit: 500
+line-limit: 800
 
 sections:
   # Top-level heading with INFORMATIVE marker
@@ -32,6 +32,13 @@ sections:
     description: >
       How users should think about this feature. Mental model, key abstractions,
       and relationships between concepts. May include diagrams.
+
+  # Scope Boundary section (optional, after Conceptual Model)
+  - heading: "Scope Boundary"
+    level: 2
+    description: >
+      Single sentence defining the feature's scope boundary — what this feature
+      owns and where it ends.
 
   # Scenarios section with repeatable scenario headings
   - heading: "Scenarios"

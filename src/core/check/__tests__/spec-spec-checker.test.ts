@@ -1,11 +1,12 @@
-// @awa-component: CHK-SpecSpecChecker
-// @awa-test: CHK-5_AC-1
-// @awa-test: CHK-7_AC-1
-// @awa-test: CHK-21_AC-1
-// @awa-test: CHK_P-3
-// @awa-test: CHK_P-10
+// @awa-component: CLI-SpecSpecChecker
+// @awa-test: CLI-20_AC-1
+// @awa-test: CLI-22_AC-1
+// @awa-test: CLI-36_AC-1
+// @awa-test: CLI_P-10
+// @awa-test: CLI_P-17
 
 import { describe, expect, test } from 'vitest';
+
 import { checkSpecAgainstSpec } from '../spec-spec-checker.js';
 import type {
   CheckConfig,
@@ -18,7 +19,7 @@ import { DEFAULT_CHECK_CONFIG } from '../types.js';
 
 function makeSpecs(
   specFiles: SpecFile[],
-  overrides: Partial<SpecParseResult> = {}
+  overrides: Partial<SpecParseResult> = {},
 ): SpecParseResult {
   const requirementIds = new Set<string>();
   const acIds = new Set<string>();
@@ -57,8 +58,8 @@ function makeConfig(): CheckConfig {
 }
 
 describe('SpecSpecChecker', () => {
-  // @awa-test: CHK_P-3
-  // @awa-test: CHK-5_AC-1
+  // @awa-test: CLI_P-10
+  // @awa-test: CLI-20_AC-1
   test('reports broken cross-reference when IMPLEMENTS target does not exist', () => {
     const specs = makeSpecs([
       {
@@ -98,7 +99,7 @@ describe('SpecSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-3
+  // @awa-test: CLI_P-10
   test('does not report cross-reference when target exists', () => {
     const specs = makeSpecs([
       {
@@ -129,7 +130,7 @@ describe('SpecSpecChecker', () => {
     expect(broken).toHaveLength(0);
   });
 
-  // @awa-test: CHK-7_AC-1
+  // @awa-test: CLI-22_AC-1
   test('reports orphaned spec file whose CODE is not referenced anywhere', () => {
     const specs = makeSpecs([
       {
@@ -154,7 +155,7 @@ describe('SpecSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK-7_AC-1
+  // @awa-test: CLI-22_AC-1
   test('does not report spec file as orphaned when CODE is referenced by markers', () => {
     const specs = makeSpecs([
       {
@@ -177,7 +178,7 @@ describe('SpecSpecChecker', () => {
     expect(orphaned).toHaveLength(0);
   });
 
-  // @awa-test: CHK-7_AC-1
+  // @awa-test: CLI-22_AC-1
   test('does not report spec file as orphaned when CODE is cross-referenced', () => {
     const specs = makeSpecs([
       {
@@ -208,7 +209,7 @@ describe('SpecSpecChecker', () => {
     expect(orphaned).toHaveLength(0);
   });
 
-  // @awa-test: CHK-7_AC-1
+  // @awa-test: CLI-22_AC-1
   test('skips ARCHITECTURE.md (no code prefix)', () => {
     const specs = makeSpecs([
       {
@@ -228,7 +229,7 @@ describe('SpecSpecChecker', () => {
     expect(orphaned).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-3
+  // @awa-test: CLI_P-10
   test('reports broken VALIDATES cross-reference', () => {
     const specs = makeSpecs([
       {
@@ -254,8 +255,8 @@ describe('SpecSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-10
-  // @awa-test: CHK-21_AC-1
+  // @awa-test: CLI_P-17
+  // @awa-test: CLI-36_AC-1
   test('reports unlinked AC when REQ AC is not claimed by any DESIGN IMPLEMENTS', () => {
     const specs = makeSpecs([
       {
@@ -295,7 +296,7 @@ describe('SpecSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-10
+  // @awa-test: CLI_P-17
   test('does not report AC as unlinked when DESIGN IMPLEMENTS claims it', () => {
     const specs = makeSpecs([
       {
@@ -326,7 +327,7 @@ describe('SpecSpecChecker', () => {
     expect(unlinked).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-10
+  // @awa-test: CLI_P-17
   test('only checks ACs from REQ files, not DESIGN files', () => {
     const specs = makeSpecs([
       {

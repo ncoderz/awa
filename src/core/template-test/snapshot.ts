@@ -3,6 +3,7 @@
 
 import { mkdir, readdir, rm } from 'node:fs/promises';
 import { join, relative } from 'node:path';
+
 import { pathExists, readTextFile, writeTextFile } from '../../utils/fs.js';
 import type { SnapshotFileResult } from './types.js';
 
@@ -27,7 +28,7 @@ async function walkRelative(dir: string, base: string): Promise<string[]> {
 // @awa-impl: TTST-5_AC-1
 export async function compareSnapshots(
   renderedDir: string,
-  snapshotDir: string
+  snapshotDir: string,
 ): Promise<SnapshotFileResult[]> {
   const results: SnapshotFileResult[] = [];
 

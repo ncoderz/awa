@@ -17,7 +17,7 @@ export function estimateTokens(text: string): number {
  */
 export function applyTokenBudget(
   sections: ContentSection[],
-  maxTokens: number
+  maxTokens: number,
 ): { sections: ContentSection[]; truncated: boolean; footer: string | null } {
   if (maxTokens <= 0) {
     return { sections: [], truncated: sections.length > 0, footer: null };

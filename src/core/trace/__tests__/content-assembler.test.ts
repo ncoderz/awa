@@ -2,6 +2,7 @@
 // @awa-test: TRC-5_AC-1, TRC-5_AC-2, TRC-5_AC-3, TRC-5_AC-4
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { assembleContent } from '../content-assembler.js';
 import type { TraceChain, TraceResult } from '../types.js';
 

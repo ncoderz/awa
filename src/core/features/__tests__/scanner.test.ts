@@ -6,7 +6,9 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import { rmDir } from '../../../utils/fs.js';
 import { FeatureScanner } from '../scanner.js';
 
@@ -78,11 +80,11 @@ describe('FeatureScanner', () => {
     test('should scan template files and find feature flags', async () => {
       await writeFile(
         join(TEST_DIR, 'template.md'),
-        `<% if (it.features.includes('copilot')) { %>copilot content<% } %>`
+        `<% if (it.features.includes('copilot')) { %>copilot content<% } %>`,
       );
       await writeFile(
         join(TEST_DIR, 'other.md'),
-        `<% if (it.features.includes('claude')) { %>claude content<% } %>`
+        `<% if (it.features.includes('claude')) { %>claude content<% } %>`,
       );
 
       const result = await scanner.scan(TEST_DIR);
@@ -98,11 +100,11 @@ describe('FeatureScanner', () => {
     test('should aggregate files per flag', async () => {
       await writeFile(
         join(TEST_DIR, 'a.md'),
-        `<% if (it.features.includes('copilot')) { %>a<% } %>`
+        `<% if (it.features.includes('copilot')) { %>a<% } %>`,
       );
       await writeFile(
         join(TEST_DIR, 'b.md'),
-        `<% if (it.features.includes('copilot')) { %>b<% } %>`
+        `<% if (it.features.includes('copilot')) { %>b<% } %>`,
       );
 
       const result = await scanner.scan(TEST_DIR);
@@ -138,7 +140,7 @@ describe('FeatureScanner', () => {
       await mkdir(partialDir, { recursive: true });
       await writeFile(
         join(partialDir, '_header.md'),
-        `<% if (it.features.includes('partial-flag')) { %><% } %>`
+        `<% if (it.features.includes('partial-flag')) { %><% } %>`,
       );
 
       const result = await scanner.scan(TEST_DIR);

@@ -1,16 +1,17 @@
 // @awa-component: GEN-GenerateCommand
 // @awa-component: JSON-GenerateCommand
-// @awa-component: INIT-ConfigHint
+// @awa-component: GEN-ConfigHint
 // @awa-component: MULTI-GenerateCommand
-// @awa-impl: INIT-5_AC-1
+// @awa-impl: GEN-17_AC-1
 // @awa-impl: MULTI-6_AC-1
 // @awa-impl: MULTI-10_AC-1
-// @awa-impl: CHK-1_AC-2
-// @awa-impl: CHK-1_AC-3
-// @awa-impl: CHK-5_AC-2
-// @awa-impl: CHK-5_AC-3
+// @awa-impl: CLI-16_AC-2
+// @awa-impl: CLI-16_AC-3
+// @awa-impl: CLI-20_AC-2
+// @awa-impl: CLI-20_AC-3
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
+
 import { batchRunner } from '../core/batch-runner.js';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';
@@ -139,7 +140,7 @@ export async function generateCommand(cliOptions: RawCliOptions): Promise<void> 
     // Load configuration file
     const fileConfig = await configLoader.load(cliOptions.config ?? null);
 
-    // @awa-impl: INIT-5_AC-1
+    // @awa-impl: GEN-17_AC-1
     // Non-blocking hint when no config file is present and --config was not provided
     if (!cliOptions.config && fileConfig === null) {
       logger.info('Tip: create .awa.toml to save your options for next time.');

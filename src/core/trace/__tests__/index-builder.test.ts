@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import type { MarkerScanResult, SpecParseResult } from '../../check/types.js';
 import { buildTraceIndex } from '../index-builder.js';
 

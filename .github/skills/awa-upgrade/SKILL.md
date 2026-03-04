@@ -13,7 +13,7 @@ description: Upgrade specs to match current schemas. Use this when asked to upgr
  <read path=".awa/specs/ARCHITECTURE.md" required="true" error="on not found" />
  <read path=".awa/.agent/schemas/ARCHITECTURE.schema.yaml" required="true" error="on not found" />
  <read path=".awa/.agent/schemas/FEAT.schema.yaml" required="true" error="on not found" />
- <read path=".awa/.agent/schemas/EXAMPLES.schema.yaml" required="true" error="on not found" />
+ <read path=".awa/.agent/schemas/EXAMPLE.schema.yaml" required="true" error="on not found" />
  <read path=".awa/.agent/schemas/REQ.schema.yaml" required="true" error="on not found" />
  <read path=".awa/.agent/schemas/DESIGN.schema.yaml" required="true" error="on not found" />
  <read path=".awa/.agent/schemas/TASK.schema.yaml" required="true" error="on not found" />
@@ -33,7 +33,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
 <file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if exists" />
-<file type="examples" path=".awa/specs/EXAMPLES-{CODE}-{feature-name}-{nnn}.md" required="if exists" />
+<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if exists" />
 <file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if exists" />
 <file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if exists" />
 <file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if exists" />
@@ -64,5 +64,5 @@ You SHALL follow schema structure strictly (section order, nesting).
 You SHALL obey schema render expectations (omit optional empty sections, avoid prohibited patterns).
 You SHALL upgrade existing trace IDs if necessary.
 You SHALL upgrade existing filenames if necessary.
-You SHALL respect the 500-line limit; split logically if needed.
+You SHALL respect the file line-limits; split logically if needed.
 You MAY use todos and tools as needed.

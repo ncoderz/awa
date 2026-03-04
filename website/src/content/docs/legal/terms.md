@@ -11,17 +11,17 @@ pagefind: false
 
 **Effective date:** 25 February 2026
 
-awa is open source software released under the [MIT License](https://github.com/ncoderz/awa/blob/main/LICENSE). Your use of the software is governed by that license.
+awa is open source software released under the [BSD 3-Clause License](https://github.com/ncoderz/awa/blob/main/LICENSE). Your use of the software is governed by that license.
 
 ### Software
 
 - awa is provided **"as is"**, without warranty of any kind, express or implied.
-- See the [MIT License](https://github.com/ncoderz/awa/blob/main/LICENSE) for the full terms governing use, modification, and distribution.
+- See the [BSD 3-Clause License](https://github.com/ncoderz/awa/blob/main/LICENSE) for the full terms governing use, modification, and distribution.
 
 ### Contributions
 
 - Contributions to the project are governed by the [Contributing Guide](https://github.com/ncoderz/awa/blob/main/CONTRIBUTING.md).
-- By submitting a contribution, you agree to license it under the same MIT License.
+- By submitting a contribution, you agree to license it under the same BSD 3-Clause License.
 
 ### Website
 

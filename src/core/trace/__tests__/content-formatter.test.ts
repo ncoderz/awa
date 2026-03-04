@@ -1,6 +1,7 @@
 // @awa-test: TRC-7_AC-1
 
 import { describe, expect, it } from 'vitest';
+
 import { formatContentJson, formatContentMarkdown } from '../content-formatter.js';
 import type { ContentSection } from '../types.js';
 
@@ -70,7 +71,7 @@ describe('formatContentMarkdown', () => {
     const result = formatContentMarkdown(
       [makeSection()],
       'TEST-1',
-      '... 3 more sections omitted (use --max-tokens to increase)'
+      '... 3 more sections omitted (use --max-tokens to increase)',
     );
     expect(result).toContain('---');
     expect(result).toContain('3 more sections omitted');
@@ -107,7 +108,7 @@ describe('formatContentJson', () => {
     const output = formatContentJson(
       [makeSection({ content: 'x'.repeat(40) })],
       'TEST-1',
-      '... 2 more sections omitted'
+      '... 2 more sections omitted',
     );
     const parsed = JSON.parse(output);
 

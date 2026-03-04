@@ -39,7 +39,7 @@ TEST CRITERIA: Requirements renumbered sequentially, subreqs and ACs renumbered 
 GOAL: Apply renumber map across all artifact types with swap-safe replacement
 TEST CRITERIA: Spec files updated, code markers updated, cross-refs updated, no swap collisions, only target prefix modified
 
-- [ ] T-RENUM-030 [RENUM-5] Propagate map to spec files (REQ, DESIGN, FEAT, TASK, EXAMPLES, PLAN) and update cross-ref lines (DEPENDS ON, IMPLEMENTS, VALIDATES) → src/core/renumber/propagator.ts
+- [ ] T-RENUM-030 [RENUM-5] Propagate map to spec files (REQ, DESIGN, FEAT, TASK, EXAMPLE, PLAN) and update cross-ref lines (DEPENDS ON, IMPLEMENTS, VALIDATES) → src/core/renumber/propagator.ts
   IMPLEMENTS: RENUM-5_AC-1, RENUM-5_AC-3
 - [ ] T-RENUM-031 [RENUM-5] Propagate map to source and test files containing @awa-impl, @awa-test, @awa-component markers → src/core/renumber/propagator.ts
   IMPLEMENTS: RENUM-5_AC-2

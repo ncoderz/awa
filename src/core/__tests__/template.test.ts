@@ -6,12 +6,14 @@
 // @awa-test: TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3
 // @awa-test: TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4
 // @awa-test: TPL-11_AC-1, TPL-11_AC-2
-// @awa-test: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3
+// @awa-test: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { TemplateError } from '../../types/index.js';
 import { TemplateEngine } from '../template.js';
 
@@ -61,7 +63,7 @@ describe('TemplateEngine', () => {
       const templatePath = join(testDir, 'test.md');
 
       await expect(unconfiguredEngine.render(templatePath, { features: [] })).rejects.toThrow(
-        TemplateError
+        TemplateError,
       );
     });
 
@@ -172,7 +174,7 @@ Features: <%= it.features.join(', ') %>
       const templatePath = join(testDir, 'main.md');
       await writeFile(
         templatePath,
-        '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here'
+        '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here',
       );
 
       const result = await engine.render(templatePath, { features: [] });

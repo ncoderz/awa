@@ -8,12 +8,14 @@
 // @awa-test: CFG-6_AC-1, CFG-6_AC-2
 // @awa-test: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1
 // @awa-test: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
-// @awa-test: FP-1_AC-1, FP-1_AC-4, FP-3_AC-1, FP-5_AC-1
+// @awa-test: CFG-7_AC-1, CFG-7_AC-4, CFG-9_AC-1, CFG-11_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { ConfigError, type FileConfig } from '../../types/index.js';
 import { ConfigLoader } from '../config.js';
 
@@ -186,7 +188,7 @@ list-unknown = true
       expect(() => loader.merge(cliOptions, fileConfig)).toThrow('Output directory is required');
     });
 
-    // @awa-test: CFG-4_AC-3, CLI-4_AC-3, FP-3_AC-1, FP-5_AC-1
+    // @awa-test: CFG-4_AC-3, CLI-4_AC-3, CFG-9_AC-1, CFG-11_AC-1
     // @awa-test: CFG-3_AC-9, CFG-3_AC-10
     it('should use default values for other options when not provided', () => {
       const cliOptions = {
@@ -470,7 +472,7 @@ output = "."
         `
 [targets]
 claude = "invalid"
-`
+`,
       );
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
@@ -483,7 +485,7 @@ claude = "invalid"
         `
 [targets.claude]
 output = 123
-`
+`,
       );
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);

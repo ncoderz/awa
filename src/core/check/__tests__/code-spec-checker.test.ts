@@ -1,20 +1,21 @@
-// @awa-component: CHK-CodeSpecChecker
-// @awa-test: CHK-3_AC-1
-// @awa-test: CHK-4_AC-1
-// @awa-test: CHK-6_AC-1
-// @awa-test: CHK-18_AC-1
-// @awa-test: CHK-19_AC-1
-// @awa-test: CHK-20_AC-1
-// @awa-test: CHK-22_AC-1
-// @awa-test: CHK_P-1
-// @awa-test: CHK_P-2
-// @awa-test: CHK_P-4
-// @awa-test: CHK_P-6
-// @awa-test: CHK_P-7
-// @awa-test: CHK_P-8
-// @awa-test: CHK_P-9
+// @awa-component: CLI-CodeSpecChecker
+// @awa-test: CLI-18_AC-1
+// @awa-test: CLI-19_AC-1
+// @awa-test: CLI-21_AC-1
+// @awa-test: CLI-33_AC-1
+// @awa-test: CLI-34_AC-1
+// @awa-test: CLI-35_AC-1
+// @awa-test: CLI-37_AC-1
+// @awa-test: CLI_P-8
+// @awa-test: CLI_P-9
+// @awa-test: CLI_P-11
+// @awa-test: CLI_P-13
+// @awa-test: CLI_P-14
+// @awa-test: CLI_P-15
+// @awa-test: CLI_P-16
 
 import { describe, expect, test } from 'vitest';
+
 import { checkCodeAgainstSpec } from '../code-spec-checker.js';
 import type { CheckConfig, CodeMarker, MarkerScanResult, SpecParseResult } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';
@@ -41,8 +42,8 @@ function makeConfig(overrides: Partial<CheckConfig> = {}): CheckConfig {
 }
 
 describe('CodeSpecChecker', () => {
-  // @awa-test: CHK_P-1
-  // @awa-test: CHK-3_AC-1
+  // @awa-test: CLI_P-8
+  // @awa-test: CLI-18_AC-1
   test('reports orphaned impl marker when ID not in specs', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'FOO-1_AC-1', filePath: 'src/foo.ts', line: 5 },
@@ -59,7 +60,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-1
+  // @awa-test: CLI_P-8
   test('does not report impl marker when ID exists in specs', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/config.ts', line: 10 },
@@ -72,7 +73,7 @@ describe('CodeSpecChecker', () => {
     expect(orphaned).toHaveLength(0);
   });
 
-  // @awa-test: CHK-3_AC-1
+  // @awa-test: CLI-18_AC-1
   test('reports orphaned component marker when name not in specs', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'FOO-Loader', filePath: 'src/foo.ts', line: 1 },
@@ -89,8 +90,8 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-2
-  // @awa-test: CHK-4_AC-1
+  // @awa-test: CLI_P-9
+  // @awa-test: CLI-19_AC-1
   test('reports uncovered ACs when no test marker references them', () => {
     const markers = makeMarkers([{ type: 'test', id: 'CFG-1_AC-1', filePath: 'test.ts', line: 5 }]);
     const specs = makeSpecs({
@@ -119,7 +120,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-2
+  // @awa-test: CLI_P-9
   test('does not report AC as uncovered when test marker exists', () => {
     const markers = makeMarkers([{ type: 'test', id: 'CFG-1_AC-1', filePath: 'test.ts', line: 5 }]);
     const specs = makeSpecs({
@@ -133,8 +134,8 @@ describe('CodeSpecChecker', () => {
     expect(uncovered).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-4
-  // @awa-test: CHK-6_AC-1
+  // @awa-test: CLI_P-11
+  // @awa-test: CLI-21_AC-1
   test('reports invalid ID format for impl markers', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'bad_id_format', filePath: 'src/foo.ts', line: 3 },
@@ -151,7 +152,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-4
+  // @awa-test: CLI_P-11
   test('does not report valid IDs as format errors', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/a.ts', line: 1 },
@@ -169,7 +170,7 @@ describe('CodeSpecChecker', () => {
     expect(invalid).toHaveLength(0);
   });
 
-  // @awa-test: CHK-6_AC-1
+  // @awa-test: CLI-21_AC-1
   test('skips ID format check for component markers', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'CFG-ConfigLoader', filePath: 'src/a.ts', line: 1 },
@@ -182,7 +183,7 @@ describe('CodeSpecChecker', () => {
     expect(invalid).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-1
+  // @awa-test: CLI_P-8
   test('reports multiple orphaned markers in different files', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'A-1_AC-1', filePath: 'src/a.ts', line: 1 },
@@ -196,8 +197,8 @@ describe('CodeSpecChecker', () => {
     expect(orphaned).toHaveLength(2);
   });
 
-  // @awa-test: CHK_P-6
-  // @awa-test: CHK-18_AC-1
+  // @awa-test: CLI_P-13
+  // @awa-test: CLI-33_AC-1
   test('reports uncovered component when no @awa-component marker exists', () => {
     const markers = makeMarkers([]);
     const specs = makeSpecs({
@@ -226,7 +227,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-6
+  // @awa-test: CLI_P-13
   test('does not report component as uncovered when @awa-component marker exists', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'CFG-ConfigLoader', filePath: 'src/config.ts', line: 1 },
@@ -242,8 +243,8 @@ describe('CodeSpecChecker', () => {
     expect(uncovered).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-7
-  // @awa-test: CHK-19_AC-1
+  // @awa-test: CLI_P-14
+  // @awa-test: CLI-34_AC-1
   test('reports unimplemented AC when no @awa-impl marker exists', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/config.ts', line: 10 },
@@ -274,7 +275,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-7
+  // @awa-test: CLI_P-14
   test('does not report AC as unimplemented when @awa-impl marker exists', () => {
     const markers = makeMarkers([
       { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/config.ts', line: 10 },
@@ -290,8 +291,8 @@ describe('CodeSpecChecker', () => {
     expect(unimplemented).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-8
-  // @awa-test: CHK-20_AC-1
+  // @awa-test: CLI_P-15
+  // @awa-test: CLI-35_AC-1
   test('reports uncovered property when no @awa-test marker references it', () => {
     const markers = makeMarkers([{ type: 'test', id: 'CFG_P-1', filePath: 'test.ts', line: 5 }]);
     const specs = makeSpecs({
@@ -320,7 +321,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-8
+  // @awa-test: CLI_P-15
   test('does not report property as uncovered when @awa-test marker exists', () => {
     const markers = makeMarkers([{ type: 'test', id: 'CFG_P-1', filePath: 'test.ts', line: 5 }]);
     const specs = makeSpecs({
@@ -334,8 +335,8 @@ describe('CodeSpecChecker', () => {
     expect(uncovered).toHaveLength(0);
   });
 
-  // @awa-test: CHK_P-9
-  // @awa-test: CHK-22_AC-1
+  // @awa-test: CLI_P-16
+  // @awa-test: CLI-37_AC-1
   test('reports impl-not-in-implements when @awa-impl is not in DESIGN IMPLEMENTS', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
@@ -372,8 +373,8 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-9
-  // @awa-test: CHK-22_AC-1
+  // @awa-test: CLI_P-16
+  // @awa-test: CLI-37_AC-1
   test('reports implements-not-in-impl when DESIGN IMPLEMENTS has no code @awa-impl', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
@@ -414,7 +415,7 @@ describe('CodeSpecChecker', () => {
     });
   });
 
-  // @awa-test: CHK_P-9
+  // @awa-test: CLI_P-16
   test('does not report impl-vs-implements when sets match', () => {
     const markers = makeMarkers([
       { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },

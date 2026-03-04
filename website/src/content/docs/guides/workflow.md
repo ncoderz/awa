@@ -33,7 +33,7 @@ All spec artifacts live in `.awa/`:
 │   ├── REQ-{CODE}-*.md              # Requirements (EARS format)
 │   ├── DESIGN-{CODE}-*.md           # Design & components
 │   ├── API-{CODE}-*.tsp             # TypeSpec API definitions
-│   └── EXAMPLES-{CODE}-*-{nnn}.md   # Usage examples per feature
+│   └── EXAMPLE-{CODE}-*-{nnn}.md   # Usage examples per feature
 ├── tasks/
 │   └── TASK-{CODE}-*-{nnn}.md       # Implementation steps
 ├── plans/

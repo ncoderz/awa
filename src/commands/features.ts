@@ -4,6 +4,7 @@
 // @awa-impl: DISC-8_AC-1
 
 import { intro, outro } from '@clack/prompts';
+
 import { configLoader } from '../core/config.js';
 import { featuresReporter } from '../core/features/reporter.js';
 import { featureScanner } from '../core/features/scanner.js';
@@ -58,7 +59,7 @@ export async function featuresCommand(cliOptions: FeaturesCommandOptions): Promi
     // Report results
     if (cliOptions.summary) {
       console.log(
-        `features: ${scanResult.features.length}, files-scanned: ${scanResult.filesScanned}`
+        `features: ${scanResult.features.length}, files-scanned: ${scanResult.filesScanned}`,
       );
     } else {
       featuresReporter.report({

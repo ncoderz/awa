@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { Debouncer } from '../debouncer.js';
 
 describe('Debouncer', () => {

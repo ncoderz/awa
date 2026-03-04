@@ -1,6 +1,6 @@
-// @awa-component: CHK-CheckCommand
+// @awa-component: CLI-CheckCommand
 
-// @awa-impl: CHK-16_AC-1
+// @awa-impl: CLI-31_AC-1
 export interface CheckConfig {
   readonly specGlobs: readonly string[];
   readonly codeGlobs: readonly string[];
@@ -24,7 +24,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
     '.awa/specs/FEAT-*.md',
     '.awa/specs/REQ-*.md',
     '.awa/specs/DESIGN-*.md',
-    '.awa/specs/EXAMPLES-*.md',
+    '.awa/specs/EXAMPLE-*.md',
     '.awa/specs/API-*.tsp',
     '.awa/tasks/TASK-*.md',
     '.awa/plans/PLAN-*.md',
@@ -124,6 +124,8 @@ export interface SpecFile {
   readonly idLocations?: ReadonlyMap<string, { filePath: string; line: number }>;
   /** Maps component names to their IMPLEMENTS AC IDs. Populated for DESIGN files. */
   readonly componentImplements?: ReadonlyMap<string, readonly string[]>;
+  /** Raw file content, cached by spec-parser to avoid re-reads in downstream phases. */
+  readonly content?: string;
 }
 
 export interface SpecParseResult {

@@ -1,13 +1,14 @@
-// @awa-component: CHK-SpecParser
-// @awa-impl: CHK-2_AC-1
-// @awa-impl: CHK-12_AC-1
+// @awa-component: CLI-SpecParser
+// @awa-impl: CLI-17_AC-1
+// @awa-impl: CLI-27_AC-1
 
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import { collectFiles } from './glob.js';
 import type { CheckConfig, CrossReference, SpecFile, SpecParseResult } from './types.js';
 
-// @awa-impl: CHK-2_AC-1
+// @awa-impl: CLI-17_AC-1
 export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> {
   const files = await collectSpecFiles(config.specGlobs, config.specIgnore);
   const specFiles: SpecFile[] = [];
@@ -40,7 +41,7 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
 
 async function parseSpecFile(
   filePath: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): Promise<SpecFile | null> {
   let content: string;
   try {
@@ -143,13 +144,14 @@ async function parseSpecFile(
     crossRefs,
     idLocations,
     componentImplements,
+    content,
   };
 }
 
 function extractCodePrefix(filePath: string): string {
   const name = basename(filePath, '.md');
   // Extract CODE from patterns like REQ-CODE-feature, DESIGN-CODE-feature, FEAT-CODE-feature
-  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLES|API)-([A-Z][A-Z0-9]*)-/.exec(name);
+  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLE|API)-([A-Z][A-Z0-9]*)-/.exec(name);
   if (match?.[1]) return match[1];
   // Fallback: ARCHITECTURE.md has no code prefix
   return '';
@@ -166,10 +168,10 @@ function extractIdsFromText(text: string): string[] {
   return ids;
 }
 
-// @awa-impl: CHK-12_AC-1
+// @awa-impl: CLI-27_AC-1
 async function collectSpecFiles(
   specGlobs: readonly string[],
-  ignore: readonly string[]
+  ignore: readonly string[],
 ): Promise<string[]> {
   return collectFiles(specGlobs, ignore);
 }

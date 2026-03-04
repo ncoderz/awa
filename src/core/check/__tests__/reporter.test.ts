@@ -1,7 +1,8 @@
-// @awa-component: CHK-Reporter
-// @awa-test: CHK-9_AC-1
+// @awa-component: CLI-Reporter
+// @awa-test: CLI-24_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { report } from '../reporter.js';
 import type { Finding } from '../types.js';
 
@@ -16,7 +17,7 @@ describe('Reporter', () => {
     consoleSpy.mockRestore();
   });
 
-  // @awa-test: CHK-9_AC-1
+  // @awa-test: CLI-24_AC-1
   test('outputs valid JSON when format is json', () => {
     const findings: Finding[] = [
       {
@@ -52,7 +53,7 @@ describe('Reporter', () => {
     expect(parsed.findings[1].filePath).toBeUndefined();
   });
 
-  // @awa-test: CHK-9_AC-1
+  // @awa-test: CLI-24_AC-1
   test('outputs valid=true when no errors in JSON', () => {
     const findings: Finding[] = [
       {
@@ -72,7 +73,7 @@ describe('Reporter', () => {
     expect(parsed.warnings).toBe(1);
   });
 
-  // @awa-test: CHK-9_AC-1
+  // @awa-test: CLI-24_AC-1
   test('outputs valid JSON with empty findings', () => {
     report([], 'json');
 
@@ -84,7 +85,7 @@ describe('Reporter', () => {
     expect(parsed.findings).toEqual([]);
   });
 
-  // @awa-test: CHK-9_AC-1
+  // @awa-test: CLI-24_AC-1
   test('text format outputs to console without throwing', () => {
     const findings: Finding[] = [
       {
@@ -101,7 +102,7 @@ describe('Reporter', () => {
     expect(() => report(findings, 'text')).not.toThrow();
   });
 
-  // @awa-test: CHK-9_AC-1
+  // @awa-test: CLI-24_AC-1
   test('text format with no findings reports success', () => {
     report([], 'text');
 

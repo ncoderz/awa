@@ -1,13 +1,13 @@
-// @awa-component: CHK-CodeSpecChecker
-// @awa-impl: CHK-3_AC-1
-// @awa-impl: CHK-4_AC-1
-// @awa-impl: CHK-6_AC-1
-// @awa-impl: CHK-14_AC-1
-// @awa-impl: CHK-18_AC-1
-// @awa-impl: CHK-19_AC-1
-// @awa-impl: CHK-20_AC-1
-// @awa-impl: CHK-21_AC-1
-// @awa-impl: CHK-22_AC-1
+// @awa-component: CLI-CodeSpecChecker
+// @awa-impl: CLI-18_AC-1
+// @awa-impl: CLI-19_AC-1
+// @awa-impl: CLI-21_AC-1
+// @awa-impl: CLI-29_AC-1
+// @awa-impl: CLI-33_AC-1
+// @awa-impl: CLI-34_AC-1
+// @awa-impl: CLI-35_AC-1
+// @awa-impl: CLI-36_AC-1
+// @awa-impl: CLI-37_AC-1
 
 import type {
   CheckConfig,
@@ -17,15 +17,15 @@ import type {
   SpecParseResult,
 } from './types.js';
 
-// @awa-impl: CHK-3_AC-1, CHK-4_AC-1, CHK-6_AC-1, CHK-18_AC-1, CHK-19_AC-1, CHK-20_AC-1, CHK-21_AC-1, CHK-22_AC-1
+// @awa-impl: CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1
 export function checkCodeAgainstSpec(
   markers: MarkerScanResult,
   specs: SpecParseResult,
-  config: CheckConfig
+  config: CheckConfig,
 ): CheckResult {
   const findings: Finding[] = [];
 
-  // @awa-impl: CHK-6_AC-1, CHK-14_AC-1
+  // @awa-impl: CLI-21_AC-1, CLI-29_AC-1
   // Validate ID format for all markers
   const idRegex = new RegExp(`^${config.idPattern}$`);
   for (const marker of markers.markers) {
@@ -45,7 +45,7 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-3_AC-1
+  // @awa-impl: CLI-18_AC-1
   // Check for orphaned markers (code references non-existent spec ID)
   for (const marker of markers.markers) {
     if (marker.type === 'component') {
@@ -75,7 +75,7 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-4_AC-1
+  // @awa-impl: CLI-19_AC-1
   // Check for uncovered ACs (spec ACs with no @awa-test reference)
   const testedIds = new Set(markers.markers.filter((m) => m.type === 'test').map((m) => m.id));
 
@@ -95,10 +95,10 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-18_AC-1
+  // @awa-impl: CLI-33_AC-1
   // Check for uncovered components (DESIGN components with no @awa-component marker)
   const implementedComponents = new Set(
-    markers.markers.filter((m) => m.type === 'component').map((m) => m.id)
+    markers.markers.filter((m) => m.type === 'component').map((m) => m.id),
   );
 
   for (const componentName of specs.componentNames) {
@@ -118,7 +118,7 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-19_AC-1
+  // @awa-impl: CLI-34_AC-1
   // Check for unimplemented ACs (spec ACs with no @awa-impl marker)
   const implementedIds = new Set(markers.markers.filter((m) => m.type === 'impl').map((m) => m.id));
 
@@ -137,7 +137,7 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-20_AC-1
+  // @awa-impl: CLI-35_AC-1
   // G5: Check for uncovered properties (spec properties with no @awa-test marker)
   for (const propId of specs.propertyIds) {
     if (!testedIds.has(propId)) {
@@ -156,7 +156,7 @@ export function checkCodeAgainstSpec(
     }
   }
 
-  // @awa-impl: CHK-22_AC-1
+  // @awa-impl: CLI-37_AC-1
   // G1: Check IMPLEMENTS ↔ @awa-impl consistency
   // For each @awa-component marker in code, compare the set of @awa-impl IDs
   // in the same file against the DESIGN component's IMPLEMENTS list

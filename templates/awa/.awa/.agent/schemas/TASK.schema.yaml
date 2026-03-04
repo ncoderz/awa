@@ -9,7 +9,7 @@ description: >
   A Documentation phase is required after Polish. It lists doc files to update
   (README.md, docs/) for user-facing changes. If no doc updates are needed,
   include a single task stating so (e.g., "No doc changes — internal only").
-line-limit: 500
+line-limit: 800
 
 sections:
   # Top-level heading: "Implementation Tasks"

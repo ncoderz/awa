@@ -198,7 +198,7 @@ spec-globs = [
   ".awa/specs/FEAT-*.md",
   ".awa/specs/REQ-*.md",
   ".awa/specs/DESIGN-*.md",
-  ".awa/specs/EXAMPLES-*.md",
+  ".awa/specs/EXAMPLE-*.md",
   ".awa/specs/API-*.tsp",
   ".awa/tasks/TASK-*.md",
   ".awa/plans/PLAN-*.md",

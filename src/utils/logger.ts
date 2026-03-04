@@ -19,6 +19,7 @@
 // @awa-impl: TPL-7_AC-3
 
 import chalk from 'chalk';
+
 import type { DiffResult, FileAction, GenerationResult } from '../types/index.js';
 
 export class Logger {
@@ -92,10 +93,6 @@ export class Logger {
 
     if (result.skippedUser > 0) {
       console.log(chalk.blue(`  Skipped (user): ${result.skippedUser}`));
-    }
-
-    if (result.skippedEmpty > 0) {
-      console.log(chalk.dim(`  Skipped (empty): ${result.skippedEmpty}`));
     }
 
     console.log('');

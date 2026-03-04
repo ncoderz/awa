@@ -17,6 +17,10 @@ Key abstractions:
 
 The command reuses the same template resolution as `generate` and `diff`, so it works with local paths, remote Git repositories, and configured defaults.
 
+## Scope Boundary
+
+Scanning templates for feature flags; reporting available flags and presets.
+
 ## Scenarios
 
 ### Scenario 1: Discovering flags in the default template

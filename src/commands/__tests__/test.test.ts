@@ -10,7 +10,9 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { testCommand } from '../test.js';
 
 describe('testCommand', () => {
@@ -41,7 +43,7 @@ describe('testCommand', () => {
     // Create a fixture that expects the file
     await writeFile(
       join(testsDir, 'basic.toml'),
-      'features = []\nexpected-files = ["output.md"]\n'
+      'features = []\nexpected-files = ["output.md"]\n',
     );
 
     const exitCode = await testCommand({
@@ -57,7 +59,7 @@ describe('testCommand', () => {
     // Create a fixture that expects a non-existent file
     await writeFile(
       join(testsDir, 'failing.toml'),
-      'features = []\nexpected-files = ["missing.md"]\n'
+      'features = []\nexpected-files = ["missing.md"]\n',
     );
 
     const exitCode = await testCommand({
@@ -89,7 +91,7 @@ describe('testCommand', () => {
     await writeFile(join(testsDir, 'pass.toml'), 'features = []\nexpected-files = ["file.md"]\n');
     await writeFile(
       join(testsDir, 'fail.toml'),
-      'features = []\nexpected-files = ["nonexistent.md"]\n'
+      'features = []\nexpected-files = ["nonexistent.md"]\n',
     );
 
     const exitCode = await testCommand({

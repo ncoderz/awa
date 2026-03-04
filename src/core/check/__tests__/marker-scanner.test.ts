@@ -1,11 +1,13 @@
-// @awa-component: CHK-MarkerScanner
-// @awa-test: CHK-1_AC-1
-// @awa-test: CHK-11_AC-1
+// @awa-component: CLI-MarkerScanner
+// @awa-test: CLI-16_AC-1
+// @awa-test: CLI-26_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import { scanMarkers } from '../marker-scanner.js';
 import type { CheckConfig } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';
@@ -31,7 +33,7 @@ describe('MarkerScanner', () => {
     };
   }
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('extracts @awa-impl markers from source files', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -42,7 +44,7 @@ export function load() {}
 
 // @awa-impl: CFG-1_AC-2
 export function merge() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -69,7 +71,7 @@ export function merge() {}
     });
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('extracts @awa-test markers', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -79,7 +81,7 @@ test('preserves defaults', () => {});
 
 // @awa-test: CFG-1_AC-1
 test('loads config from path', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -90,14 +92,14 @@ test('loads config from path', () => {});
     expect(result.markers[1]).toMatchObject({ type: 'test', id: 'CFG-1_AC-1' });
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('handles multiple IDs on a single marker line', async () => {
     // @awa-ignore-start
     await writeFile(
       join(testDir, 'multi.ts'),
       `// @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3
 export function loadAndMerge() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -107,7 +109,7 @@ export function loadAndMerge() {}
     expect(result.markers.map((m) => m.id)).toEqual(['CFG-1_AC-1', 'CFG-1_AC-2', 'CFG-1_AC-3']);
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('extracts dotted-subrequirement AC IDs (e.g. ARC-18.1_AC-1)', async () => {
     // @awa-ignore-start
     await writeFile(
@@ -116,7 +118,7 @@ export function loadAndMerge() {}
 // @awa-impl: ARC-82_AC-3
 // @awa-test: ARC-18.1_AC-2
 export function foo() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -129,14 +131,14 @@ export function foo() {}
     expect(result.findings).toHaveLength(0);
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('strips partial annotations from marker IDs', async () => {
     // @awa-ignore-start
     await writeFile(
       join(testDir, 'partial.ts'),
       `// @awa-impl: CFG-1_AC-1 (partial: reason for incompleteness)
 export function partialImpl() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -146,12 +148,12 @@ export function partialImpl() {}
     expect(result.markers[0]?.id).toBe('CFG-1_AC-1');
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('returns empty result for files with no markers', async () => {
     await writeFile(
       join(testDir, 'clean.ts'),
       `export function hello() { return 'world'; }
-`
+`,
     );
 
     const result = await scanMarkers(makeConfig());
@@ -159,7 +161,7 @@ export function partialImpl() {}
     expect(result.markers).toHaveLength(0);
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('skips files that cannot be read', async () => {
     // Point glob at nonexistent directory — should return empty, not throw
     const result = await scanMarkers(makeConfig({ codeGlobs: [`${testDir}/nonexistent/**/*.ts`] }));
@@ -167,7 +169,7 @@ export function partialImpl() {}
     expect(result.markers).toHaveLength(0);
   });
 
-  // @awa-test: CHK-11_AC-1
+  // @awa-test: CLI-26_AC-1
   test('uses custom marker names when configured', async () => {
     await writeFile(
       join(testDir, 'custom.ts'),
@@ -175,11 +177,11 @@ export function partialImpl() {}
 // @trace-test: FOO_P-1
 // @trace-component: FOO-Loader
 export function foo() {}
-`
+`,
     );
 
     const result = await scanMarkers(
-      makeConfig({ markers: ['@trace-impl', '@trace-test', '@trace-component'] })
+      makeConfig({ markers: ['@trace-impl', '@trace-test', '@trace-component'] }),
     );
 
     expect(result.markers).toHaveLength(3);
@@ -188,7 +190,7 @@ export function foo() {}
     expect(result.markers[2]).toMatchObject({ type: 'component', id: 'FOO-Loader' });
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   test('scans multiple files', async () => {
     await mkdir(join(testDir, 'sub'), { recursive: true });
     // @awa-ignore-start
@@ -203,7 +205,7 @@ export function foo() {}
     expect(ids).toEqual(['A-1_AC-1', 'B-1_AC-1']);
   });
 
-  // @awa-test: CHK-1_AC-1
+  // @awa-test: CLI-16_AC-1
   describe('@awa-ignore directives', () => {
     test(`@${'awa-ignore-file'} skips the entire file`, async () => {
       // @awa-ignore-start
@@ -212,7 +214,7 @@ export function foo() {}
         `// @${'awa-ignore-file'}
 // @awa-impl: CFG-1_AC-1
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -230,7 +232,7 @@ export function load() {}
 // @awa-impl: CFG-1_AC-2
 // @awa-impl: CFG-1_AC-3
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -248,7 +250,7 @@ export function load() {}
 // @awa-impl: CFG-1_AC-2 // @awa-ignore
 // @awa-impl: CFG-1_AC-3
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -269,7 +271,7 @@ export function load() {}
 // @awa-ignore-end
 // @awa-impl: CFG-1_AC-4
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 

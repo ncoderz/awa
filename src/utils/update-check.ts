@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import type { Logger } from './logger.js';
 
@@ -73,8 +74,8 @@ export function printUpdateWarning(log: Logger, result: UpdateCheckResult): void
   if (result.isMajorBump) {
     log.warn(
       chalk.yellow(
-        `New major version available: ${result.current} → ${result.latest} (breaking changes)`
-      )
+        `New major version available: ${result.current} → ${result.latest} (breaking changes)`,
+      ),
     );
     log.warn(chalk.dim('  See https://github.com/ncoderz/awa/releases for details'));
   } else {

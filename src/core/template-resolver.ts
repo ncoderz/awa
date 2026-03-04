@@ -23,7 +23,9 @@
 import { createHash } from 'node:crypto';
 import { rm } from 'node:fs/promises';
 import { isAbsolute, join, resolve } from 'node:path';
+
 import degit from 'degit';
+
 import { type ResolvedTemplate, TemplateError, type TemplateSourceType } from '../types/index.js';
 import { ensureDir, getCacheDir, getTemplateDir, pathExists } from '../utils/fs.js';
 import { logger } from '../utils/logger.js';
@@ -53,7 +55,7 @@ export class TemplateResolver {
         throw new TemplateError(
           `Template source not found: ${localPath}`,
           'SOURCE_NOT_FOUND',
-          source
+          source,
         );
       }
 
@@ -108,7 +110,7 @@ export class TemplateResolver {
         throw new TemplateError(
           `Failed to fetch Git template: ${error instanceof Error ? error.message : String(error)}`,
           'FETCH_FAILED',
-          source
+          source,
         );
       }
     }
@@ -116,7 +118,7 @@ export class TemplateResolver {
     throw new TemplateError(
       `Unable to resolve template source: ${source}`,
       'SOURCE_NOT_FOUND',
-      source
+      source,
     );
   }
 

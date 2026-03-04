@@ -4,6 +4,7 @@
 // @awa-impl: RENUM-10_AC-1
 
 import { readFile } from 'node:fs/promises';
+
 import { detectMalformed } from '../core/renumber/malformed-detector.js';
 import { buildRenumberMap } from '../core/renumber/map-builder.js';
 import { propagate } from '../core/renumber/propagator.js';
@@ -104,7 +105,7 @@ async function runRenumberPipeline(
   code: string,
   specs: import('../core/check/types.js').SpecParseResult,
   markers: import('../core/check/types.js').MarkerScanResult,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<RenumberResult> {
   // Build renumber map
   const { map, noChange } = buildRenumberMap(code, specs);
@@ -141,7 +142,7 @@ async function runRenumberPipeline(
  * Discover all feature codes from REQ files.
  */
 function discoverFeatureCodes(
-  specFiles: readonly import('../core/check/types.js').SpecFile[]
+  specFiles: readonly import('../core/check/types.js').SpecFile[],
 ): string[] {
   const codes = new Set<string>();
   for (const sf of specFiles) {
@@ -159,7 +160,7 @@ function discoverFeatureCodes(
 async function collectFileContents(
   specs: import('../core/check/types.js').SpecParseResult,
   markers: import('../core/check/types.js').MarkerScanResult,
-  code: string
+  code: string,
 ): Promise<Map<string, string>> {
   const paths = new Set<string>();
 

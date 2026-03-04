@@ -58,7 +58,7 @@ describe('featuresCommand', () => {
     expect(featuresReporter.report).toHaveBeenCalledWith(
       expect.objectContaining({
         json: false,
-      })
+      }),
     );
   });
 
@@ -83,7 +83,7 @@ describe('featuresCommand', () => {
     expect(featuresReporter.report).toHaveBeenCalledWith(
       expect.objectContaining({
         json: true,
-      })
+      }),
     );
   });
 
@@ -101,7 +101,7 @@ describe('featuresCommand', () => {
     expect(featuresReporter.report).toHaveBeenCalledWith(
       expect.objectContaining({
         presets: { ci: ['copilot', 'claude'] },
-      })
+      }),
     );
   });
 

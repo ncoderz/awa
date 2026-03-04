@@ -1,10 +1,12 @@
-// @awa-component: CHK-SpecParser
-// @awa-test: CHK-2_AC-1
+// @awa-component: CLI-SpecParser
+// @awa-test: CLI-17_AC-1
 
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import { parseSpecs } from '../spec-parser.js';
 import type { CheckConfig } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';
@@ -30,7 +32,7 @@ describe('SpecParser', () => {
     };
   }
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts requirement IDs from REQ files', async () => {
     await writeFile(
       join(testDir, 'REQ-CFG-config.md'),
@@ -54,7 +56,7 @@ AS A developer, I WANT validation, SO THAT errors are caught.
 ACCEPTANCE CRITERIA
 
 - CFG-2_AC-1 [event]: WHEN invalid THEN system SHALL throw
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -66,7 +68,7 @@ ACCEPTANCE CRITERIA
     expect(result.acIds).toContain('CFG-2_AC-1');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts subrequirement IDs', async () => {
     await writeFile(
       join(testDir, 'REQ-ENG-engine.md'),
@@ -83,7 +85,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN register
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -94,7 +96,7 @@ ACCEPTANCE CRITERIA
     expect(result.acIds).toContain('ENG-1.1_AC-1');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts property IDs from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -107,7 +109,7 @@ ACCEPTANCE CRITERIA
 
 - CFG_P-2 [Default Preservation]: Missing keys preserve defaults
   VALIDATES: CFG-1_AC-2
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -116,7 +118,7 @@ ACCEPTANCE CRITERIA
     expect(result.propertyIds).toContain('CFG_P-2');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts component names from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -135,7 +137,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 Validates configuration.
 
 IMPLEMENTS: CFG-2_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -144,7 +146,7 @@ IMPLEMENTS: CFG-2_AC-1
     expect(result.componentNames).toContain('CFG-Validator');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts cross-references', async () => {
     await writeFile(
       join(testDir, 'DESIGN-CFG-config.md'),
@@ -158,7 +160,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 
 - CFG_P-1 [Override]: CLI overrides
   VALIDATES: CFG-4_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -175,16 +177,16 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
     });
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('extracts code prefix from filename', async () => {
     await writeFile(
       join(testDir, 'REQ-CHK-check.md'),
-      `### CHK-1: Marker Scanning [MUST]
+      `### CLI-16: Marker Scanning [MUST]
 
 ACCEPTANCE CRITERIA
 
-- CHK-1_AC-1 [ubiquitous]: The system SHALL scan
-`
+- CLI-16_AC-1 [ubiquitous]: The system SHALL scan
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -192,7 +194,7 @@ ACCEPTANCE CRITERIA
     expect(result.specFiles[0]?.code).toBe('CHK');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('returns empty results for directory with no spec files', async () => {
     const result = await parseSpecs(makeConfig({ specGlobs: [`${testDir}/nonexistent/**/*.md`] }));
 
@@ -201,7 +203,7 @@ ACCEPTANCE CRITERIA
     expect(result.specFiles).toHaveLength(0);
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('all IDs aggregated in allIds set', async () => {
     await writeFile(
       join(testDir, 'REQ-X-x.md'),
@@ -210,7 +212,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
@@ -222,7 +224,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -233,7 +235,7 @@ IMPLEMENTS: X-1_AC-1
     expect(result.allIds).toContain('X-Loader');
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('builds componentImplements map from DESIGN files', async () => {
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
@@ -257,7 +259,7 @@ IMPLEMENTS: X-2_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -268,7 +270,7 @@ IMPLEMENTS: X-2_AC-1
     expect(specFile.componentImplements?.get('X-Validator')).toEqual(['X-2_AC-1']);
   });
 
-  // @awa-test: CHK-2_AC-1
+  // @awa-test: CLI-17_AC-1
   test('componentImplements resets on non-component H2 heading', async () => {
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
@@ -282,7 +284,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());

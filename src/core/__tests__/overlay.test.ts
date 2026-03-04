@@ -7,6 +7,7 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock templateResolver before importing overlay module
@@ -25,7 +26,7 @@ describe('overlay', () => {
   beforeEach(async () => {
     testDir = join(
       tmpdir(),
-      `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
+      `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     await mkdir(testDir, { recursive: true });
     vi.clearAllMocks();

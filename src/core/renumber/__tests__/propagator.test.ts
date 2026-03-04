@@ -5,8 +5,10 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import * as fc from 'fast-check';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import type { MarkerScanResult, SpecFile, SpecParseResult } from '../../check/types.js';
 import { propagate } from '../propagator.js';
 import type { RenumberMap } from '../types.js';
@@ -92,7 +94,7 @@ describe('propagate', () => {
     await writeFile(
       codePath,
       `// @awa-${'impl'}: FOO-3_AC-1\n// @awa-${'test'}: FOO_P-2\n`,
-      'utf-8'
+      'utf-8',
     );
 
     const map = makeMap('FOO', [
@@ -174,6 +176,29 @@ describe('propagate', () => {
     expect(result.affectedFiles).toHaveLength(0);
     expect(result.totalReplacements).toBe(0);
   });
+
+  it('replaces IDs in spec files belonging to other feature codes', async () => {
+    // A DESIGN file for another feature (BAR) that references FOO IDs
+    // in a traceability matrix — not via formal crossRefs
+    const otherSpecPath = join(testDir, 'DESIGN-BAR-other.md');
+    await writeFile(
+      otherSpecPath,
+      '| Component | IMPLEMENTS |\n| --- | --- |\n| BAR-Engine | FOO-3_AC-1 |\n',
+      'utf-8',
+    );
+
+    const map = makeMap('FOO', [['FOO-3_AC-1', 'FOO-1_AC-1']]);
+    // The BAR spec file has no crossRefs to FOO — it just has inline text
+    const specs = makeSpecs([makeSpecFile(otherSpecPath, 'BAR')]);
+    const markers = makeMarkers([]);
+
+    const result = await propagate(map, specs, markers, false);
+
+    expect(result.totalReplacements).toBe(1);
+    const content = await readFile(otherSpecPath, 'utf-8');
+    expect(content).toContain('FOO-1_AC-1');
+    expect(content).not.toContain('FOO-3_AC-1');
+  });
 });
 
 // --- Property-Based Tests ---
@@ -203,7 +228,7 @@ describe('Propagator Properties', () => {
           await writeFile(
             specPath,
             `### ${idA}: First\n- ${idA}_AC-1 [event]: criteria\n### ${idB}: Second\n`,
-            'utf-8'
+            'utf-8',
           );
 
           const specs = makeSpecs([makeSpecFile(specPath, code)]);
@@ -215,9 +240,9 @@ describe('Propagator Properties', () => {
           // After swap: idA positions should have idB and vice versa
           expect(content).toContain(`### ${idB}: First`);
           expect(content).toContain(`### ${idA}: Second`);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -246,9 +271,9 @@ describe('Propagator Properties', () => {
           expect(content).toContain(`${targetCode}-1`);
           // Other code ID untouched
           expect(content).toContain(otherId);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });

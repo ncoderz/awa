@@ -61,7 +61,7 @@ src/
 Resolves a named target from file config by merging target fields over root via
 nullish coalescing. Validates target exists and targets are defined.
 
-IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CHK-16_AC-1, CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, FP-1_AC-1, FP-1_AC-2, FP-1_AC-3, FP-1_AC-4, FP-3_AC-1, FP-3_AC-2, FP-3_AC-3, FP-5_AC-1, FP-5_AC-2, FP-5_AC-3, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2, OVL-8_AC-1
+IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4, CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3, CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10, CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4, CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2, CLI-31_AC-1, CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2, CFG-7_AC-1, CFG-7_AC-2, CFG-7_AC-3, CFG-7_AC-4, CFG-9_AC-1, CFG-9_AC-2, CFG-9_AC-3, CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2, OVL-8_AC-1
 
 ```typescript
 interface ConfigLoader {
@@ -108,7 +108,7 @@ Extended generate command with batch mode. When `--all` or `--target` is set,
 delegates to BatchRunner then runs runGenerate per target with `batchMode=true`
 to suppress interactive prompts.
 
-IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, GEN-17_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 async function generateCommand(cliOptions: RawCliOptions): Promise<void>;
@@ -229,14 +229,16 @@ Test generate and diff commands with mocked BatchRunner.
 - CFG-5_AC-1 → MULTI-TargetResolver
 - CFG-6_AC-1 → MULTI-TargetResolver
 - CFG-6_AC-2 → MULTI-TargetResolver
-
-### REQ-CHK-check.md
-
-- CHK-1_AC-2 → MULTI-GenerateCommand
-- CHK-1_AC-3 → MULTI-GenerateCommand
-- CHK-5_AC-2 → MULTI-GenerateCommand
-- CHK-5_AC-3 → MULTI-GenerateCommand
-- CHK-16_AC-1 → MULTI-TargetResolver
+- CFG-7_AC-1 → MULTI-TargetResolver
+- CFG-7_AC-2 → MULTI-TargetResolver
+- CFG-7_AC-3 → MULTI-TargetResolver
+- CFG-7_AC-4 → MULTI-TargetResolver
+- CFG-9_AC-1 → MULTI-TargetResolver
+- CFG-9_AC-2 → MULTI-TargetResolver
+- CFG-9_AC-3 → MULTI-TargetResolver
+- CFG-11_AC-1 → MULTI-TargetResolver
+- CFG-11_AC-2 → MULTI-TargetResolver
+- CFG-11_AC-3 → MULTI-TargetResolver
 
 ### REQ-CLI-cli.md
 
@@ -246,6 +248,11 @@ Test generate and diff commands with mocked BatchRunner.
 - CLI-2_AC-4 → MULTI-TargetResolver
 - CLI-4_AC-3 → MULTI-TargetResolver
 - CLI-7_AC-2 → MULTI-TargetResolver
+- CLI-16_AC-2 → MULTI-GenerateCommand
+- CLI-16_AC-3 → MULTI-GenerateCommand
+- CLI-20_AC-2 → MULTI-GenerateCommand
+- CLI-20_AC-3 → MULTI-GenerateCommand
+- CLI-31_AC-1 → MULTI-TargetResolver
 
 ### REQ-DIFF-diff.md
 
@@ -253,22 +260,9 @@ Test generate and diff commands with mocked BatchRunner.
 - DIFF-5_AC-2 → MULTI-DiffCommand
 - DIFF-5_AC-3 → MULTI-DiffCommand
 
-### REQ-FP-feature-presets.md
+### REQ-GEN-generation.md
 
-- FP-1_AC-1 → MULTI-TargetResolver
-- FP-1_AC-2 → MULTI-TargetResolver
-- FP-1_AC-3 → MULTI-TargetResolver
-- FP-1_AC-4 → MULTI-TargetResolver
-- FP-3_AC-1 → MULTI-TargetResolver
-- FP-3_AC-2 → MULTI-TargetResolver
-- FP-3_AC-3 → MULTI-TargetResolver
-- FP-5_AC-1 → MULTI-TargetResolver
-- FP-5_AC-2 → MULTI-TargetResolver
-- FP-5_AC-3 → MULTI-TargetResolver
-
-### REQ-INIT-init-alias.md
-
-- INIT-5_AC-1 → MULTI-GenerateCommand
+- GEN-17_AC-1 → MULTI-GenerateCommand
 
 ### REQ-JSON-json-output.md
 

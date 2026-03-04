@@ -4,33 +4,33 @@
   "editor.wordWrapColumn": 100,
   "editor.insertSpaces": true,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.eol": "\n",
   "files.autoSave": "onFocusChange",
   "files.trimTrailingWhitespace": true,
   "eslint.format.enable": false,
-  "prettier.enable": false,
-  "eslint.enable": false,
+  "prettier.enable": true,
+  "eslint.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "search.exclude": {
     "**/.yarn": true,
@@ -51,7 +51,7 @@
     "npx tsc": true,
     "npx tsx": true,
     "npx vitest": true,
-    "npx biome": true,
     "npx awa": true
-  }
+  },
+  "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
 }

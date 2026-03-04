@@ -1,6 +1,6 @@
 # ALIGNMENT REPORT
 
-DESIGN-X.md ↔ src/**
+DESIGN-X.md ↔ src/\*\*
 
 No findings.
 

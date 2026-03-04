@@ -1,6 +1,7 @@
 // @awa-test: RENUM-7_AC-1, RENUM-11_AC-1
 
 import { describe, expect, it } from 'vitest';
+
 import { formatJson, formatText } from '../reporter.js';
 import type { RenumberResult } from '../types.js';
 

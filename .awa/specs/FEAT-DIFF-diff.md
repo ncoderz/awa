@@ -26,6 +26,10 @@ Exit codes convey the result: 0 means all files match (no drift), 1 means differ
 
 Target-only ("extra") files are excluded by default to reduce noise. The `--list-unknown` flag includes them in results and summary. Delete-listed files are always reported when they exist in the target.
 
+## Scope Boundary
+
+Template-vs-target comparison, unified diff output, exit codes.
+
 ## Scenarios
 
 ### Scenario 1: No drift

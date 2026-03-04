@@ -1,9 +1,10 @@
-// @awa-component: CHK-MatrixFixer
-// @awa-impl: CHK-23_AC-1
-// @awa-impl: CHK-23_AC-2
+// @awa-component: CLI-MatrixFixer
+// @awa-impl: CLI-38_AC-1
+// @awa-impl: CLI-38_AC-2
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import type { SpecFile, SpecParseResult } from './types.js';
 
 // --- Public API ---
@@ -24,7 +25,7 @@ export interface FileFixResult {
  */
 export async function fixMatrices(
   specs: SpecParseResult,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): Promise<FixResult> {
   const reqFileMaps = buildReqFileMaps(specs.specFiles);
   const fileResults: FileFixResult[] = [];
@@ -33,10 +34,21 @@ export async function fixMatrices(
     const fileName = basename(specFile.filePath);
 
     if (fileName.startsWith('DESIGN-')) {
-      const changed = await fixDesignMatrix(specFile.filePath, reqFileMaps, crossRefPatterns);
+      const changed = await fixDesignMatrix(
+        specFile.filePath,
+        reqFileMaps,
+        crossRefPatterns,
+        specFile.content,
+      );
       fileResults.push({ filePath: specFile.filePath, changed });
     } else if (fileName.startsWith('TASK-')) {
-      const changed = await fixTaskMatrix(specFile.filePath, reqFileMaps, specs, crossRefPatterns);
+      const changed = await fixTaskMatrix(
+        specFile.filePath,
+        reqFileMaps,
+        specs,
+        crossRefPatterns,
+        specFile.content,
+      );
       fileResults.push({ filePath: specFile.filePath, changed });
     }
   }
@@ -137,13 +149,18 @@ interface PropertyInfo {
 async function fixDesignMatrix(
   filePath: string,
   reqFileMaps: ReqFileMaps,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
+  cachedContent?: string,
 ): Promise<boolean> {
   let content: string;
-  try {
-    content = await readFile(filePath, 'utf-8');
-  } catch {
-    return false;
+  if (cachedContent != null) {
+    content = cachedContent;
+  } else {
+    try {
+      content = await readFile(filePath, 'utf-8');
+    } catch {
+      return false;
+    }
   }
 
   const { components, properties } = parseDesignFileData(content, crossRefPatterns);
@@ -182,7 +199,7 @@ async function fixDesignMatrix(
 
 function parseDesignFileData(
   content: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): { components: ComponentInfo[]; properties: PropertyInfo[] } {
   const lines = content.split('\n');
   const components: ComponentInfo[] = [];
@@ -246,7 +263,7 @@ function parseDesignFileData(
 function generateDesignSection(
   grouped: Map<string, string[]>,
   acToComponents: Map<string, string[]>,
-  acToProperties: Map<string, string[]>
+  acToProperties: Map<string, string[]>,
 ): string {
   const lines: string[] = [];
   const reqFiles = [...grouped.keys()].sort();
@@ -285,13 +302,18 @@ async function fixTaskMatrix(
   filePath: string,
   reqFileMaps: ReqFileMaps,
   specs: SpecParseResult,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
+  cachedContent?: string,
 ): Promise<boolean> {
   let content: string;
-  try {
-    content = await readFile(filePath, 'utf-8');
-  } catch {
-    return false;
+  if (cachedContent != null) {
+    content = cachedContent;
+  } else {
+    try {
+      content = await readFile(filePath, 'utf-8');
+    } catch {
+      return false;
+    }
   }
 
   const { tasks, sourceDesigns } = parseTaskFileData(content, crossRefPatterns);
@@ -347,7 +369,7 @@ interface TaskFileParseResult {
 
 function parseTaskFileData(
   content: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): TaskFileParseResult {
   const lines = content.split('\n');
   const tasks: TaskInfo[] = [];
@@ -429,7 +451,7 @@ function generateTaskSection(
   grouped: Map<string, string[]>,
   acToTasks: Map<string, string[]>,
   idToTestTasks: Map<string, string[]>,
-  propertyIds: Set<string>
+  propertyIds: Set<string>,
 ): string {
   const lines: string[] = [];
   const reqFiles = [...grouped.keys()].sort();
@@ -518,7 +540,7 @@ function extractIdsFromText(text: string): string[] {
 
 function extractCodeFromFileName(fileName: string): string {
   // Extract CODE from REQ-CODE-feature.md or DESIGN-CODE-feature.md
-  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLES|API|TASK)-([A-Z][A-Z0-9]*)-/.exec(fileName);
+  const match = /^(?:REQ|DESIGN|FEAT|EXAMPLE|API|TASK)-([A-Z][A-Z0-9]*)-/.exec(fileName);
   return match?.[1] ?? '';
 }
 

@@ -1,9 +1,11 @@
-// @awa-component: CHK-RuleLoader
-// @awa-impl: CHK-16_AC-1
+// @awa-component: CLI-RuleLoader
+// @awa-impl: CLI-31_AC-1
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import { parse as parseYaml } from 'yaml';
+
 import { collectFiles, matchSimpleGlob } from './glob.js';
 import type {
   CodeBlockContainsRule,
@@ -78,11 +80,11 @@ function validateRuleFile(raw: Record<string, unknown>, filePath: string): RuleF
   if (raw.sections !== undefined) {
     if (!Array.isArray(raw.sections) || raw.sections.length === 0) {
       throw new RuleValidationError(
-        `'sections' must be a non-empty array if present in ${filePath}`
+        `'sections' must be a non-empty array if present in ${filePath}`,
       );
     }
     sections = raw.sections.map((s: unknown, i: number) =>
-      validateSectionRule(s, `sections[${i}]`, filePath)
+      validateSectionRule(s, `sections[${i}]`, filePath),
     );
   }
 
@@ -135,7 +137,7 @@ function validateSectionRule(raw: unknown, path: string, filePath: string): Sect
       throw new RuleValidationError(`${path}.contains must be an array in ${filePath}`);
     }
     contains = section.contains.map((c: unknown, i: number) =>
-      validateContainsRule(c, `${path}.contains[${i}]`, filePath)
+      validateContainsRule(c, `${path}.contains[${i}]`, filePath),
     );
   }
 
@@ -146,7 +148,7 @@ function validateSectionRule(raw: unknown, path: string, filePath: string): Sect
       throw new RuleValidationError(`${path}.children must be an array in ${filePath}`);
     }
     children = section.children.map((c: unknown, i: number) =>
-      validateSectionRule(c, `${path}.children[${i}]`, filePath)
+      validateSectionRule(c, `${path}.children[${i}]`, filePath),
     );
   }
 
@@ -268,7 +270,7 @@ function validateWhenCondition(raw: unknown, path: string, filePath: string): Wh
 
   if (!result['heading-matches'] && !result['heading-not-matches']) {
     throw new RuleValidationError(
-      `${path} must have 'heading-matches' or 'heading-not-matches' in ${filePath}`
+      `${path} must have 'heading-matches' or 'heading-not-matches' in ${filePath}`,
     );
   }
 

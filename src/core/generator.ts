@@ -25,6 +25,7 @@
 // @awa-impl: TPL-9_AC-2
 
 import { join, relative } from 'node:path';
+
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import {
   type ConflictItem,
@@ -205,7 +206,7 @@ export class FileGenerator {
           const absPath = join(outputPath, relPath);
           if (generatedOutputPaths.has(absPath)) {
             logger.warn(
-              `Delete list entry '${relPath}' conflicts with generated file — skipping deletion`
+              `Delete list entry '${relPath}' conflicts with generated file — skipping deletion`,
             );
             continue;
           }
@@ -219,7 +220,7 @@ export class FileGenerator {
             // --delete not passed: warn but do nothing
             for (const absPath of deleteCandidates) {
               logger.warn(
-                `Would delete (pass --delete to enable): ${relative(outputPath, absPath)}`
+                `Would delete (pass --delete to enable): ${relative(outputPath, absPath)}`,
               );
             }
           } else {

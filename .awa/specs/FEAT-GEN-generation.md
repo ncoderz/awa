@@ -25,6 +25,10 @@ File generation is a pipeline with several stages:
 
 An important concept is the INTERACTIVE MULTI-TOOL SELECTION: when the `generate` command is run without any tool-related feature flags, the user is presented with an interactive multiselect prompt showing available tools (copilot, claude, cursor, windsurf, etc.). This makes first-run onboarding smoother.
 
+## Scope Boundary
+
+File generation from templates — conflict resolution, dry-run, force, delete list, init alias convenience command.
+
 ## Scenarios
 
 ### Scenario 1: Clean generation
@@ -67,3 +71,11 @@ When the developer generates with `--features copilot --delete`, the file is NOT
 ### Scenario 9: Interactive tool selection
 
 A developer runs `awa template generate .` with no feature flags. The CLI presents a multiselect of available tools (copilot, claude, cursor, etc.). The developer selects the ones they use, and those become the active features for this generation run.
+
+### Scenario 10: Init alias
+
+A developer discovers awa and follows the README Quick Start. They run `awa init .` — a top-level convenience command equivalent to `awa template generate .` — and get the same output. Both commands share the same handler and accept the same options.
+
+### Scenario 11: First-run config hint
+
+A developer runs `awa init .` in a project with no `.awa.toml`. After generation completes, a non-blocking info message appears suggesting config file creation.

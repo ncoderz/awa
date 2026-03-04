@@ -33,7 +33,7 @@ export function formatText(result: RenumberResult, dryRun: boolean): string {
   if (result.affectedFiles.length > 0) {
     lines.push('');
     lines.push(
-      `  ${result.totalReplacements} replacement(s) in ${result.affectedFiles.length} file(s):`
+      `  ${result.totalReplacements} replacement(s) in ${result.affectedFiles.length} file(s):`,
     );
     for (const file of result.affectedFiles) {
       lines.push(`    ${file.filePath} (${file.replacements.length})`);

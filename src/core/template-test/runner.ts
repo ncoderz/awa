@@ -7,6 +7,7 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { pathExists } from '../../utils/fs.js';
 import { featureResolver } from '../feature-resolver.js';
 import { fileGenerator } from '../generator.js';
@@ -25,7 +26,7 @@ export async function runFixture(
   fixture: TestFixture,
   templatePath: string,
   options: TestRunOptions,
-  presetDefinitions: Record<string, string[]> = {}
+  presetDefinitions: Record<string, string[]> = {},
 ): Promise<FixtureResult> {
   const tempDir = join(tmpdir(), `awa-test-${fixture.name}-${Date.now()}`);
 
@@ -99,7 +100,7 @@ export async function runAll(
   fixtures: TestFixture[],
   templatePath: string,
   options: TestRunOptions,
-  presetDefinitions: Record<string, string[]> = {}
+  presetDefinitions: Record<string, string[]> = {},
 ): Promise<TestSuiteResult> {
   const results: FixtureResult[] = [];
 

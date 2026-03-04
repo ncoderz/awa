@@ -1,11 +1,13 @@
-// @awa-component: CHK-SchemaChecker
-// @awa-impl: CHK-2_AC-1
+// @awa-component: CLI-SchemaChecker
+// @awa-impl: CLI-17_AC-1
 
 import { readFile } from 'node:fs/promises';
+
 import type { Code, Heading, List, PhrasingContent, Root, Table, TableRow } from 'mdast';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
+
 import { matchesTargetGlob } from './rule-loader.js';
 import type {
   CodeBlockContainsRule,
@@ -76,7 +78,7 @@ interface SectionNode {
  */
 export async function checkSchemasAsync(
   specFiles: readonly SpecFile[],
-  ruleSets: readonly LoadedRuleSet[]
+  ruleSets: readonly LoadedRuleSet[],
 ): Promise<CheckResult> {
   const findings: Finding[] = [];
   const parser = unified().use(remarkParse).use(remarkGfm);
@@ -86,10 +88,14 @@ export async function checkSchemasAsync(
     if (matchingRules.length === 0) continue;
 
     let content: string;
-    try {
-      content = await readFile(spec.filePath, 'utf-8');
-    } catch {
-      continue;
+    if (spec.content != null) {
+      content = spec.content;
+    } else {
+      try {
+        content = await readFile(spec.filePath, 'utf-8');
+      } catch {
+        continue;
+      }
     }
 
     const tree = parser.parse(content);
@@ -119,8 +125,8 @@ export async function checkSchemasAsync(
           allSections,
           ruleSet.ruleFile.sections,
           spec.filePath,
-          ruleSource
-        )
+          ruleSource,
+        ),
       );
 
       if (ruleSet.ruleFile['sections-prohibited']) {
@@ -129,8 +135,8 @@ export async function checkSchemasAsync(
             content,
             ruleSet.ruleFile['sections-prohibited'],
             spec.filePath,
-            ruleSource
-          )
+            ruleSource,
+          ),
         );
       }
     }
@@ -148,7 +154,7 @@ function buildSectionTree(tree: Root): SectionNode[] {
 function buildSectionsFromNodes(
   nodes: Root['children'],
   start: number,
-  parentLevel: number
+  parentLevel: number,
 ): { sections: SectionNode[]; nextIndex: number } {
   const sections: SectionNode[] = [];
   let i = start;
@@ -220,7 +226,7 @@ function checkRulesAgainstSections(
   allSections: SectionNode[],
   rules: readonly SectionRule[],
   filePath: string,
-  ruleSource: string
+  ruleSource: string,
 ): Finding[] {
   const findings: Finding[] = [];
 
@@ -299,7 +305,7 @@ function checkContainsRule(
   section: SectionNode,
   rule: ContainsRule,
   filePath: string,
-  ruleSource: string
+  ruleSource: string,
 ): Finding[] {
   // Evaluate 'when' condition gate — skip rule if condition not met
   const when = 'when' in rule ? (rule as { when?: WhenCondition }).when : undefined;
@@ -315,7 +321,7 @@ function checkContainsRule(
       rule as PatternContainsRule,
       filePath,
       ruleSource,
-      formattedRule
+      formattedRule,
     );
   }
   if ('list' in rule) {
@@ -324,7 +330,7 @@ function checkContainsRule(
       rule as ListContainsRule,
       filePath,
       ruleSource,
-      formattedRule
+      formattedRule,
     );
   }
   if ('table' in rule) {
@@ -333,7 +339,7 @@ function checkContainsRule(
       rule as TableContainsRule,
       filePath,
       ruleSource,
-      formattedRule
+      formattedRule,
     );
   }
   if ('code-block' in rule) {
@@ -342,7 +348,7 @@ function checkContainsRule(
       rule as CodeBlockContainsRule,
       filePath,
       ruleSource,
-      formattedRule
+      formattedRule,
     );
   }
   if ('heading-or-text' in rule) {
@@ -351,7 +357,7 @@ function checkContainsRule(
       rule as HeadingOrTextContainsRule,
       filePath,
       ruleSource,
-      formattedRule
+      formattedRule,
     );
   }
   return [];
@@ -362,7 +368,7 @@ function checkPatternContains(
   rule: PatternContainsRule,
   filePath: string,
   ruleSource: string,
-  formattedRule: string
+  formattedRule: string,
 ): Finding[] {
   const text = getFullSectionText(section);
   const found = new RegExp(rule.pattern, 'm').test(text);
@@ -409,7 +415,7 @@ function checkListContains(
   rule: ListContainsRule,
   filePath: string,
   ruleSource: string,
-  formattedRule: string
+  formattedRule: string,
 ): Finding[] {
   const items = collectAllListItems(section);
   const regex = new RegExp(rule.list.pattern);
@@ -436,7 +442,7 @@ function checkTableContains(
   rule: TableContainsRule,
   filePath: string,
   ruleSource: string,
-  formattedRule: string
+  formattedRule: string,
 ): Finding[] {
   const tables = collectAllTables(section);
 
@@ -465,7 +471,7 @@ function checkTableContains(
     if (!headerRow) continue;
 
     const headers = headerRow.children.map((cell) =>
-      extractText(cell.children as PhrasingContent[]).trim()
+      extractText(cell.children as PhrasingContent[]).trim(),
     );
 
     if (rule.table.columns.every((col) => headers.includes(col))) {
@@ -513,7 +519,7 @@ function checkCodeBlockContains(
   rule: CodeBlockContainsRule,
   filePath: string,
   ruleSource: string,
-  formattedRule: string
+  formattedRule: string,
 ): Finding[] {
   if (collectAllCodeBlocks(section).length > 0) return [];
 
@@ -535,7 +541,7 @@ function checkHeadingOrText(
   rule: HeadingOrTextContainsRule,
   filePath: string,
   ruleSource: string,
-  formattedRule: string
+  formattedRule: string,
 ): Finding[] {
   const needle = rule['heading-or-text'].toUpperCase();
 
@@ -576,7 +582,7 @@ function checkProhibited(
   content: string,
   prohibited: readonly string[],
   filePath: string,
-  ruleSource: string
+  ruleSource: string,
 ): Finding[] {
   const findings: Finding[] = [];
   const lines = content.split('\n');

@@ -12,6 +12,10 @@ Target sections inherit from the root configuration using the same nullish coale
 
 In batch mode (`--all` or `--target`), interactive prompting is suppressed. If a target resolves to no tool features, generation proceeds without prompting.
 
+## Scope Boundary
+
+Per-agent target configs, batch runner, --all-targets / --target.
+
 ## Scenarios
 
 ### Scenario 1: Multi-agent project

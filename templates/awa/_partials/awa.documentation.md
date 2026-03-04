@@ -56,7 +56,7 @@ docs/
    - Each file covers one topic
    - Reference style for commands/APIs
    - Tutorial style for guides
-   - Keep files under 500 lines; split if larger
+   - Keep files under the specified line-limit; split if larger
 
 3. Derive from specifications
    - Do not duplicate; summarize and link

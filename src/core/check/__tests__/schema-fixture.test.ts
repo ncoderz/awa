@@ -1,9 +1,11 @@
-// @awa-test: CHK-2_AC-1
+// @awa-test: CLI-17_AC-1
 // Tests that validate real .schema.yaml schemas against fixture documents.
 
 import { readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+
 import { beforeAll, describe, expect, test } from 'vitest';
+
 import { loadRules } from '../rule-loader.js';
 import type { LoadedRuleSet } from '../rule-types.js';
 import { checkSchemasAsync } from '../schema-checker.js';
@@ -15,7 +17,7 @@ const FIXTURES_DIR = resolve(import.meta.dirname, 'fixtures');
 function makeSpecFile(filePath: string, relPath: string): SpecFile {
   return {
     filePath,
-    code: relPath.match(/(?:REQ|DESIGN|TASK|FEAT|EXAMPLES|ALIGN)-([A-Z]+)/)?.[1] ?? 'TEST',
+    code: relPath.match(/(?:REQ|DESIGN|TASK|FEAT|EXAMPLE|ALIGN)-([A-Z]+)/)?.[1] ?? 'TEST',
     requirementIds: [],
     acIds: [],
     propertyIds: [],
@@ -80,7 +82,7 @@ describe('Schema fixture validation', () => {
 
     // Contains-level descriptions
     const patternWithDesc = phaseSection?.contains?.find(
-      (c) => 'description' in c && c.description
+      (c) => 'description' in c && c.description,
     );
     expect(patternWithDesc).toBeDefined();
   });
@@ -99,7 +101,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(taskFile.filePath, taskFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -113,7 +115,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(reqFile.filePath, reqFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -127,7 +129,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(designFile.filePath, designFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -141,7 +143,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(featFile.filePath, featFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -155,21 +157,21 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(archFile.filePath, archFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
 
-    test('EXAMPLES fixture passes EXAMPLES rules', async () => {
+    test('EXAMPLE fixture passes EXAMPLE rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLES-'));
+      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(exFile.filePath, exFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -183,7 +185,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(alignFile.filePath, alignFile.relName)],
-        remapped
+        remapped,
       );
       expect(result.findings).toHaveLength(0);
     });
@@ -203,7 +205,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(taskFile.filePath, taskFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -223,7 +225,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(reqFile.filePath, reqFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -242,7 +244,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(designFile.filePath, designFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -262,7 +264,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(featFile.filePath, featFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -280,7 +282,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(archFile.filePath, archFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -290,16 +292,16 @@ describe('Schema fixture validation', () => {
       expect(missingContent.length).toBeGreaterThanOrEqual(3);
     });
 
-    test('EXAMPLES fixture: missing INFORMATIVE marker and code block', async () => {
+    test('EXAMPLE fixture: missing INFORMATIVE marker and code block', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLES-'));
+      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(exFile.filePath, exFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);
@@ -317,7 +319,7 @@ describe('Schema fixture validation', () => {
       const remapped = ruleSets.map((rs) => remapRuleSet(rs));
       const result = await checkSchemasAsync(
         [makeSpecFile(alignFile.filePath, alignFile.relName)],
-        remapped
+        remapped,
       );
 
       const codes = result.findings.map((f) => f.code);

@@ -6,6 +6,7 @@
 // @awa-test: DIFF-8_AC-2
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { Logger } from '../logger.js';
 
 describe('Logger', () => {
@@ -123,7 +124,7 @@ describe('Logger', () => {
       expect(output).toContain('5');
       expect(output).toContain('2');
       expect(output).toContain('1');
-      expect(output).toContain('3');
+      // skippedEmpty is not displayed in summary output
     });
 
     // @awa-test: GEN-9_AC-5, GEN-9_AC-6

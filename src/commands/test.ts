@@ -5,6 +5,7 @@
 // @awa-impl: TTST-12_AC-1
 
 import { intro, outro } from '@clack/prompts';
+
 import { configLoader } from '../core/config.js';
 import { buildMergedDir, resolveOverlays } from '../core/overlay.js';
 import { templateResolver } from '../core/template-resolver.js';
@@ -72,7 +73,7 @@ export async function testCommand(options: RawTestOptions): Promise<number> {
       fixtures,
       templatePath,
       { updateSnapshots: options.updateSnapshots },
-      presetDefinitions
+      presetDefinitions,
     );
 
     // Report results

@@ -38,7 +38,7 @@ function sectionHeading(type: ContentSection['type']): string {
 export function formatContentMarkdown(
   sections: ContentSection[],
   queryLabel: string,
-  footer: string | null
+  footer: string | null,
 ): string {
   const lines: string[] = [];
   lines.push(`# Context: ${queryLabel}`);
@@ -85,7 +85,7 @@ export function formatContentMarkdown(
 export function formatContentJson(
   sections: ContentSection[],
   queryLabel: string,
-  footer: string | null
+  footer: string | null,
 ): string {
   const result = {
     query: queryLabel,

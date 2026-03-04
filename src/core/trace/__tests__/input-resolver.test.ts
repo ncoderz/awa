@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { resolveIds, resolveSourceFile, resolveTaskFile } from '../input-resolver.js';
 import type { TraceIndex } from '../types.js';
 
@@ -95,7 +96,7 @@ Phase 2: T-DIFF-011 after T-DIFF-010
 - DIFF_P-1 → T-DIFF-011
 
 UNCOVERED: (none)
-`
+`,
     );
 
     const index = makeIndex(['DIFF-1_AC-1', 'DIFF_P-1', 'DIFF-1']);
@@ -136,7 +137,7 @@ export function diff() {}
 
 // @awa-impl: DIFF-1_AC-2
 export function patch() {}
-`
+`,
     );
 
     const index = makeIndex(['DIFF-DiffEngine', 'DIFF-1_AC-1', 'DIFF-1_AC-2']);

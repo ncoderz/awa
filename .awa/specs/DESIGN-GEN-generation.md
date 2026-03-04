@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design implements the file generation pipeline: walking template directories, invoking the template engine, managing output structure, handling file conflicts interactively, processing delete lists with feature-gated sections, and providing styled console output. It also includes the generate command orchestration and shared utility components.
+This design implements the file generation pipeline: walking template directories, invoking the template engine, managing output structure, handling file conflicts interactively, processing delete lists with feature-gated sections, providing styled console output, and the `awa init` convenience alias with a first-run config hint.
 
 ## Architecture
 
@@ -168,11 +168,23 @@ interface Logger {
 
 Orchestrates the generation pipeline: resolve config, resolve template, generate files, handle conflicts, set exit code.
 
-IMPLEMENTS: CHK-1_AC-2, CHK-1_AC-3, CHK-5_AC-2, CHK-5_AC-3, INIT-5_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, GEN-17_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 interface GenerateCommand {
   execute(target: string, options: RawCliOptions): Promise<number>;
+}
+```
+
+### GEN-ConfigHint
+
+After config loading in `generateCommand`, if no config file was found and no `--config` path was provided, logs a non-blocking info-level hint.
+
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, GEN-17_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+
+```typescript
+if (!cliOptions.config && fileConfig === null) {
+  logger.info('Tip: create .awa.toml to save your options for next time.');
 }
 ```
 
@@ -235,6 +247,12 @@ interface CoreTypes {
 - GEN_P-6 [Delete Feature Gating]: Delete list entries under a `# @feature <name>` section are deleted only when NONE of the listed features are active
   VALIDATES: GEN-12_AC-8
 
+- GEN_P-7 [Alias Transparency]: `awa init <args>` and `awa template generate <args>` invoke the same handler with identical resolved options
+  VALIDATES: GEN-15_AC-1
+
+- GEN_P-8 [Hint Non-Blocking]: Config hint is logged at info level only; it never throws or calls `process.exit`
+  VALIDATES: GEN-17_AC-1
+
 ## Error Handling
 
 ### GenerationError
@@ -271,13 +289,6 @@ PRINCIPLES:
 
 ## Requirements Traceability
 
-### REQ-CHK-check.md
-
-- CHK-1_AC-2 → GEN-GenerateCommand
-- CHK-1_AC-3 → GEN-GenerateCommand
-- CHK-5_AC-2 → GEN-GenerateCommand
-- CHK-5_AC-3 → GEN-GenerateCommand
-
 ### REQ-CLI-cli.md
 
 - CLI-5_AC-2 → GEN-ConflictResolver (GEN_P-4)
@@ -289,6 +300,14 @@ PRINCIPLES:
 - CLI-12_AC-2 → GEN-FileGenerator
 - CLI-12_AC-3 → GEN-ConflictResolver
 - CLI-12_AC-3 → GEN-DeleteResolver
+- CLI-16_AC-2 → GEN-GenerateCommand
+- CLI-16_AC-2 → GEN-ConfigHint
+- CLI-16_AC-3 → GEN-GenerateCommand
+- CLI-16_AC-3 → GEN-ConfigHint
+- CLI-20_AC-2 → GEN-GenerateCommand
+- CLI-20_AC-2 → GEN-ConfigHint
+- CLI-20_AC-3 → GEN-GenerateCommand
+- CLI-20_AC-3 → GEN-ConfigHint
 
 ### REQ-DIFF-diff.md
 
@@ -368,29 +387,35 @@ PRINCIPLES:
 - GEN-12_AC-6 → GEN-FileGenerator
 - GEN-12_AC-7 → GEN-FileGenerator
 - GEN-12_AC-8 → GEN-DeleteList (GEN_P-6)
-
-### REQ-INIT-init-alias.md
-
-- INIT-5_AC-1 → GEN-GenerateCommand
+- GEN-17_AC-1 → GEN-GenerateCommand (GEN_P-8)
+- GEN-17_AC-1 → GEN-ConfigHint (GEN_P-8)
 
 ### REQ-JSON-json-output.md
 
 - JSON-1_AC-1 → GEN-GenerateCommand
+- JSON-1_AC-1 → GEN-ConfigHint
 - JSON-3_AC-1 → GEN-CoreTypes
 - JSON-4_AC-1 → GEN-CoreTypes
 - JSON-5_AC-1 → GEN-GenerateCommand
+- JSON-5_AC-1 → GEN-ConfigHint
 - JSON-6_AC-1 → GEN-GenerateCommand
+- JSON-6_AC-1 → GEN-ConfigHint
 - JSON-7_AC-1 → GEN-GenerateCommand
+- JSON-7_AC-1 → GEN-ConfigHint
 - JSON-8_AC-1 → GEN-GenerateCommand
+- JSON-8_AC-1 → GEN-ConfigHint
 
 ### REQ-MULTI-multi-target.md
 
 - MULTI-6_AC-1 → GEN-GenerateCommand
+- MULTI-6_AC-1 → GEN-ConfigHint
 - MULTI-10_AC-1 → GEN-GenerateCommand
+- MULTI-10_AC-1 → GEN-ConfigHint
 
 ### REQ-OVL-overlays.md
 
 - OVL-2_AC-1 → GEN-GenerateCommand
+- OVL-2_AC-1 → GEN-ConfigHint
 
 ### REQ-TPL-templates.md
 

@@ -4,6 +4,7 @@
 // @awa-test: MULTI-9_AC-1, MULTI-11_AC-1
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { ConfigError, type FileConfig, type RawCliOptions } from '../../types/index.js';
 import { BatchRunner } from '../batch-runner.js';
 
@@ -149,10 +150,10 @@ describe('BatchRunner', () => {
       };
 
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'nonexistent')).toThrow(
-        ConfigError
+        ConfigError,
       );
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'nonexistent')).toThrow(
-        /Unknown target/
+        /Unknown target/,
       );
     });
 
@@ -204,7 +205,7 @@ describe('BatchRunner', () => {
       };
 
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'claude')).toThrow(
-        /Target 'claude' has no output/
+        /Target 'claude' has no output/,
       );
     });
   });

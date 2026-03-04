@@ -5,6 +5,7 @@
 // @awa-impl: RENUM-4_AC-1, RENUM-4_AC-2
 
 import { basename } from 'node:path';
+
 import type { SpecFile, SpecParseResult } from '../check/types.js';
 import type { MapBuildResult, RenumberMap } from './types.js';
 import { RenumberError } from './types.js';
@@ -55,7 +56,7 @@ export function buildRenumberMap(code: string, specs: SpecParseResult): MapBuild
 function buildRequirementEntries(
   code: string,
   reqFile: SpecFile,
-  entries: Map<string, string>
+  entries: Map<string, string>,
 ): void {
   // Separate top-level requirements and subrequirements from document-order arrays
   const topLevelReqs: string[] = [];
@@ -129,7 +130,7 @@ function buildRequirementEntries(
 function buildPropertyEntries(
   code: string,
   designFile: SpecFile,
-  entries: Map<string, string>
+  entries: Map<string, string>,
 ): void {
   for (let i = 0; i < designFile.propertyIds.length; i++) {
     const oldId = designFile.propertyIds[i] as string;
@@ -145,7 +146,7 @@ function buildPropertyEntries(
 function findSpecFile(
   specFiles: readonly SpecFile[],
   code: string,
-  prefix: string
+  prefix: string,
 ): SpecFile | undefined {
   return specFiles.find((sf) => {
     const name = basename(sf.filePath);
