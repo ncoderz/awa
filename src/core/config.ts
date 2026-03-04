@@ -45,6 +45,9 @@
 // @awa-impl: MULTI-3_AC-1
 // @awa-impl: MULTI-5_AC-2
 
+import { homedir } from 'node:os';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
+
 import { parse } from 'smol-toml';
 
 import {
@@ -62,25 +65,108 @@ import { logger } from '../utils/logger.js';
 const DEFAULT_CONFIG_PATH = '.awa.toml';
 
 export class ConfigLoader {
+  private isLocalTemplateSource(source: string): boolean {
+    if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {
+      return true;
+    }
+    return /^[a-zA-Z]:/.test(source);
+  }
+
+  private resolvePathFromConfigDir(value: string, configDir: string): string {
+    if (isAbsolute(value) || value.startsWith('~')) {
+      return value;
+    }
+    return resolve(configDir, value);
+  }
+
+  private normalizeConfigPaths(config: FileConfig, configPath: string): FileConfig {
+    const configDir = dirname(configPath);
+
+    if (config.output !== undefined) {
+      config.output = this.resolvePathFromConfigDir(config.output, configDir);
+    }
+
+    if (config.template !== undefined && this.isLocalTemplateSource(config.template)) {
+      config.template = this.resolvePathFromConfigDir(config.template, configDir);
+    }
+
+    if (config.overlay !== undefined) {
+      config.overlay = config.overlay.map((overlaySource) =>
+        this.isLocalTemplateSource(overlaySource)
+          ? this.resolvePathFromConfigDir(overlaySource, configDir)
+          : overlaySource,
+      );
+    }
+
+    if (config.targets !== undefined) {
+      for (const target of Object.values(config.targets)) {
+        if (target.output !== undefined) {
+          target.output = this.resolvePathFromConfigDir(target.output, configDir);
+        }
+
+        if (target.template !== undefined && this.isLocalTemplateSource(target.template)) {
+          target.template = this.resolvePathFromConfigDir(target.template, configDir);
+        }
+      }
+    }
+
+    return config;
+  }
+
+  private async discoverConfigPath(startDir: string): Promise<string | null> {
+    const homeDir = resolve(homedir());
+    let currentDir = resolve(startDir);
+
+    while (true) {
+      const candidatePath = join(currentDir, DEFAULT_CONFIG_PATH);
+      if (await pathExists(candidatePath)) {
+        return candidatePath;
+      }
+
+      const gitMarker = join(currentDir, '.git');
+      if (await pathExists(gitMarker)) {
+        return null;
+      }
+
+      const parentDir = dirname(currentDir);
+      if (parentDir === currentDir || currentDir === homeDir) {
+        return null;
+      }
+
+      currentDir = parentDir;
+    }
+  }
+
   // @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
   async load(configPath: string | null): Promise<FileConfig | null> {
-    const pathToLoad = configPath ?? DEFAULT_CONFIG_PATH;
+    let pathToLoad: string | null;
 
-    // Check if file exists
-    const exists = await pathExists(pathToLoad);
+    if (configPath) {
+      pathToLoad = isAbsolute(configPath) ? configPath : resolve(process.cwd(), configPath);
+      const exists = await pathExists(pathToLoad);
+      if (!exists) {
+        throw new ConfigError(
+          `Configuration file not found: ${configPath}`,
+          'FILE_NOT_FOUND',
+          configPath,
+        );
+      }
+    } else {
+      pathToLoad = await this.discoverConfigPath(process.cwd());
+    }
+
+    // No config found via auto-discovery
+    if (!pathToLoad) {
+      return null;
+    }
 
     // If explicit path provided but doesn't exist, error
-    if (configPath && !exists) {
+    if (configPath && !(await pathExists(pathToLoad))) {
       throw new ConfigError(
         `Configuration file not found: ${configPath}`,
         'FILE_NOT_FOUND',
         configPath,
       );
-    }
-
-    // If default path doesn't exist, return null (no error)
-    if (!configPath && !exists) {
-      return null;
     }
 
     // Read and parse TOML
@@ -369,7 +455,7 @@ export class ConfigLoader {
         }
       }
 
-      return config;
+      return this.normalizeConfigPaths(config, pathToLoad);
     } catch (error) {
       if (error instanceof ConfigError) {
         throw error;
