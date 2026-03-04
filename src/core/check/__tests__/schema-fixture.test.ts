@@ -3,7 +3,9 @@
 
 import { readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+
 import { beforeAll, describe, expect, test } from 'vitest';
+
 import { loadRules } from '../rule-loader.js';
 import type { LoadedRuleSet } from '../rule-types.js';
 import { checkSchemasAsync } from '../schema-checker.js';

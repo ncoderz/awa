@@ -2,6 +2,7 @@
 // @awa-impl: TRC-2_AC-1, TRC-2_AC-2, TRC-2_AC-3
 
 import { readFile } from 'node:fs/promises';
+
 import type { TraceIndex } from './types.js';
 
 /** Result of resolving input to a list of trace IDs. */

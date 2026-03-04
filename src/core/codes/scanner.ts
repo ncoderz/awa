@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import { collectFiles } from '../check/glob.js';
 import type { SpecFile } from '../check/types.js';
 import type { CodesResult, DocTypes, FeatureCode } from './types.js';

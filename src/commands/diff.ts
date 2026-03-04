@@ -9,6 +9,7 @@
 // @awa-impl: MULTI-12_AC-1
 
 import { intro, outro } from '@clack/prompts';
+
 import { batchRunner } from '../core/batch-runner.js';
 import { configLoader } from '../core/config.js';
 import { diffEngine } from '../core/differ.js';

@@ -25,6 +25,7 @@
 // @awa-impl: TPL-9_AC-2
 
 import { join, relative } from 'node:path';
+
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import {
   type ConflictItem,

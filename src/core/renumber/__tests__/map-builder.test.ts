@@ -6,6 +6,7 @@
 
 import * as fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
+
 import type { SpecFile, SpecParseResult } from '../../check/types.js';
 import { buildRenumberMap } from '../map-builder.js';
 import { RenumberError } from '../types.js';

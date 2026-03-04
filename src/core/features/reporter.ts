@@ -4,6 +4,7 @@
 // @awa-impl: DISC-9_AC-1
 
 import chalk from 'chalk';
+
 import type { PresetDefinitions } from '../../types/index.js';
 import type { ScanResult } from './scanner.js';
 

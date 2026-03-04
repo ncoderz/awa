@@ -6,7 +6,9 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import { rmDir } from '../../../utils/fs.js';
 import { FeatureScanner } from '../scanner.js';
 

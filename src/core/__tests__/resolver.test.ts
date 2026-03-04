@@ -7,6 +7,7 @@
 // @awa-test: CLI-5_AC-2, CLI-5_AC-3
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import type { ConflictItem } from '../../types/index.js';
 import { ConflictResolver, DeleteResolver } from '../resolver.js';
 

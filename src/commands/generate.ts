@@ -11,6 +11,7 @@
 // @awa-impl: CLI-20_AC-3
 
 import { intro, isCancel, multiselect, outro } from '@clack/prompts';
+
 import { batchRunner } from '../core/batch-runner.js';
 import { configLoader } from '../core/config.js';
 import { featureResolver } from '../core/feature-resolver.js';

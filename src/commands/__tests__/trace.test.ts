@@ -3,6 +3,7 @@
 // @awa-test: TRC-12_AC-1
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import type { TraceCommandOptions, TraceIndex, TraceResult } from '../../core/trace/types.js';
 
 // Mock all trace dependencies

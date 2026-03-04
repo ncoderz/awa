@@ -4,7 +4,9 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import { parseSpecs } from '../spec-parser.js';
 import type { CheckConfig } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';

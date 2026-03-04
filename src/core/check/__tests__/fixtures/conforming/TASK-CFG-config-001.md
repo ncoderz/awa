@@ -19,13 +19,13 @@ GOAL: Load and merge configuration from file with defaults
 TEST CRITERIA: Can load valid TOML, missing keys get defaults
 
 - [ ] T-CFG-010 [CFG-1] Implement load function → src/config/loader.ts
-  IMPLEMENTS: CFG-1_AC-1
+      IMPLEMENTS: CFG-1_AC-1
 - [ ] T-CFG-011 [CFG-1] Implement merge function → src/config/loader.ts
-  IMPLEMENTS: CFG-1_AC-2
+      IMPLEMENTS: CFG-1_AC-2
 - [ ] T-CFG-012 [P] [CFG-1] Property test for default preservation → tests/config/loader.test.ts
-  TESTS: CFG_P-1
+      TESTS: CFG_P-1
 - [ ] T-CFG-013 [P] [CFG-1] Test load from valid path → tests/config/loader.test.ts
-  TESTS: CFG-1_AC-1
+      TESTS: CFG-1_AC-1
 
 ## Phase 4: Config Validation [SHOULD]
 
@@ -33,9 +33,9 @@ GOAL: Validate loaded config against schema
 TEST CRITERIA: Invalid config rejected with clear error
 
 - [ ] T-CFG-020 [CFG-2] Implement validate function → src/config/validator.ts
-  IMPLEMENTS: CFG-2_AC-1
+      IMPLEMENTS: CFG-2_AC-1
 - [ ] T-CFG-021 [P] [CFG-2] Test schema validation → tests/config/validator.test.ts
-  TESTS: CFG-2_AC-1
+      TESTS: CFG-2_AC-1
 
 ## Phase 5: Polish
 

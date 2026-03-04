@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { resolveIds, resolveSourceFile, resolveTaskFile } from '../input-resolver.js';
 import type { TraceIndex } from '../types.js';
 

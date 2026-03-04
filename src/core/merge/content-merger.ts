@@ -1,5 +1,6 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, join } from 'node:path';
+
 import type { SpecFile } from '../check/types.js';
 import type { FileMove } from './types.js';
 

@@ -4,6 +4,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import { scanCodes } from '../codes/scanner.js';
 import type { FixResult } from './matrix-fixer.js';
 import type { CheckConfig, SpecParseResult } from './types.js';

@@ -4,6 +4,7 @@
 // @awa-impl: CLI-28_AC-1
 
 import { readFile } from 'node:fs/promises';
+
 import { collectFiles, matchSimpleGlob } from './glob.js';
 import type { CheckConfig, CodeMarker, Finding, MarkerScanResult, MarkerType } from './types.js';
 

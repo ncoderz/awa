@@ -2,6 +2,7 @@
 // @awa-test: TRC-6_AC-1
 
 import { describe, expect, it } from 'vitest';
+
 import { applyTokenBudget, estimateTokens } from '../token-estimator.js';
 import type { ContentSection } from '../types.js';
 

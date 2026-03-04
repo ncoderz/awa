@@ -2,6 +2,7 @@
 // @awa-test: CLI-24_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { report } from '../reporter.js';
 import type { Finding } from '../types.js';
 

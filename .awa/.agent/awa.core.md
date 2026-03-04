@@ -9,6 +9,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 </workflow>
 
 <file_structure>
+```
   .awa/
   ├── .agent/
   │   └── schemas/
@@ -37,6 +38,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
   │   └── ALIGN-{x}-WITH-{y}-{nnn}.md
   └── rules/
       └── *.md
+```
 </file_structure>
 
 <file_descriptions>
@@ -53,6 +55,7 @@ YOU follow the set of rules defined below, reminding yourself of the rules perio
 </file_descriptions>
 
 <traceability_chain>
+```
 {CODE}-{n} = requirement id, e.g. DIFF-1; subrequirement id = {CODE}-{n}.{p}, e.g. DIFF-1.1
 {CODE}-{n}[.{p}]_AC-{m} = acceptance criterion id, e.g. DIFF-1_AC-1 or DIFF-1.1_AC-2
 {CODE}_P-{n} = correctness property id, e.g. DIFF_P-2
@@ -84,6 +87,7 @@ DESIGN-{CODE}-{feature}.md
   └── @awa-test: {CODE}-{n}[.{p}]_AC-{m}    // verifies AC directly
 
 Markers create the trace, not file paths.
+```
 </traceability_chain>
 
 <file_size_limits>

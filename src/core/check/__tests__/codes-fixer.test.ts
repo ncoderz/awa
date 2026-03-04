@@ -5,7 +5,9 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { fixCodesTable } from '../codes-fixer.js';
 import type { SpecFile, SpecParseResult } from '../types.js';
 

@@ -6,6 +6,7 @@
 // @awa-test: DIFF-8_AC-2
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { Logger } from '../logger.js';
 
 describe('Logger', () => {

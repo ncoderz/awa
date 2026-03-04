@@ -5,8 +5,10 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import * as fc from 'fast-check';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import type { MarkerScanResult, SpecFile, SpecParseResult } from '../../check/types.js';
 import { propagate } from '../propagator.js';
 import type { RenumberMap } from '../types.js';

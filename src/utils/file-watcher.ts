@@ -2,6 +2,7 @@
 // @awa-impl: DIFF-7_AC-10
 
 import { type FSWatcher, watch } from 'node:fs';
+
 import { Debouncer } from './debouncer.js';
 
 export interface FileWatcherOptions {

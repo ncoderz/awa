@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { buildJsonOutput, formatJson, formatSummary, formatTable } from '../reporter.js';
 import type { CodesResult } from '../types.js';
 

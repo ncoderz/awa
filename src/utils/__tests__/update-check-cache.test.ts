@@ -1,6 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Redirect the cache file to a test-specific temp directory so tests
@@ -48,11 +49,7 @@ async function loadModule() {
     },
     async writeCache(latestVersion: string): Promise<void> {
       await mkdir(dirname(cacheFile), { recursive: true });
-      await writeFile(
-        cacheFile,
-        JSON.stringify({ timestamp: Date.now(), latestVersion }),
-        'utf-8'
-      );
+      await writeFile(cacheFile, JSON.stringify({ timestamp: Date.now(), latestVersion }), 'utf-8');
     },
     async readCachedVersion(): Promise<string | null> {
       try {

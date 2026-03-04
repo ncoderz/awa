@@ -11,6 +11,7 @@
 // @awa-test: GEN_P-8
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import type { GenerationResult } from '../../types/index.js';
 
 // Mock dependencies BEFORE importing the module under test
@@ -30,6 +31,7 @@ vi.mock('../../core/feature-resolver.js');
 vi.mock('../../utils/logger.js');
 
 import { intro, outro } from '@clack/prompts';
+
 import { configLoader } from '../../core/config.js';
 import { featureResolver } from '../../core/feature-resolver.js';
 import { fileGenerator } from '../../core/generator.js';

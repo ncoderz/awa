@@ -80,6 +80,7 @@
 // @awa-impl: CLI-45_AC-4
 
 import { Command, Option } from 'commander';
+
 import { PACKAGE_INFO } from '../_generated/package_info.js';
 import { checkCommand } from '../commands/check.js';
 import { codesCommand } from '../commands/codes.js';
@@ -578,4 +579,4 @@ program.hook('postAction', async () => {
 });
 
 // @awa-impl: GEN-10_AC-1, GEN-10_AC-2
-program.parseAsync();
+void program.parseAsync();

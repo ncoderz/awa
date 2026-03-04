@@ -7,6 +7,7 @@
 // @awa-test: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-8_AC-1, MULTI-10_AC-1, MULTI-12_AC-1
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+
 import type { DiffResult } from '../../types/index.js';
 
 // Mock dependencies BEFORE importing the module under test

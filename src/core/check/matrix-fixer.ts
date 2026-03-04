@@ -4,6 +4,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import type { SpecFile, SpecParseResult } from './types.js';
 
 // --- Public API ---
@@ -33,10 +34,21 @@ export async function fixMatrices(
     const fileName = basename(specFile.filePath);
 
     if (fileName.startsWith('DESIGN-')) {
-      const changed = await fixDesignMatrix(specFile.filePath, reqFileMaps, crossRefPatterns, specFile.content);
+      const changed = await fixDesignMatrix(
+        specFile.filePath,
+        reqFileMaps,
+        crossRefPatterns,
+        specFile.content
+      );
       fileResults.push({ filePath: specFile.filePath, changed });
     } else if (fileName.startsWith('TASK-')) {
-      const changed = await fixTaskMatrix(specFile.filePath, reqFileMaps, specs, crossRefPatterns, specFile.content);
+      const changed = await fixTaskMatrix(
+        specFile.filePath,
+        reqFileMaps,
+        specs,
+        crossRefPatterns,
+        specFile.content
+      );
       fileResults.push({ filePath: specFile.filePath, changed });
     }
   }

@@ -3,6 +3,7 @@
 
 import { mkdir, readdir, rm } from 'node:fs/promises';
 import { join, relative } from 'node:path';
+
 import { pathExists, readTextFile, writeTextFile } from '../../utils/fs.js';
 import type { SnapshotFileResult } from './types.js';
 

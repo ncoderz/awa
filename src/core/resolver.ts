@@ -22,6 +22,7 @@
 import { MultiSelectPrompt } from '@clack/core';
 import { isCancel, multiselect } from '@clack/prompts';
 import chalk from 'chalk';
+
 import type { BatchConflictResolution, ConflictItem } from '../types/index.js';
 
 // Unicode symbols (mirrors @clack/prompts internals)

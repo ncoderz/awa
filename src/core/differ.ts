@@ -25,8 +25,10 @@
 
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
+
 import { structuredPatch } from 'diff';
 import { isBinaryFile as detectBinaryFile } from 'isbinaryfile';
+
 import type { DiffOptions, DiffResult, FileDiff, GenerateOptions } from '../types/index.js';
 import { ensureDir, pathExists, readBinaryFile, rmDir, walkDirectory } from '../utils/fs.js';
 import { loadDeleteList, resolveDeleteList } from './delete-list.js';

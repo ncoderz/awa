@@ -3,6 +3,7 @@
 // @awa-test: JSON_P-2
 
 import { describe, expect, test, vi } from 'vitest';
+
 import type { DiffResult, GenerationResult } from '../../types/index.js';
 import {
   formatDiffSummary,

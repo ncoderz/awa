@@ -1,6 +1,7 @@
 // @awa-test: RCOD-4_AC-2, RCOD-4_AC-3
 
 import { describe, expect, it } from 'vitest';
+
 import { formatJson, formatText } from '../reporter.js';
 import type { RecodeResult } from '../types.js';
 

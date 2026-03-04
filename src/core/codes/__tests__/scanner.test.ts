@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import type { SpecFile } from '../../check/types.js';
 import { extractFirstParagraph, extractScopeBoundary, scanCodes } from '../scanner.js';
 
@@ -11,6 +12,7 @@ vi.mock('node:fs/promises', () => ({
 }));
 
 import { readFile } from 'node:fs/promises';
+
 import { collectFiles } from '../../check/glob.js';
 
 function makeSpecFile(overrides: Partial<SpecFile>): SpecFile {

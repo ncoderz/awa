@@ -2,6 +2,7 @@
 // @awa-impl: TRC-5_AC-1, TRC-5_AC-2, TRC-5_AC-3, TRC-5_AC-4, TRC-5_AC-5
 
 import { readFile } from 'node:fs/promises';
+
 import type { ContentSection, TraceResult } from './types.js';
 
 /** Default lines of context before a code marker. */

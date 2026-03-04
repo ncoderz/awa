@@ -6,6 +6,7 @@
 // @awa-test: CLI_P-17
 
 import { describe, expect, test } from 'vitest';
+
 import { checkSpecAgainstSpec } from '../spec-spec-checker.js';
 import type {
   CheckConfig,

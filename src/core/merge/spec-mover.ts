@@ -1,5 +1,6 @@
 import { readFile, rename } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
+
 import type { SpecFile } from '../check/types.js';
 import type { FileRename } from '../recode/types.js';
 import { MergeError } from './types.js';

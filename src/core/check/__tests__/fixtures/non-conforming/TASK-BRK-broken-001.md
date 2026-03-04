@@ -5,7 +5,7 @@ FEATURE: Broken Example
 ## Phase 1: Setup
 
 - [ ] T-BRK-001 Initialize module → src/broken/
-  IMPLEMENTS: BRK-1_AC-1
+      IMPLEMENTS: BRK-1_AC-1
 
 ## Dependencies
 

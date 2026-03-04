@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { detectIdType, resolveTrace } from '../resolver.js';
 import type { CodeLocation, TraceIndex } from '../types.js';
 

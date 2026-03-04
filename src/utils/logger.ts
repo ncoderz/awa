@@ -19,6 +19,7 @@
 // @awa-impl: TPL-7_AC-3
 
 import chalk from 'chalk';
+
 import type { DiffResult, FileAction, GenerationResult } from '../types/index.js';
 
 export class Logger {

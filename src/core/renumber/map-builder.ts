@@ -5,6 +5,7 @@
 // @awa-impl: RENUM-4_AC-1, RENUM-4_AC-2
 
 import { basename } from 'node:path';
+
 import type { SpecFile, SpecParseResult } from '../check/types.js';
 import type { MapBuildResult, RenumberMap } from './types.js';
 import { RenumberError } from './types.js';

@@ -1,6 +1,7 @@
 // @awa-test: TRC-7_AC-1
 
 import { describe, expect, it } from 'vitest';
+
 import { formatContentJson, formatContentMarkdown } from '../content-formatter.js';
 import type { ContentSection } from '../types.js';
 

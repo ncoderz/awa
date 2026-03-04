@@ -18,6 +18,7 @@
 // @awa-impl: TPL-11_AC-2
 
 import { Eta } from 'eta';
+
 import { type RenderResult, type TemplateContext, TemplateError } from '../types/index.js';
 import { readTextFile } from '../utils/fs.js';
 

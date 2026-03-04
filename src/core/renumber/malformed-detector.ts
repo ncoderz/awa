@@ -39,7 +39,6 @@ export function detectMalformed(
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i] as string;
       let match: RegExpExecArray | null;
-      // biome-ignore lint/suspicious/noAssignInExpressions: regex exec loop pattern
       while ((match = tokenRegex.exec(line)) !== null) {
         const token = match[0];
         // @awa-impl: RENUM-12_AC-3

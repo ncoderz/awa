@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import type { SpecFile } from '../../check/types.js';
 import { executeMoves, resolveMovePath, updateHeading } from '../content-merger.js';
 

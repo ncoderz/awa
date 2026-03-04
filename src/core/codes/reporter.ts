@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import type { CodesResult } from './types.js';
 
 /** JSON output structure for --json mode. */

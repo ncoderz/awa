@@ -4,6 +4,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
+
 import { collectFiles } from './glob.js';
 import type { CheckConfig, CrossReference, SpecFile, SpecParseResult } from './types.js';
 

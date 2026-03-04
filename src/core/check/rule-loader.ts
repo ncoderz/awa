@@ -3,7 +3,9 @@
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import { parse as parseYaml } from 'yaml';
+
 import { collectFiles, matchSimpleGlob } from './glob.js';
 import type {
   CodeBlockContainsRule,

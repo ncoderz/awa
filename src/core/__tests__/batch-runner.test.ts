@@ -4,6 +4,7 @@
 // @awa-test: MULTI-9_AC-1, MULTI-11_AC-1
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { ConfigError, type FileConfig, type RawCliOptions } from '../../types/index.js';
 import { BatchRunner } from '../batch-runner.js';
 

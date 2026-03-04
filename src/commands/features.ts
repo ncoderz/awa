@@ -4,6 +4,7 @@
 // @awa-impl: DISC-8_AC-1
 
 import { intro, outro } from '@clack/prompts';
+
 import { configLoader } from '../core/config.js';
 import { featuresReporter } from '../core/features/reporter.js';
 import { featureScanner } from '../core/features/scanner.js';

@@ -42,7 +42,7 @@ Useful commands:
 - Keep changes focused and minimal
 - Add or update tests for behavior changes
 - Do not introduce unrelated refactors in the same PR
-- Follow existing code style (Biome + TypeScript conventions)
+- Follow existing code style (Prettier + ESLint + TypeScript conventions)
 
 ## Commit and PR Guidelines
 

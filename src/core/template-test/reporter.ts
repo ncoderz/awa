@@ -3,6 +3,7 @@
 // @awa-impl: TTST-10_AC-1
 
 import chalk from 'chalk';
+
 import type { FixtureResult, TestSuiteResult } from './types.js';
 
 // @awa-impl: TTST-6_AC-1

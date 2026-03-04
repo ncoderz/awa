@@ -15,6 +15,7 @@
 // @awa-test: CLI_P-16
 
 import { describe, expect, test } from 'vitest';
+
 import { checkCodeAgainstSpec } from '../code-spec-checker.js';
 import type { CheckConfig, CodeMarker, MarkerScanResult, SpecParseResult } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';

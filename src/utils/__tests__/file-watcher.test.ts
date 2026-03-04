@@ -13,6 +13,7 @@ vi.mock('node:fs', () => {
 });
 
 import { watch } from 'node:fs';
+
 import { FileWatcher } from '../file-watcher.js';
 
 // Helper to get the callback passed to fs.watch

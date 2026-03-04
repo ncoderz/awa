@@ -7,6 +7,7 @@
 
 import * as fc from 'fast-check';
 import { describe, it } from 'vitest';
+
 import { ConfigLoader } from '../core/config.js';
 import { ConflictResolver } from '../core/resolver.js';
 import { TemplateResolver } from '../core/template-resolver.js';

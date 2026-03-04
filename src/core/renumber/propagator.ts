@@ -3,6 +3,7 @@
 // @awa-impl: RENUM-6_AC-1, RENUM-6_AC-2
 
 import { readFile, writeFile } from 'node:fs/promises';
+
 import type { MarkerScanResult, SpecParseResult } from '../check/types.js';
 import type { AffectedFile, PropagationResult, RenumberMap, Replacement } from './types.js';
 import { RenumberError } from './types.js';

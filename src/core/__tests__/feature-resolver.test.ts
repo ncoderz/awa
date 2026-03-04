@@ -9,6 +9,7 @@
 // @awa-test: CFG-13_AC-1, CFG-13_AC-2
 
 import { describe, expect, it } from 'vitest';
+
 import { ConfigError } from '../../types/index.js';
 import { FeatureResolver } from '../feature-resolver.js';
 

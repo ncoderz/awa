@@ -77,20 +77,19 @@ awa init .
 awa init . --features copilot claude cursor
 ```
 
-
 See the **[Quick Start guide](https://awa.ncoderz.com/guides/quick-start/)** for more.
 
 ## Related Tools
 
 Several tools address AI-assisted development workflows. Each brings different strengths:
 
-| Tool | Description | Runtime |
-|---|---|---|
-| **awa** | Templated agent config generation with spec-driven workflow and traceability | Node + CLI |
-| **[Kiro](https://kiro.dev)** | IDE with built-in spec-driven development and agent hooks | Standalone IDE + CLI |
-| **[Spec Kit](https://github.com/github/spec-kit)** | Python CLI for structured specs with broad agent support (18+) | Python 3.11+ / uv |
-| **[BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)** | Agile workflow with role-based AI personas | Shell / Python / yq |
-| **[AI RPI Protocol](https://github.com/MiguelAxcar/ai-rpi-protocol)** | Zero-dependency markdown rules for disciplined AI development | None (markdown only) |
+| Tool                                                                  | Description                                                                  | Runtime              |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | -------------------- |
+| **awa**                                                               | Templated agent config generation with spec-driven workflow and traceability | Node + CLI           |
+| **[Kiro](https://kiro.dev)**                                          | IDE with built-in spec-driven development and agent hooks                    | Standalone IDE + CLI |
+| **[Spec Kit](https://github.com/github/spec-kit)**                    | Python CLI for structured specs with broad agent support (18+)               | Python 3.11+ / uv    |
+| **[BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)**       | Agile workflow with role-based AI personas                                   | Shell / Python / yq  |
+| **[AI RPI Protocol](https://github.com/MiguelAxcar/ai-rpi-protocol)** | Zero-dependency markdown rules for disciplined AI development                | None (markdown only) |
 
 ### What each tool does well
 
@@ -102,7 +101,6 @@ Several tools address AI-assisted development workflows. Each brings different s
 ### Where awa fits
 
 awa focuses on two things other tools don't combine: **end-to-end traceability** (every line of code links back to a requirement via `@awa-impl` / `@awa-test` markers, validated by `awa check`) and **templateable agent configuration** (feature flags, presets, overlays, diff detection). It's agent-agnostic — one template set generates config for Copilot, Claude, Cursor, Windsurf, and more.
-
 
 ## Development
 
@@ -120,22 +118,22 @@ npm run build
 
 ### Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Build for production (`dist/`) |
-| `npm run dev` | Run CLI in development mode |
-| `npm test` | Run tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run check` | Run `awa check` on this project |
-| `npm run lint` | Check code with Biome |
-| `npm run lint:fix` | Fix linting issues |
-| `npm run format` | Format code with Biome |
-| `npm run typecheck` | TypeScript type checking |
-| `npm run gen:example` | Generate example template to `outputs/example` |
-| `npm run gen:awa` | Generate awa templates to `outputs/awa` |
-| `npm run gen:awa:this` | Generate awa templates to current directory |
-| `npm run diff:awa:this` | Diff awa templates against current directory |
+| Command                 | Description                                    |
+| ----------------------- | ---------------------------------------------- |
+| `npm run build`         | Build for production (`dist/`)                 |
+| `npm run dev`           | Run CLI in development mode                    |
+| `npm test`              | Run tests                                      |
+| `npm run test:watch`    | Run tests in watch mode                        |
+| `npm run test:coverage` | Run tests with coverage                        |
+| `npm run check`         | Run `awa check` on this project                |
+| `npm run lint`          | Check code with ESLint                         |
+| `npm run lint:fix`      | Fix linting issues                             |
+| `npm run format`        | Format code with Prettier                      |
+| `npm run typecheck`     | TypeScript type checking                       |
+| `npm run gen:example`   | Generate example template to `outputs/example` |
+| `npm run gen:awa`       | Generate awa templates to `outputs/awa`        |
+| `npm run gen:awa:this`  | Generate awa templates to current directory    |
+| `npm run diff:awa:this` | Diff awa templates against current directory   |
 
 ## Community
 

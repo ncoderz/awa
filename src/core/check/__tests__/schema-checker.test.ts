@@ -4,7 +4,9 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+
 import type { LoadedRuleSet } from '../rule-types.js';
 import { checkSchemasAsync } from '../schema-checker.js';
 import type { SpecFile } from '../types.js';

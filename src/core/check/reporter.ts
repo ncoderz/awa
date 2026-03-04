@@ -4,6 +4,7 @@
 // @awa-impl: CLI-24_AC-3
 
 import chalk from 'chalk';
+
 import type { Finding } from './types.js';
 
 // @awa-impl: CLI-24_AC-1

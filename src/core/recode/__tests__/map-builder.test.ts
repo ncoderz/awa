@@ -3,6 +3,7 @@
 
 import * as fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
+
 import type { SpecFile, SpecParseResult } from '../../check/types.js';
 import { buildRecodeMap } from '../map-builder.js';
 import { RecodeError } from '../types.js';
@@ -272,9 +273,7 @@ describe('buildRecodeMap', () => {
     const specs = makeSpecs([targetReq]);
 
     expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow(RecodeError);
-    expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow(
-      'No spec files found for source'
-    );
+    expect(() => buildRecodeMap('NOPE', 'TGT', specs)).toThrow('No spec files found for source');
   });
 
   it('succeeds when target code does not exist (recode to new code)', () => {

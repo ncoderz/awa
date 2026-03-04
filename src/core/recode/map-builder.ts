@@ -2,6 +2,7 @@
 // @awa-impl: RCOD-1_AC-1, RCOD-1_AC-2, RCOD-1_AC-3, RCOD-1_AC-4, RCOD-1_AC-5
 
 import { basename } from 'node:path';
+
 import type { SpecFile, SpecParseResult } from '../check/types.js';
 import type { RenumberMap } from '../renumber/types.js';
 import { RecodeError } from './types.js';
@@ -26,10 +27,7 @@ export function buildRecodeMap(
 ): RecodeMapBuildResult {
   // Validate that at least one spec file exists for the source code
   if (!hasAnySpecFile(specs.specFiles, sourceCode)) {
-    throw new RecodeError(
-      'SOURCE_NOT_FOUND',
-      `No spec files found for source code: ${sourceCode}`
-    );
+    throw new RecodeError('SOURCE_NOT_FOUND', `No spec files found for source code: ${sourceCode}`);
   }
 
   const entries = new Map<string, string>();

@@ -2,10 +2,12 @@
 // @awa-impl: CLI-17_AC-1
 
 import { readFile } from 'node:fs/promises';
+
 import type { Code, Heading, List, PhrasingContent, Root, Table, TableRow } from 'mdast';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
+
 import { matchesTargetGlob } from './rule-loader.js';
 import type {
   CodeBlockContainsRule,

@@ -4,6 +4,7 @@
 // @awa-impl: RENUM-10_AC-1
 
 import { readFile } from 'node:fs/promises';
+
 import { detectMalformed } from '../core/renumber/malformed-detector.js';
 import { buildRenumberMap } from '../core/renumber/map-builder.js';
 import { propagate } from '../core/renumber/propagator.js';

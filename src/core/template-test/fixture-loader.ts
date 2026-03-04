@@ -4,7 +4,9 @@
 
 import { readdir } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
+
 import { parse } from 'smol-toml';
+
 import { readTextFile } from '../../utils/fs.js';
 import type { TestFixture } from './types.js';
 
