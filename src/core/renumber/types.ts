@@ -35,6 +35,7 @@ export interface RenumberResult {
   readonly affectedFiles: readonly AffectedFile[];
   readonly totalReplacements: number;
   readonly malformedWarnings: readonly MalformedWarning[];
+  readonly malformedCorrections: readonly MalformedCorrection[];
   readonly noChange: boolean;
 }
 
@@ -47,6 +48,7 @@ export interface RenumberCommandOptions {
   readonly dryRun?: boolean;
   readonly json?: boolean;
   readonly config?: string;
+  readonly dangerouslyModifyMalformedIds?: boolean;
 }
 
 /**
@@ -56,6 +58,16 @@ export interface MalformedWarning {
   readonly filePath: string;
   readonly line: number;
   readonly token: string;
+}
+
+/**
+ * A correction applied to a malformed ID token.
+ */
+export interface MalformedCorrection {
+  readonly filePath: string;
+  readonly line: number;
+  readonly token: string;
+  readonly replacement: string;
 }
 
 /**

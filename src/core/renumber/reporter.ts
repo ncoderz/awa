@@ -40,6 +40,15 @@ export function formatText(result: RenumberResult, dryRun: boolean): string {
     }
   }
 
+  // Malformed corrections
+  if (result.malformedCorrections.length > 0) {
+    lines.push('');
+    lines.push('  Malformed ID corrections:');
+    for (const c of result.malformedCorrections) {
+      lines.push(`    ${c.filePath}:${c.line} — ${c.token} → ${c.replacement}`);
+    }
+  }
+
   // Malformed warnings
   if (result.malformedWarnings.length > 0) {
     lines.push('');
@@ -70,6 +79,12 @@ export function formatJson(result: RenumberResult): string {
       })),
     })),
     totalReplacements: result.totalReplacements,
+    malformedCorrections: result.malformedCorrections.map((c) => ({
+      filePath: c.filePath,
+      line: c.line,
+      token: c.token,
+      replacement: c.replacement,
+    })),
     malformedWarnings: result.malformedWarnings.map((w) => ({
       filePath: w.filePath,
       line: w.line,

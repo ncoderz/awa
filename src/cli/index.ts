@@ -438,6 +438,11 @@ function configureRenumberCommand(cmd: Command): Command {
     .option('--all', 'Renumber all feature codes', false)
     .option('--dry-run', 'Preview changes without modifying files', false)
     .option('--json', 'Output results as JSON', false)
+    .option(
+      '--dangerously-modify-malformed-ids',
+      'Correct unambiguous malformed IDs (slash ranges, dot-dot ranges, trailing periods)',
+      false,
+    )
     .option('-c, --config <path>', 'Path to configuration file')
     .action(async (code: string | undefined, options) => {
       const renumberOptions: RenumberCommandOptions = {
@@ -446,6 +451,7 @@ function configureRenumberCommand(cmd: Command): Command {
         dryRun: options.dryRun,
         json: options.json,
         config: options.config,
+        dangerouslyModifyMalformedIds: options.dangerouslyModifyMalformedIds,
       };
 
       const exitCode = await renumberCommand(renumberOptions);

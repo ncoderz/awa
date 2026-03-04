@@ -5,7 +5,7 @@
 
 import { readFile } from 'node:fs/promises';
 
-import { detectMalformed } from '../core/renumber/malformed-detector.js';
+import { correctMalformed, detectMalformed } from '../core/renumber/malformed-detector.js';
 import { buildRenumberMap } from '../core/renumber/map-builder.js';
 import { propagate } from '../core/renumber/propagator.js';
 import { formatJson, formatText } from '../core/renumber/reporter.js';
@@ -43,13 +43,14 @@ export async function renumberCommand(options: RenumberCommandOptions): Promise<
     }
 
     const dryRun = options.dryRun === true;
+    const fixMalformed = options.dangerouslyModifyMalformedIds === true;
     const results: RenumberResult[] = [];
     let hasChanges = false;
 
     // @awa-impl: RENUM-8_AC-2
     for (const code of codes) {
       try {
-        const result = await runRenumberPipeline(code, specs, markers, dryRun);
+        const result = await runRenumberPipeline(code, specs, markers, dryRun, fixMalformed);
         results.push(result);
         if (!result.noChange) {
           hasChanges = true;
@@ -106,6 +107,7 @@ async function runRenumberPipeline(
   specs: import('../core/check/types.js').SpecParseResult,
   markers: import('../core/check/types.js').MarkerScanResult,
   dryRun: boolean,
+  fixMalformed: boolean,
 ): Promise<RenumberResult> {
   // Build renumber map
   const { map, noChange } = buildRenumberMap(code, specs);
@@ -117,16 +119,30 @@ async function runRenumberPipeline(
       affectedFiles: [],
       totalReplacements: 0,
       malformedWarnings: [],
+      malformedCorrections: [],
       noChange: true,
     };
   }
 
-  // Propagate changes
-  const { affectedFiles, totalReplacements } = await propagate(map, specs, markers, dryRun);
-
   // Detect malformed IDs from spec and code files
   const fileContents = await collectFileContents(specs, markers, code);
-  const malformedWarnings = detectMalformed(code, fileContents);
+  const allWarnings = detectMalformed(code, fileContents);
+
+  // Optionally correct unambiguous malformed IDs before propagation
+  let malformedWarnings: readonly import('../core/renumber/types.js').MalformedWarning[];
+  let malformedCorrections: readonly import('../core/renumber/types.js').MalformedCorrection[];
+
+  if (fixMalformed && allWarnings.length > 0) {
+    const result = await correctMalformed(code, allWarnings, fileContents, dryRun);
+    malformedCorrections = result.corrections;
+    malformedWarnings = result.remainingWarnings;
+  } else {
+    malformedWarnings = allWarnings;
+    malformedCorrections = [];
+  }
+
+  // Propagate changes (after corrections so corrected IDs get renumbered)
+  const { affectedFiles, totalReplacements } = await propagate(map, specs, markers, dryRun);
 
   return {
     code,
@@ -134,6 +150,7 @@ async function runRenumberPipeline(
     affectedFiles,
     totalReplacements,
     malformedWarnings,
+    malformedCorrections,
     noChange: false,
   };
 }

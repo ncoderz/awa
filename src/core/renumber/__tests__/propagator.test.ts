@@ -199,6 +199,100 @@ describe('propagate', () => {
     expect(content).toContain('FOO-1_AC-1');
     expect(content).not.toContain('FOO-3_AC-1');
   });
+
+  // @awa-test: RENUM-5_AC-1
+  it('replaces IDs in ARCHITECTURE.md, FEAT, EXAMPLE, TASK, PLAN, and ALIGN files', async () => {
+    const archPath = join(testDir, 'ARCHITECTURE.md');
+    const featPath = join(testDir, 'FEAT-FOO-feature.md');
+    const examplePath = join(testDir, 'EXAMPLE-FOO-feature-001.md');
+    const taskPath = join(testDir, 'TASK-FOO-feature-001.md');
+    const planPath = join(testDir, 'PLAN-001-some-plan.md');
+    const alignPath = join(testDir, 'ALIGN-FOO-WITH-BAR-001.md');
+
+    await Promise.all([
+      writeFile(archPath, '| FOO | feature | FOO-3 scope |\n', 'utf-8'),
+      writeFile(featPath, 'See FOO-3 for context.\n', 'utf-8'),
+      writeFile(examplePath, 'Example: FOO-3_AC-1 scenario\n', 'utf-8'),
+      writeFile(taskPath, '- [ ] Implement FOO-3_AC-1\n', 'utf-8'),
+      writeFile(planPath, 'Covers FOO-3 and FOO-3_AC-1\n', 'utf-8'),
+      writeFile(alignPath, 'FOO-3 alignment\n', 'utf-8'),
+    ]);
+
+    const map = makeMap('FOO', [
+      ['FOO-3', 'FOO-1'],
+      ['FOO-3_AC-1', 'FOO-1_AC-1'],
+    ]);
+    const specs = makeSpecs([
+      makeSpecFile(archPath, ''),
+      makeSpecFile(featPath, 'FOO'),
+      makeSpecFile(examplePath, 'FOO'),
+      makeSpecFile(taskPath, 'FOO'),
+      makeSpecFile(planPath, ''),
+      makeSpecFile(alignPath, ''),
+    ]);
+    const markers = makeMarkers([]);
+
+    const result = await propagate(map, specs, markers, false);
+
+    expect(result.affectedFiles).toHaveLength(6);
+
+    const [arch, feat, example, task, plan, align] = await Promise.all([
+      readFile(archPath, 'utf-8'),
+      readFile(featPath, 'utf-8'),
+      readFile(examplePath, 'utf-8'),
+      readFile(taskPath, 'utf-8'),
+      readFile(planPath, 'utf-8'),
+      readFile(alignPath, 'utf-8'),
+    ]);
+
+    expect(arch).toContain('FOO-1');
+    expect(feat).toContain('FOO-1');
+    expect(example).toContain('FOO-1_AC-1');
+    expect(task).toContain('FOO-1_AC-1');
+    expect(plan).toContain('FOO-1');
+    expect(align).toContain('FOO-1');
+  });
+
+  // @awa-test: RENUM-5_AC-1
+  it('replaces IDs in API (.tsp) files', async () => {
+    const apiPath = join(testDir, 'API-FOO-api.tsp');
+    await writeFile(apiPath, '// FOO-3_AC-1 mapping\nmodel FooRequest {}\n', 'utf-8');
+
+    const map = makeMap('FOO', [['FOO-3_AC-1', 'FOO-1_AC-1']]);
+    const specs = makeSpecs([makeSpecFile(apiPath, 'FOO')]);
+    const markers = makeMarkers([]);
+
+    const result = await propagate(map, specs, markers, false);
+
+    expect(result.totalReplacements).toBe(1);
+    const content = await readFile(apiPath, 'utf-8');
+    expect(content).toContain('FOO-1_AC-1');
+  });
+
+  // @awa-test: RENUM-5_AC-2
+  it('replaces IDs in files with @awa-component markers', async () => {
+    const codePath = join(testDir, 'engine.ts');
+    await writeFile(
+      codePath,
+      `// @awa-${'component'}: FOO-Engine\n// @awa-${'impl'}: FOO-3_AC-1\nfunction run() {}\n`,
+      'utf-8',
+    );
+
+    const map = makeMap('FOO', [['FOO-3_AC-1', 'FOO-1_AC-1']]);
+    const specs = makeSpecs([]);
+    const markers = makeMarkers([
+      { id: 'FOO-Engine', filePath: codePath },
+      { id: 'FOO-3_AC-1', filePath: codePath },
+    ]);
+
+    const result = await propagate(map, specs, markers, false);
+
+    expect(result.totalReplacements).toBeGreaterThan(0);
+    const content = await readFile(codePath, 'utf-8');
+    expect(content).toContain('FOO-1_AC-1');
+    // Component name should not be changed (it's not in the map)
+    expect(content).toContain('FOO-Engine');
+  });
 });
 
 // --- Property-Based Tests ---

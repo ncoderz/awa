@@ -433,6 +433,151 @@ describe('buildRecodeMap', () => {
     // No requirement entries
     expect(map.entries.size).toBe(2);
   });
+
+  // --- Multi-file tests ---
+
+  it('recodes from multiple source REQ files with offset', () => {
+    const sourceReqA = makeSpecFile({
+      filePath: '.awa/specs/REQ-SRC-alpha.md',
+      code: 'SRC',
+      requirementIds: ['SRC-1', 'SRC-2'],
+      acIds: ['SRC-1_AC-1'],
+    });
+    const sourceReqB = makeSpecFile({
+      filePath: '.awa/specs/REQ-SRC-beta.md',
+      code: 'SRC',
+      requirementIds: ['SRC-3'],
+      acIds: ['SRC-3_AC-1', 'SRC-3_AC-2'],
+    });
+    const targetReq = makeSpecFile({
+      filePath: '.awa/specs/REQ-TGT-feature.md',
+      code: 'TGT',
+      requirementIds: ['TGT-1', 'TGT-2'],
+      acIds: [],
+    });
+    const specs = makeSpecs([sourceReqB, sourceReqA, targetReq]); // unordered
+
+    const { map } = buildRecodeMap('SRC', 'TGT', specs);
+
+    // Alpha file first (alphabetical), offset 2
+    expect(map.entries.get('SRC-1')).toBe('TGT-3');
+    expect(map.entries.get('SRC-2')).toBe('TGT-4');
+    expect(map.entries.get('SRC-3')).toBe('TGT-5');
+    expect(map.entries.get('SRC-1_AC-1')).toBe('TGT-3_AC-1');
+    expect(map.entries.get('SRC-3_AC-1')).toBe('TGT-5_AC-1');
+    expect(map.entries.get('SRC-3_AC-2')).toBe('TGT-5_AC-2');
+  });
+
+  it('computes reqOffset from highest number across ALL target REQ files', () => {
+    const sourceReq = makeSpecFile({
+      filePath: '.awa/specs/REQ-SRC-feature.md',
+      code: 'SRC',
+      requirementIds: ['SRC-1'],
+      acIds: [],
+    });
+    const targetReqA = makeSpecFile({
+      filePath: '.awa/specs/REQ-TGT-alpha.md',
+      code: 'TGT',
+      requirementIds: ['TGT-1', 'TGT-2'],
+      acIds: [],
+    });
+    const targetReqB = makeSpecFile({
+      filePath: '.awa/specs/REQ-TGT-beta.md',
+      code: 'TGT',
+      requirementIds: ['TGT-10'],
+      acIds: [],
+    });
+    const specs = makeSpecs([sourceReq, targetReqA, targetReqB]);
+
+    const { map } = buildRecodeMap('SRC', 'TGT', specs);
+
+    // Highest target req is 10, so SRC-1 → TGT-11
+    expect(map.entries.get('SRC-1')).toBe('TGT-11');
+  });
+
+  it('recodes properties from multiple source DESIGN files', () => {
+    const sourceFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-SRC-feature.md',
+      code: 'SRC',
+    });
+    const sourceDesignA = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-SRC-alpha.md',
+      code: 'SRC',
+      propertyIds: ['SRC_P-1', 'SRC_P-2'],
+      componentNames: ['SRC-Parser'],
+    });
+    const sourceDesignB = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-SRC-beta.md',
+      code: 'SRC',
+      propertyIds: ['SRC_P-3'],
+      componentNames: ['SRC-Runner'],
+    });
+    const targetDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-TGT-feature.md',
+      code: 'TGT',
+      propertyIds: ['TGT_P-1'],
+    });
+    const specs = makeSpecs([sourceFeat, sourceDesignB, sourceDesignA, targetDesign]); // unordered
+
+    const { map } = buildRecodeMap('SRC', 'TGT', specs);
+
+    // Alpha file first, offset 1
+    expect(map.entries.get('SRC_P-1')).toBe('TGT_P-2');
+    expect(map.entries.get('SRC_P-2')).toBe('TGT_P-3');
+    expect(map.entries.get('SRC_P-3')).toBe('TGT_P-4');
+    expect(map.entries.get('SRC-Parser')).toBe('TGT-Parser');
+    expect(map.entries.get('SRC-Runner')).toBe('TGT-Runner');
+  });
+
+  it('computes propOffset from highest number across ALL target DESIGN files', () => {
+    const sourceFeat = makeSpecFile({
+      filePath: '.awa/specs/FEAT-SRC-feature.md',
+      code: 'SRC',
+    });
+    const sourceDesign = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-SRC-feature.md',
+      code: 'SRC',
+      propertyIds: ['SRC_P-1'],
+    });
+    const targetDesignA = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-TGT-alpha.md',
+      code: 'TGT',
+      propertyIds: ['TGT_P-1', 'TGT_P-2'],
+    });
+    const targetDesignB = makeSpecFile({
+      filePath: '.awa/specs/DESIGN-TGT-beta.md',
+      code: 'TGT',
+      propertyIds: ['TGT_P-10'],
+    });
+    const specs = makeSpecs([sourceFeat, sourceDesign, targetDesignA, targetDesignB]);
+
+    const { map } = buildRecodeMap('SRC', 'TGT', specs);
+
+    // Highest target prop is 10, so SRC_P-1 → TGT_P-11
+    expect(map.entries.get('SRC_P-1')).toBe('TGT_P-11');
+  });
+
+  it('single-file recode still works (backward compatibility)', () => {
+    const sourceReq = makeSpecFile({
+      filePath: '.awa/specs/REQ-SRC-feature.md',
+      code: 'SRC',
+      requirementIds: ['SRC-1', 'SRC-2'],
+      acIds: ['SRC-1_AC-1'],
+    });
+    const targetReq = makeSpecFile({
+      filePath: '.awa/specs/REQ-TGT-feature.md',
+      code: 'TGT',
+      requirementIds: ['TGT-1'],
+      acIds: [],
+    });
+    const specs = makeSpecs([sourceReq, targetReq]);
+
+    const { map } = buildRecodeMap('SRC', 'TGT', specs);
+
+    expect(map.entries.get('SRC-1')).toBe('TGT-2');
+    expect(map.entries.get('SRC-2')).toBe('TGT-3');
+    expect(map.entries.get('SRC-1_AC-1')).toBe('TGT-2_AC-1');
+  });
 });
 
 // --- Property-Based Tests ---
