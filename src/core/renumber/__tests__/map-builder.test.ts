@@ -261,10 +261,10 @@ describe('Map Builder Properties', () => {
             expect(result1.noChange).toBe(result2.noChange);
             expect([...result1.map.entries]).toEqual([...result2.map.entries]);
           }),
-          { numRuns: 50 }
+          { numRuns: 50 },
         );
       }),
-      { numRuns: 2 }
+      { numRuns: 2 },
     );
   });
 
@@ -277,15 +277,15 @@ describe('Map Builder Properties', () => {
             fc.constant(code),
             fc.integer({ min: 2, max: 20 }), // parent number (not 1, to force rename)
             fc.integer({ min: 1, max: 5 }), // subreq count
-            fc.integer({ min: 1, max: 5 }) // acs per parent count
-          )
+            fc.integer({ min: 1, max: 5 }), // acs per parent count
+          ),
         ),
         ([code, parentNum, subCount, acCount]) => {
           const parentId = `${code}-${parentNum}`;
           const subIds = Array.from({ length: subCount }, (_, i) => `${parentId}.${i + 1}`);
           const acIds = Array.from({ length: acCount }, (_, i) => `${parentId}_AC-${i + 1}`);
           const subAcIds = subIds.flatMap((subId) =>
-            Array.from({ length: acCount }, (_, i) => `${subId}_AC-${i + 1}`)
+            Array.from({ length: acCount }, (_, i) => `${subId}_AC-${i + 1}`),
           );
 
           const reqFile = makeSpecFile({
@@ -310,9 +310,9 @@ describe('Map Builder Properties', () => {
             const newAcId = map.entries.get(acId) ?? acId;
             expect(newAcId.startsWith(`${newParentId}_AC-`)).toBe(true);
           }
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -343,7 +343,7 @@ describe('Map Builder Properties', () => {
         expect(noChange).toBe(true);
         expect(map.entries.size).toBe(0);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });

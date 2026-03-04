@@ -257,7 +257,7 @@ export class ConfigError extends Error {
       | 'UNKNOWN_PRESET'
       | 'UNKNOWN_TARGET'
       | 'NO_TARGETS',
-    public filePath?: string | null
+    public filePath?: string | null,
   ) {
     super(message);
     this.name = 'ConfigError';
@@ -268,7 +268,7 @@ export class TemplateError extends Error {
   constructor(
     message: string,
     public code: 'SOURCE_NOT_FOUND' | 'FETCH_FAILED' | 'RENDER_ERROR',
-    public source?: string
+    public source?: string,
   ) {
     super(message);
     this.name = 'TemplateError';
@@ -278,7 +278,7 @@ export class TemplateError extends Error {
 export class GenerationError extends Error {
   constructor(
     message: string,
-    public code: 'PERMISSION_DENIED' | 'DISK_FULL'
+    public code: 'PERMISSION_DENIED' | 'DISK_FULL',
   ) {
     super(message);
     this.name = 'GenerationError';

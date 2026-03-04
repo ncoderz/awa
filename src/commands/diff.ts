@@ -30,7 +30,7 @@ async function runDiff(
     listUnknown: boolean;
   },
   options: { json: boolean; summary: boolean },
-  mergedDir: string | null
+  mergedDir: string | null,
 ): Promise<number> {
   try {
     // Perform diff

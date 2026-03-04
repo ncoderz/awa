@@ -21,7 +21,7 @@ import type {
 export function checkCodeAgainstSpec(
   markers: MarkerScanResult,
   specs: SpecParseResult,
-  config: CheckConfig
+  config: CheckConfig,
 ): CheckResult {
   const findings: Finding[] = [];
 
@@ -98,7 +98,7 @@ export function checkCodeAgainstSpec(
   // @awa-impl: CLI-33_AC-1
   // Check for uncovered components (DESIGN components with no @awa-component marker)
   const implementedComponents = new Set(
-    markers.markers.filter((m) => m.type === 'component').map((m) => m.id)
+    markers.markers.filter((m) => m.type === 'component').map((m) => m.id),
   );
 
   for (const componentName of specs.componentNames) {

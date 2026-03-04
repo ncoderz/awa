@@ -21,7 +21,7 @@ export interface ScanResults {
  */
 export function buildScanConfig(
   fileConfig: FileConfig | null,
-  overrides?: Partial<CheckConfig>
+  overrides?: Partial<CheckConfig>,
 ): CheckConfig {
   const section = fileConfig?.check;
 

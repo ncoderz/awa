@@ -16,7 +16,7 @@ import type {
 export function checkSpecAgainstSpec(
   specs: SpecParseResult,
   markers: MarkerScanResult,
-  config: CheckConfig
+  config: CheckConfig,
 ): CheckResult {
   const findings: Finding[] = [];
 

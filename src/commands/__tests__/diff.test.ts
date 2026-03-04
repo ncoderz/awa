@@ -313,7 +313,7 @@ describe('diffCommand', () => {
     expect(diffEngine.diff).toHaveBeenCalledWith(
       expect.objectContaining({
         features: ['feature1', 'feature2'],
-      })
+      }),
     );
   });
 
@@ -361,7 +361,7 @@ describe('diffCommand', () => {
     expect(diffEngine.diff).toHaveBeenCalledWith(
       expect.objectContaining({
         listUnknown: true,
-      })
+      }),
     );
   });
 
@@ -612,7 +612,7 @@ describe('diffCommand', () => {
 
     expect(exitCode).toBe(2);
     expect(logger.error).toHaveBeenCalledWith(
-      '--watch is only supported with local template sources'
+      '--watch is only supported with local template sources',
     );
   });
 
@@ -684,7 +684,7 @@ describe('diffCommand', () => {
     expect(resolveOverlays).toHaveBeenCalledWith(['./my-overlay'], false);
     expect(buildMergedDir).toHaveBeenCalledWith('./templates/awa', ['./my-overlay-resolved']);
     expect(diffEngine.diff).toHaveBeenCalledWith(
-      expect.objectContaining({ templatePath: '/tmp/awa-overlay-merged' })
+      expect.objectContaining({ templatePath: '/tmp/awa-overlay-merged' }),
     );
     expect(exitCode).toBe(0);
   });

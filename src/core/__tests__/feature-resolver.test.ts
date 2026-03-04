@@ -130,7 +130,7 @@ describe('FeatureResolver', () => {
           presetNames: ['nonexistent'],
           removeFeatures: [],
           presetDefinitions: { real: ['a'] },
-        })
+        }),
       ).toThrow(ConfigError);
     });
 

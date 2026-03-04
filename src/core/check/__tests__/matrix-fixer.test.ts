@@ -77,7 +77,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 ### OLD CONTENT
 
 - OLD → OLD
-`
+`,
       );
 
       const reqPath = join(specDir, 'REQ-CFG-config.md');
@@ -89,7 +89,7 @@ ACCEPTANCE CRITERIA
 
 - [ ] CFG-1_AC-1 [event]: WHEN config loaded THEN parsed
 - [ ] CFG-1_AC-2 [event]: WHEN merged THEN defaults applied
-`
+`,
       );
 
       const specs = makeSpecs([
@@ -164,7 +164,7 @@ IMPLEMENTS: X-1_AC-1
 ### Placeholder
 
 - placeholder
-`
+`,
       );
 
       const reqPath = join(specDir, 'REQ-X-x.md');
@@ -232,7 +232,7 @@ IMPLEMENTS: GEN-1_AC-1, CLI-1_AC-1
 ### placeholder
 
 - old
-`
+`,
       );
 
       const reqGen = join(specDir, 'REQ-GEN-gen.md');
@@ -315,7 +315,7 @@ IMPLEMENTS: ARC-10_AC-1
 ### placeholder
 
 - old
-`
+`,
       );
 
       // Two REQ files sharing the ARC code prefix
@@ -328,7 +328,7 @@ ACCEPTANCE CRITERIA
 
 - ARC-30_AC-1 [ubiquitous]: The system SHALL verify identity
 - ARC-30_AC-2 [event]: WHEN login THEN system SHALL authenticate
-`
+`,
       );
 
       const reqFlows = join(specDir, 'REQ-ARC-flows.md');
@@ -339,7 +339,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - ARC-10_AC-1 [event]: WHEN minting THEN system SHALL create token
-`
+`,
       );
 
       const specs = makeSpecs([
@@ -475,7 +475,7 @@ Phase 2: T-CFG-012, T-CFG-013 parallel after T-CFG-011
 - old content
 
 UNCOVERED: old
-`
+`,
       );
 
       const reqPath = join(specDir, 'REQ-CFG-config.md');
@@ -487,7 +487,7 @@ ACCEPTANCE CRITERIA
 
 - [ ] CFG-1_AC-1 [event]: load
 - [ ] CFG-1_AC-2 [event]: merge
-`
+`,
       );
 
       const designPath = join(specDir, 'DESIGN-CFG-config.md');
@@ -505,7 +505,7 @@ ACCEPTANCE CRITERIA
 ### REQ-CFG-config.md
 
 - stub
-`
+`,
       );
 
       const specs = makeSpecs([
@@ -592,7 +592,7 @@ Phase 1: T-ARC-010, T-ARC-011 can run parallel
 ### placeholder
 
 - old
-`
+`,
       );
 
       const reqSecurity = join(specDir, 'REQ-ARC-security.md');
@@ -603,7 +603,7 @@ Phase 1: T-ARC-010, T-ARC-011 can run parallel
 ACCEPTANCE CRITERIA
 
 - ARC-30_AC-1 [ubiquitous]: The system SHALL verify identity
-`
+`,
       );
 
       const reqFlows = join(specDir, 'REQ-ARC-flows.md');
@@ -614,7 +614,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - ARC-10_AC-1 [event]: WHEN minting THEN system SHALL create token
-`
+`,
       );
 
       const designPath = join(specDir, 'DESIGN-ARC-security.md');
@@ -632,7 +632,7 @@ ACCEPTANCE CRITERIA
 ### REQ-ARC-security.md
 
 - stub
-`
+`,
       );
 
       const specs = makeSpecs([
@@ -730,13 +730,13 @@ X-1 → (none)
 - old
 
 UNCOVERED: old
-`
+`,
       );
 
       const reqPath = join(specDir, 'REQ-X-x.md');
       await writeFile(
         reqPath,
-        '### X-1: Feature\n\n- [ ] X-1_AC-1 [event]: a\n- [ ] X-1_AC-2 [event]: b\n'
+        '### X-1: Feature\n\n- [ ] X-1_AC-1 [event]: a\n- [ ] X-1_AC-2 [event]: b\n',
       );
 
       const designPath = join(specDir, 'DESIGN-X-x.md');
@@ -754,7 +754,7 @@ UNCOVERED: old
 ### REQ-X-x.md
 
 - stub
-`
+`,
       );
 
       const specs = makeSpecs([
@@ -835,7 +835,7 @@ X-1 → (none)
 ### placeholder
 
 - old
-`
+`,
       );
 
       const reqPath = join(specDir, 'REQ-X-x.md');
@@ -855,7 +855,7 @@ X-1 → (none)
 ### REQ-X-x.md
 
 - stub
-`
+`,
       );
 
       const specs = makeSpecs([

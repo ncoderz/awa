@@ -151,7 +151,7 @@ describe('recodeCommand', () => {
       expect.anything(),
       expect.anything(),
       expect.anything(),
-      true
+      true,
     );
     expect(executeRenames).toHaveBeenCalledWith(expect.anything(), 'SRC', 'TGT', true);
   });

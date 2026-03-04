@@ -23,7 +23,7 @@ export function matchSimpleGlob(path: string, pattern: string): boolean {
  */
 export async function collectFiles(
   globs: readonly string[],
-  ignore: readonly string[]
+  ignore: readonly string[],
 ): Promise<string[]> {
   const files: string[] = [];
 

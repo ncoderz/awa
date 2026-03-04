@@ -57,7 +57,7 @@ describe('scanCodes', () => {
         feature: 'check',
         reqCount: 3,
         docs: { feat: false, req: true, design: false, api: false, example: false },
-      })
+      }),
     );
     expect(result.codes[1]).toEqual(
       expect.objectContaining({
@@ -65,7 +65,7 @@ describe('scanCodes', () => {
         feature: 'trace',
         reqCount: 2,
         docs: { feat: false, req: true, design: false, api: false, example: false },
-      })
+      }),
     );
   });
 
@@ -168,7 +168,7 @@ describe('scanCodes', () => {
         feature: 'overlays',
         reqCount: 0,
         docs: { feat: false, req: false, design: true, api: true, example: false },
-      })
+      }),
     );
   });
 
@@ -189,7 +189,7 @@ describe('scanCodes', () => {
 
     vi.mocked(collectFiles).mockResolvedValue(['.awa/specs/FEAT-CHK-check.md']);
     vi.mocked(readFile).mockResolvedValue(
-      '# Check [INFORMATIVE]\n\n## Scope Boundary\n\nTraceability validation.\n\n## Problem\n\nThis is the problem.\n\n## More'
+      '# Check [INFORMATIVE]\n\n## Scope Boundary\n\nTraceability validation.\n\n## Problem\n\nThis is the problem.\n\n## More',
     );
 
     const result = await scanCodes(specFiles, ['.awa/specs/FEAT-*.md'], []);
@@ -208,7 +208,7 @@ describe('scanCodes', () => {
 
     vi.mocked(collectFiles).mockResolvedValue(['.awa/specs/FEAT-CHK-check.md']);
     vi.mocked(readFile).mockResolvedValue(
-      '# Check [INFORMATIVE]\n\n## Problem\n\nThis is the scope summary.\n\n## More'
+      '# Check [INFORMATIVE]\n\n## Problem\n\nThis is the scope summary.\n\n## More',
     );
 
     const result = await scanCodes(specFiles, ['.awa/specs/FEAT-*.md'], []);
@@ -227,7 +227,7 @@ describe('scanCodes', () => {
 
     vi.mocked(collectFiles).mockResolvedValue([]);
     vi.mocked(readFile).mockResolvedValue(
-      '# CLI Requirements\n\n## CLI-1: Command parsing\n\nThe CLI shall parse arguments.\n\n## CLI-2'
+      '# CLI Requirements\n\n## CLI-1: Command parsing\n\nThe CLI shall parse arguments.\n\n## CLI-2',
     );
 
     const result = await scanCodes(specFiles, ['.awa/specs/FEAT-*.md'], []);

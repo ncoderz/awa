@@ -12,7 +12,7 @@ import type { CodesResult, DocTypes, FeatureCode } from './types.js';
 export async function scanCodes(
   specFiles: readonly SpecFile[],
   specGlobs: readonly string[],
-  specIgnore: readonly string[]
+  specIgnore: readonly string[],
 ): Promise<CodesResult> {
   // Discover codes from all spec file types (FEAT, REQ, DESIGN, API)
   const codeMap = new Map<
@@ -31,7 +31,7 @@ export async function scanCodes(
   // Also collect FEAT files from glob (they aren't always in specFiles)
   const featFiles = await collectFiles(
     specGlobs.filter((g) => g.includes('FEAT-')),
-    specIgnore
+    specIgnore,
   );
   for (const fp of featFiles) {
     const fileName = basename(fp);
@@ -152,14 +152,14 @@ function extractFeatureNameGeneric(fileName: string): string {
 async function extractScopeSummaries(
   specFiles: readonly SpecFile[],
   specGlobs: readonly string[],
-  specIgnore: readonly string[]
+  specIgnore: readonly string[],
 ): Promise<Map<string, string>> {
   const scopeMap = new Map<string, string>();
 
   // Collect FEAT files for scope extraction
   const scopeFeatFiles = await collectFiles(
     specGlobs.filter((g) => g.includes('FEAT-')),
-    specIgnore
+    specIgnore,
   );
 
   // Build code → file path maps for fallback
@@ -193,7 +193,7 @@ async function resolveScope(
   code: string,
   featByCode: Map<string, string>,
   reqByCode: Map<string, string>,
-  designByCode: Map<string, string>
+  designByCode: Map<string, string>,
 ): Promise<string> {
   // 1. Try FEAT ## Scope Boundary
   const featPath = featByCode.get(code);
@@ -259,7 +259,7 @@ function buildCodeMap(filePaths: string[], prefix: string): Map<string, string> 
  */
 function buildCodeMapFromSpecFiles(
   specFiles: readonly SpecFile[],
-  prefix: string
+  prefix: string,
 ): Map<string, string> {
   const map = new Map<string, string>();
   for (const sf of specFiles) {

@@ -82,7 +82,7 @@ Old content here.
 ## Technology Stack
 
 | Tech | Purpose |
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);
@@ -127,7 +127,7 @@ Old content here.
 | CHK | check | Validation. |
 
 ## Next Section
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);
@@ -161,7 +161,7 @@ Old content here.
 | OLD | stale | Should be removed. |
 
 ## Next Section
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);
@@ -188,7 +188,7 @@ Old content here.
 ## Technology Stack
 
 Content here.
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);
@@ -208,7 +208,7 @@ Content here.
 ## Feature Codes
 
 ## Next Section
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);
@@ -236,7 +236,7 @@ Content here.
 Old table.
 
 ## Next
-`
+`,
     );
 
     const specs = makeSpecs([makeSpecFile({ filePath: archPath, code: '' })]);

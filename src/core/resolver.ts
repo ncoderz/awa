@@ -120,7 +120,7 @@ export class ConflictResolver {
   async resolveBatch(
     conflicts: ConflictItem[],
     force: boolean,
-    dryRun: boolean
+    dryRun: boolean,
   ): Promise<BatchConflictResolution> {
     // Separate identical-content files from different files
     const identicalPaths = conflicts

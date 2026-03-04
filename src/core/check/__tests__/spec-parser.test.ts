@@ -56,7 +56,7 @@ AS A developer, I WANT validation, SO THAT errors are caught.
 ACCEPTANCE CRITERIA
 
 - CFG-2_AC-1 [event]: WHEN invalid THEN system SHALL throw
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -85,7 +85,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - ENG-1.1_AC-1 [event]: WHEN subsystem loads THEN register
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -109,7 +109,7 @@ ACCEPTANCE CRITERIA
 
 - CFG_P-2 [Default Preservation]: Missing keys preserve defaults
   VALIDATES: CFG-1_AC-2
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -137,7 +137,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 Validates configuration.
 
 IMPLEMENTS: CFG-2_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -160,7 +160,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 
 - CFG_P-1 [Override]: CLI overrides
   VALIDATES: CFG-4_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -186,7 +186,7 @@ IMPLEMENTS: CFG-1_AC-1, CFG-1_AC-2
 ACCEPTANCE CRITERIA
 
 - CLI-16_AC-1 [ubiquitous]: The system SHALL scan
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -212,7 +212,7 @@ ACCEPTANCE CRITERIA
 ACCEPTANCE CRITERIA
 
 - X-1_AC-1 [event]: WHEN foo THEN bar
-`
+`,
     );
     await writeFile(
       join(testDir, 'DESIGN-X-x.md'),
@@ -224,7 +224,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -259,7 +259,7 @@ IMPLEMENTS: X-2_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());
@@ -284,7 +284,7 @@ IMPLEMENTS: X-1_AC-1
 
 - X_P-1 [Prop]: Description
   VALIDATES: X-1_AC-1
-`
+`,
     );
 
     const result = await parseSpecs(makeConfig());

@@ -33,7 +33,7 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
     const { map, noChange: recodeNoChange } = buildRecodeMap(
       options.sourceCode,
       options.targetCode,
-      specs
+      specs,
     );
 
     // Phase 2: Propagate changes using RENUM propagator
@@ -55,7 +55,7 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
     if (conflicts.length > 0) {
       throw new RecodeError(
         'RENAME_CONFLICT',
-        `File rename conflict(s): ${conflicts.join(', ')}. Use \`awa spec merge\` to combine codes with overlapping files.`
+        `File rename conflict(s): ${conflicts.join(', ')}. Use \`awa spec merge\` to combine codes with overlapping files.`,
       );
     }
 
@@ -66,7 +66,7 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
     // and files the propagator already handled (or would handle in dry-run)
     const propagatedPaths = new Set(affectedFiles.map((af) => af.filePath));
     const nonSourceFiles = specs.specFiles.filter(
-      (sf) => !renames.some((r) => r.oldPath === sf.filePath) && !propagatedPaths.has(sf.filePath)
+      (sf) => !renames.some((r) => r.oldPath === sf.filePath) && !propagatedPaths.has(sf.filePath),
     );
     const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
 

@@ -174,7 +174,7 @@ describe('loadDeleteList', () => {
   it('should load and parse _delete.txt from template directory', async () => {
     await writeFile(
       join(testDir, '_delete.txt'),
-      '# Removed files\nold-file.md\n.github/agents/deprecated.md\n'
+      '# Removed files\nold-file.md\n.github/agents/deprecated.md\n',
     );
 
     const result = await loadDeleteList(testDir);
@@ -185,7 +185,7 @@ describe('loadDeleteList', () => {
   it('should load and parse feature-gated entries', async () => {
     await writeFile(
       join(testDir, '_delete.txt'),
-      '# @feature claude\nCLAUDE.md\n.claude/agents/awa.md\n'
+      '# @feature claude\nCLAUDE.md\n.claude/agents/awa.md\n',
     );
 
     const result = await loadDeleteList(testDir);

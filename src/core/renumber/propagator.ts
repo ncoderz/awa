@@ -16,7 +16,7 @@ export async function propagate(
   map: RenumberMap,
   specs: SpecParseResult,
   markers: MarkerScanResult,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<PropagationResult> {
   if (map.entries.size === 0) {
     return { affectedFiles: [], totalReplacements: 0 };
@@ -64,7 +64,7 @@ export async function propagate(
 function collectFilePaths(
   map: RenumberMap,
   specs: SpecParseResult,
-  markers: MarkerScanResult
+  markers: MarkerScanResult,
 ): string[] {
   const paths = new Set<string>();
   const code = map.code;
@@ -97,7 +97,7 @@ function collectFilePaths(
 // @awa-impl: RENUM-6_AC-1, RENUM-6_AC-2
 function applyReplacements(
   content: string,
-  map: RenumberMap
+  map: RenumberMap,
 ): { newContent: string; replacements: Replacement[] } {
   const replacements: Replacement[] = [];
   const lines = content.split('\n');

@@ -150,10 +150,10 @@ describe('BatchRunner', () => {
       };
 
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'nonexistent')).toThrow(
-        ConfigError
+        ConfigError,
       );
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'nonexistent')).toThrow(
-        /Unknown target/
+        /Unknown target/,
       );
     });
 
@@ -205,7 +205,7 @@ describe('BatchRunner', () => {
       };
 
       expect(() => runner.resolveTargets(cli, fileConfig, 'single', 'claude')).toThrow(
-        /Target 'claude' has no output/
+        /Target 'claude' has no output/,
       );
     });
   });

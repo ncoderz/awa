@@ -23,7 +23,7 @@ export interface RecodeMapBuildResult {
 export function buildRecodeMap(
   sourceCode: string,
   targetCode: string,
-  specs: SpecParseResult
+  specs: SpecParseResult,
 ): RecodeMapBuildResult {
   // Validate that at least one spec file exists for the source code
   if (!hasAnySpecFile(specs.specFiles, sourceCode)) {
@@ -69,7 +69,7 @@ function buildRequirementEntries(
   targetCode: string,
   sourceReq: SpecFile,
   reqOffset: number,
-  entries: Map<string, string>
+  entries: Map<string, string>,
 ): void {
   // Separate top-level requirements and subrequirements
   const topLevelReqs: string[] = [];
@@ -143,7 +143,7 @@ function buildPropertyEntries(
   targetCode: string,
   sourceDesign: SpecFile,
   propOffset: number,
-  entries: Map<string, string>
+  entries: Map<string, string>,
 ): void {
   for (let i = 0; i < sourceDesign.propertyIds.length; i++) {
     const oldId = sourceDesign.propertyIds[i] as string;
@@ -160,7 +160,7 @@ function buildComponentEntries(
   sourceCode: string,
   targetCode: string,
   sourceDesign: SpecFile,
-  entries: Map<string, string>
+  entries: Map<string, string>,
 ): void {
   for (const compName of sourceDesign.componentNames) {
     // Component names follow CODE-PascalCaseName pattern
@@ -211,7 +211,7 @@ function findHighestPropertyNumber(designFile: SpecFile): number {
 function findSpecFile(
   specFiles: readonly SpecFile[],
   code: string,
-  prefix: string
+  prefix: string,
 ): SpecFile | undefined {
   return specFiles.find((sf) => {
     const name = basename(sf.filePath);

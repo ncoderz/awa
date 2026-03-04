@@ -34,7 +34,7 @@ describe('resolveMovePath', () => {
       'SRC',
       'TGT',
       new Set(),
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/specs/REQ-TGT-source.md');
   });
@@ -46,7 +46,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       new Set(),
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/specs/FEAT-CLI-check.md');
   });
@@ -59,7 +59,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       existing,
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/specs/REQ-CLI-check-001.md');
   });
@@ -72,7 +72,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       existing,
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/specs/REQ-CLI-check-002.md');
   });
@@ -85,7 +85,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       new Set(),
-      planned
+      planned,
     );
     expect(result).toBe('.awa/specs/REQ-CLI-check-001.md');
   });
@@ -97,7 +97,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       new Set(),
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/tasks/TASK-CLI-check-001.md');
   });
@@ -110,7 +110,7 @@ describe('resolveMovePath', () => {
       'CHK',
       'CLI',
       existing,
-      new Set()
+      new Set(),
     );
     expect(result).toBe('.awa/tasks/TASK-CLI-check-001-001.md');
   });
@@ -163,13 +163,13 @@ describe('executeMoves', () => {
 
     expect(rename).toHaveBeenCalledWith(
       '.awa/specs/REQ-SRC-source.md',
-      '.awa/specs/REQ-TGT-source.md'
+      '.awa/specs/REQ-TGT-source.md',
     );
     // Heading updated: SRC → TGT
     expect(writeFile).toHaveBeenCalledWith(
       '.awa/specs/REQ-TGT-source.md',
       '# TGT Source\n\nSRC content',
-      'utf-8'
+      'utf-8',
     );
   });
 
@@ -226,11 +226,11 @@ describe('executeMoves', () => {
 
     // All should be renames with source feature name preserved
     expect(moves.find((m) => m.docType === 'FEAT')?.targetFile).toBe(
-      '.awa/specs/FEAT-TGT-source.md'
+      '.awa/specs/FEAT-TGT-source.md',
     );
     expect(moves.find((m) => m.docType === 'REQ')?.targetFile).toBe('.awa/specs/REQ-TGT-source.md');
     expect(moves.find((m) => m.docType === 'DESIGN')?.targetFile).toBe(
-      '.awa/specs/DESIGN-TGT-source.md'
+      '.awa/specs/DESIGN-TGT-source.md',
     );
   });
 

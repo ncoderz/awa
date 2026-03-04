@@ -122,7 +122,7 @@ program
 // @awa-impl: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-44_AC-2
 // @awa-impl: CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
 const template = new Command('template').description(
-  'Template operations (generate, diff, features, test)'
+  'Template operations (generate, diff, features, test)',
 );
 
 // @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
@@ -143,7 +143,7 @@ function configureGenerateCommand(cmd: Command): Command {
       .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
       .option(
         '--remove-features <flag...>',
-        'Feature flags to remove (can be specified multiple times)'
+        'Feature flags to remove (can be specified multiple times)',
       )
       // @awa-impl: CLI-5_AC-1
       .option('--force', 'Force overwrite existing files without prompting', false)
@@ -152,7 +152,7 @@ function configureGenerateCommand(cmd: Command): Command {
       .option(
         '--delete',
         'Enable deletion of files listed in the delete list (default: warn only)',
-        false
+        false,
       )
       // @awa-impl: CLI-7_AC-1
       .option('-c, --config <path>', 'Path to configuration file')
@@ -165,7 +165,7 @@ function configureGenerateCommand(cmd: Command): Command {
       // @awa-impl: OVL-1_AC-1
       .option(
         '--overlay <path...>',
-        'Overlay directory paths applied over base template (repeatable)'
+        'Overlay directory paths applied over base template (repeatable)',
       )
       // @awa-impl: JSON-1_AC-1
       .option('--json', 'Output results as JSON (implies --dry-run)', false)
@@ -217,7 +217,7 @@ template
   .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
   .option(
     '--remove-features <flag...>',
-    'Feature flags to remove (can be specified multiple times)'
+    'Feature flags to remove (can be specified multiple times)',
   )
   // @awa-impl: DIFF-7_AC-8
   .option('-c, --config <path>', 'Path to configuration file')
@@ -266,7 +266,7 @@ template
 program
   .command('check')
   .description(
-    'Validate spec files against schemas and check traceability between code markers and specs'
+    'Validate spec files against schemas and check traceability between code markers and specs',
   )
   .option('-c, --config <path>', 'Path to configuration file')
   // @awa-impl: CLI-25_AC-1
@@ -275,22 +275,22 @@ program
   // @awa-impl: CLI-24_AC-1
   .option('--json', 'Output results as JSON', false)
   .addOption(
-    new Option('--format <format>', 'Output format (text or json)').default('text').hideHelp()
+    new Option('--format <format>', 'Output format (text or json)').default('text').hideHelp(),
   )
   .option('--summary', 'Output compact one-line summary', false)
   .option(
     '--allow-warnings',
     'Allow warnings without failing (default: warnings are errors)',
-    false
+    false,
   )
   .option(
     '--spec-only',
     'Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability',
-    false
+    false,
   )
   .option(
     '--no-fix',
-    'Skip regeneration of Requirements Traceability sections in DESIGN and TASK files'
+    'Skip regeneration of Requirements Traceability sections in DESIGN and TASK files',
   )
   .action(async (options) => {
     const cliOptions: RawCheckOptions = {
@@ -364,7 +364,7 @@ program.addCommand(template);
 
 // ── spec subcommand group ──
 const spec = new Command('spec').description(
-  'Spec operations (trace, renumber, recode, merge, codes)'
+  'Spec operations (trace, renumber, recode, merge, codes)',
 );
 
 // @awa-impl: TRC-8_AC-1

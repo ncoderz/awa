@@ -57,7 +57,7 @@ describe('runFixture', () => {
     // Create a conditional template that only outputs with the right feature
     await writeFile(
       join(templateDir, 'conditional.md'),
-      '<% if (it.features.includes("myfeature")) { %>content<% } %>\n'
+      '<% if (it.features.includes("myfeature")) { %>content<% } %>\n',
     );
 
     const fixture: TestFixture = {

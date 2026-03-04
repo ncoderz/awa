@@ -44,7 +44,7 @@ export function load() {}
 
 // @awa-impl: CFG-1_AC-2
 export function merge() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -81,7 +81,7 @@ test('preserves defaults', () => {});
 
 // @awa-test: CFG-1_AC-1
 test('loads config from path', () => {});
-`
+`,
     );
     // @awa-ignore-end
 
@@ -99,7 +99,7 @@ test('loads config from path', () => {});
       join(testDir, 'multi.ts'),
       `// @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3
 export function loadAndMerge() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -118,7 +118,7 @@ export function loadAndMerge() {}
 // @awa-impl: ARC-82_AC-3
 // @awa-test: ARC-18.1_AC-2
 export function foo() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -138,7 +138,7 @@ export function foo() {}
       join(testDir, 'partial.ts'),
       `// @awa-impl: CFG-1_AC-1 (partial: reason for incompleteness)
 export function partialImpl() {}
-`
+`,
     );
     // @awa-ignore-end
 
@@ -153,7 +153,7 @@ export function partialImpl() {}
     await writeFile(
       join(testDir, 'clean.ts'),
       `export function hello() { return 'world'; }
-`
+`,
     );
 
     const result = await scanMarkers(makeConfig());
@@ -177,11 +177,11 @@ export function partialImpl() {}
 // @trace-test: FOO_P-1
 // @trace-component: FOO-Loader
 export function foo() {}
-`
+`,
     );
 
     const result = await scanMarkers(
-      makeConfig({ markers: ['@trace-impl', '@trace-test', '@trace-component'] })
+      makeConfig({ markers: ['@trace-impl', '@trace-test', '@trace-component'] }),
     );
 
     expect(result.markers).toHaveLength(3);
@@ -214,7 +214,7 @@ export function foo() {}
         `// @${'awa-ignore-file'}
 // @awa-impl: CFG-1_AC-1
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -232,7 +232,7 @@ export function load() {}
 // @awa-impl: CFG-1_AC-2
 // @awa-impl: CFG-1_AC-3
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -250,7 +250,7 @@ export function load() {}
 // @awa-impl: CFG-1_AC-2 // @awa-ignore
 // @awa-impl: CFG-1_AC-3
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 
@@ -271,7 +271,7 @@ export function load() {}
 // @awa-ignore-end
 // @awa-impl: CFG-1_AC-4
 export function load() {}
-`
+`,
       );
       // @awa-ignore-end
 

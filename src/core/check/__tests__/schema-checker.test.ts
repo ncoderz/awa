@@ -39,7 +39,7 @@ describe('SchemaChecker', () => {
     overrides: Partial<LoadedRuleSet['ruleFile']> & {
       'target-files': string;
       sections: LoadedRuleSet['ruleFile']['sections'];
-    }
+    },
   ): LoadedRuleSet {
     return {
       ruleFile: overrides,
@@ -87,7 +87,7 @@ describe('SchemaChecker', () => {
     // the level-2 "Introduction" won't be found as a top-level section.
     // This results in a missing-section finding.
     const issues = result.findings.filter(
-      (f) => f.code === 'schema-missing-section' || f.code === 'schema-wrong-level'
+      (f) => f.code === 'schema-missing-section' || f.code === 'schema-wrong-level',
     );
     expect(issues.length).toBeGreaterThanOrEqual(1);
   });
@@ -97,7 +97,7 @@ describe('SchemaChecker', () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
       filePath,
-      '# Spec\n\n## Requirements\n\nSome text without the expected pattern.\n'
+      '# Spec\n\n## Requirements\n\nSome text without the expected pattern.\n',
     );
 
     const ruleSet = makeRuleSet({
@@ -157,7 +157,7 @@ describe('SchemaChecker', () => {
     const filePath = join(testDir, 'TASK.md');
     await writeFile(
       filePath,
-      '# Tasks\n\n## Trace Summary\n\n| Foo | Bar |\n|-----|-----|\n| 1 | 2 |\n'
+      '# Tasks\n\n## Trace Summary\n\n| Foo | Bar |\n|-----|-----|\n| 1 | 2 |\n',
     );
 
     const ruleSet = makeRuleSet({
@@ -215,7 +215,7 @@ describe('SchemaChecker', () => {
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
       filePath,
-      '# Spec\n\n## Section\n\nThis has **bold text** which is prohibited.\n'
+      '# Spec\n\n## Section\n\nThis has **bold text** which is prohibited.\n',
     );
 
     const ruleSet = makeRuleSet({
@@ -249,7 +249,7 @@ Some content.
 ### TEST-2: Second Requirement
 
 More content.
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -275,7 +275,7 @@ More content.
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     // Both children match the pattern, no issues
     const issues = result.findings.filter(
-      (f) => f.code === 'schema-missing-section' || f.code === 'schema-wrong-level'
+      (f) => f.code === 'schema-missing-section' || f.code === 'schema-wrong-level',
     );
     expect(issues).toHaveLength(0);
   });
@@ -296,7 +296,7 @@ This is the overview section.
 \`\`\`typescript
 interface Foo {}
 \`\`\`
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -362,7 +362,7 @@ interface Foo {}
 |----|------|------|
 | X-1_AC-1 | T-X-001 | T-X-010 |
 | X-1_AC-2 | T-X-002 | T-X-011 |
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -419,7 +419,7 @@ interface Foo {}
 
 - [ ] T-TEST-001 First task → src/foo.ts
 - [ ] T-TEST-002 Second task → src/bar.ts
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -452,7 +452,7 @@ interface Foo {}
     const filePath = join(testDir, 'REQ.md');
     await writeFile(
       filePath,
-      '# Spec\n\n## Requirements\n\nACCEPTANCE CRITERIA\n\nSome criteria.\n'
+      '# Spec\n\n## Requirements\n\nACCEPTANCE CRITERIA\n\nSome criteria.\n',
     );
 
     const ruleSet = makeRuleSet({
@@ -484,7 +484,7 @@ interface Foo {}
 ## Phase 1: Config Loading [MUST]
 
 Some text but no GOAL line.
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -509,7 +509,7 @@ Some text but no GOAL line.
     const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
     // Heading contains [MUST], condition matches, GOAL is missing → error
     const missing = result.findings.filter(
-      (f: { code: string }) => f.code === 'schema-missing-content'
+      (f: { code: string }) => f.code === 'schema-missing-content',
     );
     expect(missing).toHaveLength(1);
     expect(missing[0]?.message).toContain('GOAL statement');
@@ -525,7 +525,7 @@ Some text but no GOAL line.
 ## Phase 1: Setup
 
 - [ ] T-X-001 Some task → src/foo.ts
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -563,7 +563,7 @@ Some text but no GOAL line.
 
 - [ ] T-X-001 Some task → src/foo.ts
   IMPLEMENTS: X-1_AC-1
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -590,7 +590,7 @@ Some text but no GOAL line.
     // "Setup" heading doesn't have priority marker → when-not-matches activates
     // IMPLEMENTS found → prohibited violation
     const prohibited = result.findings.filter(
-      (f: { code: string }) => f.code === 'schema-prohibited'
+      (f: { code: string }) => f.code === 'schema-prohibited',
     );
     expect(prohibited).toHaveLength(1);
     expect(prohibited[0]?.message).toContain('IMPLEMENTS trace line');
@@ -606,7 +606,7 @@ Some text but no GOAL line.
 ## Phase 1: Setup
 
 - [ ] T-X-001 Some task → src/foo.ts
-`
+`,
     );
 
     const ruleSet = makeRuleSet({
@@ -648,7 +648,7 @@ TEST CRITERIA: Can load valid TOML
 
 - [ ] T-X-010 Implement load → src/loader.ts
   IMPLEMENTS: X-1_AC-1
-`
+`,
     );
 
     const ruleSet = makeRuleSet({

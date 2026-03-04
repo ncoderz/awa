@@ -25,7 +25,7 @@ export interface FileFixResult {
  */
 export async function fixMatrices(
   specs: SpecParseResult,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): Promise<FixResult> {
   const reqFileMaps = buildReqFileMaps(specs.specFiles);
   const fileResults: FileFixResult[] = [];
@@ -38,7 +38,7 @@ export async function fixMatrices(
         specFile.filePath,
         reqFileMaps,
         crossRefPatterns,
-        specFile.content
+        specFile.content,
       );
       fileResults.push({ filePath: specFile.filePath, changed });
     } else if (fileName.startsWith('TASK-')) {
@@ -47,7 +47,7 @@ export async function fixMatrices(
         reqFileMaps,
         specs,
         crossRefPatterns,
-        specFile.content
+        specFile.content,
       );
       fileResults.push({ filePath: specFile.filePath, changed });
     }
@@ -150,7 +150,7 @@ async function fixDesignMatrix(
   filePath: string,
   reqFileMaps: ReqFileMaps,
   crossRefPatterns: readonly string[],
-  cachedContent?: string
+  cachedContent?: string,
 ): Promise<boolean> {
   let content: string;
   if (cachedContent != null) {
@@ -199,7 +199,7 @@ async function fixDesignMatrix(
 
 function parseDesignFileData(
   content: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): { components: ComponentInfo[]; properties: PropertyInfo[] } {
   const lines = content.split('\n');
   const components: ComponentInfo[] = [];
@@ -263,7 +263,7 @@ function parseDesignFileData(
 function generateDesignSection(
   grouped: Map<string, string[]>,
   acToComponents: Map<string, string[]>,
-  acToProperties: Map<string, string[]>
+  acToProperties: Map<string, string[]>,
 ): string {
   const lines: string[] = [];
   const reqFiles = [...grouped.keys()].sort();
@@ -303,7 +303,7 @@ async function fixTaskMatrix(
   reqFileMaps: ReqFileMaps,
   specs: SpecParseResult,
   crossRefPatterns: readonly string[],
-  cachedContent?: string
+  cachedContent?: string,
 ): Promise<boolean> {
   let content: string;
   if (cachedContent != null) {
@@ -369,7 +369,7 @@ interface TaskFileParseResult {
 
 function parseTaskFileData(
   content: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): TaskFileParseResult {
   const lines = content.split('\n');
   const tasks: TaskInfo[] = [];
@@ -451,7 +451,7 @@ function generateTaskSection(
   grouped: Map<string, string[]>,
   acToTasks: Map<string, string[]>,
   idToTestTasks: Map<string, string[]>,
-  propertyIds: Set<string>
+  propertyIds: Set<string>,
 ): string {
   const lines: string[] = [];
   const reqFiles = [...grouped.keys()].sort();

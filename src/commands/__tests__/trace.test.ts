@@ -181,7 +181,7 @@ describe('traceCommand', () => {
     expect(resolveTrace).toHaveBeenCalledWith(
       index,
       expect.arrayContaining(['DIFF-1', 'DIFF-1_AC-1', 'DIFF_P-1']),
-      expect.anything()
+      expect.anything(),
     );
     expect(resolveIds).not.toHaveBeenCalled();
   });
@@ -189,7 +189,7 @@ describe('traceCommand', () => {
   // @awa-test: TRC-5_AC-5
   test('context line options are silently ignored without --content', async () => {
     const code = await traceCommand(
-      opts({ ids: ['DIFF-1_AC-1'], beforeContext: 10, afterContext: 20 })
+      opts({ ids: ['DIFF-1_AC-1'], beforeContext: 10, afterContext: 20 }),
     );
 
     expect(code).toBe(0);
@@ -200,7 +200,7 @@ describe('traceCommand', () => {
   // @awa-test: TRC-5_AC-5
   test('context line options are passed when --content is active', async () => {
     const code = await traceCommand(
-      opts({ ids: ['DIFF-1_AC-1'], content: true, beforeContext: 10, afterContext: 3 })
+      opts({ ids: ['DIFF-1_AC-1'], content: true, beforeContext: 10, afterContext: 3 }),
     );
 
     expect(code).toBe(0);

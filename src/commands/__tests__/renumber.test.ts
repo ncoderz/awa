@@ -74,7 +74,7 @@ describe('renumberCommand', () => {
     const exitCode = await renumberCommand({});
     expect(exitCode).toBe(2);
     expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-      expect.stringContaining('No feature code')
+      expect.stringContaining('No feature code'),
     );
   });
 
@@ -111,7 +111,7 @@ describe('renumberCommand', () => {
     const exitCode = await renumberCommand({ code: 'NOPE' });
     expect(exitCode).toBe(2);
     expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-      expect.stringContaining('No REQ file found')
+      expect.stringContaining('No REQ file found'),
     );
   });
 
@@ -141,7 +141,7 @@ describe('renumberCommand', () => {
       expect.anything(),
       expect.anything(),
       expect.anything(),
-      true
+      true,
     );
   });
 

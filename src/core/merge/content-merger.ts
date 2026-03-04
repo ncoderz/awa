@@ -18,7 +18,7 @@ export function resolveMovePath(
   sourceCode: string,
   targetCode: string,
   existingPaths: ReadonlySet<string>,
-  plannedPaths: ReadonlySet<string>
+  plannedPaths: ReadonlySet<string>,
 ): string {
   const dir = dirname(sourceFilePath);
   const name = basename(sourceFilePath);
@@ -74,7 +74,7 @@ export async function executeMoves(
   sourceCode: string,
   targetCode: string,
   specFiles: readonly SpecFile[],
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<FileMove[]> {
   const moves: FileMove[] = [];
 
@@ -91,7 +91,7 @@ export async function executeMoves(
   }
 
   const existingPaths = new Set(
-    specFiles.map((sf) => sf.filePath).filter((p) => !sourceFilePaths.has(p))
+    specFiles.map((sf) => sf.filePath).filter((p) => !sourceFilePaths.has(p)),
   );
   const plannedPaths = new Set<string>();
 
@@ -112,7 +112,7 @@ export async function executeMoves(
       sourceCode,
       targetCode,
       existingPaths,
-      plannedPaths
+      plannedPaths,
     );
 
     plannedPaths.add(targetPath);

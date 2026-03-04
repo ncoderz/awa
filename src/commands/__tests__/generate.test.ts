@@ -146,7 +146,7 @@ describe('generateCommand', () => {
       expect.objectContaining({
         outputPath: './output',
         features: ['copilot'],
-      })
+      }),
     );
   });
 
@@ -190,7 +190,7 @@ describe('generateCommand', () => {
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
     const hintCalls = infoCalls.filter(
-      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml'),
     );
     expect(hintCalls).toHaveLength(0);
   });
@@ -214,7 +214,7 @@ describe('generateCommand', () => {
 
     const infoCalls = vi.mocked(logger.info).mock.calls;
     const hintCalls = infoCalls.filter(
-      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml')
+      ([msg]) => typeof msg === 'string' && msg.includes('.awa.toml'),
     );
     expect(hintCalls).toHaveLength(0);
   });
@@ -275,7 +275,7 @@ describe('generateCommand --json', () => {
     expect(fileGenerator.generate).toHaveBeenCalledWith(
       expect.objectContaining({
         dryRun: true,
-      })
+      }),
     );
   });
 
@@ -315,7 +315,7 @@ describe('generateCommand --json', () => {
         output: './output',
         features: ['copilot'],
         json: true,
-      })
+      }),
     ).rejects.toThrow('process.exit');
 
     expect(logger.error).toHaveBeenCalledWith('test error');
@@ -346,7 +346,7 @@ describe('generateCommand --summary', () => {
     vi.mocked(featureResolver.resolve).mockReturnValue(['copilot']);
     vi.mocked(fileGenerator.generate).mockResolvedValue(mockResult);
     vi.mocked(formatGenerationSummary).mockReturnValue(
-      'created: 1, overwritten: 0, skipped: 0, deleted: 0'
+      'created: 1, overwritten: 0, skipped: 0, deleted: 0',
     );
   });
 

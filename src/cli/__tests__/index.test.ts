@@ -45,14 +45,14 @@ function buildGenerateCommand(): Command {
     .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
     .option(
       '--remove-features <flag...>',
-      'Feature flags to remove (can be specified multiple times)'
+      'Feature flags to remove (can be specified multiple times)',
     )
     .option('--force', 'Force overwrite existing files without prompting', false)
     .option('--dry-run', 'Preview changes without modifying files', false)
     .option(
       '--delete',
       'Enable deletion of files listed in the delete list (default: warn only)',
-      false
+      false,
     )
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
@@ -60,7 +60,7 @@ function buildGenerateCommand(): Command {
     .option('--target <name>', 'Process a specific named target from config')
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON (implies --dry-run)', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -76,7 +76,7 @@ function buildDiffCommand(): Command {
     .option('--preset <name...>', 'Preset names to enable (can be specified multiple times)')
     .option(
       '--remove-features <flag...>',
-      'Feature flags to remove (can be specified multiple times)'
+      'Feature flags to remove (can be specified multiple times)',
     )
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--refresh', 'Force refresh of cached Git templates', false)
@@ -85,7 +85,7 @@ function buildDiffCommand(): Command {
     .option('--target <name>', 'Process a specific named target from config')
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -100,7 +100,7 @@ function buildFeaturesCommand(): Command {
     .option('--refresh', 'Force refresh of cached Git templates', false)
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -116,7 +116,7 @@ function buildTestCommand(): Command {
     .option('--refresh', 'Force refresh of cached Git templates', false)
     .option(
       '--overlay <path...>',
-      'Overlay directory paths applied over base template (repeatable)'
+      'Overlay directory paths applied over base template (repeatable)',
     )
     .option('--json', 'Output results as JSON', false)
     .option('--summary', 'Output compact one-line summary', false);
@@ -151,7 +151,7 @@ function buildTraceCommand(): Command {
 /** Build the template subcommand group. */
 function buildTemplateGroup(): Command {
   const template = new Command('template').description(
-    'Template operations (generate, diff, features, test)'
+    'Template operations (generate, diff, features, test)',
   );
   template.addCommand(buildGenerateCommand());
   template.addCommand(buildDiffCommand());

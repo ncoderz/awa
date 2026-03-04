@@ -54,7 +54,7 @@ sections:
   - heading: "Assumptions"
     level: 2
     required: false
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -83,7 +83,7 @@ sections:
   - heading: "Requirements"
     level: 1
     required: true
-`
+`,
     );
     await writeFile(
       join(testDir, 'DESIGN.schema.yaml'),
@@ -92,7 +92,7 @@ sections:
   - heading: "Design"
     level: 1
     required: true
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -114,7 +114,7 @@ sections:
       `sections:
   - heading: "Title"
     level: 1
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
@@ -126,7 +126,7 @@ sections:
     await writeFile(
       join(testDir, 'api.schema.yaml'),
       `target-files: ".awa/specs/API-*.tsp"
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -140,7 +140,7 @@ sections:
       join(testDir, 'bad.schema.yaml'),
       `target-files: "*.md"
 sections: []
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
@@ -155,7 +155,7 @@ sections: []
 sections:
   - heading: "Title"
     level: 7
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
@@ -172,7 +172,7 @@ sections:
     level: 1
     contains:
       - pattern: "[invalid("
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
@@ -193,7 +193,7 @@ sections:
           heading: "AC"
           columns: ["AC", "Task", "Test"]
           min-rows: 1
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -220,7 +220,7 @@ sections:
     contains:
       - code-block: true
         label: "interface definition"
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -241,7 +241,7 @@ sections:
 sections-prohibited:
   - "**"
   - "*"
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -253,7 +253,7 @@ sections-prohibited:
     test('matches simple glob patterns', () => {
       expect(matchesTargetGlob('.awa/specs/REQ-CHK-check.md', '.awa/specs/REQ-*.md')).toBe(true);
       expect(matchesTargetGlob('.awa/specs/DESIGN-CHK-check.md', '.awa/specs/REQ-*.md')).toBe(
-        false
+        false,
       );
     });
 
@@ -283,7 +283,7 @@ sections:
         label: "IMPLEMENTS trace"
         when:
           heading-not-matches: "\\\\[(MUST|SHOULD|COULD)\\\\]"
-`
+`,
     );
 
     const rules = await loadRules(testDir);
@@ -317,7 +317,7 @@ sections:
       - pattern: "test"
         when:
           heading-matches: "[invalid("
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);
@@ -336,7 +336,7 @@ sections:
       - pattern: "test"
         when:
           foo: "bar"
-`
+`,
     );
 
     await expect(loadRules(testDir)).rejects.toThrow(RuleValidationError);

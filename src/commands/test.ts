@@ -73,7 +73,7 @@ export async function testCommand(options: RawTestOptions): Promise<number> {
       fixtures,
       templatePath,
       { updateSnapshots: options.updateSnapshots },
-      presetDefinitions
+      presetDefinitions,
     );
 
     // Report results

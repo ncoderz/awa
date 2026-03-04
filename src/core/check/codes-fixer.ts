@@ -20,7 +20,7 @@ export interface CodesFixResult extends FixResult {
  */
 export async function fixCodesTable(
   specs: SpecParseResult,
-  config: Pick<CheckConfig, 'specGlobs' | 'specIgnore'>
+  config: Pick<CheckConfig, 'specGlobs' | 'specIgnore'>,
 ): Promise<CodesFixResult> {
   // Find ARCHITECTURE.md in spec files
   const archFile = specs.specFiles.find((sf) => basename(sf.filePath) === 'ARCHITECTURE.md');
@@ -54,7 +54,7 @@ export async function fixCodesTable(
   const tableLines: string[] = [];
   tableLines.push('');
   tableLines.push(
-    'Run `awa spec codes` for the live inventory. The table below defines scope boundaries.'
+    'Run `awa spec codes` for the live inventory. The table below defines scope boundaries.',
   );
   tableLines.push('');
   tableLines.push('| Code | Feature | Scope Boundary |');
@@ -96,7 +96,7 @@ export async function fixCodesTable(
 function replaceFeatureCodesSection(
   content: string,
   sectionStart: number,
-  newSection: string
+  newSection: string,
 ): string {
   const lines = content.split('\n');
 

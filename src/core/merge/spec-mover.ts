@@ -14,7 +14,7 @@ const CODE_PREFIXES = ['REQ', 'DESIGN', 'FEAT', 'TASK', 'EXAMPLE'] as const;
  */
 export function resolveFeatureName(
   code: string,
-  specFiles: readonly SpecFile[]
+  specFiles: readonly SpecFile[],
 ): string | undefined {
   for (const sf of specFiles) {
     const name = basename(sf.filePath, '.md');
@@ -32,7 +32,7 @@ export function resolveFeatureName(
 export function planRenames(
   sourceCode: string,
   targetCode: string,
-  specFiles: readonly SpecFile[]
+  specFiles: readonly SpecFile[],
 ): FileRename[] {
   const targetFeature = resolveFeatureName(targetCode, specFiles);
   const renames: FileRename[] = [];
@@ -79,7 +79,7 @@ function replaceFeaturePart(suffix: string, targetFeature: string): string {
  */
 export function detectConflicts(
   renames: readonly FileRename[],
-  specFiles: readonly SpecFile[]
+  specFiles: readonly SpecFile[],
 ): string[] {
   const existingPaths = new Set(specFiles.map((sf) => sf.filePath));
   const conflicts: string[] = [];
@@ -121,7 +121,7 @@ export async function executeRenames(
   renames: readonly FileRename[],
   sourceCode: string,
   targetCode: string,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<readonly FileRename[]> {
   if (dryRun) return renames;
 
@@ -150,7 +150,7 @@ export async function executeRenames(
  */
 export async function deleteSourceFiles(
   _renames: readonly FileRename[],
-  _dryRun: boolean
+  _dryRun: boolean,
 ): Promise<readonly string[]> {
   // After rename, old files no longer exist — they were moved.
   // This function handles any remaining source files not covered by renames.
@@ -165,7 +165,7 @@ export async function deleteSourceFiles(
  */
 export async function findStaleRefs(
   sourceCode: string,
-  specFiles: readonly SpecFile[]
+  specFiles: readonly SpecFile[],
 ): Promise<string[]> {
   const stale: string[] = [];
   const pattern = new RegExp(`\\b${sourceCode}-\\d`, 'g');

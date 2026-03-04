@@ -9,7 +9,7 @@ import type { ContentSection } from '../types.js';
 function makeSection(
   content: string,
   priority: number,
-  type: ContentSection['type'] = 'requirement'
+  type: ContentSection['type'] = 'requirement',
 ): ContentSection {
   return {
     type,

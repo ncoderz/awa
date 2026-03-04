@@ -55,7 +55,7 @@ export class TemplateResolver {
         throw new TemplateError(
           `Template source not found: ${localPath}`,
           'SOURCE_NOT_FOUND',
-          source
+          source,
         );
       }
 
@@ -110,7 +110,7 @@ export class TemplateResolver {
         throw new TemplateError(
           `Failed to fetch Git template: ${error instanceof Error ? error.message : String(error)}`,
           'FETCH_FAILED',
-          source
+          source,
         );
       }
     }
@@ -118,7 +118,7 @@ export class TemplateResolver {
     throw new TemplateError(
       `Unable to resolve template source: ${source}`,
       'SOURCE_NOT_FOUND',
-      source
+      source,
     );
   }
 

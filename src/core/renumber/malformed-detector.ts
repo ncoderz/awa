@@ -20,7 +20,7 @@ const VALID_ID_RE = /^[A-Z][A-Z0-9]*(?:-\d+(?:\.\d+)?(?:_AC-\d+)?|_P-\d+|-[A-Z][
 // @awa-impl: RENUM-12_AC-1, RENUM-12_AC-2
 export function detectMalformed(
   code: string,
-  fileContents: ReadonlyMap<string, string>
+  fileContents: ReadonlyMap<string, string>,
 ): readonly MalformedWarning[] {
   const warnings: MalformedWarning[] = [];
 
@@ -31,7 +31,7 @@ export function detectMalformed(
   const esc = escapeRegex(code);
   const tokenRegex = new RegExp(
     `(?<![A-Za-z0-9_.-])(?:${esc}-[A-Z0-9][A-Za-z0-9_./-]*|${esc}_P-[A-Za-z0-9_./-]+)`,
-    'g'
+    'g',
   );
 
   for (const [filePath, content] of fileContents) {

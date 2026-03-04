@@ -28,7 +28,7 @@ async function walkRelative(dir: string, base: string): Promise<string[]> {
 // @awa-impl: TTST-5_AC-1
 export async function compareSnapshots(
   renderedDir: string,
-  snapshotDir: string
+  snapshotDir: string,
 ): Promise<SnapshotFileResult[]> {
   const results: SnapshotFileResult[] = [];
 

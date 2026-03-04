@@ -34,7 +34,7 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
     if (!hasAnySpecFile(specs.specFiles, options.targetCode)) {
       throw new MergeError(
         'TARGET_NOT_FOUND',
-        `No spec files found for target code: ${options.targetCode}. Use \`awa spec recode\` to rename a code to a new one.`
+        `No spec files found for target code: ${options.targetCode}. Use \`awa spec recode\` to rename a code to a new one.`,
       );
     }
 
@@ -44,7 +44,7 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
     const { map, noChange: recodeNoChange } = buildRecodeMap(
       options.sourceCode,
       options.targetCode,
-      specs
+      specs,
     );
 
     let affectedFiles: readonly import('../core/renumber/types.js').AffectedFile[] = [];
@@ -62,7 +62,7 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
       options.sourceCode,
       options.targetCode,
       specs.specFiles,
-      dryRun
+      dryRun,
     );
 
     // Phase 3: Find stale references — exclude moved source files
@@ -70,7 +70,7 @@ export async function mergeCommand(options: MergeCommandOptions): Promise<number
     const movedSourcePaths = new Set(moves.map((m) => m.sourceFile));
     const propagatedPaths = new Set(affectedFiles.map((af) => af.filePath));
     const nonSourceFiles = specs.specFiles.filter(
-      (sf) => !movedSourcePaths.has(sf.filePath) && !propagatedPaths.has(sf.filePath)
+      (sf) => !movedSourcePaths.has(sf.filePath) && !propagatedPaths.has(sf.filePath),
     );
     const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
 

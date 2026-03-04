@@ -71,7 +71,7 @@ describe('formatContentMarkdown', () => {
     const result = formatContentMarkdown(
       [makeSection()],
       'TEST-1',
-      '... 3 more sections omitted (use --max-tokens to increase)'
+      '... 3 more sections omitted (use --max-tokens to increase)',
     );
     expect(result).toContain('---');
     expect(result).toContain('3 more sections omitted');
@@ -108,7 +108,7 @@ describe('formatContentJson', () => {
     const output = formatContentJson(
       [makeSection({ content: 'x'.repeat(40) })],
       'TEST-1',
-      '... 2 more sections omitted'
+      '... 2 more sections omitted',
     );
     const parsed = JSON.parse(output);
 

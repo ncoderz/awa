@@ -107,7 +107,7 @@ describe('parseFixture', () => {
 preset = ["full"]
 remove-features = ["vibe"]
 expected-files = ["CLAUDE.md", ".github/agents/copilot.agent.md"]
-`
+`,
     );
 
     const fixture = await parseFixture(filePath);

@@ -26,7 +26,7 @@ export async function runFixture(
   fixture: TestFixture,
   templatePath: string,
   options: TestRunOptions,
-  presetDefinitions: Record<string, string[]> = {}
+  presetDefinitions: Record<string, string[]> = {},
 ): Promise<FixtureResult> {
   const tempDir = join(tmpdir(), `awa-test-${fixture.name}-${Date.now()}`);
 
@@ -100,7 +100,7 @@ export async function runAll(
   fixtures: TestFixture[],
   templatePath: string,
   options: TestRunOptions,
-  presetDefinitions: Record<string, string[]> = {}
+  presetDefinitions: Record<string, string[]> = {},
 ): Promise<TestSuiteResult> {
   const results: FixtureResult[] = [];
 

@@ -55,7 +55,7 @@ const ID_TOKEN_RE = /^([A-Z][A-Z0-9]*(?:[-_][A-Za-z0-9]+)*(?:\.\d+)?(?:[-_][A-Za
 
 async function scanFile(
   filePath: string,
-  markerNames: readonly string[]
+  markerNames: readonly string[],
 ): Promise<{ markers: CodeMarker[]; findings: Finding[] }> {
   let content: string;
   try {
@@ -164,7 +164,7 @@ function resolveMarkerType(markerName: string, configuredMarkers: readonly strin
 // @awa-impl: CLI-28_AC-1
 async function collectCodeFiles(
   codeGlobs: readonly string[],
-  ignore: readonly string[]
+  ignore: readonly string[],
 ): Promise<string[]> {
   return collectFiles(codeGlobs, ignore);
 }

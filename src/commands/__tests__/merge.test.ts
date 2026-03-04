@@ -150,7 +150,7 @@ describe('mergeCommand', () => {
       expect.anything(),
       expect.anything(),
       expect.anything(),
-      true
+      true,
     );
     expect(executeMoves).toHaveBeenCalledWith('SRC', 'TGT', expect.anything(), true);
   });
@@ -207,7 +207,7 @@ describe('mergeCommand', () => {
 
     expect(exitCode).toBe(2);
     expect(logger.error).toHaveBeenCalledWith(
-      expect.stringContaining('No spec files found for target code: NOPE')
+      expect.stringContaining('No spec files found for target code: NOPE'),
     );
   });
 
@@ -234,7 +234,7 @@ describe('mergeCommand', () => {
           }),
         ],
       }),
-      false
+      false,
     );
   });
 
@@ -262,7 +262,7 @@ describe('mergeCommand', () => {
     expect(exitCode).toBe(2);
     expect(formatText).toHaveBeenCalledWith(
       expect.objectContaining({ staleRefs: ['.awa/specs/REQ-OTHER-feature.md'] }),
-      false
+      false,
     );
   });
 

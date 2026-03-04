@@ -94,7 +94,7 @@ describe('propagate', () => {
     await writeFile(
       codePath,
       `// @awa-${'impl'}: FOO-3_AC-1\n// @awa-${'test'}: FOO_P-2\n`,
-      'utf-8'
+      'utf-8',
     );
 
     const map = makeMap('FOO', [
@@ -184,7 +184,7 @@ describe('propagate', () => {
     await writeFile(
       otherSpecPath,
       '| Component | IMPLEMENTS |\n| --- | --- |\n| BAR-Engine | FOO-3_AC-1 |\n',
-      'utf-8'
+      'utf-8',
     );
 
     const map = makeMap('FOO', [['FOO-3_AC-1', 'FOO-1_AC-1']]);
@@ -228,7 +228,7 @@ describe('Propagator Properties', () => {
           await writeFile(
             specPath,
             `### ${idA}: First\n- ${idA}_AC-1 [event]: criteria\n### ${idB}: Second\n`,
-            'utf-8'
+            'utf-8',
           );
 
           const specs = makeSpecs([makeSpecFile(specPath, code)]);
@@ -240,9 +240,9 @@ describe('Propagator Properties', () => {
           // After swap: idA positions should have idB and vice versa
           expect(content).toContain(`### ${idB}: First`);
           expect(content).toContain(`### ${idA}: Second`);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -271,9 +271,9 @@ describe('Propagator Properties', () => {
           expect(content).toContain(`${targetCode}-1`);
           // Other code ID untouched
           expect(content).toContain(otherId);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });

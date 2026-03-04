@@ -63,7 +63,7 @@ describe('TemplateEngine', () => {
       const templatePath = join(testDir, 'test.md');
 
       await expect(unconfiguredEngine.render(templatePath, { features: [] })).rejects.toThrow(
-        TemplateError
+        TemplateError,
       );
     });
 
@@ -174,7 +174,7 @@ Features: <%= it.features.join(', ') %>
       const templatePath = join(testDir, 'main.md');
       await writeFile(
         templatePath,
-        '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here'
+        '<%~ include("_partials/header", { title: "My Document" }) %>\nContent here',
       );
 
       const result = await engine.render(templatePath, { features: [] });

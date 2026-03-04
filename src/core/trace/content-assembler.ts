@@ -23,7 +23,7 @@ interface ContextLineOptions {
 export async function assembleContent(
   result: TraceResult,
   taskPath?: string,
-  contextOptions?: ContextLineOptions
+  contextOptions?: ContextLineOptions,
 ): Promise<ContentSection[]> {
   const beforeCtx = contextOptions?.beforeContext ?? DEFAULT_BEFORE_CONTEXT;
   const afterCtx = contextOptions?.afterContext ?? DEFAULT_AFTER_CONTEXT;
@@ -61,7 +61,7 @@ export async function assembleContent(
           chain.requirement.id,
           chain.requirement.location.line,
           'requirement',
-          2
+          2,
         );
         if (section) sections.push(section);
       }
@@ -80,7 +80,7 @@ export async function assembleContent(
             ac.id,
             ac.location.line,
             'requirement',
-            2
+            2,
           );
           if (section) sections.push(section);
         }
@@ -98,7 +98,7 @@ export async function assembleContent(
           comp.id,
           comp.location.line,
           'design',
-          3
+          3,
         );
         if (section) sections.push(section);
       }
@@ -116,7 +116,7 @@ export async function assembleContent(
           'implementation',
           5,
           beforeCtx,
-          afterCtx
+          afterCtx,
         );
         if (section) sections.push(section);
       }
@@ -134,7 +134,7 @@ export async function assembleContent(
           'test',
           6,
           beforeCtx,
-          afterCtx
+          afterCtx,
         );
         if (section) sections.push(section);
       }
@@ -151,7 +151,7 @@ export async function assembleContent(
           prop.id,
           prop.location.line,
           'design',
-          3
+          3,
         );
         if (section) sections.push(section);
       }
@@ -174,7 +174,7 @@ async function extractSpecSection(
   _id: string,
   line: number,
   type: ContentSection['type'],
-  priority: number
+  priority: number,
 ): Promise<ContentSection | null> {
   const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
@@ -219,7 +219,7 @@ async function extractCodeSection(
   type: ContentSection['type'],
   priority: number,
   beforeContext: number = DEFAULT_BEFORE_CONTEXT,
-  afterContext: number = DEFAULT_AFTER_CONTEXT
+  afterContext: number = DEFAULT_AFTER_CONTEXT,
 ): Promise<ContentSection | null> {
   const content = await cachedReadFile(fileCache, filePath);
   if (!content) return null;
@@ -253,7 +253,7 @@ function findEnclosingBlock(
   lines: string[],
   lineIdx: number,
   beforeContext: number = DEFAULT_BEFORE_CONTEXT,
-  afterContext: number = DEFAULT_AFTER_CONTEXT
+  afterContext: number = DEFAULT_AFTER_CONTEXT,
 ): { start: number; end: number } {
   // Search upward for a function-like declaration
   let start = lineIdx;
@@ -314,7 +314,7 @@ function findEnclosingBlock(
 
 async function cachedReadFile(
   cache: Map<string, string | null>,
-  filePath: string
+  filePath: string,
 ): Promise<string | null> {
   if (cache.has(filePath)) return cache.get(filePath) ?? null;
   let content: string | null;

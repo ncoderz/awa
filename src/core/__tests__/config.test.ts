@@ -472,7 +472,7 @@ output = "."
         `
 [targets]
 claude = "invalid"
-`
+`,
       );
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);
@@ -485,7 +485,7 @@ claude = "invalid"
         `
 [targets.claude]
 output = 123
-`
+`,
       );
 
       await expect(loader.load(configPath)).rejects.toThrow(ConfigError);

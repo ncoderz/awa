@@ -121,7 +121,7 @@ export class DiffEngine {
         if (targetFiles.has(relPath) && !generatedFiles.has(relPath)) {
           // Remove any existing 'extra' entry for this path (to avoid double-reporting)
           const existingIdx = files.findIndex(
-            (f) => f.relativePath === relPath && f.status === 'extra'
+            (f) => f.relativePath === relPath && f.status === 'extra',
           );
           if (existingIdx !== -1) {
             files.splice(existingIdx, 1);
@@ -187,7 +187,7 @@ export class DiffEngine {
   async compareFiles(
     generatedPath: string,
     targetPath: string,
-    relativePath: string
+    relativePath: string,
   ): Promise<FileDiff> {
     // Read raw bytes for byte-for-byte comparison.
     const generatedBytes = await readBinaryFile(generatedPath);
@@ -228,7 +228,7 @@ export class DiffEngine {
       'generated',
       {
         context: 3,
-      }
+      },
     );
 
     // Format as git-style unified diff string (with file headers)

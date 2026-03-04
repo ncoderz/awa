@@ -26,7 +26,7 @@ describe('overlay', () => {
   beforeEach(async () => {
     testDir = join(
       tmpdir(),
-      `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
+      `awa-overlay-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     );
     await mkdir(testDir, { recursive: true });
     vi.clearAllMocks();

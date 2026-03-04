@@ -41,7 +41,7 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
 
 async function parseSpecFile(
   filePath: string,
-  crossRefPatterns: readonly string[]
+  crossRefPatterns: readonly string[],
 ): Promise<SpecFile | null> {
   let content: string;
   try {
@@ -171,7 +171,7 @@ function extractIdsFromText(text: string): string[] {
 // @awa-impl: CLI-27_AC-1
 async function collectSpecFiles(
   specGlobs: readonly string[],
-  ignore: readonly string[]
+  ignore: readonly string[],
 ): Promise<string[]> {
   return collectFiles(specGlobs, ignore);
 }

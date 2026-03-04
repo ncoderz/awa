@@ -13,6 +13,7 @@ const config = [
     ignores: [
       '**/node_modules',
       '**/dist',
+      '**/docs',
       '**/coverage',
       '**/outputs',
       '**/templates',

@@ -50,7 +50,7 @@ export class TemplateEngine {
     if (!this.eta || !this.templateDir) {
       throw new TemplateError(
         'Template engine not configured. Call configure() first.',
-        'RENDER_ERROR'
+        'RENDER_ERROR',
       );
     }
 
@@ -81,7 +81,7 @@ export class TemplateEngine {
       throw new TemplateError(
         `Failed to render template ${templatePath}: ${error instanceof Error ? error.message : String(error)}`,
         'RENDER_ERROR',
-        templatePath
+        templatePath,
       );
     }
   }

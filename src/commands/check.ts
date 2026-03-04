@@ -62,7 +62,7 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       }
       if (codesFixResult.emptyScopeCodes.length > 0) {
         logger.warn(
-          `Feature codes missing Scope Boundary: ${codesFixResult.emptyScopeCodes.join(', ')}`
+          `Feature codes missing Scope Boundary: ${codesFixResult.emptyScopeCodes.join(', ')}`,
         );
       }
     }
@@ -85,7 +85,7 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
     const allFindings = config.allowWarnings
       ? combinedFindings
       : combinedFindings.map((f) =>
-          f.severity === 'warning' ? { ...f, severity: 'error' as const } : f
+          f.severity === 'warning' ? { ...f, severity: 'error' as const } : f,
         );
 
     // Report results

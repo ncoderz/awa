@@ -34,7 +34,7 @@ export function buildTraceIndex(specs: SpecParseResult, markers: MarkerScanResul
     acToCodeLocations,
     acToTestLocations,
     propertyToTestLocations,
-    componentToCodeLocations
+    componentToCodeLocations,
   );
 
   // 4. Collect all known IDs
@@ -65,7 +65,7 @@ export function buildTraceIndex(specs: SpecParseResult, markers: MarkerScanResul
 function buildRequirementMaps(
   specs: SpecParseResult,
   reqToACs: Map<string, string[]>,
-  acToReq: Map<string, string>
+  acToReq: Map<string, string>,
 ): void {
   // AC IDs embed their parent requirement: e.g. DIFF-1_AC-1 → parent is DIFF-1
   // Sub-requirement ACs: DIFF-1.1_AC-2 → parent is DIFF-1.1
@@ -96,7 +96,7 @@ function buildDesignMaps(
   specs: SpecParseResult,
   acToDesignComponents: Map<string, string[]>,
   componentToACs: Map<string, string[]>,
-  propertyToACs: Map<string, string[]>
+  propertyToACs: Map<string, string[]>,
 ): void {
   for (const specFile of specs.specFiles) {
     // Only process DESIGN files (they have components and cross-refs)
@@ -145,7 +145,7 @@ function buildMarkerMaps(
   acToCodeLocations: Map<string, CodeLocation[]>,
   acToTestLocations: Map<string, CodeLocation[]>,
   propertyToTestLocations: Map<string, CodeLocation[]>,
-  componentToCodeLocations: Map<string, CodeLocation[]>
+  componentToCodeLocations: Map<string, CodeLocation[]>,
 ): void {
   for (const marker of markers) {
     const loc: CodeLocation = { filePath: marker.filePath, line: marker.line };
@@ -178,7 +178,7 @@ function extractParentRequirement(acId: string): string | null {
 /** Find the component name that owns a given line (the most recent component heading above it). */
 function findOwnerComponent(
   componentsByLine: readonly { name: string; line: number }[],
-  line: number
+  line: number,
 ): string | null {
   let owner: string | null = null;
   for (const comp of componentsByLine) {
@@ -197,7 +197,7 @@ function findOwnerProperty(
     readonly propertyIds: readonly string[];
     readonly idLocations?: ReadonlyMap<string, { filePath: string; line: number }>;
   },
-  validateLine: number
+  validateLine: number,
 ): string | null {
   let owner: string | null = null;
   let closestLine = 0;

@@ -19,7 +19,7 @@ import { DEFAULT_CHECK_CONFIG } from '../types.js';
 
 function makeSpecs(
   specFiles: SpecFile[],
-  overrides: Partial<SpecParseResult> = {}
+  overrides: Partial<SpecParseResult> = {},
 ): SpecParseResult {
   const requirementIds = new Set<string>();
   const acIds = new Set<string>();

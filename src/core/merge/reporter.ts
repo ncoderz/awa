@@ -18,7 +18,7 @@ export function formatText(result: MergeResult, dryRun: boolean): string {
 
   // Section 1: ID remap table
   lines.push(
-    `${result.sourceCode} → ${result.targetCode}: ${result.map.entries.size} ID(s) recoded\n`
+    `${result.sourceCode} → ${result.targetCode}: ${result.map.entries.size} ID(s) recoded\n`,
   );
   if (result.map.entries.size > 0) {
     lines.push('  Old ID → New ID');
@@ -41,7 +41,7 @@ export function formatText(result: MergeResult, dryRun: boolean): string {
   if (result.affectedFiles.length > 0) {
     lines.push('');
     lines.push(
-      `  ${result.totalReplacements} replacement(s) in ${result.affectedFiles.length} file(s):`
+      `  ${result.totalReplacements} replacement(s) in ${result.affectedFiles.length} file(s):`,
     );
     for (const file of result.affectedFiles) {
       lines.push(`    ${file.filePath} (${file.replacements.length})`);

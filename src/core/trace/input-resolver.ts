@@ -35,7 +35,7 @@ export function resolveIds(ids: readonly string[], index: TraceIndex): InputReso
  */
 export async function resolveTaskFile(
   taskPath: string,
-  index: TraceIndex
+  index: TraceIndex,
 ): Promise<InputResolution> {
   let content: string;
   try {
@@ -105,7 +105,7 @@ export async function resolveTaskFile(
  */
 export async function resolveSourceFile(
   filePath: string,
-  index: TraceIndex
+  index: TraceIndex,
 ): Promise<InputResolution> {
   let content: string;
   try {

@@ -59,7 +59,7 @@ export async function featuresCommand(cliOptions: FeaturesCommandOptions): Promi
     // Report results
     if (cliOptions.summary) {
       console.log(
-        `features: ${scanResult.features.length}, files-scanned: ${scanResult.filesScanned}`
+        `features: ${scanResult.features.length}, files-scanned: ${scanResult.filesScanned}`,
       );
     } else {
       featuresReporter.report({

@@ -472,9 +472,9 @@ describe('property-based: buildRecodeMap', () => {
               expect(Number.parseInt(match[1] as string, 10)).toBeGreaterThan(targetMax);
             }
           }
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -516,9 +516,9 @@ describe('property-based: buildRecodeMap', () => {
           for (const id of [...reqIds, ...acIds]) {
             expect(map.entries.has(id)).toBe(true);
           }
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -554,7 +554,7 @@ describe('property-based: buildRecodeMap', () => {
           expect(value.startsWith('TGT-') || value.startsWith('TGT_')).toBe(true);
         }
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
