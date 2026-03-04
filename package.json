@@ -1,6 +1,6 @@
 {
   "name": "@ncoderz/awa",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage agent workflow files using templates.",
   "license": "BSD-3-Clause",
   "repository": {
