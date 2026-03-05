@@ -1,8 +1,3 @@
----
-description: "awa 2.0.0"
-tools: ['edit', 'search', 'runCommands', 'runTasks', 'microsoft/playwright-mcp/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
----
-
 <awa system-instructions="Gherkin and PEG Grammars">
 
 Feature: Identity

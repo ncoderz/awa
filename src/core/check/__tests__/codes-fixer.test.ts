@@ -289,4 +289,95 @@ Run \`awa spec codes\` for the live inventory. The table below defines scope bou
     expect(result.filesFixed).toBe(0);
     expect(result.fileResults[0]?.changed).toBe(false);
   });
+
+  test('generates table in PROJECT.md with ### heading', async () => {
+    const projectPath = join(specDir, 'PROJECT.md');
+    await writeFile(
+      projectPath,
+      `# PROJECT — test
+
+> A test project.
+
+## Spec Index
+
+\`PROJECT.md\`: Project summary.
+\`ARCHITECTURE.md\`: Architecture overview.
+
+### Feature Codes
+
+## Rules
+`,
+    );
+
+    const specs = makeSpecs([makeSpecFile({ filePath: projectPath, code: '' })]);
+
+    vi.mocked(scanCodes).mockResolvedValue({
+      codes: [
+        { code: 'CHK', feature: 'check', reqCount: 5, scope: 'Traceability validation.', docs: d },
+      ],
+    });
+
+    const result = await fixCodesTable(specs, defaultConfig);
+
+    expect(result.filesFixed).toBe(1);
+    expect(result.fileResults[0]?.changed).toBe(true);
+
+    const content = await readFile(projectPath, 'utf-8');
+    expect(content).toContain('| CHK | check | Traceability validation. |');
+    // ### Feature Codes stops at ## Rules (higher level)
+    expect(content).toContain('## Rules');
+    // Spec Index preamble is preserved
+    expect(content).toContain('`PROJECT.md`: Project summary.');
+  });
+
+  test('updates both ARCHITECTURE.md and PROJECT.md', async () => {
+    const archPath = join(specDir, 'ARCHITECTURE.md');
+    const projectPath = join(specDir, 'PROJECT.md');
+
+    await writeFile(
+      archPath,
+      `# Architecture
+
+## Feature Codes
+
+Old content.
+
+## Technology Stack
+`,
+    );
+
+    await writeFile(
+      projectPath,
+      `# PROJECT — test
+
+## Spec Index
+
+### Feature Codes
+
+## Rules
+`,
+    );
+
+    const specs = makeSpecs([
+      makeSpecFile({ filePath: archPath, code: '' }),
+      makeSpecFile({ filePath: projectPath, code: '' }),
+    ]);
+
+    vi.mocked(scanCodes).mockResolvedValue({
+      codes: [{ code: 'CLI', feature: 'cli', reqCount: 3, scope: 'CLI parsing.', docs: d }],
+    });
+
+    const result = await fixCodesTable(specs, defaultConfig);
+
+    expect(result.filesFixed).toBe(2);
+    expect(result.fileResults).toHaveLength(2);
+
+    const archContent = await readFile(archPath, 'utf-8');
+    expect(archContent).toContain('| CLI | cli | CLI parsing. |');
+    expect(archContent).toContain('## Technology Stack');
+
+    const projectContent = await readFile(projectPath, 'utf-8');
+    expect(projectContent).toContain('| CLI | cli | CLI parsing. |');
+    expect(projectContent).toContain('## Rules');
+  });
 });

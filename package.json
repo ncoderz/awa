@@ -1,6 +1,6 @@
 {
   "name": "@ncoderz/awa",
-  "version": "1.8.2",
+  "version": "2.0.0",
   "description": "awa is an Agent Workflow for AIs. It is also a CLI tool to powerfully manage agent workflow files using templates.",
   "license": "BSD-3-Clause",
   "repository": {
@@ -20,6 +20,7 @@
     "gen:example": "tsx src/cli/index.ts template generate ./outputs/example --template ./templates/example",
     "gen:awa": "tsx src/cli/index.ts template generate ./outputs/awa --template ./templates/awa",
     "gen:awa:this": "tsx src/cli/index.ts template generate . --template ./templates/awa --features copilot",
+    "gen:awa2:this": "tsx src/cli/index.ts template generate . --template ./templates/awa2 --features copilot",
     "diff:awa:this": "tsx src/cli/index.ts template diff . --template ./templates/awa --features copilot",
     "test": "vitest run",
     "test:watch": "vitest",

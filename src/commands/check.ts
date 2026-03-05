@@ -6,6 +6,8 @@
 // @awa-impl: CLI-32_AC-3
 // @awa-impl: CLI-39_AC-1
 
+import { basename } from 'node:path';
+
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { fixCodesTable } from '../core/check/codes-fixer.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
@@ -58,7 +60,10 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
 
       const codesFixResult = await fixCodesTable(specs, config);
       if (codesFixResult.filesFixed > 0) {
-        logger.info('Fixed Feature Codes table in ARCHITECTURE.md');
+        const fixedFiles = codesFixResult.fileResults
+          .filter((r) => r.changed)
+          .map((r) => basename(r.filePath));
+        logger.info(`Fixed Feature Codes table in ${fixedFiles.join(', ')}`);
       }
       if (codesFixResult.emptyScopeCodes.length > 0) {
         logger.warn(

@@ -20,6 +20,7 @@ export interface CheckConfig {
 
 export const DEFAULT_CHECK_CONFIG: CheckConfig = {
   specGlobs: [
+    '.awa/specs/PROJECT.md',
     '.awa/specs/ARCHITECTURE.md',
     '.awa/specs/FEAT-*.md',
     '.awa/specs/REQ-*.md',
