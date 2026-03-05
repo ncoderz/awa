@@ -9,7 +9,13 @@ import { join } from 'node:path';
 import * as fc from 'fast-check';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import type { MarkerScanResult, SpecFile, SpecParseResult } from '../../check/types.js';
+import type {
+  CheckConfig,
+  MarkerScanResult,
+  SpecFile,
+  SpecParseResult,
+} from '../../check/types.js';
+import { DEFAULT_CHECK_CONFIG } from '../../check/types.js';
 import { propagate } from '../propagator.js';
 import type { RenumberMap } from '../types.js';
 
@@ -66,6 +72,15 @@ function makeMarkers(markers: { id: string; filePath: string }[]): MarkerScanRes
   };
 }
 
+function makeConfig(): CheckConfig {
+  // Use defaults but with empty extra globs to avoid scanning the real filesystem
+  return {
+    ...DEFAULT_CHECK_CONFIG,
+    extraSpecGlobs: [],
+    extraSpecIgnore: [],
+  };
+}
+
 // --- Unit Tests ---
 
 describe('propagate', () => {
@@ -80,7 +95,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(specPath, 'FOO')]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.totalReplacements).toBeGreaterThan(0);
     const content = await readFile(specPath, 'utf-8');
@@ -107,7 +122,7 @@ describe('propagate', () => {
       { id: 'FOO_P-2', filePath: codePath },
     ]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.totalReplacements).toBeGreaterThan(0);
     const content = await readFile(codePath, 'utf-8');
@@ -127,7 +142,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(specPath, 'FOO')]);
     const markers = makeMarkers([]);
 
-    await propagate(map, specs, markers, false);
+    await propagate(map, specs, markers, makeConfig(), false);
 
     const content = await readFile(specPath, 'utf-8');
     expect(content).toContain('FOO-1_AC-1');
@@ -144,7 +159,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(specPath, 'FOO')]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, true);
+    const result = await propagate(map, specs, markers, makeConfig(), true);
 
     expect(result.totalReplacements).toBeGreaterThan(0);
     const content = await readFile(specPath, 'utf-8');
@@ -159,7 +174,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(specPath, 'FOO')]);
     const markers = makeMarkers([]);
 
-    await propagate(map, specs, markers, false);
+    await propagate(map, specs, markers, makeConfig(), false);
 
     const content = await readFile(specPath, 'utf-8');
     expect(content).toContain('FOO-1');
@@ -171,7 +186,7 @@ describe('propagate', () => {
     const specs = makeSpecs([]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.affectedFiles).toHaveLength(0);
     expect(result.totalReplacements).toBe(0);
@@ -192,7 +207,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(otherSpecPath, 'BAR')]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.totalReplacements).toBe(1);
     const content = await readFile(otherSpecPath, 'utf-8');
@@ -232,7 +247,7 @@ describe('propagate', () => {
     ]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.affectedFiles).toHaveLength(6);
 
@@ -262,7 +277,7 @@ describe('propagate', () => {
     const specs = makeSpecs([makeSpecFile(apiPath, 'FOO')]);
     const markers = makeMarkers([]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.totalReplacements).toBe(1);
     const content = await readFile(apiPath, 'utf-8');
@@ -285,13 +300,82 @@ describe('propagate', () => {
       { id: 'FOO-3_AC-1', filePath: codePath },
     ]);
 
-    const result = await propagate(map, specs, markers, false);
+    const result = await propagate(map, specs, markers, makeConfig(), false);
 
     expect(result.totalReplacements).toBeGreaterThan(0);
     const content = await readFile(codePath, 'utf-8');
     expect(content).toContain('FOO-1_AC-1');
     // Component name should not be changed (it's not in the map)
     expect(content).toContain('FOO-Engine');
+  });
+
+  // @awa-test: RENUM-5_AC-3
+  it('replaces IDs in files matched by extraSpecGlobs', async () => {
+    // Create a custom file that wouldn't be matched by standard spec patterns
+    const extraDir = join(testDir, 'extra');
+    await mkdir(extraDir, { recursive: true });
+
+    const customPath = join(extraDir, 'custom-notes.md');
+    await writeFile(customPath, '# Notes\nReference to FOO-3 and FOO-3_AC-1 here.\n', 'utf-8');
+
+    const map = makeMap('FOO', [
+      ['FOO-3', 'FOO-1'],
+      ['FOO-3_AC-1', 'FOO-1_AC-1'],
+    ]);
+    const specs = makeSpecs([]); // Not in standard specs
+    const markers = makeMarkers([]);
+
+    // Configure extraSpecGlobs to find the custom file (use glob relative to testDir)
+    const config: CheckConfig = {
+      ...DEFAULT_CHECK_CONFIG,
+      extraSpecGlobs: [`${testDir}/extra/**/*.md`],
+      extraSpecIgnore: [],
+    };
+
+    const result = await propagate(map, specs, markers, config, false);
+
+    expect(result.totalReplacements).toBe(2);
+    expect(result.affectedFiles.map((f) => f.filePath)).toContain(customPath);
+    const content = await readFile(customPath, 'utf-8');
+    expect(content).toContain('FOO-1');
+    expect(content).toContain('FOO-1_AC-1');
+    expect(content).not.toContain('FOO-3');
+  });
+
+  // @awa-test: RENUM-5_AC-3
+  it('excludes files matching extraSpecIgnore from extra globs', async () => {
+    const extraDir = join(testDir, 'extra');
+    const ignoredDir = join(testDir, 'extra', 'ignored');
+    await mkdir(extraDir, { recursive: true });
+    await mkdir(ignoredDir, { recursive: true });
+
+    const customPath = join(extraDir, 'custom-notes.md');
+    const ignoredPath = join(ignoredDir, 'schema.md');
+    await writeFile(customPath, 'Reference to FOO-3 here.\n', 'utf-8');
+    await writeFile(ignoredPath, 'Reference to FOO-3 here.\n', 'utf-8');
+
+    const map = makeMap('FOO', [['FOO-3', 'FOO-1']]);
+    const specs = makeSpecs([]);
+    const markers = makeMarkers([]);
+
+    // Configure to scan extra but ignore the ignored subdir
+    const config: CheckConfig = {
+      ...DEFAULT_CHECK_CONFIG,
+      extraSpecGlobs: [`${testDir}/extra/**/*.md`],
+      extraSpecIgnore: [`${testDir}/extra/ignored/**`],
+    };
+
+    const result = await propagate(map, specs, markers, config, false);
+
+    // Only customPath should be updated, not ignoredPath
+    expect(result.affectedFiles.map((f) => f.filePath)).toContain(customPath);
+    expect(result.affectedFiles.map((f) => f.filePath)).not.toContain(ignoredPath);
+
+    const customContent = await readFile(customPath, 'utf-8');
+    expect(customContent).toContain('FOO-1');
+
+    const ignoredContent = await readFile(ignoredPath, 'utf-8');
+    expect(ignoredContent).toContain('FOO-3'); // unchanged
   });
 });
 
@@ -328,7 +412,7 @@ describe('Propagator Properties', () => {
           const specs = makeSpecs([makeSpecFile(specPath, code)]);
           const markers = makeMarkers([]);
 
-          await propagate(map, specs, markers, false);
+          await propagate(map, specs, markers, makeConfig(), false);
 
           const content = await readFile(specPath, 'utf-8');
           // After swap: idA positions should have idB and vice versa
@@ -358,7 +442,7 @@ describe('Propagator Properties', () => {
           const specs = makeSpecs([makeSpecFile(specPath, targetCode)]);
           const markers = makeMarkers([]);
 
-          await propagate(map, specs, markers, false);
+          await propagate(map, specs, markers, makeConfig(), false);
 
           const content = await readFile(specPath, 'utf-8');
           // Target code ID replaced

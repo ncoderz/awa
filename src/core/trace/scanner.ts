@@ -30,6 +30,12 @@ export function buildScanConfig(
     codeGlobs: toStringArray(section?.['code-globs']) ?? [...DEFAULT_CHECK_CONFIG.codeGlobs],
     specIgnore: toStringArray(section?.['spec-ignore']) ?? [...DEFAULT_CHECK_CONFIG.specIgnore],
     codeIgnore: toStringArray(section?.['code-ignore']) ?? [...DEFAULT_CHECK_CONFIG.codeIgnore],
+    extraSpecGlobs: toStringArray(section?.['extra-spec-globs']) ?? [
+      ...DEFAULT_CHECK_CONFIG.extraSpecGlobs,
+    ],
+    extraSpecIgnore: toStringArray(section?.['extra-spec-ignore']) ?? [
+      ...DEFAULT_CHECK_CONFIG.extraSpecIgnore,
+    ],
     ignoreMarkers: toStringArray(section?.['ignore-markers']) ?? [
       ...DEFAULT_CHECK_CONFIG.ignoreMarkers,
     ],

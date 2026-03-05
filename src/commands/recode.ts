@@ -4,6 +4,7 @@
 // @awa-impl: RCOD-4_AC-1, RCOD-4_AC-4
 
 import { fixCodesTable } from '../core/check/codes-fixer.js';
+import { collectFiles } from '../core/check/glob.js';
 import {
   detectConflicts,
   executeRenames,
@@ -25,7 +26,7 @@ import { logger } from '../utils/logger.js';
 // @awa-impl: RCOD-4_AC-1, RCOD-4_AC-4
 export async function recodeCommand(options: RecodeCommandOptions): Promise<number> {
   try {
-    const { markers, specs } = await scan(options.config);
+    const { markers, specs, config } = await scan(options.config);
     const dryRun = options.dryRun === true;
 
     // Phase 1: Build recode map (validates both codes exist)
@@ -42,7 +43,7 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
 
     if (!recodeNoChange) {
       // @awa-impl: RCOD-2_AC-1, RCOD-2_AC-2
-      const result = await propagate(map, specs, markers, dryRun);
+      const result = await propagate(map, specs, markers, config, dryRun);
       affectedFiles = result.affectedFiles;
       totalReplacements = result.totalReplacements;
     }
@@ -64,11 +65,15 @@ export async function recodeCommand(options: RecodeCommandOptions): Promise<numb
 
     // Phase 4: Find stale references — exclude renamed source files
     // and files the propagator already handled (or would handle in dry-run)
+    const renamedPaths = new Set(renames.map((r) => r.oldPath));
     const propagatedPaths = new Set(affectedFiles.map((af) => af.filePath));
-    const nonSourceFiles = specs.specFiles.filter(
-      (sf) => !renames.some((r) => r.oldPath === sf.filePath) && !propagatedPaths.has(sf.filePath),
+    const specFilePaths = specs.specFiles.map((sf) => sf.filePath);
+    const combinedIgnore = [...config.specIgnore, ...config.extraSpecIgnore];
+    const extraFiles = await collectFiles(config.extraSpecGlobs, combinedIgnore);
+    const allFiles = [...new Set([...specFilePaths, ...extraFiles])].filter(
+      (p) => !renamedPaths.has(p) && !propagatedPaths.has(p),
     );
-    const staleRefs = await findStaleRefs(options.sourceCode, nonSourceFiles);
+    const staleRefs = await findStaleRefs(options.sourceCode, allFiles);
 
     const noChange = recodeNoChange && renames.length === 0;
 

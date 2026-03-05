@@ -161,24 +161,24 @@ export async function deleteSourceFiles(
 
 /**
  * Scan for stale references to the source code that weren't covered by recode.
- * Checks all spec files for any remaining `sourceCode-` prefixed IDs.
+ * Checks the given file paths for any remaining `sourceCode-` prefixed IDs.
  */
 export async function findStaleRefs(
   sourceCode: string,
-  specFiles: readonly SpecFile[],
+  filePaths: readonly string[],
 ): Promise<string[]> {
   const stale: string[] = [];
   const pattern = new RegExp(`\\b${sourceCode}-\\d`, 'g');
 
-  for (const sf of specFiles) {
+  for (const filePath of filePaths) {
     let content: string;
     try {
-      content = await readFile(sf.filePath, 'utf-8');
+      content = await readFile(filePath, 'utf-8');
     } catch {
       continue;
     }
     if (pattern.test(content)) {
-      stale.push(sf.filePath);
+      stale.push(filePath);
     }
     // Reset regex lastIndex for next iteration
     pattern.lastIndex = 0;

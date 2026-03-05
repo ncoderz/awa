@@ -4,7 +4,8 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 
-import type { MarkerScanResult, SpecParseResult } from '../check/types.js';
+import { collectFiles } from '../check/glob.js';
+import type { CheckConfig, MarkerScanResult, SpecParseResult } from '../check/types.js';
 import type { AffectedFile, PropagationResult, RenumberMap, Replacement } from './types.js';
 import { RenumberError } from './types.js';
 
@@ -16,6 +17,7 @@ export async function propagate(
   map: RenumberMap,
   specs: SpecParseResult,
   markers: MarkerScanResult,
+  config: CheckConfig,
   dryRun: boolean,
 ): Promise<PropagationResult> {
   if (map.entries.size === 0) {
@@ -23,7 +25,7 @@ export async function propagate(
   }
 
   // Collect all file paths that need scanning
-  const filePaths = collectFilePaths(map, specs, markers);
+  const filePaths = await collectFilePaths(map, specs, markers, config);
 
   const affectedFiles: AffectedFile[] = [];
   let totalReplacements = 0;
@@ -58,14 +60,16 @@ export async function propagate(
 /**
  * Collect unique file paths that may contain IDs needing replacement.
  * Includes all spec files (any may reference the code's IDs in matrices,
- * prose, or cross-references) and code files with relevant markers.
+ * prose, or cross-references), extra spec files from extraSpecGlobs,
+ * and code files with relevant markers.
  */
 // @awa-impl: RENUM-5_AC-1, RENUM-5_AC-2, RENUM-5_AC-3
-function collectFilePaths(
+async function collectFilePaths(
   map: RenumberMap,
   specs: SpecParseResult,
   markers: MarkerScanResult,
-): string[] {
+  config: CheckConfig,
+): Promise<string[]> {
   const paths = new Set<string>();
   const code = map.code;
 
@@ -74,6 +78,13 @@ function collectFilePaths(
   // @awa-impl: RENUM-5_AC-1, RENUM-5_AC-3
   for (const specFile of specs.specFiles) {
     paths.add(specFile.filePath);
+  }
+
+  // Include extra spec files from extraSpecGlobs (custom files in .awa/ not matched by specGlobs)
+  const combinedIgnore = [...config.specIgnore, ...config.extraSpecIgnore];
+  const extraFiles = await collectFiles(config.extraSpecGlobs, combinedIgnore);
+  for (const filePath of extraFiles) {
+    paths.add(filePath);
   }
 
   // Add code/test files that have markers referencing affected IDs

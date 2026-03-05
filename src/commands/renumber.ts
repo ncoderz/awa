@@ -27,7 +27,7 @@ export async function renumberCommand(options: RenumberCommandOptions): Promise<
       return 2;
     }
 
-    const { markers, specs } = await scan(options.config);
+    const { markers, specs, config } = await scan(options.config);
 
     // Determine which codes to renumber
     // @awa-impl: RENUM-8_AC-1
@@ -50,7 +50,14 @@ export async function renumberCommand(options: RenumberCommandOptions): Promise<
     // @awa-impl: RENUM-8_AC-2
     for (const code of codes) {
       try {
-        const result = await runRenumberPipeline(code, specs, markers, dryRun, fixMalformed);
+        const result = await runRenumberPipeline(
+          code,
+          specs,
+          markers,
+          config,
+          dryRun,
+          fixMalformed,
+        );
         results.push(result);
         if (!result.noChange) {
           hasChanges = true;
@@ -106,6 +113,7 @@ async function runRenumberPipeline(
   code: string,
   specs: import('../core/check/types.js').SpecParseResult,
   markers: import('../core/check/types.js').MarkerScanResult,
+  config: import('../core/check/types.js').CheckConfig,
   dryRun: boolean,
   fixMalformed: boolean,
 ): Promise<RenumberResult> {
@@ -142,7 +150,7 @@ async function runRenumberPipeline(
   }
 
   // Propagate changes (after corrections so corrected IDs get renumbered)
-  const { affectedFiles, totalReplacements } = await propagate(map, specs, markers, dryRun);
+  const { affectedFiles, totalReplacements } = await propagate(map, specs, markers, config, dryRun);
 
   return {
     code,

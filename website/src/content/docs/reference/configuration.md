@@ -68,6 +68,8 @@ interval = 86400  # seconds between checks (default: 1 day)
 | -------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------------------ |
 | `spec-globs`         | string[] | _(see example below)_                          | Glob patterns for spec, task, plan, and align files                            |
 | `code-globs`         | string[] | `["**/*.{ts,js,...,zig}"]`                     | Glob patterns for source files                                                 |
+| `extra-spec-globs`   | string[] | `[".awa/**/*"]`                                | Additional globs for files to update during ID propagation (renumber/recode/merge) |
+| `extra-spec-ignore`  | string[] | `[".awa/.agent/**"]`                           | Patterns to exclude from extra spec file scanning                              |
 | `markers`            | string[] | `["@awa-impl", "@awa-test", "@awa-component"]` | Marker names to scan for                                                       |
 | `spec-ignore`        | string[] | `[]`                                           | Glob patterns to exclude from spec file scanning                               |
 | `code-ignore`        | string[] | `["node_modules/**", "dist/**", ...]`          | Glob patterns to exclude from code file scanning                               |

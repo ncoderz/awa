@@ -50,6 +50,8 @@ describe('codesCommand', () => {
         codeGlobs: [],
         specIgnore: [],
         codeIgnore: [],
+        extraSpecGlobs: [],
+        extraSpecIgnore: [],
         ignoreMarkers: [],
         markers: [],
         idPattern: '',

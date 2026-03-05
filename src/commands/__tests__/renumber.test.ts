@@ -145,6 +145,7 @@ describe('renumberCommand', () => {
       expect.anything(),
       expect.anything(),
       expect.anything(),
+      expect.anything(),
       true,
     );
   });

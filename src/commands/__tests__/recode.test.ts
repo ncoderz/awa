@@ -11,9 +11,11 @@ vi.mock('../../core/renumber/propagator.js');
 vi.mock('../../core/recode/reporter.js');
 vi.mock('../../core/merge/spec-mover.js');
 vi.mock('../../core/check/codes-fixer.js');
+vi.mock('../../core/check/glob.js');
 vi.mock('../../utils/logger.js');
 
 import { fixCodesTable } from '../../core/check/codes-fixer.js';
+import { collectFiles } from '../../core/check/glob.js';
 import {
   detectConflicts,
   executeRenames,
@@ -57,8 +59,14 @@ function mockDefaults() {
   vi.mocked(scan).mockResolvedValue({
     markers: { markers: [], findings: [] },
     specs,
-    config: {} as never,
+    config: {
+      specIgnore: [],
+      extraSpecGlobs: [],
+      extraSpecIgnore: [],
+    } as never,
   });
+
+  vi.mocked(collectFiles).mockResolvedValue([]);
 
   const entries = new Map([['SRC-1', 'TGT-3']]);
   vi.mocked(buildRecodeMap).mockReturnValue({
@@ -148,6 +156,7 @@ describe('recodeCommand', () => {
     });
 
     expect(propagate).toHaveBeenCalledWith(
+      expect.anything(),
       expect.anything(),
       expect.anything(),
       expect.anything(),

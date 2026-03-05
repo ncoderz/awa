@@ -175,11 +175,20 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
 
   const fix = cliOptions.fix === false ? false : DEFAULT_CHECK_CONFIG.fix;
 
+  const extraSpecGlobs = toStringArray(section?.['extra-spec-globs']) ?? [
+    ...DEFAULT_CHECK_CONFIG.extraSpecGlobs,
+  ];
+  const extraSpecIgnore = toStringArray(section?.['extra-spec-ignore']) ?? [
+    ...DEFAULT_CHECK_CONFIG.extraSpecIgnore,
+  ];
+
   return {
     specGlobs,
     codeGlobs,
     specIgnore,
     codeIgnore,
+    extraSpecGlobs,
+    extraSpecIgnore,
     ignoreMarkers,
     markers,
     idPattern,
