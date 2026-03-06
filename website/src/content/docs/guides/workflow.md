@@ -11,15 +11,15 @@ awa defines a structured development workflow. Each stage produces artifacts tha
 ARCHITECTURE → FEAT → REQUIREMENTS → DESIGN → TASKS → CODE & TESTS → DOCUMENTATION
 ```
 
-| Stage         | Artifact                 | Purpose                                                |
-| ------------- | ------------------------ | ------------------------------------------------------ |
-| Architecture  | `ARCHITECTURE.md`        | System overview, components, constraints               |
-| Feature       | `FEAT-{CODE}-*.md`       | Context, motivation, scenarios for a feature           |
-| Requirements  | `REQ-{CODE}-*.md`        | What must be built, in EARS format (INCOSE)            |
-| Design        | `DESIGN-{CODE}-*.md`     | How it gets built — components, interfaces, properties |
-| Tasks         | `TASK-{CODE}-*-{nnn}.md` | Step-by-step implementation work items                 |
-| Code & Tests  | Source files             | Implementation with trace markers                      |
-| Documentation | `README.md`, `docs/`     | User-facing docs                                       |
+| Stage         | Artifact                   | Purpose                                                |
+| ------------- | -------------------------- | ------------------------------------------------------ |
+| Architecture  | `ARCHITECTURE.md`          | System overview, components, constraints               |
+| Feature       | `FEAT-{CODE}-*.md`         | Context, motivation, scenarios for a feature           |
+| Requirements  | `REQ-{CODE}-*.md`          | What must be built, in EARS format (INCOSE)            |
+| Design        | `DESIGN-{CODE}-*.md`       | How it gets built — components, interfaces, properties |
+| Tasks         | `TASK-{CODE}-*[-{nnn}].md` | Step-by-step implementation work items                 |
+| Code & Tests  | Source files               | Implementation with trace markers                      |
+| Documentation | `README.md`, `docs/`       | User-facing docs                                       |
 
 ## The `.awa/` Directory
 
@@ -33,13 +33,13 @@ All spec artifacts live in `.awa/`:
 │   ├── REQ-{CODE}-*.md              # Requirements (EARS format)
 │   ├── DESIGN-{CODE}-*.md           # Design & components
 │   ├── API-{CODE}-*.tsp             # TypeSpec API definitions
-│   └── EXAMPLE-{CODE}-*-{nnn}.md   # Usage examples per feature
+│   └── EXAMPLE-{CODE}-*[-{nnn}].md   # Usage examples per feature
 ├── tasks/
-│   └── TASK-{CODE}-*-{nnn}.md       # Implementation steps
+│   └── TASK-{CODE}-*[-{nnn}].md       # Implementation steps
 ├── plans/
 │   └── PLAN-{nnn}-*.md              # Ad-hoc plans
 ├── align/
-│   └── ALIGN-{x}-WITH-{y}-{nnn}.md  # Alignment reports
+│   └── ALIGN-{x}-WITH-{y}[-{nnn}].md  # Alignment reports
 └── rules/
     └── *.md                         # Project-specific rules
 ```

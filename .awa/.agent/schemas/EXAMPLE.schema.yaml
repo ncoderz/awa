@@ -1,5 +1,5 @@
-# Structural rules for EXAMPLE-{CODE}-{feature-name}-{nnn}.md files
-target-files: ".awa/specs/EXAMPLE-*.md"
+# Structural rules for {CODE}-EXAMPLE-{feature-name}[-{nnn}].md files
+target-files: ".awa/specs/*-EXAMPLE-*.md"
 description: >
   Concrete usage examples for a feature. Detailed, hands-on, reproducible.
   Use the same {CODE} as the corresponding FEAT/REQ for the feature.

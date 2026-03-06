@@ -25,9 +25,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="true" />
-<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="feat" path=".awa/specs/*-FEAT-*.md" required="true" />
+<file type="examples" path=".awa/specs/*-EXAMPLE-*.md" required="if relevant" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if relevant" />
 <file type="code" required="if reverse workflow" />
 
 ## Action
@@ -39,7 +39,7 @@ If deriving from existing code (reverse workflow), analyze the codebase to extra
 
 ## Outputs
 
-<file path=".awa/specs/REQ-{CODE}-{feature-name}.md" />
+<file path=".awa/specs/{CODE}-REQ-{feature-name}[-{nnn}].md" />
 
 ## Rules
 

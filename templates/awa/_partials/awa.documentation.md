@@ -20,8 +20,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if relevant" />
+<file type="design" path=".awa/specs/*-DESIGN-*.md" required="if relevant" />
 <file type="readme" path="README.md" required="if exists" />
 <file type="docs" path="docs/*.md" required="if exists and relevant" />
 

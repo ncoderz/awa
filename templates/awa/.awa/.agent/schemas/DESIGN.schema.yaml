@@ -1,5 +1,5 @@
-# Structural rules for DESIGN-{CODE}-{feature-name}.md files
-target-files: ".awa/specs/DESIGN-*.md"
+# Structural rules for {CODE}-DESIGN-{feature-name}[-{nnn}].md files
+target-files: ".awa/specs/*-DESIGN-*.md"
 description: >
   Design specification describing HOW to implement requirements (not WHAT).
   Succinct language. Do not overspecify. Omit irrelevant information.
@@ -201,7 +201,7 @@ sections:
         repeatable: true
         required: true
         description: >
-          Source REQ file heading. Format: ### REQ-{CODE}-{feature}.md
+          Source REQ file heading. Format: ### {CODE}-REQ-{feature-name}[-{nnn}].md
           Followed by bullet list of trace entries from that file.
           Each entry: - {AC-ID} → {Component} ({Property}) [{status}] {notes}
           Omit [{status}] if implemented. Omit ({Property}) if none.
@@ -363,12 +363,12 @@ example: |
 
   ## Requirements Traceability
 
-  ### REQ-CFG-config.md
+  ### 001-CFG-REQ-config-001.md
 
   - CFG-1_AC-1 → CFG-ConfigLoader (CFG_P-1)
   - CFG-4_AC-1 → CFG-ConfigLoader (CFG_P-1)
 
-  ### REQ-GEN-generator.md
+  ### 002-GEN-REQ-generator-001.md
 
   - GEN-6_AC-1 → GEN-FileGenerator (GEN_P-2) [partial] pending review
 

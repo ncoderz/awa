@@ -1,5 +1,5 @@
-# Structural rules for TASK-{CODE}-{feature-name}-{nnn}.md files
-target-files: ".awa/tasks/TASK-*.md"
+# Structural rules for {CODE}-TASK-{feature-name}[-{nnn}].md files
+target-files: ".awa/tasks/*-TASK-*.md"
 description: >
   Implementation tasks only. Dependency-ordered. Traceable to REQ and DESIGN.
   Each task has an ID (T-{CODE}-{nnn}), a description, and a target file path.
@@ -123,7 +123,7 @@ sections:
         repeatable: true
         required: true
         description: >
-          Source REQ file heading. Format: ### REQ-{CODE}-{feature}.md
+          Source REQ file heading. Format: ### {CODE}-REQ-{feature-name}[-{nnn}].md
           Followed by bullet list of AC and property trace entries.
           AC format: - {AC-ID} → {Task} ({Test})
           Property format: - {Property-ID} → {Test}
@@ -135,7 +135,7 @@ example: |
   # Implementation Tasks
 
   FEATURE: Configuration System
-  SOURCE: REQ-CFG-config.md, DESIGN-CFG-config.md
+  SOURCE: 001-CFG-REQ-config-001.md, 001-CFG-DESIGN-config-001.md
 
   ## Phase 1: Setup
 
@@ -195,7 +195,7 @@ example: |
 
   ## Requirements Traceability
 
-  ### REQ-CFG-config.md
+  ### 001-CFG-REQ-config-001.md
 
   - CFG-1_AC-1 → T-CFG-010 (T-CFG-013)
   - CFG-1_AC-2 → T-CFG-011 (T-CFG-012)

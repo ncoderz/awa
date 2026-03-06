@@ -1,9 +1,10 @@
-# Structural rules for FEAT-{CODE}-{feature-name}.md files
-target-files: ".awa/specs/FEAT-*.md"
+# Structural rules for {CODE}-FEAT-{feature-name}[-{nnn}].md files
+target-files: ".awa/specs/*-FEAT-*.md"
 description: >
-  Non-normative feature context. Explains WHAT the feature is and WHY it exists,
-  not HOW to implement it. Uses clear, accessible language. Marked [INFORMATIVE]
-  to distinguish from normative REQ/DESIGN documents.
+  Non-normative feature context and companion notes. Explains WHAT the feature
+  is, WHY it exists, and provides supporting rationale, analysis, or guidance.
+  Uses clear, accessible language. Marked [INFORMATIVE] to distinguish from
+  normative REQ/DESIGN documents.
   Prohibited: normative language (SHALL/SHOULD/MAY), acceptance criteria,
   traceability IDs, design decisions, bold formatting.
 line-limit: 800
@@ -73,9 +74,9 @@ sections:
     level: 2
     description: "Supplementary mermaid diagrams for the conceptual model."
 
-  - heading: "Non-Normative Notes"
+  - heading: "Notes"
     level: 2
-    description: "Recommendations, best practices, or explanatory content that is not testable."
+    description: "Companion notes — rationale, recommendations, best practices, analysis, or other explanatory content that is not testable."
 
 sections-prohibited:
   - "SHALL "

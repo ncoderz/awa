@@ -1,5 +1,5 @@
-# Structural rules for REQ-{CODE}-{feature-name}.md files
-target-files: ".awa/specs/REQ-*.md"
+# Structural rules for {CODE}-REQ-{feature-name}[-{nnn}].md files
+target-files: ".awa/specs/*-REQ-*.md"
 description: >
   Requirements specification using EARS (Easy Approach to Requirements Syntax).
   Succinct language. Do not overspecify. Omit irrelevant information.

@@ -26,11 +26,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="feat" path=".awa/specs/*-FEAT-*.md" required="if relevant" />
+<file type="examples" path=".awa/specs/*-EXAMPLE-*.md" required="if relevant" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if relevant" />
+<file type="design" path=".awa/specs/*-DESIGN-*.md" required="if relevant" />
+<file type="api" path=".awa/specs/*-API-*.tsp" required="if relevant" />
 <file type="code" required="if reverse workflow" />
 
 ## Action
@@ -41,8 +41,8 @@ If deriving from existing code (reverse workflow), analyze the codebase to extra
 
 ## Outputs
 
-<file path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" />
-<file path=".awa/specs/API-{CODE}-{api-name}.tsp" />
+<file path=".awa/specs/{CODE}-DESIGN-{feature-name}[-{nnn}].md" />
+<file path=".awa/specs/{CODE}-API-{feature-name}[-{nnn}].tsp" />
 
 ## Rules
 

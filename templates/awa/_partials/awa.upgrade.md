@@ -27,14 +27,14 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if exists" />
-<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if exists" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if exists" />
-<file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if exists" />
-<file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if exists" />
-<file type="tasks" path=".awa/tasks/TASK-{CODE}-{feature-name}-{nnn}.md" required="if exists" />
+<file type="feat" path=".awa/specs/*-FEAT-*.md" required="if exists" />
+<file type="examples" path=".awa/specs/*-EXAMPLE-*.md" required="if exists" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if exists" />
+<file type="design" path=".awa/specs/*-DESIGN-*.md" required="if exists" />
+<file type="api" path=".awa/specs/*-API-*.tsp" required="if exists" />
+<file type="tasks" path=".awa/tasks/*-TASK-*.md" required="if exists" />
 <file type="plan" path=".awa/plans/PLAN-{nnn}-{plan-name}.md" required="if exists" />
-<file type="align_report" path=".awa/alignment/ALIGN-{x}-WITH-{y}-{nnn}.md" required="if exists" />
+<file type="align_report" path=".awa/alignment/ALIGN-{x}-WITH-{y}[-{nnn}].md" required="if exists" />
 <file type="code" required="if relevant" />
 
 

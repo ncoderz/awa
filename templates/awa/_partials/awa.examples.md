@@ -20,10 +20,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if updating" />
+<file type="feat" path=".awa/specs/*-FEAT-*.md" required="if relevant" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if relevant" />
+<file type="design" path=".awa/specs/*-DESIGN-*.md" required="if relevant" />
+<file type="examples" path=".awa/specs/*-EXAMPLE-*.md" required="if updating" />
 <file type="code" required="if relevant" />
 
 ## Action
@@ -34,7 +34,7 @@ If deriving from existing code (reverse workflow), extract representative usage 
 
 ## Outputs
 
-<file path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" />
+<file path=".awa/specs/{CODE}-EXAMPLE-{feature-name}[-{nnn}].md" />
 
 ## Rules
 

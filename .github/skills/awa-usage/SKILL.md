@@ -35,18 +35,18 @@ All spec artifacts live in `.awa/`:
     │       ├── README.schema.yaml
     │       └── ALIGN_REPORT.schema.yaml
     ├── specs/
-    │   ├── ARCHITECTURE.md                # System overview
-    │   ├── FEAT-{CODE}-*.md               # Feature context and motivation
-    │   ├── EXAMPLE-{CODE}-*-{nnn}.md     # Usage examples per feature
-    │   ├── REQ-{CODE}-*.md                # Requirements (EARS format)
-    │   ├── DESIGN-{CODE}-*.md             # Design and components
-    │   └── API-{CODE}-*.tsp               # TypeSpec API definitions
+    │   ├── ARCHITECTURE.md                       # System overview
+    │   ├── {CODE}-FEAT-{feature-name}[-{nnn}].md     # Feature context and motivation
+    │   ├── {CODE}-EXAMPLE-{feature-name}[-{nnn}].md  # Usage examples per feature
+    │   ├── {CODE}-REQ-{feature-name}[-{nnn}].md      # Requirements (EARS format)
+    │   ├── {CODE}-DESIGN-{feature-name}[-{nnn}].md   # Design and components
+    │   └── {CODE}-API-{feature-name}[-{nnn}].tsp     # TypeSpec API definitions
     ├── tasks/
-    │   └── TASK-{CODE}-*-{nnn}.md         # Implementation steps
+    │   └── {CODE}-TASK-{feature-name}[-{nnn}].md     # Implementation steps
     ├── plans/
     │   └── PLAN-{nnn}-*.md                # Ad-hoc plans
     ├── align/
-    │   └── ALIGN-{x}-WITH-{y}-{nnn}.md   # Alignment reports
+    │   └── ALIGN-{x}-WITH-{y}[-{nnn}].md   # Alignment reports
     └── rules/
         └── *.md                           # Project-specific rules
 
@@ -57,10 +57,10 @@ All spec artifacts live in `.awa/`:
 | Stage | Artifact | Purpose |
 |-------|----------|---------|
 | Architecture | `ARCHITECTURE.md` | System overview, components, constraints |
-| Feature | `FEAT-{CODE}-*.md` | Context, motivation, scenarios |
-| Requirements | `REQ-{CODE}-*.md` | What must be built (EARS/INCOSE format) |
-| Design | `DESIGN-{CODE}-*.md` | How it gets built — components, interfaces, properties |
-| Tasks | `TASK-{CODE}-*-{nnn}.md` | Step-by-step implementation work items |
+| Feature | `{CODE}-FEAT-*[-{nnn}].md` | Context, motivation, scenarios |
+| Requirements | `{CODE}-REQ-*[-{nnn}].md` | What must be built (EARS/INCOSE format) |
+| Design | `{CODE}-DESIGN-*[-{nnn}].md` | How it gets built — components, interfaces, properties |
+| Tasks | `{CODE}-TASK-*[-{nnn}].md` | Step-by-step implementation work items |
 | Code & Tests | Source files | Implementation with traceability markers |
 | Documentation | `README.md`, `docs/` | User-facing docs |
 
@@ -72,12 +72,12 @@ The workflow is flexible. Start top-down (architecture → code), bottom-up (cod
 
 IDs and markers create explicit links between artifacts:
 
-    REQ-{CODE}-*.md
+    {CODE}-REQ-*[-{nnn}].md
       └── {CODE}-{n}: Requirement title
             └── {CODE}-{n}_AC-{m}: Acceptance criterion
                     │
                     ▼
-    DESIGN-{CODE}-*.md
+    {CODE}-DESIGN-*[-{nnn}].md
       └── {CODE}-ComponentName
             ├── IMPLEMENTS: {CODE}-{n}_AC-{m}
             └── {CODE}_P-{n}: Correctness property
@@ -209,6 +209,8 @@ Renumber traceability IDs to match document order, closing gaps in numbering seq
 | `-c, --config <path>` | Path to configuration file |
 
 Scans all REQ and DESIGN spec files for the given feature code, builds a globally sequential renumber map that closes gaps (e.g. 1, 3, 5 → 1, 2, 3), and propagates all ID changes across every spec file type (ARCHITECTURE.md, FEAT, EXAMPLE, REQ, DESIGN, API, TASK, PLAN, ALIGN), source code, and tests. Detects and reports malformed IDs.
+
+Spec file naming convention: `{CODE}-{TYPE}-{feature-name}[-{nnn}].md` where `{NNN}` is a fixed 3-digit code index and `{nnn}` is a per-file sequence number.
 
 When `--expand-unambiguous-ids` is set, unambiguous malformed patterns are expanded before renumbering: slash ranges (`ARC-36_AC-8/9` → `ARC-36_AC-8, ARC-36_AC-9`) and dot-dot AC ranges (`ARC-18_AC-14..16` → `ARC-18_AC-14, ARC-18_AC-15, ARC-18_AC-16`). Ambiguous patterns (letter suffixes, full-ID ranges, trailing periods) remain as warnings only.
 

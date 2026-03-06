@@ -17,7 +17,9 @@ const FIXTURES_DIR = resolve(import.meta.dirname, 'fixtures');
 function makeSpecFile(filePath: string, relPath: string): SpecFile {
   return {
     filePath,
-    code: relPath.match(/(?:REQ|DESIGN|TASK|FEAT|EXAMPLE|ALIGN)-([A-Z]+)/)?.[1] ?? 'TEST',
+    code:
+      (relPath.match(/\d+-([A-Z]+)-(?:REQ|DESIGN|TASK|FEAT|EXAMPLE)/) ??
+        relPath.match(/(?:ALIGN)-([A-Z]+)/))?.[1] ?? 'TEST',
     requirementIds: [],
     acIds: [],
     propertyIds: [],
@@ -94,7 +96,7 @@ describe('Schema fixture validation', () => {
 
     test('TASK fixture passes TASK rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const taskFile = files.find((f) => f.relName.startsWith('TASK-'));
+      const taskFile = files.find((f) => f.relName.includes('-TASK-'));
       expect(taskFile).toBeDefined();
       if (!taskFile) return;
 
@@ -108,7 +110,7 @@ describe('Schema fixture validation', () => {
 
     test('REQ fixture passes REQ rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const reqFile = files.find((f) => f.relName.startsWith('REQ-'));
+      const reqFile = files.find((f) => f.relName.includes('-REQ-'));
       expect(reqFile).toBeDefined();
       if (!reqFile) return;
 
@@ -122,7 +124,7 @@ describe('Schema fixture validation', () => {
 
     test('DESIGN fixture passes DESIGN rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const designFile = files.find((f) => f.relName.startsWith('DESIGN-'));
+      const designFile = files.find((f) => f.relName.includes('-DESIGN-'));
       expect(designFile).toBeDefined();
       if (!designFile) return;
 
@@ -136,7 +138,7 @@ describe('Schema fixture validation', () => {
 
     test('FEAT fixture passes FEAT rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const featFile = files.find((f) => f.relName.startsWith('FEAT-'));
+      const featFile = files.find((f) => f.relName.includes('-FEAT-'));
       expect(featFile).toBeDefined();
       if (!featFile) return;
 
@@ -164,7 +166,7 @@ describe('Schema fixture validation', () => {
 
     test('EXAMPLE fixture passes EXAMPLE rules', async () => {
       const files = await loadFixtureFiles(conformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
+      const exFile = files.find((f) => f.relName.includes('-EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 
@@ -198,7 +200,7 @@ describe('Schema fixture validation', () => {
 
     test('TASK fixture: IMPLEMENTS prohibited on setup phase + missing SOURCE', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const taskFile = files.find((f) => f.relName.startsWith('TASK-'));
+      const taskFile = files.find((f) => f.relName.includes('-TASK-'));
       expect(taskFile).toBeDefined();
       if (!taskFile) return;
 
@@ -218,7 +220,7 @@ describe('Schema fixture validation', () => {
 
     test('REQ fixture: missing user story and AC items', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const reqFile = files.find((f) => f.relName.startsWith('REQ-'));
+      const reqFile = files.find((f) => f.relName.includes('-REQ-'));
       expect(reqFile).toBeDefined();
       if (!reqFile) return;
 
@@ -237,7 +239,7 @@ describe('Schema fixture validation', () => {
 
     test('DESIGN fixture: missing code blocks, IMPLEMENTS, properties', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const designFile = files.find((f) => f.relName.startsWith('DESIGN-'));
+      const designFile = files.find((f) => f.relName.includes('-DESIGN-'));
       expect(designFile).toBeDefined();
       if (!designFile) return;
 
@@ -257,7 +259,7 @@ describe('Schema fixture validation', () => {
 
     test('FEAT fixture: missing INFORMATIVE marker and Conceptual Model', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const featFile = files.find((f) => f.relName.startsWith('FEAT-'));
+      const featFile = files.find((f) => f.relName.includes('-FEAT-'));
       expect(featFile).toBeDefined();
       if (!featFile) return;
 
@@ -294,7 +296,7 @@ describe('Schema fixture validation', () => {
 
     test('EXAMPLE fixture: missing INFORMATIVE marker and code block', async () => {
       const files = await loadFixtureFiles(nonConformDir);
-      const exFile = files.find((f) => f.relName.startsWith('EXAMPLE-'));
+      const exFile = files.find((f) => f.relName.includes('-EXAMPLE-'));
       expect(exFile).toBeDefined();
       if (!exFile) return;
 

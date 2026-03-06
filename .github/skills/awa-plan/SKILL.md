@@ -25,11 +25,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Inputs
 
 <file type="architecture" path=".awa/specs/ARCHITECTURE.md" />
-<file type="feat" path=".awa/specs/FEAT-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="examples" path=".awa/specs/EXAMPLE-{CODE}-{feature-name}-{nnn}.md" required="if relevant" />
-<file type="requirements" path=".awa/specs/REQ-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="design" path=".awa/specs/DESIGN-{CODE}-{feature-name}.md" required="if relevant" />
-<file type="api" path=".awa/specs/API-{CODE}-{feature-name}.md" required="if relevant" />
+<file type="feat" path=".awa/specs/*-FEAT-*.md" required="if relevant" />
+<file type="examples" path=".awa/specs/*-EXAMPLE-*.md" required="if relevant" />
+<file type="requirements" path=".awa/specs/*-REQ-*.md" required="if relevant" />
+<file type="design" path=".awa/specs/*-DESIGN-*.md" required="if relevant" />
+<file type="api" path=".awa/specs/*-API-*.tsp" required="if relevant" />
 <file type="code_and_tests" path="various" required="if relevant" />
 
 ## Action
