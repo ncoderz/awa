@@ -41,14 +41,15 @@ sections:
     contains:
       # Tasks as checkbox items: "- [ ] T-{CODE}-{nnn} ... → path"
       - list:
-          pattern: "\\[ \\] T-[A-Z][A-Z0-9]*-\\d+"
+          pattern: "\\[[ x]\\] T-[A-Z][A-Z0-9]*-\\d+"
           min: 1
           label: "task checkbox items"
         description: >
-          Task items as unchecked checkboxes. Format:
+          Task items as checkboxes. Format:
           - [ ] T-{CODE}-{nnn} [P]? [{CODE}-{n}]? Description → target/path.
           [P] marks parallelizable tasks. [{CODE}-{n}] is the requirement ID
-          (only on requirement phases). Always unchecked in generated output.
+          (only on requirement phases). Always unchecked when generating tasks;
+          checked boxes ([x]) are filled during task list implementation.
       # Tasks must have file path targets (→)
       - pattern: "→"
         label: "file path targets"
