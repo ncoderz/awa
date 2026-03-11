@@ -1,83 +1,21 @@
 // @awa-component: CLI-ArgumentParser
-// @awa-component: CLI-TemplateGroup
-// @awa-component: CLI-RootProgram
-// @awa-impl: CLI-1_AC-1
-// @awa-impl: CLI-1_AC-2
-// @awa-impl: CLI-1_AC-3
-// @awa-impl: CLI-1_AC-4
-// @awa-impl: CLI-1_AC-5
-// @awa-impl: CLI-2_AC-1
-// @awa-impl: CLI-2_AC-2
-// @awa-impl: CLI-2_AC-3
-// @awa-impl: CLI-2_AC-5
-// @awa-impl: CLI-2_AC-6
-// @awa-impl: CLI-3_AC-1
-// @awa-impl: CLI-4_AC-1
-// @awa-impl: CLI-4_AC-2
-// @awa-impl: CLI-5_AC-1
-// @awa-impl: CLI-6_AC-1
-// @awa-impl: CLI-7_AC-1
-// @awa-impl: CLI-8_AC-1
-// @awa-impl: CLI-9_AC-1
-// @awa-impl: CLI-9_AC-2
-// @awa-impl: CLI-9_AC-3
-// @awa-impl: CLI-10_AC-1
-// @awa-impl: CLI-10_AC-2
-// @awa-impl: CLI-11_AC-1
-// @awa-impl: CLI-11_AC-2
-// @awa-impl: CLI-11_AC-3
-// @awa-impl: CLI-12_AC-1
-// @awa-impl: CLI-13_AC-1
-// @awa-impl: CLI-13_AC-2
-// @awa-impl: CLI-14_AC-1
-// @awa-impl: CLI-14_AC-2
-// @awa-impl: CLI-6_AC-2
-// @awa-impl: CFG-5_AC-2
-// @awa-impl: DIFF-7_AC-1
-// @awa-impl: DIFF-7_AC-2
-// @awa-impl: DIFF-7_AC-3
-// @awa-impl: DIFF-7_AC-4
-// @awa-impl: DIFF-7_AC-5
-// @awa-impl: DIFF-7_AC-6
-// @awa-impl: DIFF-7_AC-7
-// @awa-impl: DIFF-7_AC-8
-// @awa-impl: DIFF-7_AC-9
-// @awa-impl: DIFF-7_AC-10
-// @awa-impl: DIFF-7_AC-11
-// @awa-impl: DIFF-7_AC-12
-// @awa-impl: DIFF-7_AC-13
-// @awa-impl: CFG-8_AC-1
-// @awa-impl: CFG-8_AC-2
-// @awa-impl: CFG-8_AC-4
-// @awa-impl: CFG-10_AC-1
-// @awa-impl: CFG-10_AC-2
-// @awa-impl: CFG-10_AC-3
-// @awa-impl: CFG-10_AC-5
-// @awa-impl: GEN-10_AC-1
-// @awa-impl: GEN-10_AC-2
-// @awa-impl: GEN-13_AC-1
-// @awa-impl: GEN-14_AC-1
-// @awa-impl: GEN-15_AC-1
-// @awa-impl: GEN-16_AC-1
-// @awa-impl: CLI-41_AC-1
-// @awa-impl: CLI-41_AC-2
-// @awa-impl: CLI-41_AC-3
-// @awa-impl: CLI-41_AC-4
-// @awa-impl: CLI-41_AC-5
-// @awa-impl: CLI-41_AC-6
-// @awa-impl: CLI-41_AC-7
-// @awa-impl: CLI-42_AC-1
-// @awa-impl: CLI-42_AC-2
-// @awa-impl: CLI-43_AC-1
-// @awa-impl: CLI-43_AC-2
-// @awa-impl: CLI-43_AC-3
-// @awa-impl: CLI-43_AC-4
-// @awa-impl: CLI-44_AC-1
-// @awa-impl: CLI-44_AC-2
-// @awa-impl: CLI-45_AC-1
-// @awa-impl: CLI-45_AC-2
-// @awa-impl: CLI-45_AC-3
-// @awa-impl: CLI-45_AC-4
+// @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
+// @awa-impl: CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6
+// @awa-impl: CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1
+// @awa-impl: CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
+// @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1
+// @awa-impl: CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2
+// @awa-impl: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1
+// @awa-impl: CFG-5_AC-2, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4
+// @awa-impl: CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5
+// @awa-impl: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13
+// @awa-impl: DISC-4_AC-1, DISC-5_AC-1
+// @awa-impl: GEN-10_AC-1, GEN-10_AC-2, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1
+// @awa-impl: JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1
+// @awa-impl: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7
+// @awa-impl: CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
+// @awa-impl: CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
+// @awa-impl: TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 
 import { Command, Option } from 'commander';
 
@@ -120,6 +58,15 @@ program
   .description('awa - tool for generating AI coding agent configuration files')
   .version(version, '-v, --version', 'Display version number');
 
+// @awa-component: CLI-TemplateGroup
+// @awa-impl: CLI-2_AC-2, CLI-2_AC-3, CLI-6_AC-2
+// @awa-impl: CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
+// @awa-impl: CLI-12_AC-1, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2
+// @awa-impl: CFG-5_AC-2, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4
+// @awa-impl: CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5
+// @awa-impl: DIFF-7_AC-12, DIFF-7_AC-13
+// @awa-impl: GEN-10_AC-1, GEN-10_AC-2
+// @awa-impl: TRC-8_AC-1, CLI-43_AC-2, CLI-43_AC-4, CLI-44_AC-1
 // @awa-impl: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-44_AC-2
 // @awa-impl: CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
 const template = new Command('template').description(
@@ -362,6 +309,24 @@ template
     process.exit(exitCode);
   });
 
+// @awa-component: CLI-RootProgram
+// @awa-impl: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-4, CLI-1_AC-5
+// @awa-impl: CLI-2_AC-1, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-5, CLI-2_AC-6
+// @awa-impl: CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1, CLI-6_AC-1, CLI-6_AC-2, CLI-7_AC-1, CLI-8_AC-1
+// @awa-impl: CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
+// @awa-impl: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3, CLI-12_AC-1
+// @awa-impl: CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2
+// @awa-impl: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1
+// @awa-impl: CFG-5_AC-2, CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4
+// @awa-impl: CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5
+// @awa-impl: DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7, DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-11, DIFF-7_AC-12, DIFF-7_AC-13
+// @awa-impl: DISC-4_AC-1, DISC-5_AC-1
+// @awa-impl: GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1
+// @awa-impl: JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1
+// @awa-impl: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7
+// @awa-impl: CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
+// @awa-impl: CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
+// @awa-impl: TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
 // Add template group to root program
 program.addCommand(template);
 

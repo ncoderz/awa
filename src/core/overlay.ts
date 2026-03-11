@@ -1,12 +1,3 @@
-// @awa-component: OVL-OverlayResolver
-// @awa-component: OVL-MergedTemplateView
-// @awa-impl: OVL-1_AC-1
-// @awa-impl: OVL-2_AC-1
-// @awa-impl: OVL-3_AC-1
-// @awa-impl: OVL-4_AC-1
-// @awa-impl: OVL-5_AC-1
-// @awa-impl: OVL-6_AC-1
-
 import { cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -14,11 +5,13 @@ import { join } from 'node:path';
 import { ensureDir } from '../utils/fs.js';
 import { templateResolver } from './template-resolver.js';
 
+// @awa-component: OVL-OverlayResolver
 /**
  * Resolve each overlay source string to a local directory path.
  * Delegates to TemplateResolver so local paths and Git sources are both handled.
  *
  * @awa-impl: OVL-1_AC-1, OVL-6_AC-1
+ * @awa-impl: OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1
  */
 export async function resolveOverlays(overlays: string[], refresh: boolean): Promise<string[]> {
   const dirs: string[] = [];
@@ -29,6 +22,7 @@ export async function resolveOverlays(overlays: string[], refresh: boolean): Pro
   return dirs;
 }
 
+// @awa-component: OVL-MergedTemplateView
 /**
  * Build a temporary merged directory by copying baseDir then applying each
  * overlay in order. Later overlay files overwrite earlier ones at the same
@@ -36,6 +30,7 @@ export async function resolveOverlays(overlays: string[], refresh: boolean): Pro
  *
  * Caller is responsible for cleaning up the returned temp directory.
  *
+ * @awa-impl: OVL-1_AC-1, OVL-6_AC-1
  * @awa-impl: OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1
  */
 export async function buildMergedDir(baseDir: string, overlayDirs: string[]): Promise<string> {

@@ -75,7 +75,7 @@ interface ConfigLoader {
 Orchestrates multi-target processing. Resolves all or single targets, builds
 per-target CLI options, and delegates to ConfigLoader.merge() for final resolution.
 
-IMPLEMENTS: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
+IMPLEMENTS: MULTI_P-1, MULTI_P-2, MULTI-3_AC-1, MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1, MULTI-5_AC-2, MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
 
 ```typescript
 interface BatchRunner {
@@ -278,9 +278,12 @@ Test generate and diff commands with mocked BatchRunner.
 
 ### REQ-MULTI-multi-target.md
 
+- MULTI_P-1 → MULTI-BatchRunner
+- MULTI_P-2 → MULTI-BatchRunner
 - MULTI-1_AC-1 → MULTI-TargetResolver
 - MULTI-2_AC-1 → MULTI-TargetResolver
 - MULTI-3_AC-1 → MULTI-TargetResolver (MULTI_P-1)
+- MULTI-3_AC-1 → MULTI-BatchRunner (MULTI_P-1)
 - MULTI-4_AC-1 → MULTI-BatchRunner (MULTI_P-2)
 - MULTI-4_AC-1 → MULTI-Reporter (MULTI_P-2)
 - MULTI-4_AC-2 → MULTI-BatchRunner
@@ -288,6 +291,7 @@ Test generate and diff commands with mocked BatchRunner.
 - MULTI-5_AC-1 → MULTI-BatchRunner
 - MULTI-5_AC-1 → MULTI-Reporter
 - MULTI-5_AC-2 → MULTI-TargetResolver
+- MULTI-5_AC-2 → MULTI-BatchRunner
 - MULTI-6_AC-1 → MULTI-GenerateCommand
 - MULTI-6_AC-1 → MULTI-DiffCommand
 - MULTI-7_AC-1 → MULTI-DiffCommand

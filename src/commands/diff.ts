@@ -1,12 +1,7 @@
 // @awa-component: DIFF-DiffCommand
-// @awa-component: JSON-DiffCommand
-// @awa-component: MULTI-DiffCommand
-// @awa-impl: DIFF-5_AC-1
-// @awa-impl: DIFF-5_AC-2
-// @awa-impl: DIFF-5_AC-3
-// @awa-impl: MULTI-6_AC-1
-// @awa-impl: MULTI-7_AC-1
-// @awa-impl: MULTI-12_AC-1
+// @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+// @awa-impl: JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1
+// @awa-impl: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 
 import { intro, outro } from '@clack/prompts';
 
@@ -161,6 +156,15 @@ async function prepareDiff(options: ResolvedOptions): Promise<{
   };
 }
 
+// @awa-component: JSON-DiffCommand
+// @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+// @awa-impl: JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1
+// @awa-impl: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
+
+// @awa-component: MULTI-DiffCommand
+// @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
+// @awa-impl: JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1
+// @awa-impl: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 export async function diffCommand(cliOptions: RawCliOptions): Promise<number> {
   try {
     // Load configuration file

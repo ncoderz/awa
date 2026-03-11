@@ -65,9 +65,9 @@ YOU are also an expert software architect and developer, and write specification
 {CODE}-{n} = requirement id, e.g. DIFF-1; subrequirement id = {CODE}-{n}.{p}, e.g. DIFF-1.1
 {CODE}-{n}[.{p}]_AC-{m} = acceptance criterion id, e.g. DIFF-1_AC-1 or DIFF-1.1_AC-2
 {CODE}_P-{n} = correctness property id, e.g. DIFF_P-2
-@awa-component = code marker → design component, e.g. // @awa-component: DIFF-Parser
-@awa-impl = code marker → AC, e.g. // @awa-impl: DIFF-1.1_AC-1
-@awa-test = test marker → property or AC, e.g. // @awa-test: DIFF_P-2 or // @awa-test: DIFF-1.1_AC-1
+@awa-component = code marker → design component, insert directly before component, e.g. // @awa-component: DIFF-Parser
+@awa-impl = code marker → AC, insert directly before implementation e.g. // @awa-impl: DIFF-1.1_AC-1
+@awa-test = test marker → property or AC, insert directly before test, e.g. // @awa-test: DIFF_P-2 or // @awa-test: DIFF-1.1_AC-1
 
 REQ-{CODE}-{feature}.md
     └── {CODE}-{n}: Title

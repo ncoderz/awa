@@ -76,7 +76,7 @@ interface RawTestOptions { template?: string; config?: string; updateSnapshots: 
 
 Discovers and parses `_tests/*.toml` fixture files from a template directory.
 
-IMPLEMENTS: TTST-1_AC-1, TTST-2_AC-1
+IMPLEMENTS: TTST_P-1, TTST-1_AC-1, TTST-2_AC-1
 
 ```typescript
 function discoverFixtures(templatePath: string): Promise<TestFixture[]>;
@@ -86,7 +86,7 @@ function discoverFixtures(templatePath: string): Promise<TestFixture[]>;
 
 Renders templates per fixture to a temporary directory and runs assertions (file existence, snapshot comparison).
 
-IMPLEMENTS: TTST-3_AC-1, TTST-4_AC-1, TTST-5_AC-1, TTST-8_AC-1
+IMPLEMENTS: TTST_P-2, TTST_P-4, TTST-3_AC-1, TTST-4_AC-1, TTST-5_AC-1, TTST-8_AC-1
 
 ```typescript
 function runFixture(fixture: TestFixture, templatePath: string, options: TestRunOptions): Promise<FixtureResult>;
@@ -107,7 +107,7 @@ function report(result: TestSuiteResult): void;
 
 CLI command handler that orchestrates fixture loading, test execution, and reporting.
 
-IMPLEMENTS: TTST-7_AC-1, TTST-9_AC-1, TTST-11_AC-1, TTST-12_AC-1
+IMPLEMENTS: TTST_P-3, TTST-6_AC-1, TTST-7_AC-1, TTST-9_AC-1, TTST-10_AC-1, TTST-11_AC-1, TTST-12_AC-1
 
 ```typescript
 function testCommand(options: RawTestOptions): Promise<number>;
@@ -211,6 +211,10 @@ PRINCIPLES:
 
 ### REQ-TTST-template-test.md
 
+- TTST_P-1 → TTST-FixtureLoader
+- TTST_P-2 → TTST-TestRunner
+- TTST_P-3 → TTST-TestCommand
+- TTST_P-4 → TTST-TestRunner
 - TTST-1_AC-1 → TTST-FixtureLoader (TTST_P-1)
 - TTST-2_AC-1 → TTST-Types (TTST_P-1)
 - TTST-2_AC-1 → TTST-FixtureLoader (TTST_P-1)
@@ -218,9 +222,11 @@ PRINCIPLES:
 - TTST-4_AC-1 → TTST-TestRunner (TTST_P-2)
 - TTST-5_AC-1 → TTST-TestRunner (TTST_P-4)
 - TTST-6_AC-1 → TTST-Reporter (TTST_P-3)
+- TTST-6_AC-1 → TTST-TestCommand (TTST_P-3)
 - TTST-7_AC-1 → TTST-TestCommand (TTST_P-3)
 - TTST-8_AC-1 → TTST-TestRunner (TTST_P-2)
 - TTST-9_AC-1 → TTST-TestCommand
 - TTST-10_AC-1 → TTST-Reporter
+- TTST-10_AC-1 → TTST-TestCommand
 - TTST-11_AC-1 → TTST-TestCommand
 - TTST-12_AC-1 → TTST-TestCommand

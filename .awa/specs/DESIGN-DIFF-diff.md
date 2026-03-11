@@ -44,7 +44,7 @@ src/
 
 Compares generated template output against existing target files. Generates to a temp directory, performs byte-for-byte comparison, produces unified diff output, reports delete-listed files from `_delete.txt`, and only includes target-only files when explicitly requested.
 
-IMPLEMENTS: DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3, DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5, DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3, DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-3, DIFF-8_AC-4
+IMPLEMENTS: DIFF_P-1, DIFF_P-2, DIFF_P-3, DIFF_P-4, DIFF_P-5, DIFF_P-6, DIFF-1_AC-1, DIFF-1_AC-2, DIFF-1_AC-3, DIFF-2_AC-1, DIFF-2_AC-2, DIFF-2_AC-3, DIFF-2_AC-4, DIFF-2_AC-5, DIFF-3_AC-1, DIFF-3_AC-2, DIFF-3_AC-3, DIFF-3_AC-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-6_AC-1, DIFF-6_AC-2, DIFF-6_AC-3, DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-3, DIFF-8_AC-4
 
 ```typescript
 interface DiffOptions {
@@ -86,7 +86,7 @@ interface DiffEngine {
 
 Orchestrates the diff pipeline: resolve config, resolve template, run DiffEngine, display results, set exit code.
 
-IMPLEMENTS: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1, MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
+IMPLEMENTS: DIFF_P-4, DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3, DIFF-7_AC-1, DIFF-7_AC-2, DIFF-7_AC-3, DIFF-7_AC-11, DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4, JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1, MULTI_P-3, MULTI-6_AC-1, MULTI-7_AC-1, MULTI-8_AC-1, MULTI-10_AC-1, MULTI-12_AC-1, OVL-7_AC-1
 
 ```typescript
 interface DiffCommand {
@@ -194,6 +194,13 @@ PRINCIPLES:
 
 ### REQ-DIFF-diff.md
 
+- DIFF_P-1 → DIFF-DiffEngine
+- DIFF_P-2 → DIFF-DiffEngine
+- DIFF_P-3 → DIFF-DiffEngine
+- DIFF_P-4 → DIFF-DiffEngine
+- DIFF_P-4 → DIFF-DiffCommand
+- DIFF_P-5 → DIFF-DiffEngine
+- DIFF_P-6 → DIFF-DiffEngine
 - DIFF-1_AC-1 → DIFF-DiffEngine
 - DIFF-1_AC-2 → DIFF-DiffEngine
 - DIFF-1_AC-3 → DIFF-DiffEngine (DIFF_P-1)
@@ -207,7 +214,14 @@ PRINCIPLES:
 - DIFF-3_AC-3 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-3_AC-4 → DIFF-DiffEngine (DIFF_P-5)
 - DIFF-4_AC-1 → DIFF-DiffEngine
+- DIFF-4_AC-1 → DIFF-DiffCommand
 - DIFF-4_AC-2 → DIFF-DiffEngine
+- DIFF-4_AC-2 → DIFF-DiffCommand
+- DIFF-4_AC-3 → DIFF-DiffCommand
+- DIFF-4_AC-4 → DIFF-DiffEngine
+- DIFF-4_AC-4 → DIFF-DiffCommand
+- DIFF-4_AC-5 → DIFF-DiffEngine
+- DIFF-4_AC-5 → DIFF-DiffCommand
 - DIFF-5_AC-1 → DIFF-DiffEngine (DIFF_P-4)
 - DIFF-5_AC-1 → DIFF-DiffCommand (DIFF_P-4)
 - DIFF-5_AC-2 → DIFF-DiffEngine (DIFF_P-4)
@@ -217,12 +231,19 @@ PRINCIPLES:
 - DIFF-6_AC-1 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-2 → DIFF-DiffEngine (DIFF_P-2)
 - DIFF-6_AC-3 → DIFF-DiffEngine (DIFF_P-2)
+- DIFF-7_AC-1 → DIFF-DiffCommand
+- DIFF-7_AC-2 → DIFF-DiffCommand
+- DIFF-7_AC-3 → DIFF-DiffCommand
 - DIFF-7_AC-10 → DIFF-Debouncer
 - DIFF-7_AC-10 → DIFF-FileWatcher
+- DIFF-7_AC-11 → DIFF-DiffCommand (DIFF_P-5)
 - DIFF-8_AC-1 → DIFF-DiffEngine (DIFF_P-6)
+- DIFF-8_AC-1 → DIFF-DiffCommand (DIFF_P-6)
 - DIFF-8_AC-2 → DIFF-DiffEngine (DIFF_P-6)
+- DIFF-8_AC-2 → DIFF-DiffCommand (DIFF_P-6)
 - DIFF-8_AC-3 → DIFF-DiffEngine (DIFF_P-6)
 - DIFF-8_AC-4 → DIFF-DiffEngine
+- DIFF-8_AC-4 → DIFF-DiffCommand
 
 ### REQ-JSON-json-output.md
 
@@ -233,8 +254,11 @@ PRINCIPLES:
 
 ### REQ-MULTI-multi-target.md
 
+- MULTI_P-3 → DIFF-DiffCommand
 - MULTI-6_AC-1 → DIFF-DiffCommand
 - MULTI-7_AC-1 → DIFF-DiffCommand
+- MULTI-8_AC-1 → DIFF-DiffCommand
+- MULTI-10_AC-1 → DIFF-DiffCommand
 - MULTI-12_AC-1 → DIFF-DiffCommand
 
 ### REQ-OVL-overlays.md

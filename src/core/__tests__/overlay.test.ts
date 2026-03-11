@@ -1,8 +1,4 @@
 // @awa-component: OVL-OverlayResolver
-// @awa-component: OVL-MergedTemplateView
-// @awa-test: OVL_P-1
-// @awa-test: OVL_P-2
-// @awa-test: OVL_P-3
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -104,6 +100,8 @@ describe('overlay', () => {
   // buildMergedDir
   // ---------------------------------------------------------------------------
 
+  // @awa-component: OVL-MergedTemplateView
+  // @awa-test: OVL_P-1, OVL_P-2, OVL_P-3
   describe('buildMergedDir', () => {
     let baseDir: string;
     let mergedDir: string | null;

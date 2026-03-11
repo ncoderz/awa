@@ -1,50 +1,3 @@
-// @awa-component: CFG-ConfigLoader
-// @awa-component: MULTI-TargetResolver
-// @awa-impl: CFG-1_AC-1
-// @awa-impl: CFG-1_AC-2
-// @awa-impl: CFG-1_AC-3
-// @awa-impl: CFG-1_AC-4
-// @awa-impl: CFG-2_AC-1
-// @awa-impl: CFG-2_AC-2
-// @awa-impl: CFG-2_AC-3
-// @awa-impl: CFG-3_AC-1
-// @awa-impl: CFG-3_AC-2
-// @awa-impl: CFG-3_AC-3
-// @awa-impl: CFG-3_AC-4
-// @awa-impl: CFG-3_AC-5
-// @awa-impl: CFG-3_AC-6
-// @awa-impl: CFG-3_AC-7
-// @awa-impl: CFG-3_AC-8
-// @awa-impl: CFG-3_AC-9
-// @awa-impl: CFG-3_AC-10
-// @awa-impl: CFG-4_AC-1
-// @awa-impl: CFG-4_AC-2
-// @awa-impl: CFG-4_AC-3
-// @awa-impl: CFG-4_AC-4
-// @awa-impl: CFG-5_AC-1
-// @awa-impl: CFG-6_AC-1
-// @awa-impl: CFG-6_AC-2
-// @awa-impl: CLI-1_AC-4
-// @awa-impl: CLI-2_AC-2
-// @awa-impl: CLI-2_AC-3
-// @awa-impl: CLI-2_AC-4
-// @awa-impl: CLI-4_AC-3
-// @awa-impl: CLI-7_AC-2
-// @awa-impl: CFG-7_AC-1
-// @awa-impl: CFG-7_AC-2
-// @awa-impl: CFG-7_AC-3
-// @awa-impl: CFG-7_AC-4
-// @awa-impl: CFG-9_AC-1
-// @awa-impl: CFG-9_AC-2
-// @awa-impl: CFG-9_AC-3
-// @awa-impl: CFG-11_AC-1
-// @awa-impl: CFG-11_AC-2
-// @awa-impl: CFG-11_AC-3
-// @awa-impl: MULTI-1_AC-1
-// @awa-impl: MULTI-2_AC-1
-// @awa-impl: MULTI-3_AC-1
-// @awa-impl: MULTI-5_AC-2
-
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 
@@ -64,6 +17,17 @@ import { logger } from '../utils/logger.js';
 
 const DEFAULT_CONFIG_PATH = '.awa.toml';
 
+// @awa-component: CFG-ConfigLoader
+// @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
+// @awa-impl: CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3
+// @awa-impl: CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10
+// @awa-impl: CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4
+// @awa-impl: CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2
+// @awa-impl: CFG-7_AC-1, CFG-7_AC-2, CFG-7_AC-3, CFG-7_AC-4
+// @awa-impl: CFG-9_AC-1, CFG-9_AC-2, CFG-9_AC-3
+// @awa-impl: CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3
+// @awa-impl: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
+// @awa-impl: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
 export class ConfigLoader {
   private isLocalTemplateSource(source: string): boolean {
     if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {
@@ -603,6 +567,18 @@ export class ConfigLoader {
     return target;
   }
 
+  // @awa-component: MULTI-TargetResolver
+  // @awa-impl: CFG-1_AC-1, CFG-1_AC-2, CFG-1_AC-3, CFG-1_AC-4
+  // @awa-impl: CFG-2_AC-1, CFG-2_AC-2, CFG-2_AC-3
+  // @awa-impl: CFG-3_AC-1, CFG-3_AC-2, CFG-3_AC-3, CFG-3_AC-4, CFG-3_AC-5, CFG-3_AC-6, CFG-3_AC-7, CFG-3_AC-8, CFG-3_AC-9, CFG-3_AC-10
+  // @awa-impl: CFG-4_AC-1, CFG-4_AC-2, CFG-4_AC-3, CFG-4_AC-4
+  // @awa-impl: CFG-5_AC-1, CFG-6_AC-1, CFG-6_AC-2
+  // @awa-impl: CFG-7_AC-1, CFG-7_AC-2, CFG-7_AC-3, CFG-7_AC-4
+  // @awa-impl: CFG-9_AC-1, CFG-9_AC-2, CFG-9_AC-3
+  // @awa-impl: CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3
+  // @awa-impl: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
+  // @awa-impl: CLI-31_AC-1, OVL-8_AC-1
+  // @awa-impl: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
   // Resolve a target by merging target config with root config (target overrides root via nullish coalescing)
   resolveTarget(targetName: string, fileConfig: FileConfig): FileConfig {
     const targets = fileConfig.targets;
