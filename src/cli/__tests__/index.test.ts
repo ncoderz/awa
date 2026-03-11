@@ -1,20 +1,11 @@
 // @awa-component: CLI-ArgumentParser
-// @awa-component: CLI-TemplateGroup
-// @awa-component: CLI-RootProgram
 // @awa-test: CLI-1_AC-1, CLI-1_AC-2, CLI-1_AC-3, CLI-1_AC-5
 // @awa-test: CLI-2_AC-1, CLI-2_AC-5, CLI-2_AC-6
-// @awa-test: CLI-3_AC-1
-// @awa-test: CLI-4_AC-1, CLI-4_AC-2
-// @awa-test: CLI-5_AC-1
-// @awa-test: CLI-6_AC-1, CLI-6_AC-3
-// @awa-test: CLI-7_AC-1
-// @awa-test: CLI-8_AC-1
-// @awa-test: CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3
-// @awa-test: CLI-10_AC-1, CLI-10_AC-2
+// @awa-test: CLI-3_AC-1, CLI-4_AC-1, CLI-4_AC-2, CLI-5_AC-1
+// @awa-test: CLI-6_AC-1, CLI-6_AC-3, CLI-7_AC-1, CLI-8_AC-1
+// @awa-test: CLI-9_AC-1, CLI-9_AC-2, CLI-9_AC-3, CLI-10_AC-1, CLI-10_AC-2
 // @awa-test: CLI-11_AC-1, CLI-11_AC-2, CLI-11_AC-3
-// @awa-test: CLI-13_AC-1, CLI-13_AC-2
-// @awa-test: CLI-14_AC-1, CLI-14_AC-2
-// @awa-test: CLI-15_AC-1, CLI-15_AC-2
+// @awa-test: CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, CLI-15_AC-1, CLI-15_AC-2
 // @awa-test: GEN-10_AC-1, GEN-10_AC-2
 // @awa-test: DIFF-7_AC-4, DIFF-7_AC-5, DIFF-7_AC-6, DIFF-7_AC-7
 // @awa-test: DIFF-7_AC-8, DIFF-7_AC-9, DIFF-7_AC-10, DIFF-7_AC-12, DIFF-7_AC-13
@@ -407,6 +398,7 @@ describe('CLI Argument Parser', () => {
     });
   });
 
+  // @awa-component: CLI-TemplateGroup
   // @awa-test: CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3
   describe('template subcommand group', () => {
     // @awa-test: CLI-41_AC-1
@@ -493,6 +485,7 @@ describe('CLI Argument Parser', () => {
     });
   });
 
+  // @awa-component: CLI-RootProgram
   // @awa-test: CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
   describe('top-level awa commands', () => {
     // @awa-test: CLI-43_AC-1, CLI-43_AC-3

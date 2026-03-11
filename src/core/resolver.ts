@@ -1,24 +1,3 @@
-// @awa-component: GEN-ConflictResolver
-// @awa-component: GEN-DeleteResolver
-// @awa-impl: CLI-5_AC-2
-// @awa-impl: CLI-5_AC-3
-// @awa-impl: GEN-4_AC-1
-// @awa-impl: GEN-4_AC-2
-// @awa-impl: GEN-4_AC-3
-// @awa-impl: GEN-5_AC-1
-// @awa-impl: GEN-5_AC-2
-// @awa-impl: GEN-5_AC-3
-// @awa-impl: GEN-5_AC-4
-// @awa-impl: GEN-5_AC-5
-// @awa-impl: GEN-5_AC-6
-// @awa-impl: GEN-5_AC-7
-// @awa-impl: GEN-6_AC-3
-// @awa-impl: GEN-10_AC-3
-// @awa-impl: GEN-12_AC-3
-// @awa-impl: GEN-12_AC-4
-// @awa-impl: GEN-12_AC-5
-// @awa-impl: CLI-12_AC-3
-
 import { MultiSelectPrompt } from '@clack/core';
 import { isCancel, multiselect } from '@clack/prompts';
 import chalk from 'chalk';
@@ -112,11 +91,13 @@ async function deleteMultiselect(opts: {
   }).prompt() as Promise<string[] | symbol>;
 }
 
+// @awa-component: GEN-ConflictResolver
 export class ConflictResolver {
   // @awa-impl: GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3
   // @awa-impl: GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7
-  // @awa-impl: CLI-5_AC-2, CLI-5_AC-3
-  // @awa-impl: GEN-6_AC-3
+  // @awa-impl: CLI-5_AC-2, CLI-5_AC-3, CLI-12_AC-3
+  // @awa-impl: GEN-6_AC-3, GEN-10_AC-3
+  // @awa-impl: GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
   async resolveBatch(
     conflicts: ConflictItem[],
     force: boolean,
@@ -186,11 +167,17 @@ export class ConflictResolver {
 
 export const conflictResolver = new ConflictResolver();
 
+// @awa-component: GEN-DeleteResolver
 export class DeleteResolver {
   /**
    * Prompt user to confirm which files to delete.
    * Returns the list of absolute paths confirmed for deletion.
    */
+  // @awa-impl: GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, CLI-12_AC-3
+  // @awa-impl: CLI-5_AC-2, CLI-5_AC-3
+  // @awa-impl: GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3
+  // @awa-impl: GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7
+  // @awa-impl: GEN-6_AC-3, GEN-10_AC-3
   async resolveDeletes(candidates: string[], force: boolean, dryRun: boolean): Promise<string[]> {
     if (candidates.length === 0) {
       return [];

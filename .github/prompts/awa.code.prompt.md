@@ -43,18 +43,18 @@ You MUST add these markers to create explicit traces:
 ```
 // @awa-component: {CODE}-{ComponentName}
 ```
-Place at the top of each file/module that implements a design component.
+Place directly before the code that implements a design component, and before associated tests.
 
 ```
 // @awa-impl: {CODE}-{n}[.{p}]_AC-{m}
 ```
-Place above code that satisfies an acceptance criterion. Multiple markers allowed per block.
+Place directly before the code that satisfies an acceptance criterion. Multiple markers allowed per block.
 
 ```
 // @awa-test: {CODE}_P-{n}
 // @awa-test: {CODE}-{n}[.{p}]_AC-{m}
 ```
-Place above tests. Use P- for property-based tests, AC- for direct acceptance tests.
+Place directly before tests. Use P- for property-based tests, AC- for direct acceptance tests.
 
 ## Implementation Process
 
@@ -77,12 +77,13 @@ Place above tests. Use P- for property-based tests, AC- for direct acceptance te
   - Start with bootstrapping, then types/interfaces, then core logic, then entry points
 
 5. FOR EACH COMPONENT
-  - Add @awa-component marker at file/module top
+  - Add @awa-component marker directly before component code
   - Implement interface as specified in DESIGN
   - Add @awa-impl marker above code satisfying each AC
   - One AC may require multiple @awa-impl markers across files
 
 6. FOR EACH TEST
+  - Add @awa-component marker directly before test code
   - Property tests (@awa-test: {CODE}_P-{n}): Use property-based testing framework
   - Acceptance tests (@awa-test: {CODE}-{n}[.{p}]_AC-{m}): Use example-based assertions
   - A single test may verify multiple ACs or properties

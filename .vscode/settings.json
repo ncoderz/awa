@@ -51,7 +51,9 @@
     "npx tsc": true,
     "npx tsx": true,
     "npx vitest": true,
-    "npx awa": true
+    "npx awa": true,
+    "uniq": true,
+    "npx tsup": true
   },
   "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python"
 }

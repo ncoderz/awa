@@ -1,12 +1,3 @@
-// @awa-component: MULTI-BatchRunner
-// @awa-component: MULTI-Reporter
-// @awa-impl: MULTI-4_AC-1
-// @awa-impl: MULTI-4_AC-2
-// @awa-impl: MULTI-5_AC-1
-// @awa-impl: MULTI-8_AC-1
-// @awa-impl: MULTI-9_AC-1
-// @awa-impl: MULTI-11_AC-1
-
 import {
   ConfigError,
   type FileConfig,
@@ -21,6 +12,9 @@ export interface BatchTargetResult {
   options: ResolvedOptions;
 }
 
+// @awa-component: MULTI-BatchRunner
+// @awa-impl: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1
+// @awa-impl: MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
 export class BatchRunner {
   // Resolve all targets or a single named target from config
   resolveTargets(
@@ -83,6 +77,9 @@ export class BatchRunner {
     return results;
   }
 
+  // @awa-component: MULTI-Reporter
+  // @awa-impl: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1
+  // @awa-impl: MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
   // Log a message prefixed with target name
   logForTarget(targetName: string, message: string): void {
     logger.info(`[${targetName}] ${message}`);

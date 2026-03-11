@@ -16,7 +16,7 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { checkCodeAgainstSpec } from '../code-spec-checker.js';
+import { checkCodeAgainstSpec, buildComponentAttribution } from '../code-spec-checker.js';
 import type { CheckConfig, CodeMarker, MarkerScanResult, SpecParseResult } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';
 
@@ -447,5 +447,209 @@ describe('CodeSpecChecker', () => {
     const implNotImpl = result.findings.filter((f) => f.code === 'implements-not-in-impl');
     expect(implNotIn).toHaveLength(0);
     expect(implNotImpl).toHaveLength(0);
+  });
+
+  // @awa-test: CLI-37_AC-1
+  test('multi-component file: positional scoping attributes impl to nearest preceding component', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 5 },
+      { type: 'component', id: 'CFG-Parser', filePath: 'src/loader.ts', line: 20 },
+      { type: 'impl', id: 'CFG-2_AC-1', filePath: 'src/loader.ts', line: 25 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader', 'CFG-Parser']),
+      allIds: new Set(['CFG-Loader', 'CFG-Parser', 'CFG-1_AC-1', 'CFG-2_AC-1']),
+      acIds: new Set(['CFG-1_AC-1', 'CFG-2_AC-1']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader', 'CFG-Parser'],
+          crossRefs: [
+            { type: 'implements', ids: ['CFG-1_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 10 },
+            { type: 'implements', ids: ['CFG-2_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 20 },
+          ],
+          componentImplements: new Map([
+            ['CFG-Loader', ['CFG-1_AC-1']],
+            ['CFG-Parser', ['CFG-2_AC-1']],
+          ]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    // No mismatches — each impl is correctly attributed to its component
+    const implNotIn = result.findings.filter((f) => f.code === 'impl-not-in-implements');
+    const implNotImpl = result.findings.filter((f) => f.code === 'implements-not-in-impl');
+    expect(implNotIn).toHaveLength(0);
+    expect(implNotImpl).toHaveLength(0);
+  });
+
+  // @awa-test: CLI-37_AC-1
+  test('multi-component file: reports error when impl attributed to wrong component by position', () => {
+    // Component B's impl appears after Component A (no Component B marker before it)
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 5 },
+      { type: 'impl', id: 'CFG-2_AC-1', filePath: 'src/loader.ts', line: 10 },
+      { type: 'component', id: 'CFG-Parser', filePath: 'src/loader.ts', line: 20 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader', 'CFG-Parser']),
+      allIds: new Set(['CFG-Loader', 'CFG-Parser', 'CFG-1_AC-1', 'CFG-2_AC-1']),
+      acIds: new Set(['CFG-1_AC-1', 'CFG-2_AC-1']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader', 'CFG-Parser'],
+          crossRefs: [
+            { type: 'implements', ids: ['CFG-1_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 10 },
+            { type: 'implements', ids: ['CFG-2_AC-1'], filePath: 'specs/DESIGN-CFG.md', line: 20 },
+          ],
+          componentImplements: new Map([
+            ['CFG-Loader', ['CFG-1_AC-1']],
+            ['CFG-Parser', ['CFG-2_AC-1']],
+          ]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    // CFG-2_AC-1 is positionally under CFG-Loader, not CFG-Parser
+    const implNotIn = result.findings.filter((f) => f.code === 'impl-not-in-implements');
+    expect(implNotIn).toHaveLength(1);
+    expect(implNotIn[0]).toMatchObject({ id: 'CFG-2_AC-1' });
+
+    // CFG-Parser has no impls attributed to it
+    const implNotImpl = result.findings.filter((f) => f.code === 'implements-not-in-impl');
+    expect(implNotImpl).toHaveLength(1);
+    expect(implNotImpl[0]).toMatchObject({ id: 'CFG-2_AC-1' });
+  });
+
+  // @awa-test: CLI-37_AC-1
+  test('impl/test markers interleaved with component markers are scoped correctly', () => {
+    const markers = makeMarkers([
+      { type: 'component', id: 'CFG-Loader', filePath: 'src/loader.ts', line: 1 },
+      { type: 'impl', id: 'CFG-1_AC-1', filePath: 'src/loader.ts', line: 3 },
+      { type: 'impl', id: 'CFG-1_AC-2', filePath: 'src/loader.ts', line: 10 },
+      { type: 'component', id: 'CFG-Parser', filePath: 'src/loader.ts', line: 20 },
+      { type: 'impl', id: 'CFG-2_AC-1', filePath: 'src/loader.ts', line: 22 },
+      { type: 'impl', id: 'CFG-2_AC-2', filePath: 'src/loader.ts', line: 30 },
+    ]);
+    const specs = makeSpecs({
+      componentNames: new Set(['CFG-Loader', 'CFG-Parser']),
+      allIds: new Set(['CFG-Loader', 'CFG-Parser', 'CFG-1_AC-1', 'CFG-1_AC-2', 'CFG-2_AC-1', 'CFG-2_AC-2']),
+      acIds: new Set(['CFG-1_AC-1', 'CFG-1_AC-2', 'CFG-2_AC-1', 'CFG-2_AC-2']),
+      specFiles: [
+        {
+          filePath: 'specs/DESIGN-CFG.md',
+          code: 'CFG',
+          requirementIds: [],
+          acIds: [],
+          propertyIds: [],
+          componentNames: ['CFG-Loader', 'CFG-Parser'],
+          crossRefs: [],
+          componentImplements: new Map([
+            ['CFG-Loader', ['CFG-1_AC-1', 'CFG-1_AC-2']],
+            ['CFG-Parser', ['CFG-2_AC-1', 'CFG-2_AC-2']],
+          ]),
+        },
+      ],
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig());
+
+    const implNotIn = result.findings.filter((f) => f.code === 'impl-not-in-implements');
+    const implNotImpl = result.findings.filter((f) => f.code === 'implements-not-in-impl');
+    expect(implNotIn).toHaveLength(0);
+    expect(implNotImpl).toHaveLength(0);
+  });
+});
+
+describe('buildComponentAttribution', () => {
+  test('single-component file attributes all impls to that component', () => {
+    const markers: CodeMarker[] = [
+      { type: 'component', id: 'COMP-A', filePath: 'src/a.ts', line: 1 },
+      { type: 'impl', id: 'A-1_AC-1', filePath: 'src/a.ts', line: 5 },
+      { type: 'impl', id: 'A-1_AC-2', filePath: 'src/a.ts', line: 10 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    expect(result.get('COMP-A')).toEqual(new Set(['A-1_AC-1', 'A-1_AC-2']));
+  });
+
+  test('multi-component file with positional scoping', () => {
+    const markers: CodeMarker[] = [
+      { type: 'component', id: 'COMP-A', filePath: 'src/a.ts', line: 1 },
+      { type: 'impl', id: 'A-1_AC-1', filePath: 'src/a.ts', line: 5 },
+      { type: 'component', id: 'COMP-B', filePath: 'src/a.ts', line: 20 },
+      { type: 'impl', id: 'B-1_AC-1', filePath: 'src/a.ts', line: 25 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    expect(result.get('COMP-A')).toEqual(new Set(['A-1_AC-1']));
+    expect(result.get('COMP-B')).toEqual(new Set(['B-1_AC-1']));
+  });
+
+  test('impl before any component is not attributed', () => {
+    const markers: CodeMarker[] = [
+      { type: 'impl', id: 'X-1_AC-1', filePath: 'src/a.ts', line: 1 },
+      { type: 'component', id: 'COMP-A', filePath: 'src/a.ts', line: 10 },
+      { type: 'impl', id: 'A-1_AC-1', filePath: 'src/a.ts', line: 15 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    // X-1_AC-1 is not attributed to any component
+    expect(result.get('COMP-A')).toEqual(new Set(['A-1_AC-1']));
+  });
+
+  test('test markers are attributed like impl markers', () => {
+    const markers: CodeMarker[] = [
+      { type: 'component', id: 'COMP-A', filePath: 'test/a.ts', line: 1 },
+      { type: 'test', id: 'A_P-1', filePath: 'test/a.ts', line: 5 },
+      { type: 'component', id: 'COMP-B', filePath: 'test/a.ts', line: 20 },
+      { type: 'test', id: 'B_P-1', filePath: 'test/a.ts', line: 25 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    expect(result.get('COMP-A')).toEqual(new Set(['A_P-1']));
+    expect(result.get('COMP-B')).toEqual(new Set(['B_P-1']));
+  });
+
+  test('markers across separate files are scoped independently', () => {
+    const markers: CodeMarker[] = [
+      { type: 'component', id: 'COMP-A', filePath: 'src/a.ts', line: 1 },
+      { type: 'impl', id: 'A-1_AC-1', filePath: 'src/a.ts', line: 5 },
+      { type: 'component', id: 'COMP-A', filePath: 'src/b.ts', line: 1 },
+      { type: 'impl', id: 'A-2_AC-1', filePath: 'src/b.ts', line: 5 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    expect(result.get('COMP-A')).toEqual(new Set(['A-1_AC-1', 'A-2_AC-1']));
+  });
+
+  test('component with no following markers gets empty set', () => {
+    const markers: CodeMarker[] = [
+      { type: 'component', id: 'COMP-A', filePath: 'src/a.ts', line: 1 },
+    ];
+
+    const result = buildComponentAttribution(markers);
+
+    expect(result.get('COMP-A')).toEqual(new Set());
   });
 });

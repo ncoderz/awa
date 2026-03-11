@@ -12,10 +12,56 @@
 import type {
   CheckConfig,
   CheckResult,
+  CodeMarker,
   Finding,
   MarkerScanResult,
   SpecParseResult,
 } from './types.js';
+
+/**
+ * Build a map of component → Set<impl/test marker IDs> using positional scoping.
+ * Each @awa-impl or @awa-test is attributed to the nearest preceding @awa-component
+ * in the same file by line number.
+ */
+export function buildComponentAttribution(
+  markers: readonly CodeMarker[],
+): Map<string, Set<string>> {
+  const result = new Map<string, Set<string>>();
+
+  // Ensure every component gets an entry (even if no impl/test follows it)
+  for (const m of markers) {
+    if (m.type === 'component' && !result.has(m.id)) {
+      result.set(m.id, new Set());
+    }
+  }
+
+  // Group markers by file
+  const byFile = new Map<string, CodeMarker[]>();
+  for (const m of markers) {
+    const list = byFile.get(m.filePath) ?? [];
+    list.push(m);
+    byFile.set(m.filePath, list);
+  }
+
+  for (const fileMarkers of byFile.values()) {
+    // Sort by line within each file
+    const sorted = [...fileMarkers].sort((a, b) => a.line - b.line);
+    let activeComponent: string | null = null;
+
+    for (const m of sorted) {
+      if (m.type === 'component') {
+        activeComponent = m.id;
+      } else {
+        // impl or test — attribute to nearest preceding component
+        if (activeComponent) {
+          result.get(activeComponent)?.add(m.id);
+        }
+      }
+    }
+  }
+
+  return result;
+}
 
 // @awa-impl: CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1
 export function checkCodeAgainstSpec(
@@ -158,36 +204,9 @@ export function checkCodeAgainstSpec(
 
   // @awa-impl: CLI-37_AC-1
   // G1: Check IMPLEMENTS ↔ @awa-impl consistency
-  // For each @awa-component marker in code, compare the set of @awa-impl IDs
-  // in the same file against the DESIGN component's IMPLEMENTS list
-  const componentFiles = new Map<string, Set<string>>();
-  for (const marker of markers.markers) {
-    if (marker.type === 'component') {
-      if (!componentFiles.has(marker.id)) {
-        componentFiles.set(marker.id, new Set());
-      }
-    }
-  }
-  // Collect all @awa-impl IDs per component (by file co-location)
-  // A file's component is determined by @awa-component markers in that file
-  const fileToComponents = new Map<string, string[]>();
-  for (const marker of markers.markers) {
-    if (marker.type === 'component') {
-      const existing = fileToComponents.get(marker.filePath) ?? [];
-      existing.push(marker.id);
-      fileToComponents.set(marker.filePath, existing);
-    }
-  }
-  for (const marker of markers.markers) {
-    if (marker.type === 'impl') {
-      const components = fileToComponents.get(marker.filePath);
-      if (components) {
-        for (const comp of components) {
-          componentFiles.get(comp)?.add(marker.id);
-        }
-      }
-    }
-  }
+  // Use positional scoping: each @awa-impl is attributed to
+  // the nearest preceding @awa-component in the same file
+  const componentFiles = buildComponentAttribution(markers.markers);
 
   // Build the IMPLEMENTS set per component from all DESIGN spec files
   const designImplements = new Map<string, Set<string>>();
