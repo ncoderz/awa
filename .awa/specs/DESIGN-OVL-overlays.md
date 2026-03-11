@@ -80,7 +80,7 @@ overlay directory on top in order. Because `fs.cp` defaults to `force: true`,
 overlay files replace any base (or earlier-overlay) file at the same relative
 path. Files only in the base or an earlier overlay are left intact.
 
-IMPLEMENTS: OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
+IMPLEMENTS: OVL_P-1, OVL_P-2, OVL_P-3, OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
 
 ```typescript
 async function buildMergedDir(
@@ -261,6 +261,9 @@ Test generate and diff commands with mocked overlay module.
 
 ### REQ-OVL-overlays.md
 
+- OVL_P-1 → OVL-MergedTemplateView
+- OVL_P-2 → OVL-MergedTemplateView
+- OVL_P-3 → OVL-MergedTemplateView
 - OVL-1_AC-1 → OVL-OverlayResolver
 - OVL-1_AC-1 → OVL-MergedTemplateView
 - OVL-1_AC-1 → CLI-ArgumentParser

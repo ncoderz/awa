@@ -41,7 +41,7 @@ src/
 
 Detects template source type (local vs Git), fetches remote templates to cache, and returns a resolved local path.
 
-IMPLEMENTS: CLI-3_AC-2, CLI-3_AC-3, CLI-8_AC-2, TPL-1_AC-1, TPL-1_AC-2, TPL-1_AC-3, TPL-1_AC-4, TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6, TPL-3_AC-1, TPL-3_AC-2, TPL-3_AC-3, TPL-3_AC-4, TPL-10_AC-1, TPL-10_AC-2, TPL-10_AC-3
+IMPLEMENTS: CLI-3_AC-1, CLI-3_AC-2, CLI-3_AC-3, CLI-8_AC-2, TPL_P-3, TPL_P-4, TPL-1_AC-1, TPL-1_AC-2, TPL-1_AC-3, TPL-1_AC-4, TPL-2_AC-1, TPL-2_AC-2, TPL-2_AC-3, TPL-2_AC-4, TPL-2_AC-5, TPL-2_AC-6, TPL-3_AC-1, TPL-3_AC-2, TPL-3_AC-3, TPL-3_AC-4, TPL-9_AC-1, TPL-9_AC-2, TPL-10_AC-1, TPL-10_AC-2, TPL-10_AC-3
 
 ```typescript
 type TemplateSourceType = 'local' | 'git' | 'bundled';
@@ -63,7 +63,7 @@ interface TemplateResolver {
 
 Wraps Eta for template rendering. Loads templates, provides feature flag context, handles empty output detection, and supports partials.
 
-IMPLEMENTS: TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4, TPL-5_AC-1, TPL-5_AC-2, TPL-5_AC-3, TPL-6_AC-1, TPL-6_AC-2, TPL-7_AC-1, TPL-7_AC-2, TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4, TPL-11_AC-1, TPL-11_AC-2
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, TPL_P-1, TPL_P-2, TPL-4_AC-1, TPL-4_AC-2, TPL-4_AC-3, TPL-4_AC-4, TPL-5_AC-1, TPL-5_AC-2, TPL-5_AC-3, TPL-6_AC-1, TPL-6_AC-2, TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3, TPL-8_AC-1, TPL-8_AC-2, TPL-8_AC-3, TPL-8_AC-4, TPL-11_AC-1, TPL-11_AC-2
 
 ```typescript
 interface TemplateContext {
@@ -143,12 +143,21 @@ PRINCIPLES:
 
 ### REQ-CLI-cli.md
 
+- CLI-3_AC-1 → TPL-TemplateResolver
 - CLI-3_AC-2 → TPL-TemplateResolver
 - CLI-3_AC-3 → TPL-TemplateResolver
 - CLI-8_AC-2 → TPL-TemplateResolver
+- CLI-16_AC-2 → TPL-TemplateEngine
+- CLI-16_AC-3 → TPL-TemplateEngine
+- CLI-20_AC-2 → TPL-TemplateEngine
+- CLI-20_AC-3 → TPL-TemplateEngine
 
 ### REQ-TPL-templates.md
 
+- TPL_P-1 → TPL-TemplateEngine
+- TPL_P-2 → TPL-TemplateEngine
+- TPL_P-3 → TPL-TemplateResolver
+- TPL_P-4 → TPL-TemplateResolver
 - TPL-1_AC-1 → TPL-TemplateResolver
 - TPL-1_AC-2 → TPL-TemplateResolver
 - TPL-1_AC-3 → TPL-TemplateResolver
@@ -174,10 +183,13 @@ PRINCIPLES:
 - TPL-6_AC-2 → TPL-TemplateEngine
 - TPL-7_AC-1 → TPL-TemplateEngine (TPL_P-1)
 - TPL-7_AC-2 → TPL-TemplateEngine (TPL_P-2)
+- TPL-7_AC-3 → TPL-TemplateEngine
 - TPL-8_AC-1 → TPL-TemplateEngine
 - TPL-8_AC-2 → TPL-TemplateEngine
 - TPL-8_AC-3 → TPL-TemplateEngine
 - TPL-8_AC-4 → TPL-TemplateEngine
+- TPL-9_AC-1 → TPL-TemplateResolver
+- TPL-9_AC-2 → TPL-TemplateResolver
 - TPL-10_AC-1 → TPL-TemplateResolver
 - TPL-10_AC-2 → TPL-TemplateResolver
 - TPL-10_AC-3 → TPL-TemplateResolver

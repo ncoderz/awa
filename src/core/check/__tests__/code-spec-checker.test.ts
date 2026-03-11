@@ -16,7 +16,7 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { checkCodeAgainstSpec, buildComponentAttribution } from '../code-spec-checker.js';
+import { buildComponentAttribution, checkCodeAgainstSpec } from '../code-spec-checker.js';
 import type { CheckConfig, CodeMarker, MarkerScanResult, SpecParseResult } from '../types.js';
 import { DEFAULT_CHECK_CONFIG } from '../types.js';
 
@@ -548,7 +548,14 @@ describe('CodeSpecChecker', () => {
     ]);
     const specs = makeSpecs({
       componentNames: new Set(['CFG-Loader', 'CFG-Parser']),
-      allIds: new Set(['CFG-Loader', 'CFG-Parser', 'CFG-1_AC-1', 'CFG-1_AC-2', 'CFG-2_AC-1', 'CFG-2_AC-2']),
+      allIds: new Set([
+        'CFG-Loader',
+        'CFG-Parser',
+        'CFG-1_AC-1',
+        'CFG-1_AC-2',
+        'CFG-2_AC-1',
+        'CFG-2_AC-2',
+      ]),
       acIds: new Set(['CFG-1_AC-1', 'CFG-1_AC-2', 'CFG-2_AC-1', 'CFG-2_AC-2']),
       specFiles: [
         {
