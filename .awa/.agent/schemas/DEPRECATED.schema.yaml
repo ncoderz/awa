@@ -3,12 +3,10 @@ target-files: ".awa/specs/deprecated/DEPRECATED.md"
 description: >
   Tombstone file for deprecated requirements, acceptance criteria, properties,
   and components. Contains only bare IDs grouped by feature code. No natural
-  language descriptions, user stories, or design detail — this prevents
-  deprecated content from influencing LLM context.
+  language descriptions, user stories, or design detail
 line-limit: 800
 
 sections:
-  # One H1 per feature code
   - heading: "[A-Z][A-Z0-9]*"
     level: 1
     repeatable: true
@@ -21,6 +19,7 @@ sections:
       or component names.
 
 sections-prohibited:
+  - "**"
   - "AS A"
   - "I WANT"
   - "SO THAT"

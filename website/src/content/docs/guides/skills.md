@@ -175,7 +175,7 @@ Answer questions about awa itself — how to use it, configure it, or understand
 
 ## Spec Management Skills
 
-### spec-tidy
+### awa-spec-tidy
 
 Reorganize specifications logically — reorder sections, fix numbering, clean up structure without changing meaning.
 
@@ -184,7 +184,7 @@ Reorganize specifications logically — reorder sections, fix numbering, clean u
 /awa.spec-tidy Reorganize the requirements by topic.
 ```
 
-### spec-merge
+### awa-spec-merge
 
 Merge two feature codes into one — combines spec files, recodes traceability IDs, and cleans up. Uses [`awa spec merge`](/reference/cli/#awa-spec-merge-source-target) under the hood.
 
@@ -193,11 +193,11 @@ Merge two feature codes into one — combines spec files, recodes traceability I
 /awa.spec-merge Combine SRC and TGT feature codes.
 ```
 
-### awa-deprecate
+### awa-spec-deprecate
 
 Retire requirement IDs by moving them to the tombstone file (`DEPRECATED.md`). Removes traceability markers from code and cleans up spec references.
 
 ```
-/awa.deprecate Deprecate DIFF-3 and DIFF-4 — they're no longer needed.
-/awa.deprecate Retire the old authentication requirements.
+/awa.spec-deprecate Deprecate DIFF-3 and DIFF-4 — they're no longer needed.
+/awa.spec-deprecate Retire the old authentication requirements.
 ```

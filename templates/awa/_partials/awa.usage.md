@@ -27,15 +27,18 @@ All spec artifacts live in `.awa/`:
     │       ├── API.schema.yaml
     │       ├── TASK.schema.yaml
     │       ├── PLAN.schema.yaml
-    │       ├── README.schema.yaml
-    │       └── ALIGN_REPORT.schema.yaml
+    │       ├── DEPRECATED.schema.yaml
+    │       ├── ALIGN_REPORT.schema.yaml
+    │       └── README.schema.yaml
     ├── specs/
     │   ├── ARCHITECTURE.md                # System overview
     │   ├── FEAT-{CODE}-*.md               # Feature context and motivation
     │   ├── EXAMPLE-{CODE}-*-{nnn}.md     # Usage examples per feature
     │   ├── REQ-{CODE}-*.md                # Requirements (EARS format)
     │   ├── DESIGN-{CODE}-*.md             # Design and components
-    │   └── API-{CODE}-*.tsp               # TypeSpec API definitions
+    │   ├── API-{CODE}-*.tsp               # TypeSpec API definitions
+    │   └── deprecated/
+    │       └── DEPRECATED.md              # Tombstone file for retired spec IDs
     ├── tasks/
     │   └── TASK-{CODE}-*-{nnn}.md         # Implementation steps
     ├── plans/
@@ -58,10 +61,13 @@ All spec artifacts live in `.awa/`:
 | Tasks | `TASK-{CODE}-*-{nnn}.md` | Step-by-step implementation work items |
 | Code & Tests | Source files | Implementation with traceability markers |
 | Documentation | `README.md`, `docs/` | User-facing docs |
+| *(lateral)* | `EXAMPLE-{CODE}-*-{nnn}.md` | Concrete usage examples for a feature |
+| *(lateral)* | `API-{CODE}-*.tsp` | TypeSpec API definitions |
+| *(lateral)* | `PLAN-{nnn}-*.md` | Ad-hoc plans for vibe coding |
+| *(lateral)* | `ALIGN-{x}-WITH-{y}-{nnn}.md` | Alignment reports comparing artifacts |
+| *(lateral)* | `deprecated/DEPRECATED.md` | Tombstone for retired spec IDs |
 
-Lateral artifacts (produced at any stage): EXAMPLE, PLAN, ALIGN reports.
-
-The workflow is flexible. Start top-down (architecture → code), bottom-up (code → extract requirements), or lateral (docs, refactors, ad-hoc plans).
+The workflow is flexible. Start top-down (architecture → code), bottom-up (code → extract requirements), or lateral (docs, refactors, ad-hoc plans). Lateral artifacts can be produced at any stage.
 
 ## Traceability Chain
 
@@ -160,10 +166,11 @@ Check traceability chain integrity and spec schema conformance. Exit code 0 = cl
 | `--allow-warnings` | Allow warnings without failing |
 | `--spec-only` | Run only spec-level checks; skip code-to-spec traceability |
 | `--no-fix` | Skip auto-regeneration of Requirements Traceability sections and Feature Codes table |
+| `--deprecated` | Surface warnings for code markers and cross-references targeting deprecated IDs |
 
 Before running checks, `awa check` auto-regenerates Requirements Traceability sections in DESIGN and TASK files, and the Feature Codes table in ARCHITECTURE.md. Use `--no-fix` to skip this.
 
-Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `spec-only`, `id-pattern`, `cross-ref-patterns`.
+Checks performed: orphaned markers, uncovered ACs, broken cross-refs, invalid ID format, orphaned specs, schema validation. Config-only options: `schema-dir`, `schema-enabled`, `ignore-markers`, `id-pattern`, `cross-ref-patterns`, `extra-spec-globs`, `extra-spec-ignore`.
 
 ### awa trace
 
@@ -313,6 +320,8 @@ Create `.awa.toml` in the project root. CLI arguments always override config val
     markers = ["@awa-impl", "@awa-test", "@awa-component"]
     spec-ignore = []
     code-ignore = ["node_modules/**", "dist/**", "vendor/**", "target/**", "build/**", "out/**", ".awa/**"]
+    extra-spec-globs = [".awa/**/*"]        # additional spec globs for schema validation
+    extra-spec-ignore = [".awa/.agent/**"]  # patterns to exclude from extra spec scanning
     ignore-markers = []
     id-pattern = "..."                      # regex for valid traceability IDs
     cross-ref-patterns = ["IMPLEMENTS:", "VALIDATES:"]

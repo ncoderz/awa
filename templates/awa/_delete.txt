@@ -27,6 +27,60 @@
 # Old yaml schemas
 .awa/.agent/schemas/EXAMPLES.schema.yaml
 
+# Skills renamed from spec-* to awa-spec-*
+.github/prompts/awa.spec-merge.prompt.md
+.github/prompts/awa.spec-tidy.prompt.md
+.github/skills/spec-merge/SKILL.md
+.github/skills/spec-tidy/SKILL.md
+.claude/skills/spec-merge/SKILL.md
+.claude/skills/spec-tidy/SKILL.md
+.windsurf/skills/spec-merge/SKILL.md
+.windsurf/skills/spec-tidy/SKILL.md
+.kilocode/workflows/spec-merge.md
+.kilocode/workflows/spec-tidy.md
+.kilocode/skills/spec-merge/SKILL.md
+.kilocode/skills/spec-tidy/SKILL.md
+.opencode/commands/spec-merge.md
+.opencode/commands/spec-tidy.md
+.opencode/skills/spec-merge/SKILL.md
+.opencode/skills/spec-tidy/SKILL.md
+.gemini/commands/spec-merge.md
+.gemini/commands/spec-tidy.md
+.gemini/skills/spec-merge/SKILL.md
+.gemini/skills/spec-tidy/SKILL.md
+.qwen/commands/spec-merge.md
+.qwen/commands/spec-tidy.md
+.qwen/skills/spec-merge/SKILL.md
+.qwen/skills/spec-tidy/SKILL.md
+.roo/skills/spec-merge/SKILL.md
+.roo/skills/spec-tidy/SKILL.md
+.agents/skills/spec-merge/SKILL.md
+.agents/skills/spec-tidy/SKILL.md
+.agent/workflows/spec-merge.md
+.agent/workflows/spec-tidy.md
+.agent/skills/spec-merge/SKILL.md
+.agent/skills/spec-tidy/SKILL.md
+
+# Skill renamed from awa-deprecate to awa-spec-deprecate
+.github/prompts/awa.deprecate.prompt.md
+.github/skills/awa-deprecate/SKILL.md
+.claude/skills/awa-deprecate/SKILL.md
+.cursor/rules/awa-deprecate.md
+.windsurf/skills/awa-deprecate/SKILL.md
+.kilocode/workflows/awa-deprecate.md
+.kilocode/skills/awa-deprecate/SKILL.md
+.opencode/commands/awa-deprecate.md
+.opencode/skills/awa-deprecate/SKILL.md
+.gemini/commands/awa-deprecate.md
+.gemini/skills/awa-deprecate/SKILL.md
+.qwen/commands/awa-deprecate.md
+.qwen/skills/awa-deprecate/SKILL.md
+.roo/skills/awa-deprecate/SKILL.md
+.codex/prompts/awa-deprecate.md
+.agents/skills/awa-deprecate/SKILL.md
+.agent/workflows/awa-deprecate.md
+.agent/skills/awa-deprecate/SKILL.md
+
 
 # @feature copilot
 .github/agents/awa.agent.md
@@ -44,7 +98,9 @@
 .github/prompts/awa.upgrade.prompt.md
 .github/prompts/awa.align.prompt.md
 .github/prompts/awa.check.prompt.md
-.github/prompts/awa.deprecate.prompt.md
+.github/prompts/awa.spec-deprecate.prompt.md
+.github/prompts/awa.spec-merge.prompt.md
+.github/prompts/awa.spec-tidy.prompt.md
 .github/prompts/awa.validate-alignment.prompt.md
 .github/prompts/awa.vibe.prompt.md
 .github/skills/awa-architecture/SKILL.md
@@ -61,7 +117,9 @@
 .github/skills/awa-upgrade/SKILL.md
 .github/skills/awa-align/SKILL.md
 .github/skills/awa-check/SKILL.md
-.github/skills/awa-deprecate/SKILL.md
+.github/skills/awa-spec-deprecate/SKILL.md
+.github/skills/awa-spec-merge/SKILL.md
+.github/skills/awa-spec-tidy/SKILL.md
 .github/skills/awa-validate-alignment/SKILL.md
 .github/skills/awa-vibe/SKILL.md
 
@@ -82,7 +140,9 @@ CLAUDE.md
 .claude/skills/awa-upgrade/SKILL.md
 .claude/skills/awa-align/SKILL.md
 .claude/skills/awa-check/SKILL.md
-.claude/skills/awa-deprecate/SKILL.md
+.claude/skills/awa-spec-deprecate/SKILL.md
+.claude/skills/awa-spec-merge/SKILL.md
+.claude/skills/awa-spec-tidy/SKILL.md
 .claude/skills/awa-validate-alignment/SKILL.md
 .claude/skills/awa-vibe/SKILL.md
 
@@ -102,7 +162,9 @@ CLAUDE.md
 .cursor/rules/awa-upgrade.md
 .cursor/rules/awa-align.md
 .cursor/rules/awa-check.md
-.cursor/rules/awa-deprecate.md
+.cursor/rules/awa-spec-deprecate.md
+.cursor/rules/awa-spec-merge.md
+.cursor/rules/awa-spec-tidy.md
 .cursor/rules/awa-validate-alignment.md
 .cursor/rules/awa-vibe.md
 
@@ -122,7 +184,9 @@ CLAUDE.md
 .windsurf/skills/awa-upgrade/SKILL.md
 .windsurf/skills/awa-align/SKILL.md
 .windsurf/skills/awa-check/SKILL.md
-.windsurf/skills/awa-deprecate/SKILL.md
+.windsurf/skills/awa-spec-deprecate/SKILL.md
+.windsurf/skills/awa-spec-merge/SKILL.md
+.windsurf/skills/awa-spec-tidy/SKILL.md
 .windsurf/skills/awa-validate-alignment/SKILL.md
 .windsurf/skills/awa-vibe/SKILL.md
 
@@ -142,7 +206,9 @@ CLAUDE.md
 .kilocode/workflows/awa-upgrade.md
 .kilocode/workflows/awa-align.md
 .kilocode/workflows/awa-check.md
-.kilocode/workflows/awa-deprecate.md
+.kilocode/workflows/awa-spec-deprecate.md
+.kilocode/workflows/awa-spec-merge.md
+.kilocode/workflows/awa-spec-tidy.md
 .kilocode/workflows/awa-validate-alignment.md
 .kilocode/workflows/awa-vibe.md
 .kilocode/skills/awa-architecture/SKILL.md
@@ -159,7 +225,9 @@ CLAUDE.md
 .kilocode/skills/awa-upgrade/SKILL.md
 .kilocode/skills/awa-align/SKILL.md
 .kilocode/skills/awa-check/SKILL.md
-.kilocode/skills/awa-deprecate/SKILL.md
+.kilocode/skills/awa-spec-deprecate/SKILL.md
+.kilocode/skills/awa-spec-merge/SKILL.md
+.kilocode/skills/awa-spec-tidy/SKILL.md
 .kilocode/skills/awa-validate-alignment/SKILL.md
 .kilocode/skills/awa-vibe/SKILL.md
 
@@ -179,7 +247,9 @@ CLAUDE.md
 .opencode/commands/awa-upgrade.md
 .opencode/commands/awa-align.md
 .opencode/commands/awa-check.md
-.opencode/commands/awa-deprecate.md
+.opencode/commands/awa-spec-deprecate.md
+.opencode/commands/awa-spec-merge.md
+.opencode/commands/awa-spec-tidy.md
 .opencode/commands/awa-validate-alignment.md
 .opencode/commands/awa-vibe.md
 .opencode/skills/awa-architecture/SKILL.md
@@ -196,7 +266,9 @@ CLAUDE.md
 .opencode/skills/awa-upgrade/SKILL.md
 .opencode/skills/awa-align/SKILL.md
 .opencode/skills/awa-check/SKILL.md
-.opencode/skills/awa-deprecate/SKILL.md
+.opencode/skills/awa-spec-deprecate/SKILL.md
+.opencode/skills/awa-spec-merge/SKILL.md
+.opencode/skills/awa-spec-tidy/SKILL.md
 .opencode/skills/awa-validate-alignment/SKILL.md
 .opencode/skills/awa-vibe/SKILL.md
 
@@ -219,7 +291,9 @@ GEMINI.md
 .gemini/commands/awa-upgrade.md
 .gemini/commands/awa-align.md
 .gemini/commands/awa-check.md
-.gemini/commands/awa-deprecate.md
+.gemini/commands/awa-spec-deprecate.md
+.gemini/commands/awa-spec-merge.md
+.gemini/commands/awa-spec-tidy.md
 .gemini/commands/awa-validate-alignment.md
 .gemini/commands/awa-vibe.md
 .gemini/skills/awa-architecture/SKILL.md
@@ -236,7 +310,9 @@ GEMINI.md
 .gemini/skills/awa-upgrade/SKILL.md
 .gemini/skills/awa-align/SKILL.md
 .gemini/skills/awa-check/SKILL.md
-.gemini/skills/awa-deprecate/SKILL.md
+.gemini/skills/awa-spec-deprecate/SKILL.md
+.gemini/skills/awa-spec-merge/SKILL.md
+.gemini/skills/awa-spec-tidy/SKILL.md
 .gemini/skills/awa-validate-alignment/SKILL.md
 .gemini/skills/awa-vibe/SKILL.md
 
@@ -256,7 +332,9 @@ QWEN.md
 .qwen/commands/awa-upgrade.md
 .qwen/commands/awa-align.md
 .qwen/commands/awa-check.md
-.qwen/commands/awa-deprecate.md
+.qwen/commands/awa-spec-deprecate.md
+.qwen/commands/awa-spec-merge.md
+.qwen/commands/awa-spec-tidy.md
 .qwen/commands/awa-validate-alignment.md
 .qwen/commands/awa-vibe.md
 .qwen/skills/awa-architecture/SKILL.md
@@ -273,7 +351,9 @@ QWEN.md
 .qwen/skills/awa-upgrade/SKILL.md
 .qwen/skills/awa-align/SKILL.md
 .qwen/skills/awa-check/SKILL.md
-.qwen/skills/awa-deprecate/SKILL.md
+.qwen/skills/awa-spec-deprecate/SKILL.md
+.qwen/skills/awa-spec-merge/SKILL.md
+.qwen/skills/awa-spec-tidy/SKILL.md
 .qwen/skills/awa-validate-alignment/SKILL.md
 .qwen/skills/awa-vibe/SKILL.md
 
@@ -293,7 +373,9 @@ QWEN.md
 .roo/skills/awa-upgrade/SKILL.md
 .roo/skills/awa-align/SKILL.md
 .roo/skills/awa-check/SKILL.md
-.roo/skills/awa-deprecate/SKILL.md
+.roo/skills/awa-spec-deprecate/SKILL.md
+.roo/skills/awa-spec-merge/SKILL.md
+.roo/skills/awa-spec-tidy/SKILL.md
 .roo/skills/awa-validate-alignment/SKILL.md
 .roo/skills/awa-vibe/SKILL.md
 
@@ -312,7 +394,9 @@ QWEN.md
 .codex/prompts/awa-upgrade.md
 .codex/prompts/awa-align.md
 .codex/prompts/awa-check.md
-.codex/prompts/awa-deprecate.md
+.codex/prompts/awa-spec-deprecate.md
+.codex/prompts/awa-spec-merge.md
+.codex/prompts/awa-spec-tidy.md
 .codex/prompts/awa-validate-alignment.md
 .codex/prompts/awa-vibe.md
 .agents/skills/awa-architecture/SKILL.md
@@ -329,7 +413,9 @@ QWEN.md
 .agents/skills/awa-upgrade/SKILL.md
 .agents/skills/awa-align/SKILL.md
 .agents/skills/awa-check/SKILL.md
-.agents/skills/awa-deprecate/SKILL.md
+.agents/skills/awa-spec-deprecate/SKILL.md
+.agents/skills/awa-spec-merge/SKILL.md
+.agents/skills/awa-spec-tidy/SKILL.md
 .agents/skills/awa-validate-alignment/SKILL.md
 .agents/skills/awa-vibe/SKILL.md
 
@@ -348,7 +434,9 @@ QWEN.md
 .agent/workflows/awa-upgrade.md
 .agent/workflows/awa-align.md
 .agent/workflows/awa-check.md
-.agent/workflows/awa-deprecate.md
+.agent/workflows/awa-spec-deprecate.md
+.agent/workflows/awa-spec-merge.md
+.agent/workflows/awa-spec-tidy.md
 .agent/workflows/awa-validate-alignment.md
 .agent/workflows/awa-vibe.md
 .agent/skills/awa-architecture/SKILL.md
@@ -365,7 +453,9 @@ QWEN.md
 .agent/skills/awa-upgrade/SKILL.md
 .agent/skills/awa-align/SKILL.md
 .agent/skills/awa-check/SKILL.md
-.agent/skills/awa-deprecate/SKILL.md
+.agent/skills/awa-spec-deprecate/SKILL.md
+.agent/skills/awa-spec-merge/SKILL.md
+.agent/skills/awa-spec-tidy/SKILL.md
 .agent/skills/awa-validate-alignment/SKILL.md
 .agent/skills/awa-vibe/SKILL.md
 

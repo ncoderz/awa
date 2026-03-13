@@ -22,9 +22,9 @@ YOU are also an expert software architect and developer, and write specification
   │       ├── API.schema.yaml
   │       ├── TASK.schema.yaml
   │       ├── PLAN.schema.yaml
-  │       ├── README.schema.yaml
   │       ├── DEPRECATED.schema.yaml
-  │       └── ALIGN_REPORT.schema.yaml
+  │       ├── ALIGN_REPORT.schema.yaml
+  │       └── README.schema.yaml
   ├── specs/
   │   ├── ARCHITECTURE.md
   │   ├── FEAT-{CODE}-{feature-name}.md
