@@ -28,6 +28,7 @@ Run `awa spec codes` for the live inventory. The table below defines scope bound
 |------|---------|----------------|
 | CFG | config | TOML config file parsing, CLI override merging, preset definitions, feature resolution. |
 | CLI | cli | Top-level CLI argument parsing, option definitions, help output. Traceability validation — spec schemas, marker scann... |
+| DEP | deprecated | Deprecated ID registration, ID reservation enforcement, and optional deprecated-reference warnings during check. |
 | DIFF | diff | Template-vs-target comparison, unified diff output, exit codes. |
 | DISC | feature-discovery | Scanning templates for feature flags; reporting available flags and presets. |
 | GEN | generation | File generation from templates — conflict resolution, dry-run, force, delete list, init alias convenience command. |

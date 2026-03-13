@@ -242,6 +242,11 @@ program
     '--no-fix',
     'Skip regeneration of Requirements Traceability sections in DESIGN and TASK files',
   )
+  .option(
+    '--deprecated',
+    'Surface warnings for code markers and cross-references targeting deprecated IDs',
+    false,
+  )
   .action(async (options, command: Command) => {
     const cliOptions: RawCheckOptions = {
       config: cliProvidedOption<string>(command, options, 'config'),
@@ -253,6 +258,7 @@ program
       allowWarnings: cliProvidedOption<boolean>(command, options, 'allowWarnings'),
       specOnly: cliProvidedOption<boolean>(command, options, 'specOnly'),
       fix: cliProvidedOption<boolean>(command, options, 'fix'),
+      deprecated: cliProvidedOption<boolean>(command, options, 'deprecated'),
     };
 
     const exitCode = await checkCommand(cliOptions);

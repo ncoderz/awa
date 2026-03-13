@@ -941,4 +941,138 @@ test('works', () => {});
     // Should fail since line-limit warnings are promoted to errors by default
     expect(exitCode).toBe(1);
   });
+
+  // @awa-test: DEP-6_AC-1
+  // @awa-test: DEP-6_AC-4
+  describe('deprecated file integration', () => {
+    // @awa-test: DEP-6_AC-1
+    test('check with deprecated file present and no --deprecated works silently', async () => {
+      // Create a deprecated file and a code file referencing a deprecated ID
+      const deprecatedDir = join(specDir, 'deprecated');
+      await mkdir(deprecatedDir, { recursive: true });
+      await writeFile(
+        join(deprecatedDir, 'DEPRECATED.md'),
+        `# OLD
+
+OLD-1
+OLD-1_AC-1
+`,
+      );
+
+      // @awa-ignore-start
+      await writeFile(
+        join(codeDir, 'legacy.ts'),
+        `// @awa-impl: OLD-1_AC-1
+export function legacy() {}
+`,
+      );
+      // @awa-ignore-end
+
+      await checkCommand({
+        config: undefined,
+        format: 'json',
+      });
+
+      // Should not report orphaned-marker for the deprecated ID
+      const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+        .map((c: unknown[]) => c[0])
+        .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+      if (jsonOutput) {
+        const parsed = JSON.parse(jsonOutput as string);
+        const orphaned = parsed.findings.filter(
+          (f: { code: string; id: string }) =>
+            f.code === 'orphaned-marker' && f.id === 'OLD-1_AC-1',
+        );
+        expect(orphaned).toHaveLength(0);
+      }
+    });
+
+    // @awa-test: DEP-6_AC-4
+    test('check with --deprecated flag surfaces deprecated-ref warnings as errors', async () => {
+      const deprecatedDir = join(specDir, 'deprecated');
+      await mkdir(deprecatedDir, { recursive: true });
+      await writeFile(
+        join(deprecatedDir, 'DEPRECATED.md'),
+        `# OLD
+
+OLD-1
+OLD-1_AC-1
+`,
+      );
+
+      // @awa-ignore-start
+      await writeFile(
+        join(codeDir, 'legacy.ts'),
+        `// @awa-impl: OLD-1_AC-1
+export function legacy() {}
+`,
+      );
+      // @awa-ignore-end
+
+      const exitCode = await checkCommand({
+        config: undefined,
+        format: 'json',
+        deprecated: true,
+      });
+
+      // should fail because deprecated-ref warnings are promoted to errors
+      expect(exitCode).toBe(1);
+
+      const jsonOutput = (console.log as ReturnType<typeof vi.fn>).mock.calls
+        .map((c: unknown[]) => c[0])
+        .find((s: unknown) => typeof s === 'string' && s.includes('"findings"'));
+      expect(jsonOutput).toBeDefined();
+      const parsed = JSON.parse(jsonOutput as string);
+      const depRef = parsed.findings.filter((f: { code: string }) => f.code === 'deprecated-ref');
+      expect(depRef.length).toBeGreaterThan(0);
+    });
+
+    test('check without deprecated file behaves identically to before', async () => {
+      // No deprecated file exists; create a valid spec/code setup
+      await writeFile(
+        join(specDir, 'REQ-Z-z.md'),
+        `### Z-1: Feature [MUST]
+
+ACCEPTANCE CRITERIA
+
+- [ ] Z-1_AC-1 [event]: WHEN foo THEN bar
+`,
+      );
+      await writeFile(
+        join(specDir, 'DESIGN-Z-z.md'),
+        `### Z-Loader
+
+IMPLEMENTS: Z-1_AC-1
+
+## Correctness Properties
+
+- Z_P-1 [Prop]: Description
+  VALIDATES: Z-1_AC-1
+`,
+      );
+      // @awa-ignore-start
+      await writeFile(
+        join(codeDir, 'z.ts'),
+        `// @awa-component: Z-Loader
+// @awa-impl: Z-1_AC-1
+export function load() {}
+`,
+      );
+      await writeFile(
+        join(codeDir, 'z.test.ts'),
+        `// @awa-test: Z_P-1
+// @awa-test: Z-1_AC-1
+test('works', () => {});
+`,
+      );
+      // @awa-ignore-end
+
+      const exitCode = await checkCommand({
+        config: undefined,
+        format: 'json',
+      });
+
+      expect(exitCode).toBe(0);
+    });
+  });
 });

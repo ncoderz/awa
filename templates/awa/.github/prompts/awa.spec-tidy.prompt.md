@@ -3,5 +3,5 @@
 description: Tidy and reorganise the specifications logically
 ---
 
-<%~ include('_partials/awa.spec.tidy.md', it) %>
+<%~ include('_partials/awa.spec-tidy.md', it) %>
 <% } %>

@@ -3,6 +3,11 @@
 // @awa-impl: CLI-22_AC-1
 // @awa-impl: CLI-30_AC-1
 // @awa-impl: CLI-36_AC-1
+// @awa-impl: DEP-3_AC-1
+// @awa-impl: DEP-3_AC-4
+// @awa-impl: DEP-5_AC-2
+// @awa-impl: DEP-5_AC-3
+// @awa-impl: DEP-6_AC-3
 
 import type {
   CheckConfig,
@@ -13,19 +18,36 @@ import type {
 } from './types.js';
 
 // @awa-impl: CLI-20_AC-1, CLI-22_AC-1, CLI-36_AC-1
+// @awa-impl: DEP-3_AC-1, DEP-3_AC-4, DEP-5_AC-2, DEP-5_AC-3, DEP-6_AC-3
 export function checkSpecAgainstSpec(
   specs: SpecParseResult,
   markers: MarkerScanResult,
   config: CheckConfig,
+  deprecatedIds: ReadonlySet<string> = new Set(),
 ): CheckResult {
   const findings: Finding[] = [];
 
   // @awa-impl: CLI-20_AC-1
+  // @awa-impl: DEP-5_AC-2, DEP-5_AC-3, DEP-6_AC-3
   // Check cross-references resolve to real IDs
   for (const specFile of specs.specFiles) {
     for (const crossRef of specFile.crossRefs) {
       for (const refId of crossRef.ids) {
         if (!specs.allIds.has(refId)) {
+          // Check if it's a deprecated ID
+          if (deprecatedIds.has(refId)) {
+            if (config.deprecated) {
+              findings.push({
+                severity: 'warning',
+                code: 'deprecated-ref',
+                message: `Cross-reference '${refId}' (${crossRef.type}) targets a deprecated ID`,
+                filePath: crossRef.filePath,
+                line: crossRef.line,
+                id: refId,
+              });
+            }
+            continue;
+          }
           findings.push({
             severity: 'error',
             code: 'broken-cross-ref',
@@ -40,6 +62,7 @@ export function checkSpecAgainstSpec(
   }
 
   // @awa-impl: CLI-36_AC-1
+  // @awa-impl: DEP-3_AC-1, DEP-3_AC-4
   // G3: Check that every REQ AC is claimed by at least one DESIGN IMPLEMENTS
   const implementedAcIds = new Set<string>();
   for (const specFile of specs.specFiles) {
@@ -62,7 +85,22 @@ export function checkSpecAgainstSpec(
     }
   }
 
+  // Build set of deprecated requirement IDs (for suppressing their child ACs)
+  const deprecatedReqIds = new Set<string>();
+  for (const id of deprecatedIds) {
+    // Match requirement IDs: CODE-N or CODE-N.P (no _AC- or _P- suffix)
+    if (/^[A-Z][A-Z0-9]*-\d+(?:\.\d+)?$/.test(id)) {
+      deprecatedReqIds.add(id);
+    }
+  }
+
   for (const acId of reqAcIds) {
+    // Skip if the AC itself is deprecated
+    if (deprecatedIds.has(acId)) continue;
+    // Skip if the parent requirement is deprecated (e.g., FOO-1_AC-2 → parent FOO-1)
+    const parentMatch = /^([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)_AC-\d+$/.exec(acId);
+    if (parentMatch?.[1] && deprecatedReqIds.has(parentMatch[1])) continue;
+
     if (!implementedAcIds.has(acId)) {
       const loc = specs.idLocations.get(acId);
       findings.push({

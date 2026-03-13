@@ -62,6 +62,7 @@ describe('codesCommand', () => {
         allowWarnings: true,
         specOnly: false,
         fix: true,
+        deprecated: false,
       },
     });
 

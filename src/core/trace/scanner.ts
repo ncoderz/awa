@@ -53,6 +53,7 @@ export function buildScanConfig(
     allowWarnings: true,
     specOnly: false,
     fix: true,
+    deprecated: false,
     ...overrides,
   };
 }

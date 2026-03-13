@@ -78,6 +78,7 @@ awa check --config ./custom.toml       # custom config file
 awa check --allow-warnings             # warnings don't fail
 awa check --spec-only                  # skip code-to-spec traceability
 awa check --no-fix                     # skip auto-fix of traceability matrices
+awa check --deprecated                 # surface warnings for deprecated ID references
 ```
 
 | Option                       | Description                                                                          |
@@ -91,6 +92,7 @@ awa check --no-fix                     # skip auto-fix of traceability matrices
 | `--allow-warnings`           | Allow warnings without failing (default: warnings are treated as errors)             |
 | `--spec-only`                | Run only spec-level checks (schema and cross-refs); skip code-to-spec traceability   |
 | `--no-fix`                   | Skip auto-regeneration of Requirements Traceability sections and Feature Codes table |
+| `--deprecated`               | Surface warnings for code markers and cross-references targeting deprecated IDs      |
 
 The check command validates:
 
@@ -137,20 +139,22 @@ By default, warnings are treated as errors (exit code `1`). Use `--allow-warning
 
 #### Finding Codes
 
-| Code                     | Severity | Description                                                                 |
-| ------------------------ | -------- | --------------------------------------------------------------------------- |
-| `orphaned-marker`        | error    | `@awa-impl`, `@awa-test`, or `@awa-component` references an ID not in specs |
-| `uncovered-ac`           | warning  | Acceptance criterion has no corresponding `@awa-test`                       |
-| `broken-cross-ref`       | error    | IMPLEMENTS/VALIDATES points to non-existent requirement ID                  |
-| `invalid-id-format`      | warning  | Marker ID doesn't match the configured ID pattern                           |
-| `marker-trailing-text`   | error    | Marker contains trailing text after the ID(s)                               |
-| `orphaned-spec`          | warning  | Spec file's feature code not referenced by any marker or cross-ref          |
-| `schema-missing-section` | error    | Required section heading not found                                          |
-| `schema-wrong-level`     | warning  | Section exists but at wrong heading level                                   |
-| `schema-missing-content` | error    | Section missing required content                                            |
-| `schema-table-columns`   | error    | Table columns don't match expected headers                                  |
-| `schema-prohibited`      | warning  | Prohibited formatting pattern found outside code blocks                     |
-| `schema-line-limit`      | warning  | File exceeds the line limit defined in the rule                             |
+| Code                     | Severity | Description                                                                      |
+| ------------------------ | -------- | -------------------------------------------------------------------------------- |
+| `orphaned-marker`        | error    | `@awa-impl`, `@awa-test`, or `@awa-component` references an ID not in specs      |
+| `uncovered-ac`           | warning  | Acceptance criterion has no corresponding `@awa-test`                            |
+| `broken-cross-ref`       | error    | IMPLEMENTS/VALIDATES points to non-existent requirement ID                       |
+| `invalid-id-format`      | warning  | Marker ID doesn't match the configured ID pattern                                |
+| `marker-trailing-text`   | error    | Marker contains trailing text after the ID(s)                                    |
+| `orphaned-spec`          | warning  | Spec file's feature code not referenced by any marker or cross-ref               |
+| `schema-missing-section` | error    | Required section heading not found                                               |
+| `schema-wrong-level`     | warning  | Section exists but at wrong heading level                                        |
+| `schema-missing-content` | error    | Section missing required content                                                 |
+| `schema-table-columns`   | error    | Table columns don't match expected headers                                       |
+| `schema-prohibited`      | warning  | Prohibited formatting pattern found outside code blocks                          |
+| `schema-line-limit`      | warning  | File exceeds the line limit defined in the rule                                  |
+| `deprecated-ref`         | warning  | Code marker or cross-reference targets a deprecated ID (requires `--deprecated`) |
+| `deprecated-id-conflict` | error    | Active spec reuses an ID that is listed in `DEPRECATED.md`                       |
 
 #### JSON Output Format
 

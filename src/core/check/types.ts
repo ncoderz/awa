@@ -1,6 +1,11 @@
 // @awa-component: CLI-CheckCommand
 
 // @awa-impl: CLI-31_AC-1
+
+// @awa-component: DEP-SchemaValidation
+// @awa-impl: DEP-7_AC-1
+// @awa-impl: DEP-7_AC-2
+
 export interface CheckConfig {
   readonly specGlobs: readonly string[];
   readonly codeGlobs: readonly string[];
@@ -18,6 +23,7 @@ export interface CheckConfig {
   readonly allowWarnings: boolean;
   readonly specOnly: boolean;
   readonly fix: boolean;
+  readonly deprecated: boolean;
 }
 
 export const DEFAULT_CHECK_CONFIG: CheckConfig = {
@@ -31,6 +37,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
     '.awa/tasks/TASK-*.md',
     '.awa/plans/PLAN-*.md',
     '.awa/align/ALIGN-*.md',
+    '.awa/specs/deprecated/DEPRECATED.md',
   ],
   codeGlobs: [
     '**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}',
@@ -57,6 +64,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
   allowWarnings: false,
   specOnly: false,
   fix: true,
+  deprecated: false,
 };
 
 export type FindingSeverity = 'error' | 'warning';
@@ -80,7 +88,9 @@ export type FindingCode =
   | 'schema-table-columns'
   | 'schema-prohibited'
   | 'schema-no-rule'
-  | 'schema-line-limit';
+  | 'schema-line-limit'
+  | 'deprecated-ref'
+  | 'deprecated-id-conflict';
 
 export interface Finding {
   readonly severity: FindingSeverity;
@@ -143,6 +153,10 @@ export interface SpecParseResult {
   readonly idLocations: ReadonlyMap<string, { filePath: string; line: number }>;
 }
 
+export interface DeprecatedResult {
+  readonly deprecatedIds: ReadonlySet<string>;
+}
+
 export interface CheckResult {
   readonly findings: readonly Finding[];
 }
@@ -157,4 +171,5 @@ export interface RawCheckOptions {
   readonly allowWarnings?: boolean;
   readonly specOnly?: boolean;
   readonly fix?: boolean;
+  readonly deprecated?: boolean;
 }
