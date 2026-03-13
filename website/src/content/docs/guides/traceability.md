@@ -35,13 +35,13 @@ Every link is explicit. Nothing is implied.
 
 ### Requirement IDs
 
-| Format | Meaning | Example |
-|--------|---------|---------|
-| `{CODE}-{n}` | Requirement | `DIFF-1` |
-| `{CODE}-{n}.{p}` | Subrequirement | `DIFF-1.1` |
-| `{CODE}-{n}_AC-{m}` | Acceptance criterion | `DIFF-1_AC-1` |
-| `{CODE}-{n}.{p}_AC-{m}` | Subrequirement AC | `DIFF-1.1_AC-3` |
-| `{CODE}_P-{n}` | Correctness property | `DIFF_P-2` |
+| Format                  | Meaning              | Example         |
+| ----------------------- | -------------------- | --------------- |
+| `{CODE}-{n}`            | Requirement          | `DIFF-1`        |
+| `{CODE}-{n}.{p}`        | Subrequirement       | `DIFF-1.1`      |
+| `{CODE}-{n}_AC-{m}`     | Acceptance criterion | `DIFF-1_AC-1`   |
+| `{CODE}-{n}.{p}_AC-{m}` | Subrequirement AC    | `DIFF-1.1_AC-3` |
+| `{CODE}_P-{n}`          | Correctness property | `DIFF_P-2`      |
 
 `{CODE}` is a short uppercase identifier for the feature area (e.g., `DIFF`, `GEN`, `CFG`). `{n}`, `{p}`, and `{m}` are integers.
 
@@ -49,11 +49,11 @@ Every link is explicit. Nothing is implied.
 
 Place these markers as comments in your source code and tests.
 
-| Marker | Links to | Example |
-|--------|----------|---------|
-| `@awa-component` | Design component | `// @awa-component: DIFF-Parser` |
-| `@awa-impl` | Acceptance criterion | `// @awa-impl: DIFF-1.1_AC-1` |
-| `@awa-test` | Property or AC | `// @awa-test: DIFF_P-2` |
+| Marker           | Links to             | Example                          |
+| ---------------- | -------------------- | -------------------------------- |
+| `@awa-component` | Design component     | `// @awa-component: DIFF-Parser` |
+| `@awa-impl`      | Acceptance criterion | `// @awa-impl: DIFF-1.1_AC-1`    |
+| `@awa-test`      | Property or AC       | `// @awa-test: DIFF_P-2`         |
 
 ### Example: Source File
 
@@ -115,3 +115,24 @@ awa check --format json # JSON output for CI
 It checks that all `@awa-impl`, `@awa-test`, and `@awa-component` markers reference real spec IDs, flags uncovered acceptance criteria, validates IMPLEMENTS/VALIDATES cross-references between DESIGN and REQ specs, and enforces structural rules defined in `*.schema.yaml` schema files.
 
 See the [CLI Reference](/reference/cli/) for all options and [Configuration](/reference/configuration/) for the `[check]` config section.
+
+## Deprecating Requirements
+
+When requirements are removed, their IDs must never be reused.
+A tombstone file at `.awa/specs/deprecated/DEPRECATED.md` lists retired IDs grouped by feature code:
+
+```markdown
+# GEN
+
+GEN-5, GEN-5.1
+GEN-5_AC-1, GEN-5_AC-2
+GEN-5_P-4
+
+# DIFF
+
+DIFF-3
+DIFF-3_AC-1
+DIFF-3_P-1
+```
+
+Use `--deprecated` with `awa check` to surface warnings for code markers and cross-references that still reference deprecated IDs.

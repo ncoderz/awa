@@ -23,6 +23,7 @@ YOU are also an expert software architect and developer, and write specification
   │       ├── TASK.schema.yaml
   │       ├── PLAN.schema.yaml
   │       ├── README.schema.yaml
+  │       ├── DEPRECATED.schema.yaml
   │       └── ALIGN_REPORT.schema.yaml
   ├── specs/
   │   ├── ARCHITECTURE.md
@@ -30,7 +31,9 @@ YOU are also an expert software architect and developer, and write specification
   │   ├── EXAMPLE-{CODE}-{feature-name}-{nnn}.md
   │   ├── REQ-{CODE}-{feature-name}.md
   │   ├── DESIGN-{CODE}-{feature-name}.md
-  │   └── API-{CODE}-{api-name}.tsp
+  │   ├── API-{CODE}-{api-name}.tsp
+  │   └── deprecated/
+  │       └── DEPRECATED.md
   ├── tasks/
   │   └── TASK-{CODE}-{feature-name}-{nnn}.md
   ├── plans/
@@ -52,6 +55,7 @@ YOU are also an expert software architect and developer, and write specification
 - TASK-{CODE}-{feature-name}-{nnn}.md: Step-by-step tasks for implementing features or tasks.
 - PLAN-{nnn}-{plan-name}.md: Ad-hoc plans for vibe coding.
 - ALIGN-{x}-WITH-{y}-{nnn}.md: Report comparing alignment of x with y (e.g. code with requirements).
+- deprecated/DEPRECATED.md: Tombstone file for retired IDs — bare IDs only, no descriptions. Keeps deprecated content out of LLM context.
 - rules/*.md: Rules specific to the project (e.g. Coding standards, best practices to follow).
 </file_descriptions>
 

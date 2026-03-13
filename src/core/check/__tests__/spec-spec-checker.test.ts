@@ -348,3 +348,105 @@ describe('SpecSpecChecker', () => {
     expect(unlinked).toHaveLength(0);
   });
 });
+
+// @awa-test: DEP_P-1
+// @awa-test: DEP_P-2
+// @awa-test: DEP_P-4
+// @awa-test: DEP-3_AC-1
+// @awa-test: DEP-3_AC-4
+// @awa-test: DEP-5_AC-2
+// @awa-test: DEP-5_AC-3
+// @awa-test: DEP-6_AC-3
+describe('SpecSpecChecker — deprecated ID handling', () => {
+  const deprecatedIds = new Set(['OLD-1', 'OLD-1_AC-1', 'OLD-1_AC-2']);
+
+  // @awa-test: DEP_P-1
+  // @awa-test: DEP-3_AC-1, DEP-3_AC-4
+  test('no unlinked-ac findings for deprecated ACs or deprecated requirements', () => {
+    const reqFile: SpecFile = {
+      filePath: '.awa/specs/REQ-OLD.md',
+      code: 'OLD',
+      requirementIds: ['OLD-1'],
+      acIds: ['OLD-1_AC-1', 'OLD-1_AC-2'],
+      propertyIds: [],
+      componentNames: [],
+      crossRefs: [],
+    };
+    const specs = makeSpecs([reqFile]);
+
+    const result = checkSpecAgainstSpec(specs, makeMarkers(), makeConfig(), deprecatedIds);
+
+    const unlinked = result.findings.filter((f) => f.code === 'unlinked-ac');
+    expect(unlinked).toHaveLength(0);
+  });
+
+  // @awa-test: DEP_P-2
+  // @awa-test: DEP-5_AC-2, DEP-5_AC-3
+  test('no broken-cross-ref for deprecated IDs without --deprecated', () => {
+    const designFile: SpecFile = {
+      filePath: '.awa/specs/DESIGN-NEW.md',
+      code: 'NEW',
+      requirementIds: [],
+      acIds: [],
+      propertyIds: [],
+      componentNames: ['NEW-Widget'],
+      crossRefs: [
+        {
+          type: 'implements',
+          ids: ['OLD-1_AC-1'],
+          filePath: '.awa/specs/DESIGN-NEW.md',
+          line: 10,
+        },
+      ],
+    };
+    const specs = makeSpecs([designFile]);
+
+    const result = checkSpecAgainstSpec(
+      specs,
+      makeMarkers(),
+      { ...makeConfig(), deprecated: false },
+      deprecatedIds,
+    );
+
+    const broken = result.findings.filter((f) => f.code === 'broken-cross-ref');
+    expect(broken).toHaveLength(0);
+    const depRef = result.findings.filter((f) => f.code === 'deprecated-ref');
+    expect(depRef).toHaveLength(0);
+  });
+
+  // @awa-test: DEP_P-4
+  // @awa-test: DEP-6_AC-3
+  test('deprecated-ref warnings for cross-refs with --deprecated flag', () => {
+    const designFile: SpecFile = {
+      filePath: '.awa/specs/DESIGN-NEW.md',
+      code: 'NEW',
+      requirementIds: [],
+      acIds: [],
+      propertyIds: [],
+      componentNames: ['NEW-Widget'],
+      crossRefs: [
+        {
+          type: 'implements',
+          ids: ['OLD-1_AC-1'],
+          filePath: '.awa/specs/DESIGN-NEW.md',
+          line: 10,
+        },
+      ],
+    };
+    const specs = makeSpecs([designFile]);
+
+    const result = checkSpecAgainstSpec(
+      specs,
+      makeMarkers(),
+      { ...makeConfig(), deprecated: true },
+      deprecatedIds,
+    );
+
+    const depRef = result.findings.filter((f) => f.code === 'deprecated-ref');
+    expect(depRef).toHaveLength(1);
+    expect(depRef[0]!.severity).toBe('warning');
+    expect(depRef[0]!.id).toBe('OLD-1_AC-1');
+    const broken = result.findings.filter((f) => f.code === 'broken-cross-ref');
+    expect(broken).toHaveLength(0);
+  });
+});

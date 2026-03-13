@@ -676,4 +676,74 @@ TEST CRITERIA: Can load valid TOML
     // IMPLEMENTS is allowed in requirement phases
     expect(result.findings).toHaveLength(0);
   });
+
+  // @awa-component: DEP-SchemaValidation
+  // @awa-test: DEP-7_AC-1
+  // @awa-test: DEP-7_AC-2
+  test('validates deprecated file against its schema', async () => {
+    const filePath = join(testDir, '.awa', 'specs', 'deprecated', 'DEPRECATED.md');
+    await mkdir(join(testDir, '.awa', 'specs', 'deprecated'), { recursive: true });
+    await writeFile(
+      filePath,
+      `# GEN
+
+GEN-5, GEN-5.1
+GEN-5_AC-1
+`,
+    );
+
+    const ruleSet: LoadedRuleSet = makeRuleSet({
+      'target-files': '.awa/specs/deprecated/DEPRECATED.md',
+      description: 'Tombstone file schema',
+      'line-limit': 800,
+      sections: [
+        {
+          heading: '[A-Z][A-Z0-9]*',
+          level: 1,
+          repeatable: true,
+          required: true,
+          description: 'Feature code heading',
+        },
+      ],
+      'sections-prohibited': ['AS A', 'I WANT', 'SO THAT'],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    expect(result.findings).toHaveLength(0);
+  });
+
+  // @awa-test: DEP-7_AC-2
+  test('reports schema error when deprecated file contains prohibited content', async () => {
+    const filePath = join(testDir, '.awa', 'specs', 'deprecated', 'DEPRECATED.md');
+    await mkdir(join(testDir, '.awa', 'specs', 'deprecated'), { recursive: true });
+    await writeFile(
+      filePath,
+      `# GEN
+
+AS A developer I WANT to deprecate things
+GEN-5
+`,
+    );
+
+    const ruleSet: LoadedRuleSet = makeRuleSet({
+      'target-files': '.awa/specs/deprecated/DEPRECATED.md',
+      description: 'Tombstone file schema',
+      'line-limit': 800,
+      sections: [
+        {
+          heading: '[A-Z][A-Z0-9]*',
+          level: 1,
+          repeatable: true,
+          required: true,
+          description: 'Feature code heading',
+        },
+      ],
+      'sections-prohibited': ['AS A', 'I WANT', 'SO THAT'],
+    });
+
+    const result = await checkSchemasAsync([makeSpecFile(filePath)], [ruleSet]);
+    expect(result.findings.length).toBeGreaterThan(0);
+    const prohibited = result.findings.filter((f) => f.code === 'schema-prohibited');
+    expect(prohibited.length).toBeGreaterThan(0);
+  });
 });

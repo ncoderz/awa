@@ -8,6 +8,11 @@
 // @awa-impl: CLI-35_AC-1
 // @awa-impl: CLI-36_AC-1
 // @awa-impl: CLI-37_AC-1
+// @awa-impl: DEP-3_AC-1
+// @awa-impl: DEP-3_AC-2
+// @awa-impl: DEP-3_AC-3
+// @awa-impl: DEP-5_AC-1
+// @awa-impl: DEP-6_AC-2
 
 import type {
   CheckConfig,
@@ -64,10 +69,12 @@ export function buildComponentAttribution(
 }
 
 // @awa-impl: CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1
+// @awa-impl: DEP-3_AC-1, DEP-3_AC-2, DEP-3_AC-3, DEP-5_AC-1, DEP-6_AC-2
 export function checkCodeAgainstSpec(
   markers: MarkerScanResult,
   specs: SpecParseResult,
   config: CheckConfig,
+  deprecatedIds: ReadonlySet<string> = new Set(),
 ): CheckResult {
   const findings: Finding[] = [];
 
@@ -92,11 +99,26 @@ export function checkCodeAgainstSpec(
   }
 
   // @awa-impl: CLI-18_AC-1
+  // @awa-impl: DEP-5_AC-1, DEP-6_AC-2
   // Check for orphaned markers (code references non-existent spec ID)
   for (const marker of markers.markers) {
     if (marker.type === 'component') {
       // Component markers reference component names
       if (!specs.componentNames.has(marker.id)) {
+        // Check if it's a deprecated ID
+        if (deprecatedIds.has(marker.id)) {
+          if (config.deprecated) {
+            findings.push({
+              severity: 'warning',
+              code: 'deprecated-ref',
+              message: `Component marker '${marker.id}' references a deprecated ID`,
+              filePath: marker.filePath,
+              line: marker.line,
+              id: marker.id,
+            });
+          }
+          continue;
+        }
         findings.push({
           severity: 'error',
           code: 'orphaned-marker',
@@ -109,6 +131,20 @@ export function checkCodeAgainstSpec(
     } else {
       // impl and test markers reference IDs (ACs, properties, requirement IDs)
       if (!specs.allIds.has(marker.id)) {
+        // Check if it's a deprecated ID
+        if (deprecatedIds.has(marker.id)) {
+          if (config.deprecated) {
+            findings.push({
+              severity: 'warning',
+              code: 'deprecated-ref',
+              message: `Marker '${marker.id}' references a deprecated ID`,
+              filePath: marker.filePath,
+              line: marker.line,
+              id: marker.id,
+            });
+          }
+          continue;
+        }
         findings.push({
           severity: 'error',
           code: 'orphaned-marker',
@@ -122,10 +158,12 @@ export function checkCodeAgainstSpec(
   }
 
   // @awa-impl: CLI-19_AC-1
+  // @awa-impl: DEP-3_AC-1
   // Check for uncovered ACs (spec ACs with no @awa-test reference)
   const testedIds = new Set(markers.markers.filter((m) => m.type === 'test').map((m) => m.id));
 
   for (const acId of specs.acIds) {
+    if (deprecatedIds.has(acId)) continue;
     if (!testedIds.has(acId)) {
       // Look up location from idLocations map, fall back to spec file path
       const loc = specs.idLocations.get(acId);
@@ -142,12 +180,14 @@ export function checkCodeAgainstSpec(
   }
 
   // @awa-impl: CLI-33_AC-1
+  // @awa-impl: DEP-3_AC-3
   // Check for uncovered components (DESIGN components with no @awa-component marker)
   const implementedComponents = new Set(
     markers.markers.filter((m) => m.type === 'component').map((m) => m.id),
   );
 
   for (const componentName of specs.componentNames) {
+    if (deprecatedIds.has(componentName)) continue;
     if (!implementedComponents.has(componentName)) {
       const loc = specs.idLocations.get(componentName);
       const specFile = loc
@@ -165,10 +205,12 @@ export function checkCodeAgainstSpec(
   }
 
   // @awa-impl: CLI-34_AC-1
+  // @awa-impl: DEP-3_AC-2
   // Check for unimplemented ACs (spec ACs with no @awa-impl marker)
   const implementedIds = new Set(markers.markers.filter((m) => m.type === 'impl').map((m) => m.id));
 
   for (const acId of specs.acIds) {
+    if (deprecatedIds.has(acId)) continue;
     if (!implementedIds.has(acId)) {
       const loc = specs.idLocations.get(acId);
       const specFile = loc ? undefined : specs.specFiles.find((sf) => sf.acIds.includes(acId));
@@ -184,8 +226,10 @@ export function checkCodeAgainstSpec(
   }
 
   // @awa-impl: CLI-35_AC-1
+  // @awa-impl: DEP-3_AC-1
   // G5: Check for uncovered properties (spec properties with no @awa-test marker)
   for (const propId of specs.propertyIds) {
+    if (deprecatedIds.has(propId)) continue;
     if (!testedIds.has(propId)) {
       const loc = specs.idLocations.get(propId);
       const specFile = loc

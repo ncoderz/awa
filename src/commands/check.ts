@@ -5,12 +5,16 @@
 // @awa-impl: CLI-32_AC-2
 // @awa-impl: CLI-32_AC-3
 // @awa-impl: CLI-39_AC-1
+// @awa-impl: DEP-6_AC-1
+// @awa-impl: DEP-6_AC-4
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { fixCodesTable } from '../core/check/codes-fixer.js';
+import { parseDeprecated } from '../core/check/deprecated-parser.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
 import { fixMatrices } from '../core/check/matrix-fixer.js';
 import { report } from '../core/check/reporter.js';
+import { checkReservations } from '../core/check/reservation-checker.js';
 import { loadRules } from '../core/check/rule-loader.js';
 import { checkSchemasAsync } from '../core/check/schema-checker.js';
 import { parseSpecs } from '../core/check/spec-parser.js';
@@ -41,12 +45,19 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       config.schemaEnabled ? loadRules(config.schemaDir) : Promise.resolve([]),
     ]);
 
+    // Parse deprecated IDs from tombstone file
+    const { deprecatedIds } = await parseDeprecated('.awa/specs');
+
     // Run checkers (code-spec and spec-spec are synchronous; schema is async)
     // When --spec-only, skip code-to-spec traceability checks entirely
     const codeSpecResult = config.specOnly
       ? { findings: [] as const }
-      : checkCodeAgainstSpec(markers, specs, config);
-    const specSpecResult = checkSpecAgainstSpec(specs, markers, config);
+      : checkCodeAgainstSpec(markers, specs, config, deprecatedIds);
+    const specSpecResult = checkSpecAgainstSpec(specs, markers, config, deprecatedIds);
+
+    // Check ID reservations — always active regardless of --deprecated flag
+    const reservationResult =
+      deprecatedIds.size > 0 ? checkReservations(specs, deprecatedIds) : { findings: [] as const };
 
     // Run fix BEFORE schema check: regenerate traceability matrices and Feature Codes table
     // so that schema line-limit validation sees the post-generation content (default; skip with --no-fix)
@@ -78,6 +89,7 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       ...markers.findings,
       ...codeSpecResult.findings,
       ...specSpecResult.findings,
+      ...reservationResult.findings,
       ...schemaResult.findings,
     ];
 
@@ -175,6 +187,8 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
 
   const fix = cliOptions.fix === false ? false : DEFAULT_CHECK_CONFIG.fix;
 
+  const deprecated = cliOptions.deprecated === true ? true : DEFAULT_CHECK_CONFIG.deprecated;
+
   const extraSpecGlobs = toStringArray(section?.['extra-spec-globs']) ?? [
     ...DEFAULT_CHECK_CONFIG.extraSpecGlobs,
   ];
@@ -199,6 +213,7 @@ function buildCheckConfig(fileConfig: FileConfig | null, cliOptions: RawCheckOpt
     allowWarnings,
     specOnly,
     fix,
+    deprecated,
   };
 }
 

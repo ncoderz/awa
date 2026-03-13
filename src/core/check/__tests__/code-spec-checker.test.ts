@@ -660,3 +660,85 @@ describe('buildComponentAttribution', () => {
     expect(result.get('COMP-A')).toEqual(new Set());
   });
 });
+
+// @awa-test: DEP_P-1
+// @awa-test: DEP_P-2
+// @awa-test: DEP_P-4
+// @awa-test: DEP-3_AC-1
+// @awa-test: DEP-3_AC-2
+// @awa-test: DEP-3_AC-3
+// @awa-test: DEP-5_AC-1
+// @awa-test: DEP-6_AC-2
+describe('CodeSpecChecker — deprecated ID handling', () => {
+  const deprecatedIds = new Set(['OLD-1_AC-1', 'OLD_P-1', 'OLD-Comp']);
+
+  // @awa-test: DEP_P-1
+  // @awa-test: DEP-3_AC-1, DEP-3_AC-2, DEP-3_AC-3
+  test('no coverage findings for deprecated IDs', () => {
+    const markers = makeMarkers([]);
+    const specs = makeSpecs({
+      acIds: new Set(['OLD-1_AC-1']),
+      propertyIds: new Set(['OLD_P-1']),
+      componentNames: new Set(['OLD-Comp']),
+      allIds: new Set(['OLD-1_AC-1', 'OLD_P-1', 'OLD-Comp']),
+    });
+
+    const result = checkCodeAgainstSpec(markers, specs, makeConfig(), deprecatedIds);
+
+    const coverageFindings = result.findings.filter(
+      (f) =>
+        f.code === 'uncovered-ac' ||
+        f.code === 'unimplemented-ac' ||
+        f.code === 'uncovered-property' ||
+        f.code === 'uncovered-component',
+    );
+    expect(coverageFindings).toHaveLength(0);
+  });
+
+  // @awa-test: DEP_P-2
+  // @awa-test: DEP-5_AC-1
+  test('no orphaned-marker for deprecated IDs without --deprecated', () => {
+    const markers = makeMarkers([
+      { type: 'impl', id: 'OLD-1_AC-1', filePath: 'src/foo.ts', line: 5 },
+      { type: 'component', id: 'OLD-Comp', filePath: 'src/foo.ts', line: 1 },
+    ]);
+    const specs = makeSpecs(); // IDs not in specs
+
+    const result = checkCodeAgainstSpec(
+      markers,
+      specs,
+      makeConfig({ deprecated: false }),
+      deprecatedIds,
+    );
+
+    const orphaned = result.findings.filter((f) => f.code === 'orphaned-marker');
+    expect(orphaned).toHaveLength(0);
+    const depRef = result.findings.filter((f) => f.code === 'deprecated-ref');
+    expect(depRef).toHaveLength(0);
+  });
+
+  // @awa-test: DEP_P-4
+  // @awa-test: DEP-6_AC-2
+  test('deprecated-ref warnings emitted with --deprecated flag', () => {
+    const markers = makeMarkers([
+      { type: 'impl', id: 'OLD-1_AC-1', filePath: 'src/foo.ts', line: 5 },
+      { type: 'component', id: 'OLD-Comp', filePath: 'src/foo.ts', line: 1 },
+    ]);
+    const specs = makeSpecs(); // IDs not in specs
+
+    const result = checkCodeAgainstSpec(
+      markers,
+      specs,
+      makeConfig({ deprecated: true }),
+      deprecatedIds,
+    );
+
+    const depRef = result.findings.filter((f) => f.code === 'deprecated-ref');
+    expect(depRef).toHaveLength(2);
+    for (const f of depRef) {
+      expect(f.severity).toBe('warning');
+    }
+    const orphaned = result.findings.filter((f) => f.code === 'orphaned-marker');
+    expect(orphaned).toHaveLength(0);
+  });
+});

@@ -192,3 +192,12 @@ Merge two feature codes into one — combines spec files, recodes traceability I
 /awa.spec-merge Merge the CHK feature code into CLI.
 /awa.spec-merge Combine SRC and TGT feature codes.
 ```
+
+### awa-deprecate
+
+Retire requirement IDs by moving them to the tombstone file (`DEPRECATED.md`). Removes traceability markers from code and cleans up spec references.
+
+```
+/awa.deprecate Deprecate DIFF-3 and DIFF-4 — they're no longer needed.
+/awa.deprecate Retire the old authentication requirements.
+```
