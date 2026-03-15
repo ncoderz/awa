@@ -40,7 +40,7 @@ export const DEFAULT_CHECK_CONFIG: CheckConfig = {
     '.awa/specs/deprecated/DEPRECATED.md',
   ],
   codeGlobs: [
-    '**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig}',
+    '**/*.{ts,js,tsx,jsx,mts,mjs,cjs,py,go,rs,java,kt,kts,cs,c,h,cpp,cc,cxx,hpp,hxx,swift,rb,php,scala,ex,exs,dart,lua,zig,svelte,vue,astro,html,htm,hbs,ejs,pug,njk,css,scss,sass,less,toml,yaml,yml,json,jsonc,sh,bash,zsh,fish,ps1,psm1,bat,cmd,heex,lalrpop,ml,mli,re,rei,res,resi,hs,lhs,clj,cljs,cljc,edn,erl,hrl,nim,nims,v,vv,gleam,odin,sql,tf,hcl,nix,groovy,gradle}',
   ],
   specIgnore: [],
   codeIgnore: [
