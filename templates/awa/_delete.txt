@@ -28,8 +28,8 @@
 .awa/.agent/schemas/EXAMPLES.schema.yaml
 
 # Skills renamed from spec-* to awa-spec-*
-.github/prompts/awa.spec-merge.prompt.md
-.github/prompts/awa.spec-tidy.prompt.md
+.github/prompts/spec-merge.prompt.md
+.github/prompts/spec-tidy.prompt.md
 .github/skills/spec-merge/SKILL.md
 .github/skills/spec-tidy/SKILL.md
 .claude/skills/spec-merge/SKILL.md
