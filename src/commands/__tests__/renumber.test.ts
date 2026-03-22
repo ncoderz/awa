@@ -40,6 +40,8 @@ function makeSpecs(specFiles: { filePath: string; code: string }[]) {
       crossRefs: [],
     })),
     idLocations: new Map(),
+    allIdLocations: new Map(),
+    parserFindings: [],
   };
 }
 

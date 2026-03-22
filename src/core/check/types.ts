@@ -90,7 +90,9 @@ export type FindingCode =
   | 'schema-no-rule'
   | 'schema-line-limit'
   | 'deprecated-ref'
-  | 'deprecated-id-conflict';
+  | 'deprecated-id-conflict'
+  | 'duplicate-spec-id'
+  | 'duplicate-cross-ref';
 
 export interface Finding {
   readonly severity: FindingSeverity;
@@ -151,6 +153,10 @@ export interface SpecParseResult {
   readonly specFiles: readonly SpecFile[];
   /** Maps spec IDs (requirements, ACs, properties, components) to their source location. */
   readonly idLocations: ReadonlyMap<string, { filePath: string; line: number }>;
+  /** Maps spec IDs to ALL their definition locations (for duplicate detection). */
+  readonly allIdLocations: ReadonlyMap<string, ReadonlyArray<{ filePath: string; line: number }>>;
+  /** Findings generated during spec parsing (e.g. duplicate cross-refs). */
+  readonly parserFindings: readonly Finding[];
 }
 
 export interface DeprecatedResult {

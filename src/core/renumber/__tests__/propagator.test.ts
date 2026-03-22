@@ -57,6 +57,8 @@ function makeSpecs(specFiles: SpecFile[]): SpecParseResult {
     allIds: new Set(),
     specFiles,
     idLocations: new Map(),
+    allIdLocations: new Map(),
+    parserFindings: [],
   };
 }
 

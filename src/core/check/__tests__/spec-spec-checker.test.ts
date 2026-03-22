@@ -45,6 +45,8 @@ function makeSpecs(
     allIds,
     specFiles,
     idLocations,
+    allIdLocations: new Map(),
+    parserFindings: [],
     ...overrides,
   };
 }

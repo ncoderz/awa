@@ -37,7 +37,7 @@ Both cases should be reported. The finding should reference the second occurrenc
 
 ### Cross-references — duplicates within a single IMPLEMENTS/VALIDATES line
 
-Duplicate IDs within a single `IMPLEMENTS:` or `VALIDATES:` line in a DESIGN file (e.g., `IMPLEMENTS: CLI-1_AC-1, CLI-1_AC-1`) are a copy-paste mistake. These should be caught as warnings (hoisted to errors by default).
+Duplicate IDs within a single IMPLEMENTS or VALIDATES line in a DESIGN file (e.g., the same AC listed twice) are a copy-paste mistake. These should be caught as warnings (hoisted to errors by default).
 
 ## Steps
 

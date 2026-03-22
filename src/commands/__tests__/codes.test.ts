@@ -44,6 +44,8 @@ describe('codesCommand', () => {
         allIds: new Set(),
         specFiles: [],
         idLocations: new Map(),
+        allIdLocations: new Map(),
+        parserFindings: [],
       },
       config: {
         specGlobs: ['.awa/specs/REQ-*.md'],

@@ -29,6 +29,8 @@ function makeSpecs(overrides: Partial<SpecParseResult> = {}): SpecParseResult {
     allIds: new Set(),
     specFiles: [],
     idLocations: new Map(),
+    allIdLocations: new Map(),
+    parserFindings: [],
     ...overrides,
   };
 }
@@ -623,7 +625,7 @@ describe('buildComponentAttribution', () => {
     expect(result.get('COMP-A')).toEqual(new Set(['A-1_AC-1']));
   });
 
-  test('test markers are attributed like impl markers', () => {
+  test('test markers are NOT attributed to components', () => {
     const markers: CodeMarker[] = [
       { type: 'component', id: 'COMP-A', filePath: 'test/a.ts', line: 1 },
       { type: 'test', id: 'A_P-1', filePath: 'test/a.ts', line: 5 },
@@ -633,8 +635,8 @@ describe('buildComponentAttribution', () => {
 
     const result = buildComponentAttribution(markers);
 
-    expect(result.get('COMP-A')).toEqual(new Set(['A_P-1']));
-    expect(result.get('COMP-B')).toEqual(new Set(['B_P-1']));
+    expect(result.get('COMP-A')).toEqual(new Set());
+    expect(result.get('COMP-B')).toEqual(new Set());
   });
 
   test('markers across separate files are scoped independently', () => {
