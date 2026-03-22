@@ -80,7 +80,7 @@ overlay directory on top in order. Because `fs.cp` defaults to `force: true`,
 overlay files replace any base (or earlier-overlay) file at the same relative
 path. Files only in the base or an earlier overlay are left intact.
 
-IMPLEMENTS: OVL_P-1, OVL_P-2, OVL_P-3, OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
+IMPLEMENTS: OVL-1_AC-1, OVL-2_AC-1, OVL-3_AC-1, OVL-4_AC-1, OVL-5_AC-1, OVL-6_AC-1
 
 ```typescript
 async function buildMergedDir(
@@ -89,33 +89,8 @@ async function buildMergedDir(
 ): Promise<string>;
 ```
 
-### CLI-ArgumentParser
-
-Extended with a repeatable `--overlay <path>` option on both the generate and
-diff subcommands. The parsed value is forwarded as `overlay: string[]` in
-RawCliOptions.
-
-IMPLEMENTS: CLI-23_AC-1, CLI-24_AC-1, CLI-25_AC-1, CLI-2_AC-3, CLI-6_AC-2, CLI-13_AC-1, CLI-13_AC-2, CLI-14_AC-1, CLI-14_AC-2, DIFF-7_AC-11, DISC-4_AC-1, DISC-5_AC-1, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, JSON-1_AC-1, JSON-2_AC-1, JSON-5_AC-1, OVL-1_AC-1, OVL-7_AC-1, CLI-41_AC-1, CLI-41_AC-2, CLI-41_AC-3, CLI-41_AC-4, CLI-41_AC-5, CLI-41_AC-6, CLI-41_AC-7, CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4, CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4, TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
-
-```typescript
-.option('--overlay <path...>', 'Overlay directory paths (repeatable)')
-```
-
-### CFG-ConfigLoader
-
-Extended to parse an `overlay` array of strings from `.awa.toml` and include
-it in FileConfig and ResolvedOptions. CLI --overlay overrides config overlay.
-
-IMPLEMENTS: CLI-31_AC-1, CLI-1_AC-4, CLI-2_AC-2, MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2, OVL-8_AC-1
-
-```typescript
-interface FileConfig {
-  overlay?: string[];
-}
-interface ResolvedOptions {
-  readonly overlay: readonly string[];
-}
-```
+CLI-ArgumentParser and CFG-ConfigLoader are extended with overlay support.
+Canonical definitions are in DESIGN-CLI-cli.md.
 
 ## Data Models
 
@@ -196,77 +171,10 @@ Test generate and diff commands with mocked overlay module.
 
 ## Requirements Traceability
 
-### REQ-CLI-cli.md
-
-- CLI-1_AC-4 → CFG-ConfigLoader
-- CLI-2_AC-2 → CFG-ConfigLoader
-- CLI-2_AC-3 → CLI-ArgumentParser
-- CLI-6_AC-2 → CLI-ArgumentParser
-- CLI-13_AC-1 → CLI-ArgumentParser
-- CLI-13_AC-2 → CLI-ArgumentParser
-- CLI-14_AC-1 → CLI-ArgumentParser
-- CLI-14_AC-2 → CLI-ArgumentParser
-- CLI-23_AC-1 → CLI-ArgumentParser
-- CLI-24_AC-1 → CLI-ArgumentParser
-- CLI-25_AC-1 → CLI-ArgumentParser
-- CLI-31_AC-1 → CFG-ConfigLoader
-- CLI-41_AC-1 → CLI-ArgumentParser
-- CLI-41_AC-2 → CLI-ArgumentParser
-- CLI-41_AC-3 → CLI-ArgumentParser
-- CLI-41_AC-4 → CLI-ArgumentParser
-- CLI-41_AC-5 → CLI-ArgumentParser
-- CLI-41_AC-6 → CLI-ArgumentParser
-- CLI-41_AC-7 → CLI-ArgumentParser
-- CLI-42_AC-1 → CLI-ArgumentParser
-- CLI-42_AC-2 → CLI-ArgumentParser
-- CLI-43_AC-1 → CLI-ArgumentParser
-- CLI-43_AC-2 → CLI-ArgumentParser
-- CLI-43_AC-3 → CLI-ArgumentParser
-- CLI-43_AC-4 → CLI-ArgumentParser
-- CLI-44_AC-1 → CLI-ArgumentParser
-- CLI-44_AC-2 → CLI-ArgumentParser
-- CLI-45_AC-1 → CLI-ArgumentParser
-- CLI-45_AC-2 → CLI-ArgumentParser
-- CLI-45_AC-3 → CLI-ArgumentParser
-- CLI-45_AC-4 → CLI-ArgumentParser
-
-### REQ-DIFF-diff.md
-
-- DIFF-7_AC-11 → CLI-ArgumentParser
-
-### REQ-DISC-feature-discovery.md
-
-- DISC-4_AC-1 → CLI-ArgumentParser
-- DISC-5_AC-1 → CLI-ArgumentParser
-
-### REQ-GEN-generation.md
-
-- GEN-13_AC-1 → CLI-ArgumentParser
-- GEN-14_AC-1 → CLI-ArgumentParser
-- GEN-15_AC-1 → CLI-ArgumentParser
-- GEN-16_AC-1 → CLI-ArgumentParser
-
-### REQ-JSON-json-output.md
-
-- JSON-1_AC-1 → CLI-ArgumentParser
-- JSON-2_AC-1 → CLI-ArgumentParser
-- JSON-5_AC-1 → CLI-ArgumentParser
-
-### REQ-MULTI-multi-target.md
-
-- MULTI-1_AC-1 → CFG-ConfigLoader
-- MULTI-2_AC-1 → CFG-ConfigLoader
-- MULTI-3_AC-1 → CFG-ConfigLoader
-- MULTI-5_AC-2 → CFG-ConfigLoader
-
 ### REQ-OVL-overlays.md
 
-- OVL_P-1 → OVL-MergedTemplateView
-- OVL_P-2 → OVL-MergedTemplateView
-- OVL_P-3 → OVL-MergedTemplateView
 - OVL-1_AC-1 → OVL-OverlayResolver
 - OVL-1_AC-1 → OVL-MergedTemplateView
-- OVL-1_AC-1 → CLI-ArgumentParser
 - OVL-2_AC-1 → OVL-OverlayResolver (OVL_P-1)
 - OVL-2_AC-1 → OVL-MergedTemplateView (OVL_P-1)
 - OVL-3_AC-1 → OVL-OverlayResolver (OVL_P-2)
@@ -277,14 +185,3 @@ Test generate and diff commands with mocked overlay module.
 - OVL-5_AC-1 → OVL-MergedTemplateView (OVL_P-3)
 - OVL-6_AC-1 → OVL-OverlayResolver
 - OVL-6_AC-1 → OVL-MergedTemplateView
-- OVL-7_AC-1 → CLI-ArgumentParser
-- OVL-8_AC-1 → CFG-ConfigLoader
-
-### REQ-TRC-trace.md
-
-- TRC-8_AC-1 → CLI-ArgumentParser
-
-### REQ-TTST-template-test.md
-
-- TTST-5_AC-1 → CLI-ArgumentParser
-- TTST-7_AC-1 → CLI-ArgumentParser

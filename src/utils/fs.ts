@@ -1,5 +1,8 @@
 // @awa-component: GEN-FileSystem
 // @awa-impl: GEN-1_AC-1, GEN-1_AC-2
+// @awa-impl: GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3
+// @awa-impl: GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3
+// @awa-impl: TPL-2_AC-5
 
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';

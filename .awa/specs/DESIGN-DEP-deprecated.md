@@ -58,7 +58,7 @@ src/core/check/
 
 Parses `.awa/specs/deprecated/DEPRECATED.md` to extract all deprecated IDs. Reads the file, splits by H1 headings (feature code groups), and extracts comma-separated IDs from each line. Returns an empty set if the file does not exist.
 
-IMPLEMENTS: DEP_P-5, DEP-1_AC-1, DEP-1_AC-2, DEP-1_AC-3, DEP-2_AC-1, DEP-2_AC-2, DEP-2_AC-3
+IMPLEMENTS: DEP-1_AC-1, DEP-1_AC-2, DEP-1_AC-3, DEP-2_AC-1, DEP-2_AC-2, DEP-2_AC-3
 
 ```typescript
 interface DeprecatedResult {
@@ -72,7 +72,7 @@ function parseDeprecated(specDir: string): Promise<DeprecatedResult>;
 
 Compares active spec IDs against the deprecated set. Reports an error for any ID that appears in both.
 
-IMPLEMENTS: DEP_P-3, DEP-4_AC-1, DEP-4_AC-2
+IMPLEMENTS: DEP-4_AC-1, DEP-4_AC-2
 
 ```typescript
 interface CheckResult {
@@ -181,8 +181,6 @@ PRINCIPLES:
 
 ### REQ-DEP-deprecated.md
 
-- DEP_P-3 → DEP-ReservationChecker
-- DEP_P-5 → DEP-DeprecatedParser
 - DEP-1_AC-1 → DEP-DeprecatedParser
 - DEP-1_AC-2 → DEP-DeprecatedParser
 - DEP-1_AC-3 → DEP-DeprecatedParser (DEP_P-5)

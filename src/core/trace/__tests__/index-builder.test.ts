@@ -16,6 +16,8 @@ function makeSpecs(overrides: Partial<SpecParseResult> = {}): SpecParseResult {
     allIds: overrides.allIds ?? new Set(),
     specFiles: overrides.specFiles ?? [],
     idLocations: overrides.idLocations ?? new Map(),
+    allIdLocations: overrides.allIdLocations ?? new Map(),
+    parserFindings: overrides.parserFindings ?? [],
   };
 }
 

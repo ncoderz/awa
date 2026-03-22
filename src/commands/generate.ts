@@ -132,6 +132,12 @@ async function runGenerate(options: ResolvedOptions, batchMode: boolean): Promis
 // @awa-impl: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3
 // @awa-impl: JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1
 // @awa-impl: MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+// @awa-impl: GEN-13_AC-1
+// @awa-impl: GEN-14_AC-1
+// @awa-impl: GEN-15_AC-1
+// @awa-impl: GEN-16_AC-1
+// @awa-impl: GEN-17_AC-1
+// @awa-impl: MULTI-5_AC-1
 
 // @awa-component: GEN-ConfigHint
 // @awa-impl: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3

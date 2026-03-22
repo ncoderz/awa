@@ -16,6 +16,7 @@
 // @awa-impl: CLI-42_AC-1, CLI-42_AC-2, CLI-43_AC-1, CLI-43_AC-2, CLI-43_AC-3, CLI-43_AC-4
 // @awa-impl: CLI-44_AC-1, CLI-44_AC-2, CLI-45_AC-1, CLI-45_AC-2, CLI-45_AC-3, CLI-45_AC-4
 // @awa-impl: TRC-8_AC-1, TTST-5_AC-1, TTST-7_AC-1
+// @awa-impl: CLI-6_AC-3
 
 import { Command, Option } from 'commander';
 

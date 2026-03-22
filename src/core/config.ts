@@ -28,6 +28,7 @@ const DEFAULT_CONFIG_PATH = '.awa.toml';
 // @awa-impl: CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3
 // @awa-impl: CLI-1_AC-4, CLI-2_AC-2, CLI-2_AC-3, CLI-2_AC-4, CLI-4_AC-3, CLI-7_AC-2
 // @awa-impl: MULTI-1_AC-1, MULTI-2_AC-1, MULTI-3_AC-1, MULTI-5_AC-2
+// @awa-impl: CFG-5_AC-2
 export class ConfigLoader {
   private isLocalTemplateSource(source: string): boolean {
     if (source.startsWith('.') || source.startsWith('/') || source.startsWith('~')) {

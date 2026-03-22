@@ -51,7 +51,17 @@ describe('CodesFixer', () => {
     }
 
     const allIds = new Set([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
-    return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations };
+    return {
+      requirementIds,
+      acIds,
+      propertyIds,
+      componentNames,
+      allIds,
+      specFiles,
+      idLocations,
+      allIdLocations: new Map(),
+      parserFindings: [],
+    };
   }
 
   function makeSpecFile(overrides: Partial<SpecFile>): SpecFile {

@@ -2,6 +2,11 @@
 // @awa-impl: DIFF-5_AC-1, DIFF-5_AC-2, DIFF-5_AC-3
 // @awa-impl: JSON-2_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-8_AC-1
 // @awa-impl: MULTI-6_AC-1, MULTI-7_AC-1, MULTI-12_AC-1, OVL-7_AC-1
+// @awa-impl: DIFF-4_AC-1, DIFF-4_AC-2, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5
+// @awa-impl: DIFF-7_AC-1, DIFF-7_AC-11, DIFF-7_AC-2, DIFF-7_AC-3
+// @awa-impl: DIFF-8_AC-1, DIFF-8_AC-2, DIFF-8_AC-4
+// @awa-impl: MULTI-10_AC-1
+// @awa-impl: MULTI-8_AC-1
 
 import { intro, outro } from '@clack/prompts';
 

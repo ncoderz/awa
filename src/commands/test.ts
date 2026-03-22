@@ -3,6 +3,8 @@
 // @awa-impl: TTST-9_AC-1
 // @awa-impl: TTST-11_AC-1
 // @awa-impl: TTST-12_AC-1
+// @awa-impl: TTST-10_AC-1
+// @awa-impl: TTST-6_AC-1
 
 import { intro, outro } from '@clack/prompts';
 

@@ -19,6 +19,8 @@
 // @awa-impl: TPL-10_AC-1
 // @awa-impl: TPL-10_AC-2
 // @awa-impl: TPL-10_AC-3
+// @awa-impl: CLI-3_AC-1
+// @awa-impl: TPL-9_AC-1, TPL-9_AC-2
 
 import { createHash } from 'node:crypto';
 import { rm } from 'node:fs/promises';

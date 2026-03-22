@@ -7,11 +7,17 @@
 // @awa-impl: CLI-39_AC-1
 // @awa-impl: DEP-6_AC-1
 // @awa-impl: DEP-6_AC-4
+// @awa-impl: CLI-24_AC-2, CLI-24_AC-3
+// @awa-impl: CLI-27_AC-1
+// @awa-impl: CLI-28_AC-1
+// @awa-impl: CLI-29_AC-1
+// @awa-impl: CLI-30_AC-1
+// @awa-impl: CLI-38_AC-1
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { fixCodesTable } from '../core/check/codes-fixer.js';
-import { checkDuplicateIds } from '../core/check/duplicate-checker.js';
 import { parseDeprecated } from '../core/check/deprecated-parser.js';
+import { checkDuplicateIds } from '../core/check/duplicate-checker.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
 import { fixMatrices } from '../core/check/matrix-fixer.js';
 import { report } from '../core/check/reporter.js';

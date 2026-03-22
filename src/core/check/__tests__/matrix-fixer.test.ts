@@ -42,7 +42,17 @@ describe('MatrixFixer', () => {
     }
 
     const allIds = new Set([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
-    return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations, allIdLocations: new Map(), parserFindings: [] };
+    return {
+      requirementIds,
+      acIds,
+      propertyIds,
+      componentNames,
+      allIds,
+      specFiles,
+      idLocations,
+      allIdLocations: new Map(),
+      parserFindings: [],
+    };
   }
 
   // --- DESIGN matrix tests ---
