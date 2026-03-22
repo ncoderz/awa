@@ -10,6 +10,7 @@
 
 import { checkCodeAgainstSpec } from '../core/check/code-spec-checker.js';
 import { fixCodesTable } from '../core/check/codes-fixer.js';
+import { checkDuplicateIds } from '../core/check/duplicate-checker.js';
 import { parseDeprecated } from '../core/check/deprecated-parser.js';
 import { scanMarkers } from '../core/check/marker-scanner.js';
 import { fixMatrices } from '../core/check/matrix-fixer.js';
@@ -44,6 +45,9 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
       parseSpecs(config),
       config.schemaEnabled ? loadRules(config.schemaDir) : Promise.resolve([]),
     ]);
+
+    // Check for duplicate spec IDs (always runs, spec-only safe)
+    const duplicateResult = checkDuplicateIds(specs);
 
     // Parse deprecated IDs from tombstone file
     const { deprecatedIds } = await parseDeprecated('.awa/specs');
@@ -87,6 +91,8 @@ export async function checkCommand(cliOptions: RawCheckOptions): Promise<number>
     // Combine findings
     const combinedFindings = [
       ...markers.findings,
+      ...specs.parserFindings,
+      ...duplicateResult.findings,
       ...codeSpecResult.findings,
       ...specSpecResult.findings,
       ...reservationResult.findings,

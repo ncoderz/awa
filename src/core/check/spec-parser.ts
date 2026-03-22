@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 
 import { collectFiles } from './glob.js';
-import type { CheckConfig, CrossReference, SpecFile, SpecParseResult } from './types.js';
+import type { CheckConfig, CrossReference, Finding, SpecFile, SpecParseResult } from './types.js';
 
 // @awa-impl: CLI-17_AC-1
 export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> {
@@ -18,31 +18,62 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
   const propertyIds = new Set<string>();
   const componentNames = new Set<string>();
   const idLocations = new Map<string, { filePath: string; line: number }>();
+  const allIdLocations = new Map<string, Array<{ filePath: string; line: number }>>();
+  const parserFindings: Finding[] = [];
 
   for (const filePath of files) {
-    const specFile = await parseSpecFile(filePath, config.crossRefPatterns);
-    if (specFile) {
-      specFiles.push(specFile);
-      for (const id of specFile.requirementIds) requirementIds.add(id);
-      for (const id of specFile.acIds) acIds.add(id);
-      for (const id of specFile.propertyIds) propertyIds.add(id);
-      for (const name of specFile.componentNames) componentNames.add(name);
+    const result = await parseSpecFile(filePath, config.crossRefPatterns);
+    if (result) {
+      specFiles.push(result.specFile);
+      parserFindings.push(...result.findings);
+      for (const id of result.specFile.requirementIds) requirementIds.add(id);
+      for (const id of result.specFile.acIds) acIds.add(id);
+      for (const id of result.specFile.propertyIds) propertyIds.add(id);
+      for (const name of result.specFile.componentNames) componentNames.add(name);
       // Merge id locations from parsed spec file
-      for (const [id, loc] of specFile.idLocations ?? []) {
+      for (const [id, loc] of result.specFile.idLocations ?? []) {
         idLocations.set(id, loc);
+      }
+      // Only track allIdLocations for ID-defining contexts:
+      // - REQ files define requirement IDs and AC IDs
+      // - DESIGN files define component names and property IDs
+      // Matrix rows in DESIGN files that reference ACs are not definitions.
+      const fileName = basename(filePath);
+      const isReq = fileName.startsWith('REQ-');
+      const isDesign = fileName.startsWith('DESIGN-');
+      if (isReq) {
+        for (const id of new Set(result.specFile.requirementIds)) {
+          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+        }
+        for (const id of new Set(result.specFile.acIds)) {
+          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+        }
+      }
+      if (isDesign) {
+        for (const id of new Set(result.specFile.propertyIds)) {
+          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+        }
+        for (const cname of new Set(result.specFile.componentNames)) {
+          addIdLocation(allIdLocations, cname, result.specFile.idLocations.get(cname));
+        }
       }
     }
   }
 
   const allIds = new Set<string>([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
 
-  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations };
+  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations, allIdLocations, parserFindings };
+}
+
+interface ParseSpecFileResult {
+  readonly specFile: SpecFile;
+  readonly findings: readonly Finding[];
 }
 
 async function parseSpecFile(
   filePath: string,
   crossRefPatterns: readonly string[],
-): Promise<SpecFile | null> {
+): Promise<ParseSpecFileResult | null> {
   let content: string;
   try {
     content = await readFile(filePath, 'utf-8');
@@ -60,6 +91,7 @@ async function parseSpecFile(
   const crossRefs: CrossReference[] = [];
   const idLocations = new Map<string, { filePath: string; line: number }>();
   const componentImplements = new Map<string, string[]>();
+  const findings: Finding[] = [];
 
   // Requirement ID: ### CODE-N: Title or ### CODE-N.P: Title
   const reqIdRegex = /^###\s+([A-Z][A-Z0-9]*-\d+(?:\.\d+)?)\s*:/;
@@ -123,6 +155,22 @@ async function parseSpecFile(
           const type = pattern.toLowerCase().includes('implements') ? 'implements' : 'validates';
           crossRefs.push({ type, ids, filePath, line: i + 1 });
 
+          // Detect duplicate IDs within a single cross-reference line
+          const seen = new Set<string>();
+          for (const id of ids) {
+            if (seen.has(id)) {
+              findings.push({
+                severity: 'warning',
+                code: 'duplicate-cross-ref',
+                message: `Duplicate ID '${id}' in ${type} line`,
+                filePath,
+                line: i + 1,
+                id,
+              });
+            }
+            seen.add(id);
+          }
+
           // Build componentImplements map for IMPLEMENTS lines
           if (type === 'implements' && currentComponent) {
             const existing = componentImplements.get(currentComponent) ?? [];
@@ -135,17 +183,31 @@ async function parseSpecFile(
   }
 
   return {
-    filePath,
-    code,
-    requirementIds,
-    acIds,
-    propertyIds,
-    componentNames,
-    crossRefs,
-    idLocations,
-    componentImplements,
-    content,
+    specFile: {
+      filePath,
+      code,
+      requirementIds,
+      acIds,
+      propertyIds,
+      componentNames,
+      crossRefs,
+      idLocations,
+      componentImplements,
+      content,
+    },
+    findings,
   };
+}
+
+function addIdLocation(
+  map: Map<string, Array<{ filePath: string; line: number }>>,
+  id: string,
+  loc: { filePath: string; line: number } | undefined,
+): void {
+  if (!loc) return;
+  const existing = map.get(id) ?? [];
+  existing.push(loc);
+  map.set(id, existing);
 }
 
 function extractCodePrefix(filePath: string): string {

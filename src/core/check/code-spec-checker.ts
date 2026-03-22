@@ -24,9 +24,10 @@ import type {
 } from './types.js';
 
 /**
- * Build a map of component → Set<impl/test marker IDs> using positional scoping.
- * Each @awa-impl or @awa-test is attributed to the nearest preceding @awa-component
- * in the same file by line number.
+ * Build a map of component → Set<impl marker IDs> using positional scoping.
+ * Each @awa-impl is attributed to the nearest preceding @awa-component
+ * in the same file by line number. Test markers are excluded because
+ * properties and cross-cutting ACs are not in IMPLEMENTS.
  */
 export function buildComponentAttribution(
   markers: readonly CodeMarker[],
@@ -56,8 +57,9 @@ export function buildComponentAttribution(
     for (const m of sorted) {
       if (m.type === 'component') {
         activeComponent = m.id;
-      } else {
-        // impl or test — attribute to nearest preceding component
+      } else if (m.type === 'impl') {
+        // Only impl markers are checked against IMPLEMENTS;
+        // test markers (properties, cross-cutting ACs) are not in IMPLEMENTS.
         if (activeComponent) {
           result.get(activeComponent)?.add(m.id);
         }
