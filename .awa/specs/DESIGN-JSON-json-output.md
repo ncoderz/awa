@@ -46,7 +46,7 @@ src/
 
 Converts GenerationResult and DiffResult into structured JSON objects and writes them to stdout. Provides summary formatters for compact one-line output.
 
-IMPLEMENTS: JSON_P-1, JSON_P-2, JSON-1_AC-1, JSON-2_AC-1, JSON-3_AC-1, JSON-4_AC-1, JSON-5_AC-1, JSON-8_AC-1
+IMPLEMENTS: JSON-1_AC-1, JSON-2_AC-1, JSON-3_AC-1, JSON-4_AC-1, JSON-5_AC-1, JSON-8_AC-1
 
 ```typescript
 interface GenerationActionJSON {
@@ -91,7 +91,7 @@ function writeJsonOutput(data: GenerationJSON | DiffJSON): void;
 
 Orchestrates JSON and summary output in the generate command. Suppresses interactive output and enforces dry-run when --json is active.
 
-IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, GEN_P-7, GEN_P-8, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, GEN-17_AC-1, JSON_P-3, JSON_P-4, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-5_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
+IMPLEMENTS: CLI-16_AC-2, CLI-16_AC-3, CLI-20_AC-2, CLI-20_AC-3, GEN-13_AC-1, GEN-14_AC-1, GEN-15_AC-1, GEN-16_AC-1, GEN-17_AC-1, JSON-1_AC-1, JSON-5_AC-1, JSON-6_AC-1, JSON-7_AC-1, JSON-8_AC-1, MULTI-5_AC-1, MULTI-6_AC-1, MULTI-10_AC-1, OVL-2_AC-1
 
 ```typescript
 // Modified generateCommand behavior:
@@ -184,8 +184,6 @@ PRINCIPLES:
 
 ### REQ-GEN-generation.md
 
-- GEN_P-7 → JSON-GenerateCommand
-- GEN_P-8 → JSON-GenerateCommand
 - GEN-13_AC-1 → JSON-GenerateCommand
 - GEN-14_AC-1 → JSON-GenerateCommand
 - GEN-15_AC-1 → JSON-GenerateCommand
@@ -194,10 +192,6 @@ PRINCIPLES:
 
 ### REQ-JSON-json-output.md
 
-- JSON_P-1 → JSON-JsonSerializer
-- JSON_P-2 → JSON-JsonSerializer
-- JSON_P-3 → JSON-GenerateCommand
-- JSON_P-4 → JSON-GenerateCommand
 - JSON-1_AC-1 → JSON-JsonSerializer (JSON_P-1)
 - JSON-1_AC-1 → JSON-GenerateCommand (JSON_P-1)
 - JSON-2_AC-1 → JSON-JsonSerializer (JSON_P-1)

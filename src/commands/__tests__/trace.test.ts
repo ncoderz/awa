@@ -87,6 +87,8 @@ describe('traceCommand', () => {
         allIds: new Set(),
         specFiles: [],
         idLocations: new Map(),
+        allIdLocations: new Map(),
+        parserFindings: [],
       },
       config: {} as never,
     });

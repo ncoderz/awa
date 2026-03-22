@@ -41,20 +41,21 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
       const fileName = basename(filePath);
       const isReq = fileName.startsWith('REQ-');
       const isDesign = fileName.startsWith('DESIGN-');
-      if (isReq) {
+      const locs = result.specFile.idLocations;
+      if (isReq && locs) {
         for (const id of new Set(result.specFile.requirementIds)) {
-          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+          addIdLocation(allIdLocations, id, locs.get(id));
         }
         for (const id of new Set(result.specFile.acIds)) {
-          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+          addIdLocation(allIdLocations, id, locs.get(id));
         }
       }
-      if (isDesign) {
+      if (isDesign && locs) {
         for (const id of new Set(result.specFile.propertyIds)) {
-          addIdLocation(allIdLocations, id, result.specFile.idLocations.get(id));
+          addIdLocation(allIdLocations, id, locs.get(id));
         }
         for (const cname of new Set(result.specFile.componentNames)) {
-          addIdLocation(allIdLocations, cname, result.specFile.idLocations.get(cname));
+          addIdLocation(allIdLocations, cname, locs.get(cname));
         }
       }
     }
@@ -62,7 +63,17 @@ export async function parseSpecs(config: CheckConfig): Promise<SpecParseResult> 
 
   const allIds = new Set<string>([...requirementIds, ...acIds, ...propertyIds, ...componentNames]);
 
-  return { requirementIds, acIds, propertyIds, componentNames, allIds, specFiles, idLocations, allIdLocations, parserFindings };
+  return {
+    requirementIds,
+    acIds,
+    propertyIds,
+    componentNames,
+    allIds,
+    specFiles,
+    idLocations,
+    allIdLocations,
+    parserFindings,
+  };
 }
 
 interface ParseSpecFileResult {

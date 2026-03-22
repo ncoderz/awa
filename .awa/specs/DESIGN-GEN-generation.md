@@ -53,7 +53,7 @@ src/
 
 Orchestrates the generation process: walks template directory, invokes template engine, manages output structure, coordinates conflict resolution, and processes the delete list. When `dryRun` is true, it computes and reports actions without creating directories or writing files.
 
-IMPLEMENTS: CLI-6_AC-2, CLI-12_AC-2, GEN_P-1, GEN_P-2, GEN_P-3, GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-4_AC-3, GEN-6_AC-1, GEN-6_AC-2, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4, GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3, GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8, GEN-10_AC-1, GEN-10_AC-2, GEN-11_AC-3, GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3, TPL-9_AC-1, TPL-9_AC-2
+IMPLEMENTS: CLI-6_AC-2, CLI-12_AC-2, GEN-1_AC-1, GEN-1_AC-2, GEN-1_AC-3, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, GEN-4_AC-3, GEN-6_AC-1, GEN-6_AC-2, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4, GEN-8_AC-1, GEN-8_AC-2, GEN-8_AC-3, GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8, GEN-10_AC-1, GEN-10_AC-2, GEN-11_AC-3, GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3, TPL-9_AC-1, TPL-9_AC-2
 
 ```typescript
 interface GenerateOptions {
@@ -95,7 +95,7 @@ interface FileGenerator {
 
 Handles file conflicts by comparing existing file content with new content, skipping identical files without prompting. For actual conflicts, prompts user with multi-select interface (all files checked by default).
 
-IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, CLI-12_AC-3, GEN_P-3, GEN_P-4, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
+IMPLEMENTS: CLI-5_AC-2, CLI-5_AC-3, CLI-12_AC-3, GEN-4_AC-1, GEN-4_AC-2, GEN-4_AC-3, GEN-5_AC-1, GEN-5_AC-2, GEN-5_AC-3, GEN-5_AC-4, GEN-5_AC-5, GEN-5_AC-6, GEN-5_AC-7, GEN-6_AC-3, GEN-10_AC-3, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5
 
 ```typescript
 interface ConflictItem {
@@ -120,7 +120,7 @@ interface ConflictResolver {
 
 Parses `_delete.txt` from template root directory. Supports feature-gated sections (`# @feature <name>`) where paths are deleted only when none of the listed features are active.
 
-IMPLEMENTS: CLI-12_AC-1, CLI-12_AC-2, CLI-12_AC-3, DIFF-8_AC-3, GEN_P-6, GEN-12_AC-1, GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, GEN-12_AC-8
+IMPLEMENTS: CLI-12_AC-1, CLI-12_AC-2, CLI-12_AC-3, DIFF-8_AC-3, GEN-12_AC-1, GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7, GEN-12_AC-8
 
 ```typescript
 interface DeleteEntry {
@@ -149,7 +149,7 @@ interface DeleteResolver {
 
 Provides styled console output using chalk. Handles info, success, warning, error messages and generation summary display.
 
-IMPLEMENTS: CLI-6_AC-3, DIFF_P-4, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-8_AC-2, GEN_P-3, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4, GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8, GEN-11_AC-1, GEN-11_AC-2, GEN-11_AC-4, TPL-7_AC-3
+IMPLEMENTS: CLI-6_AC-3, DIFF-4_AC-3, DIFF-4_AC-4, DIFF-4_AC-5, DIFF-8_AC-2, GEN-6_AC-4, GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4, GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8, GEN-11_AC-1, GEN-11_AC-2, GEN-11_AC-4, TPL-7_AC-3
 
 ```typescript
 interface Logger {
@@ -192,7 +192,7 @@ if (!cliOptions.config && fileConfig === null) {
 
 Provides file system utilities: path existence, directory creation, file reading/writing.
 
-IMPLEMENTS: GEN_P-1, GEN_P-3, GEN-1_AC-1, GEN-1_AC-2, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, TPL-2_AC-5
+IMPLEMENTS: GEN-1_AC-1, GEN-1_AC-2, GEN-2_AC-1, GEN-2_AC-2, GEN-2_AC-3, GEN-3_AC-1, GEN-3_AC-2, GEN-3_AC-3, TPL-2_AC-5
 
 ```typescript
 interface FileSystem {
@@ -314,7 +314,6 @@ PRINCIPLES:
 
 ### REQ-DIFF-diff.md
 
-- DIFF_P-4 → GEN-Logger
 - DIFF-4_AC-3 → GEN-Logger
 - DIFF-4_AC-4 → GEN-Logger
 - DIFF-4_AC-5 → GEN-Logger
@@ -323,15 +322,6 @@ PRINCIPLES:
 
 ### REQ-GEN-generation.md
 
-- GEN_P-1 → GEN-FileGenerator
-- GEN_P-1 → GEN-FileSystem
-- GEN_P-2 → GEN-FileGenerator
-- GEN_P-3 → GEN-FileGenerator
-- GEN_P-3 → GEN-ConflictResolver
-- GEN_P-3 → GEN-Logger
-- GEN_P-3 → GEN-FileSystem
-- GEN_P-4 → GEN-ConflictResolver
-- GEN_P-6 → GEN-DeleteList
 - GEN-1_AC-1 → GEN-FileGenerator (GEN_P-2)
 - GEN-1_AC-1 → GEN-FileSystem (GEN_P-2)
 - GEN-1_AC-2 → GEN-FileGenerator (GEN_P-2)

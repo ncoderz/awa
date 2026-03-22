@@ -16,6 +16,9 @@
 // @awa-impl: TPL-8_AC-4
 // @awa-impl: TPL-11_AC-1
 // @awa-impl: TPL-11_AC-2
+// @awa-impl: CLI-16_AC-2, CLI-16_AC-3
+// @awa-impl: CLI-20_AC-2, CLI-20_AC-3
+// @awa-impl: TPL-7_AC-3
 
 import { Eta } from 'eta';
 

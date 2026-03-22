@@ -17,6 +17,7 @@
 // @awa-impl: GEN-11_AC-2
 // @awa-impl: GEN-11_AC-4
 // @awa-impl: TPL-7_AC-3
+// @awa-impl: DIFF-8_AC-2
 
 import chalk from 'chalk';
 

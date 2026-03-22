@@ -118,7 +118,7 @@ function parseSpecs(config: CheckConfig): Promise<SpecParseResult>;
 
 Matches code markers against spec IDs. Reports orphaned markers (code references non-existent spec ID) and uncovered ACs (spec AC with no test marker). Extended to consult deprecated ID set for coverage suppression and orphan silencing.
 
-IMPLEMENTS: CLI_P-8, CLI_P-9, CLI_P-11, CLI_P-13, CLI_P-14, CLI_P-15, CLI_P-16, CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-29_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1, DEP_P-1, DEP_P-2, DEP_P-4, DEP-3_AC-1, DEP-3_AC-2, DEP-3_AC-3, DEP-5_AC-1, DEP-6_AC-2
+IMPLEMENTS: CLI-18_AC-1, CLI-19_AC-1, CLI-21_AC-1, CLI-29_AC-1, CLI-33_AC-1, CLI-34_AC-1, CLI-35_AC-1, CLI-36_AC-1, CLI-37_AC-1, DEP-3_AC-1, DEP-3_AC-2, DEP-3_AC-3, DEP-5_AC-1, DEP-6_AC-2
 
 ```typescript
 interface CheckResult {
@@ -136,7 +136,7 @@ function checkCodeAgainstSpec(
 
 Validates cross-references between spec files. Reports broken IMPLEMENTS/VALIDATES references and orphaned spec files. Extended to consult deprecated ID set for cross-ref silencing and unlinked-ac suppression.
 
-IMPLEMENTS: CLI_P-10, CLI_P-17, CLI-20_AC-1, CLI-22_AC-1, CLI-30_AC-1, CLI-36_AC-1, DEP_P-1, DEP_P-2, DEP_P-4, DEP-3_AC-1, DEP-3_AC-4, DEP-5_AC-2, DEP-5_AC-3, DEP-6_AC-3
+IMPLEMENTS: CLI-20_AC-1, CLI-22_AC-1, CLI-30_AC-1, CLI-36_AC-1, DEP-3_AC-1, DEP-3_AC-4, DEP-5_AC-2, DEP-5_AC-3, DEP-6_AC-3
 
 ```typescript
 function checkSpecAgainstSpec(
@@ -181,7 +181,7 @@ function checkSchema(config: CheckConfig, specFiles: string[]): Promise<Finding[
 
 Orchestrates the validation pipeline: load config, scan/parse, check, report, set exit code. Runs matrix generation by default after checks complete (skip with `--no-fix`). Extended to invoke DeprecatedParser, pass deprecated set to all checkers, and run ReservationChecker.
 
-IMPLEMENTS: CLI_P-12, CLI-23_AC-1, CLI-24_AC-2, CLI-24_AC-3, CLI-25_AC-1, CLI-27_AC-1, CLI-28_AC-1, CLI-29_AC-1, CLI-30_AC-1, CLI-31_AC-1, CLI-32_AC-1, CLI-32_AC-2, CLI-32_AC-3, CLI-38_AC-1, CLI-39_AC-1, DEP-6_AC-1, DEP-6_AC-4
+IMPLEMENTS: CLI-23_AC-1, CLI-24_AC-2, CLI-24_AC-3, CLI-25_AC-1, CLI-27_AC-1, CLI-28_AC-1, CLI-29_AC-1, CLI-30_AC-1, CLI-31_AC-1, CLI-32_AC-1, CLI-32_AC-2, CLI-32_AC-3, CLI-38_AC-1, CLI-39_AC-1, DEP-6_AC-1, DEP-6_AC-4
 
 ```typescript
 function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
@@ -191,7 +191,7 @@ function checkCommand(cliOptions: RawCheckOptions): Promise<number>;
 
 Regenerates Requirements Traceability sections in DESIGN and TASK files. For DESIGN files, inverts component IMPLEMENTS and property VALIDATES lines to build AC→Component(Property) entries. For TASK files, inverts task IMPLEMENTS and TESTS lines to build AC→Task(Test) entries.
 
-IMPLEMENTS: CLI_P-18, CLI_P-19, CLI-38_AC-1, CLI-38_AC-2
+IMPLEMENTS: CLI-38_AC-1, CLI-38_AC-2
 
 ```typescript
 interface FixResult {
@@ -343,18 +343,6 @@ PRINCIPLES:
 
 ### REQ-CLI-cli.md
 
-- CLI_P-8 → CLI-CodeSpecChecker
-- CLI_P-9 → CLI-CodeSpecChecker
-- CLI_P-10 → CLI-SpecSpecChecker
-- CLI_P-11 → CLI-CodeSpecChecker
-- CLI_P-12 → CLI-CheckCommand
-- CLI_P-13 → CLI-CodeSpecChecker
-- CLI_P-14 → CLI-CodeSpecChecker
-- CLI_P-15 → CLI-CodeSpecChecker
-- CLI_P-16 → CLI-CodeSpecChecker
-- CLI_P-17 → CLI-SpecSpecChecker
-- CLI_P-18 → CLI-MatrixFixer
-- CLI_P-19 → CLI-MatrixFixer
 - CLI-16_AC-1 → CLI-MarkerScanner
 - CLI-17_AC-1 → CLI-SpecParser
 - CLI-17_AC-1 → CLI-SchemaChecker
@@ -399,12 +387,6 @@ PRINCIPLES:
 
 ### REQ-DEP-deprecated.md
 
-- DEP_P-1 → CLI-CodeSpecChecker
-- DEP_P-1 → CLI-SpecSpecChecker
-- DEP_P-2 → CLI-CodeSpecChecker
-- DEP_P-2 → CLI-SpecSpecChecker
-- DEP_P-4 → CLI-CodeSpecChecker
-- DEP_P-4 → CLI-SpecSpecChecker
 - DEP-3_AC-1 → CLI-CodeSpecChecker
 - DEP-3_AC-1 → CLI-SpecSpecChecker
 - DEP-3_AC-2 → CLI-CodeSpecChecker

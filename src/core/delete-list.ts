@@ -1,6 +1,9 @@
 // @awa-component: GEN-DeleteList
 // @awa-impl: GEN-12_AC-1
 // @awa-impl: GEN-12_AC-8
+// @awa-impl: CLI-12_AC-1, CLI-12_AC-2, CLI-12_AC-3
+// @awa-impl: DIFF-8_AC-3
+// @awa-impl: GEN-12_AC-2, GEN-12_AC-3, GEN-12_AC-4, GEN-12_AC-5, GEN-12_AC-6, GEN-12_AC-7
 
 import { join } from 'node:path';
 

@@ -8,6 +8,11 @@
 // @awa-impl: CFG-12_AC-5
 // @awa-impl: CFG-13_AC-1
 // @awa-impl: CFG-13_AC-2
+// @awa-impl: CFG-10_AC-1, CFG-10_AC-2, CFG-10_AC-3, CFG-10_AC-5
+// @awa-impl: CFG-11_AC-1, CFG-11_AC-2, CFG-11_AC-3
+// @awa-impl: CFG-7_AC-1, CFG-7_AC-2, CFG-7_AC-3, CFG-7_AC-4
+// @awa-impl: CFG-8_AC-1, CFG-8_AC-2, CFG-8_AC-4
+// @awa-impl: CFG-9_AC-1, CFG-9_AC-2, CFG-9_AC-3
 
 import { ConfigError, type PresetDefinitions } from '../types/index.js';
 

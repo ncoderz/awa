@@ -15,6 +15,8 @@ export interface BatchTargetResult {
 // @awa-component: MULTI-BatchRunner
 // @awa-impl: MULTI-4_AC-1, MULTI-4_AC-2, MULTI-5_AC-1
 // @awa-impl: MULTI-8_AC-1, MULTI-9_AC-1, MULTI-11_AC-1
+// @awa-impl: MULTI-3_AC-1
+// @awa-impl: MULTI-5_AC-2
 export class BatchRunner {
   // Resolve all targets or a single named target from config
   resolveTargets(

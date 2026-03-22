@@ -8,15 +8,14 @@ export function checkDuplicateIds(specs: SpecParseResult): CheckResult {
 
     // Report each duplicate occurrence beyond the first
     for (let i = 1; i < locations.length; i++) {
-      const locationList = locations
-        .map((loc) => `${loc.filePath}:${loc.line}`)
-        .join(', ');
+      const loc = locations[i]!;
+      const locationList = locations.map((l) => `${l.filePath}:${l.line}`).join(', ');
       findings.push({
         severity: 'error',
         code: 'duplicate-spec-id',
         message: `Spec ID '${id}' is defined multiple times: ${locationList}`,
-        filePath: locations[i].filePath,
-        line: locations[i].line,
+        filePath: loc.filePath,
+        line: loc.line,
         id,
       });
     }

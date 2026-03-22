@@ -42,7 +42,7 @@ describe('checkDuplicateIds', () => {
       filePath: 'specs/REQ-FOO-feature.md',
       line: 25,
     });
-    expect(result.findings[0].message).toContain("Spec ID 'FOO-1' is defined multiple times");
+    expect(result.findings[0]!.message).toContain("Spec ID 'FOO-1' is defined multiple times");
   });
 
   test('reports duplicate AC ID across files', () => {
@@ -133,8 +133,8 @@ describe('checkDuplicateIds', () => {
 
     // One finding per extra occurrence (2 findings for 3 occurrences)
     expect(result.findings).toHaveLength(2);
-    expect(result.findings[0].filePath).toBe('specs/REQ-BAR-b.md');
-    expect(result.findings[1].filePath).toBe('specs/REQ-BAR-c.md');
+    expect(result.findings[0]!.filePath).toBe('specs/REQ-BAR-b.md');
+    expect(result.findings[1]!.filePath).toBe('specs/REQ-BAR-c.md');
   });
 
   test('empty allIdLocations produces no findings', () => {

@@ -23,6 +23,13 @@
 // @awa-impl: CLI-12_AC-2
 // @awa-impl: TPL-9_AC-1
 // @awa-impl: TPL-9_AC-2
+// @awa-impl: GEN-10_AC-1, GEN-10_AC-2
+// @awa-impl: GEN-12_AC-3
+// @awa-impl: GEN-4_AC-3
+// @awa-impl: GEN-6_AC-4
+// @awa-impl: GEN-7_AC-1, GEN-7_AC-2, GEN-7_AC-3, GEN-7_AC-4
+// @awa-impl: GEN-9_AC-1, GEN-9_AC-2, GEN-9_AC-3, GEN-9_AC-4, GEN-9_AC-5, GEN-9_AC-6, GEN-9_AC-7, GEN-9_AC-8
+// @awa-impl: TPL-7_AC-1, TPL-7_AC-2, TPL-7_AC-3
 
 import { join, relative } from 'node:path';
 
