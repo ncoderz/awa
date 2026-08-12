@@ -1,0 +1,67 @@
+{
+  "name": "bitmark-parser",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "containerEnv": {
+    // Pin sccache's cache to the volume-backed path mounted below, off virtiofs.
+    // "SCCACHE_DIR": "/home/vscode/.cache/sccache",
+    "CONTAINER_WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+    // "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright",
+  },
+  "mounts": [
+    // Keep high-churn build artifacts on a local named volume instead virtiofs workspace share
+    // It intermittently returns EACCES on the burst of parallel rename
+    "source=awa-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    // "source=awa-cargo-target,target=${containerWorkspaceFolder}/target,type=volume",
+    // "source=awa-sccache,target=/home/vscode/.cache/sccache,type=volume",
+    // "source=awa-uv-cache,target=/home/vscode/.cache/uv,type=volume",
+    // "source=awa-playwright-cache,target=/home/vscode/.cache/ms-playwright,type=volume",
+    "source=awa-mise-data,target=/home/vscode/.local/share/mise,type=volume",
+    // Claude Code
+    "source=awa-claude,target=/home/vscode/.claude,type=volume",
+    "source=${localEnv:HOME}/.claude/CLAUDE.md,target=/home/vscode/.claude/CLAUDE.md,type=bind,readonly",
+    "source=${localEnv:HOME}/.claude/commands,target=/home/vscode/.claude/commands,type=bind,readonly",
+    "source=${localEnv:HOME}/.claude/agents,target=/home/vscode/.claude/agents,type=bind,readonly",
+    "source=${localEnv:HOME}/.claude/skills,target=/home/vscode/.claude/skills,type=bind,readonly"
+  ],
+  "forwardPorts": [
+  ],
+  "portsAttributes": {
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "eslint.format.enable": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "npm.packageManager": "npm"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "hverlin.mise-vscode",
+        "niceandfair.vscode-tombi"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+  "postStartCommand": "bash .devcontainer/scripts/post-start.sh",
+  "remoteUser": "vscode"
+}

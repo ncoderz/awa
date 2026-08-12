@@ -1,2 +1,7 @@
 [tools]
 node = '24'
+
+# "npm:@playwright/test" = "1.60.0"
+# "npm:@playwright/cli" = "0.1.13"
+"npm:@anthropic-ai/claude-code" = { version = "latest", npm_args = "--ignore-scripts=false" }
+"github:rtk-ai/rtk" = "0.43.0"
